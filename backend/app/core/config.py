@@ -30,7 +30,11 @@ class Settings(BaseSettings):
     CLOUDINARY_API_SECRET: Optional[str] = None
 
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+    ]
+    FRONTEND_URL: Optional[str] = None
 
     class Config:
         env_file = ".env"

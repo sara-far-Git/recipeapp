@@ -10,9 +10,13 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+origins = list(settings.ALLOWED_ORIGINS)
+if settings.FRONTEND_URL and settings.FRONTEND_URL not in origins:
+    origins.append(settings.FRONTEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
