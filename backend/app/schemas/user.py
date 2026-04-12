@@ -13,9 +13,9 @@ class UserCreate(BaseModel):
     @field_validator("username")
     @classmethod
     def username_valid(cls, v: str) -> str:
-        if not re.match(r"^[a-zA-Z0-9_]{3,50}$", v):
-            raise ValueError("Username must be 3-50 chars, letters/numbers/underscore only")
-        return v.lower()
+        if not re.match(r"^[\w\u0590-\u05FF]{3,50}$", v):
+            raise ValueError("שם משתמש חייב להיות 3-50 תווים: אותיות, מספרים או קו תחתון")
+        return v
 
     @field_validator("password")
     @classmethod

@@ -53,6 +53,8 @@ class Recipe(Base):
     likes_count = Column(Integer, default=0)
     saves_count = Column(Integer, default=0)
     comments_count = Column(Integer, default=0)
+    ratings_sum = Column(Integer, default=0)
+    ratings_count = Column(Integer, default=0)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -62,6 +64,13 @@ class Recipe(Base):
     likes = relationship("Like", back_populates="recipe", cascade="all, delete-orphan")
     saved_by = relationship("SavedRecipe", back_populates="recipe", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="recipe", cascade="all, delete-orphan")
+    ratings = relationship("Rating", back_populates="recipe", cascade="all, delete-orphan")
+
+    @property
+    def average_rating(self) -> float:
+        if self.ratings_count == 0:
+            return 0.0
+        return round(self.ratings_sum / self.ratings_count, 1)
 
 
 class Like(Base):
@@ -98,3 +107,53 @@ class Comment(Base):
 
     recipe = relationship("Recipe", back_populates="comments")
     author = relationship("User", back_populates="comments")
+
+
+class Rating(Base):
+    __tablename__ = "ratings"
+
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), primary_key=True)
+    score = Column(Integer, nullable=False)  # 1-5
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="ratings")
+    recipe = relationship("Recipe", back_populates="ratings")
+
+
+class Collection(Base):
+    __tablename__ = "collections"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=True)
+    is_public = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="collections")
+    items = relationship("CollectionItem", back_populates="collection", cascade="all, delete-orphan")
+
+
+class CollectionItem(Base):
+    __tablename__ = "collection_items"
+
+    collection_id = Column(Integer, ForeignKey("collections.id"), primary_key=True)
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), primary_key=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    collection = relationship("Collection", back_populates="items")
+    recipe = relationship("Recipe")
+
+
+class ShoppingList(Base):
+    __tablename__ = "shopping_lists"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String(100), default="רשימת קניות")
+    items = Column(JSON, default=list)  # [{"name":"flour","amount":3,"unit":"cups","checked":false,"from_recipe":"..."}]
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    user = relationship("User", back_populates="shopping_lists")

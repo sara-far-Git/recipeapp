@@ -33,6 +33,9 @@ class User(Base):
     likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
     saved_recipes = relationship("SavedRecipe", back_populates="user", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
+    ratings = relationship("Rating", back_populates="user", cascade="all, delete-orphan")
+    collections = relationship("Collection", back_populates="user", cascade="all, delete-orphan")
+    shopping_lists = relationship("ShoppingList", back_populates="user", cascade="all, delete-orphan")
 
     following = relationship(
         "User",

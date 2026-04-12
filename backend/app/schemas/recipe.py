@@ -61,13 +61,15 @@ class RecipeResponse(BaseModel):
     likes_count: int
     saves_count: int
     comments_count: int
+    average_rating: float = 0.0
+    ratings_count: int = 0
     author: UserPublic
     created_at: datetime
     updated_at: Optional[datetime]
 
-    # Fields injected per-user context (not stored in DB)
     is_liked: bool = False
     is_saved: bool = False
+    user_rating: Optional[int] = None
 
     model_config = {"from_attributes": True}
 
@@ -84,6 +86,8 @@ class RecipeListItem(BaseModel):
     kosher_type: Optional[KosherType]
     likes_count: int
     saves_count: int
+    average_rating: float = 0.0
+    ratings_count: int = 0
     author: UserPublic
     is_liked: bool = False
     is_saved: bool = False
@@ -107,7 +111,6 @@ class CommentResponse(BaseModel):
 
 
 class ScanResponse(BaseModel):
-    """Response from AI image scan."""
     title: str
     description: Optional[str] = None
     prep_time_minutes: Optional[int] = None
@@ -117,3 +120,74 @@ class ScanResponse(BaseModel):
     kosher_type: Optional[KosherType] = None
     ingredients: List[Ingredient] = []
     instructions: List[Instruction] = []
+
+
+# ---------- Ratings ----------
+
+class RatingCreate(BaseModel):
+    score: int  # 1-5
+
+
+# ---------- Collections ----------
+
+class CollectionCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    is_public: bool = False
+
+
+class CollectionUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    is_public: Optional[bool] = None
+
+
+class CollectionResponse(BaseModel):
+    id: int
+    name: str
+    description: Optional[str]
+    is_public: bool
+    recipes_count: int = 0
+    cover_image: Optional[str] = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class CollectionDetail(CollectionResponse):
+    recipes: List[RecipeListItem] = []
+
+
+# ---------- Shopping List ----------
+
+class ShoppingItemSchema(BaseModel):
+    name: str
+    amount: float = 0
+    unit: Optional[str] = None
+    checked: bool = False
+    from_recipe: Optional[str] = None
+
+
+class ShoppingListCreate(BaseModel):
+    name: str = "רשימת קניות"
+
+
+class ShoppingListResponse(BaseModel):
+    id: int
+    name: str
+    items: List[dict] = []
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}
+
+
+class AddRecipeToShoppingList(BaseModel):
+    recipe_id: int
+    servings_multiplier: float = 1.0
+
+
+# ---------- AI Suggest ----------
+
+class AISuggestRequest(BaseModel):
+    ingredients: List[str]

@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "RecipeApp",
+    "slug": "recipeapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "recipeapp",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#f97316",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.recipeapp.mobile",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used to scan recipes from photos",
+        "NSPhotoLibraryUsageDescription": "Used to upload recipe images"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#f97316"
+      },
+      "package": "com.recipeapp.mobile",
+      "permissions": ["CAMERA"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-image-picker"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}

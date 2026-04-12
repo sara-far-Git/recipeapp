@@ -41,6 +41,9 @@ yarn-error.log*
 # ===========================
 *.sqlite
 *.db
+*.db-shm
+*.db-wal
+*.db-journal
 postgres-data/
 
 # ===========================
