@@ -1,30 +1,59 @@
 export const colors = {
-  primary: {
-    50: "#fff7ed",
-    100: "#ffedd5",
-    200: "#fed7aa",
-    300: "#fdba74",
-    400: "#fb923c",
-    500: "#f97316",
-    600: "#ea580c",
-    700: "#c2410c",
+  // Dark wood background
+  bg: {
+    primary: "#0f0c08",
+    secondary: "#1a1510",
+    card: "#1e1a14",
+    cardHover: "#252019",
   },
-  gray: {
-    50: "#f9fafb",
-    100: "#f3f4f6",
-    200: "#e5e7eb",
-    300: "#d1d5db",
-    400: "#9ca3af",
-    500: "#6b7280",
-    600: "#4b5563",
-    700: "#374151",
-    800: "#1f2937",
-    900: "#111827",
+  // Fire / orange-red accents
+  fire: {
+    50: "#fff4ed",
+    100: "#ffe8d5",
+    200: "#ffb347",
+    300: "#ff8c00",
+    400: "#e85d04",
+    500: "#dc2f02",
+    600: "#9d0208",
   },
+  // Smoke / grays
+  smoke: {
+    100: "#e8e0d4",
+    200: "#c9bfb0",
+    300: "#a89880",
+    400: "#7d6e5c",
+    500: "#4a3f32",
+    600: "#2d2418",
+    700: "#1a1410",
+  },
+  // Utility
   white: "#ffffff",
   black: "#000000",
-  red: { 50: "#fef2f2", 500: "#ef4444" },
-  green: { 50: "#f0fdf4", 400: "#4ade80", 500: "#22c55e" },
+  error: "#ef4444",
+  success: "#22c55e",
+  // Keep for backward compat
+  primary: {
+    50: "#fff4ed",
+    100: "#ffe8d5",
+    200: "#ffb347",
+    300: "#ff8c00",
+    400: "#e85d04",
+    500: "#dc2f02",
+    600: "#9d0208",
+    700: "#6a0106",
+  },
+  gray: {
+    50: "#1a1510",
+    100: "#1e1a14",
+    200: "#2d2418",
+    300: "#4a3f32",
+    400: "#7d6e5c",
+    500: "#a89880",
+    600: "#c9bfb0",
+    700: "#e8e0d4",
+    800: "#f0ebe4",
+    900: "#f8f4ef",
+  },
 };
 
 export const spacing = {

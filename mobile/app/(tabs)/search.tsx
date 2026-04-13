@@ -1,18 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-  View,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet,
-  ScrollView,
+  View, Text, FlatList, TextInput, TouchableOpacity,
+  ActivityIndicator, StyleSheet, ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { searchApi } from "@/lib/api";
 import RecipeCard from "@/components/RecipeCard";
-import ThemedText from "@/components/ThemedText";
 import { colors, spacing, radius, fontSize } from "@/lib/theme";
 
 const DIFFICULTY = [
@@ -21,14 +15,12 @@ const DIFFICULTY = [
   { value: "medium", label: "בינוני" },
   { value: "hard", label: "מאתגר" },
 ];
-
 const KOSHER = [
   { value: "", label: "הכל" },
   { value: "meat", label: "בשרי" },
   { value: "dairy", label: "חלבי" },
   { value: "pareve", label: "פרווה" },
 ];
-
 const TIME = [
   { value: 0, label: "הכל" },
   { value: 15, label: "עד 15 דק׳" },
@@ -68,27 +60,17 @@ export default function SearchScreen() {
     return () => clearTimeout(t);
   }, [query, difficulty, kosherType, maxTime, doSearch]);
 
-  const ChipRow = ({
-    items,
-    selected,
-    onSelect,
-  }: {
-    items: { value: string | number; label: string }[];
-    selected: string | number;
-    onSelect: (v: any) => void;
-  }) => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
+  const ChipRow = ({ items, selected, onSelect }: { items: any[]; selected: any; onSelect: (v: any) => void }) => (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 6, marginBottom: 4 }}>
       {items.map((it) => (
         <TouchableOpacity
           key={String(it.value)}
           onPress={() => onSelect(it.value)}
           style={[styles.chip, selected === it.value && styles.chipActive]}
         >
-          <ThemedText
-            style={[styles.chipText, selected === it.value && styles.chipTextActive]}
-          >
+          <Text style={[styles.chipText, selected === it.value && styles.chipTextActive]}>
             {it.label}
-          </ThemedText>
+          </Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -97,12 +79,12 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.searchRow}>
-        <Ionicons name="search" size={20} color={colors.gray[400]} />
+        <Ionicons name="search" size={20} color={colors.smoke[400]} />
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="חפשו מתכון..."
-          placeholderTextColor={colors.gray[400]}
+          placeholderTextColor={colors.smoke[400]}
           style={styles.searchInput}
           textAlign="right"
         />
@@ -110,25 +92,25 @@ export default function SearchScreen() {
           <Ionicons
             name="options-outline"
             size={22}
-            color={showFilters ? colors.primary[500] : colors.gray[400]}
+            color={showFilters ? colors.fire[200] : colors.smoke[400]}
           />
         </TouchableOpacity>
       </View>
 
       {showFilters && (
         <View style={styles.filters}>
-          <ThemedText variant="label">רמת קושי</ThemedText>
+          <Text style={styles.filterLabel}>רמת קושי</Text>
           <ChipRow items={DIFFICULTY} selected={difficulty} onSelect={setDifficulty} />
-          <ThemedText variant="label" style={{ marginTop: 8 }}>כשרות</ThemedText>
+          <Text style={[styles.filterLabel, { marginTop: 8 }]}>כשרות</Text>
           <ChipRow items={KOSHER} selected={kosherType} onSelect={setKosherType} />
-          <ThemedText variant="label" style={{ marginTop: 8 }}>זמן הכנה</ThemedText>
+          <Text style={[styles.filterLabel, { marginTop: 8 }]}>זמן הכנה</Text>
           <ChipRow items={TIME} selected={maxTime} onSelect={setMaxTime} />
         </View>
       )}
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary[500]} />
+          <ActivityIndicator size="large" color={colors.fire[200]} />
         </View>
       ) : (
         <FlatList
@@ -138,9 +120,9 @@ export default function SearchScreen() {
           contentContainerStyle={styles.list}
           ListEmptyComponent={
             <View style={styles.center}>
-              <ThemedText variant="caption" center>
-                {searched ? "לא נמצאו מתכונים" : "הקלידו לפחות 2 תווים"}
-              </ThemedText>
+              <Text style={styles.emptyText}>
+                {searched ? "לא נמצאו מתכונים" : "🔍 הקלידו לפחות 2 תווים"}
+              </Text>
             </View>
           }
         />
@@ -150,45 +132,43 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.gray[50] },
+  container: { flex: 1, backgroundColor: colors.bg.primary },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 80 },
   searchRow: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     margin: spacing.lg,
     paddingHorizontal: spacing.md,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.gray[200],
+    borderColor: colors.smoke[600],
     gap: 8,
   },
   searchInput: {
     flex: 1,
     paddingVertical: 12,
     fontSize: fontSize.base,
-    color: colors.gray[900],
+    color: colors.smoke[100],
     writingDirection: "rtl",
   },
   filters: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     marginHorizontal: spacing.lg,
     marginBottom: spacing.md,
     padding: spacing.lg,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.gray[100],
+    borderColor: colors.smoke[600],
   },
-  chipScroll: { marginTop: 6, marginBottom: 4 },
+  filterLabel: { fontSize: fontSize.sm, color: colors.smoke[300], fontWeight: "600" },
   chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: radius.sm,
-    backgroundColor: colors.gray[100],
-    marginLeft: 6,
+    paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: radius.sm, backgroundColor: colors.smoke[600], marginLeft: 6,
   },
-  chipActive: { backgroundColor: colors.primary[500] },
-  chipText: { fontSize: fontSize.xs, color: colors.gray[600], fontWeight: "500" },
+  chipActive: { backgroundColor: colors.fire[400] },
+  chipText: { fontSize: fontSize.xs, color: colors.smoke[200], fontWeight: "500" },
   chipTextActive: { color: colors.white },
-  list: { padding: spacing.lg },
+  list: { padding: spacing.lg, gap: spacing.md },
+  emptyText: { fontSize: fontSize.base, color: colors.smoke[300], textAlign: "center" },
 });

@@ -1,6 +1,22 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 import { authApi, usersApi } from "./api";
+
+const tokenStore = {
+  async get(): Promise<string | null> {
+    if (Platform.OS === "web") return localStorage.getItem("token");
+    return SecureStore.getItemAsync("token");
+  },
+  async set(value: string) {
+    if (Platform.OS === "web") { localStorage.setItem("token", value); return; }
+    return SecureStore.setItemAsync("token", value);
+  },
+  async remove() {
+    if (Platform.OS === "web") { localStorage.removeItem("token"); return; }
+    return SecureStore.deleteItemAsync("token");
+  },
+};
 
 export interface User {
   id: number;
@@ -31,7 +47,7 @@ export const useAuth = create<AuthState>((set) => ({
 
   login: async (email, password) => {
     const { data } = await authApi.login(email, password);
-    await SecureStore.setItemAsync("token", data.access_token);
+    await tokenStore.set(data.access_token);
     set({ token: data.access_token });
     const { data: user } = await usersApi.getMe();
     set({ user, isLoading: false });
@@ -40,20 +56,20 @@ export const useAuth = create<AuthState>((set) => ({
   register: async (regData) => {
     await authApi.register(regData);
     const { data } = await authApi.login(regData.email, regData.password);
-    await SecureStore.setItemAsync("token", data.access_token);
+    await tokenStore.set(data.access_token);
     set({ token: data.access_token });
     const { data: user } = await usersApi.getMe();
     set({ user, isLoading: false });
   },
 
   logout: async () => {
-    await SecureStore.deleteItemAsync("token");
+    await tokenStore.remove();
     set({ user: null, token: null });
   },
 
   loadUser: async () => {
     try {
-      const token = await SecureStore.getItemAsync("token");
+      const token = await tokenStore.get();
       if (!token) {
         set({ isLoading: false });
         return;
@@ -62,7 +78,7 @@ export const useAuth = create<AuthState>((set) => ({
       const { data } = await usersApi.getMe();
       set({ user: data, isLoading: false });
     } catch {
-      await SecureStore.deleteItemAsync("token");
+      await tokenStore.remove();
       set({ user: null, token: null, isLoading: false });
     }
   },

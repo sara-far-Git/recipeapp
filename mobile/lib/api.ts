@@ -2,6 +2,15 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 
+const tokenGet = async () => {
+  if (Platform.OS === "web") return localStorage.getItem("token");
+  return SecureStore.getItemAsync("token");
+};
+const tokenRemove = async () => {
+  if (Platform.OS === "web") { localStorage.removeItem("token"); return; }
+  return SecureStore.deleteItemAsync("token");
+};
+
 const getBaseUrl = () => {
   // Android emulator uses 10.0.2.2 to reach host machine
   // iOS simulator uses localhost
@@ -10,7 +19,7 @@ const getBaseUrl = () => {
     if (Platform.OS === "android") return "http://10.0.2.2:8000";
     return "http://localhost:8000";
   }
-  return "https://api.recipeapp.com"; // production URL
+  return "https://recipeapp-backend.onrender.com"; // production URL — update with your actual Render URL
 };
 
 const api = axios.create({
@@ -21,7 +30,7 @@ const api = axios.create({
 
 api.interceptors.request.use(async (config) => {
   try {
-    const token = await SecureStore.getItemAsync("token");
+    const token = await tokenGet();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,7 +42,7 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error.response?.status === 401) {
-      await SecureStore.deleteItemAsync("token");
+      await tokenRemove();
     }
     return Promise.reject(error);
   }
