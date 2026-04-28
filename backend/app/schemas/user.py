@@ -56,3 +56,11 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None
+
+
+class GoogleAuthRequest(BaseModel):
+    """The frontend sends the Google id_token (a signed JWT) it received
+    from Google Identity Services. The backend verifies its signature and
+    audience server-side, then issues our own JWT.
+    """
+    id_token: str

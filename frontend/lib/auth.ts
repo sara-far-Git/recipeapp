@@ -19,6 +19,7 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (data: { username: string; email: string; password: string; full_name?: string }) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => void;
   loadUser: () => Promise<void>;
 }
@@ -40,6 +41,15 @@ export const useAuth = create<AuthState>((set) => ({
   register: async (regData) => {
     await authApi.register(regData);
     const { data } = await authApi.login(regData.email, regData.password);
+    localStorage.setItem("token", data.access_token);
+    set({ token: data.access_token });
+    const { data: user } = await usersApi.getMe();
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user, isLoading: false });
+  },
+
+  loginWithGoogle: async (idToken) => {
+    const { data } = await authApi.googleLogin(idToken);
     localStorage.setItem("token", data.access_token);
     set({ token: data.access_token });
     const { data: user } = await usersApi.getMe();

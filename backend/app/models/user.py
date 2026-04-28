@@ -19,12 +19,20 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True, nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    # Nullable: users registered via OAuth (Google) won't have a password.
+    hashed_password = Column(String(255), nullable=True)
     full_name = Column(String(100), nullable=True)
     bio = Column(Text, nullable=True)
     avatar_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
+
+    # OAuth identity columns. provider="local" for password users,
+    # "google" for Google OAuth, etc. google_id is the unique `sub` from the
+    # Google id_token — this is what we match on when re-authenticating.
+    auth_provider = Column(String(20), default="local", nullable=False)
+    google_id = Column(String(255), unique=True, index=True, nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

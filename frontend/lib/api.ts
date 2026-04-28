@@ -45,6 +45,8 @@ export const authApi = {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   },
+  googleLogin: (idToken: string) =>
+    api.post("/auth/google", { id_token: idToken }),
 };
 
 // ---------- Users ----------
@@ -97,6 +99,11 @@ export const scanApi = {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+};
+
+// ---------- Import (URL) ----------
+export const importApi = {
+  fromUrl: (url: string) => api.post("/import", { url }),
 };
 
 // ---------- Upload ----------

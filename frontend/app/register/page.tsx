@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { Flame, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
@@ -49,6 +50,11 @@ export default function RegisterPage() {
             </button>
           </div>
           <Button type="submit" loading={loading} className="w-full" size="lg">יצירת חשבון</Button>
+
+          <GoogleSignInButton
+            onSuccess={() => router.push("/")}
+            onError={(msg) => setError(msg)}
+          />
         </form>
 
         <p className="text-center text-sm text-smoke-400 mt-6 animate-fade-up" style={{ animationDelay: "250ms" }}>
