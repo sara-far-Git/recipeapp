@@ -36,6 +36,19 @@ class Settings(BaseSettings):
     ]
     FRONTEND_URL: Optional[str] = None
 
+    # Google OAuth
+    GOOGLE_CLIENT_ID: Optional[str] = None
+
+    # Monitoring (Sentry)
+    SENTRY_DSN: Optional[str] = None
+    SENTRY_ENVIRONMENT: str = "development"
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
+
+    # Rate limiting (requests per minute per IP)
+    RATE_LIMIT_LOGIN: str = "10/minute"
+    RATE_LIMIT_REGISTER: str = "5/minute"
+    RATE_LIMIT_AI: str = "20/hour"
+
     class Config:
         env_file = ".env"
         case_sensitive = True

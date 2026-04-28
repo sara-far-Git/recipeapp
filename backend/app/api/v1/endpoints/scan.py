@@ -1,6 +1,7 @@
 import base64
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.recipe import ScanResponse
@@ -28,7 +29,9 @@ If a value cannot be determined, use null."""
 
 
 @router.post("", response_model=ScanResponse)
+@limiter.limit(settings.RATE_LIMIT_AI)
 async def scan_recipe_image(
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
 ):
