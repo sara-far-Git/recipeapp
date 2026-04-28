@@ -29,6 +29,12 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production
 
   - type: web
     name: recipeapp-frontend
@@ -38,4 +44,8 @@ services:
     dockerContext: ./frontend
     envVars:
       - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        sync: false
+      - key: NEXT_PUBLIC_SENTRY_DSN
         sync: false
