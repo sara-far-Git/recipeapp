@@ -3,12 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { recipesApi, scanApi, uploadApi } from "@/lib/api";
+import { recipesApi, scanApi, uploadApi, importApi } from "@/lib/api";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import {
   Camera, Upload, Plus, Trash2, GripVertical, ChefHat,
-  ArrowLeft, ArrowRight, Check, Loader2, Sparkles,
+  ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Link2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +39,10 @@ export default function NewRecipePage() {
   const [submitting, setSubmitting] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importUrl, setImportUrl] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [importError, setImportError] = useState("");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -67,20 +71,43 @@ export default function NewRecipePage() {
     setImageUploading(false);
   };
 
+  const applyImported = (data: any) => {
+    setTitle(data.title || "");
+    setDescription(data.description || "");
+    if (data.prep_time_minutes) setPrepTime(data.prep_time_minutes);
+    if (data.cook_time_minutes) setCookTime(data.cook_time_minutes);
+    if (data.servings) setServings(data.servings);
+    if (data.difficulty) setDifficulty(data.difficulty);
+    if (data.kosher_type) setKosherType(data.kosher_type);
+    if (data.ingredients?.length) setIngredients(data.ingredients);
+    if (data.instructions?.length) setInstructions(data.instructions);
+  };
+
+  const handleImportFromUrl = async () => {
+    setImportError("");
+    if (!importUrl.trim()) return;
+    setImporting(true);
+    try {
+      const { data } = await importApi.fromUrl(importUrl.trim());
+      applyImported(data);
+      setIsScanned(true);
+      setImportOpen(false);
+      setImportUrl("");
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail;
+      setImportError(typeof detail === "string" ? detail : "שגיאה בייבוא המתכון");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const handleScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setScanning(true);
     try {
       const { data } = await scanApi.scan(file);
-      setTitle(data.title || ""); setDescription(data.description || "");
-      if (data.prep_time_minutes) setPrepTime(data.prep_time_minutes);
-      if (data.cook_time_minutes) setCookTime(data.cook_time_minutes);
-      if (data.servings) setServings(data.servings);
-      if (data.difficulty) setDifficulty(data.difficulty);
-      if (data.kosher_type) setKosherType(data.kosher_type);
-      if (data.ingredients?.length) setIngredients(data.ingredients);
-      if (data.instructions?.length) setInstructions(data.instructions);
+      applyImported(data);
       setIsScanned(true);
     } catch { alert("שגיאה בסריקת התמונה. נסו שוב."); }
     setScanning(false);
@@ -130,7 +157,7 @@ export default function NewRecipePage() {
       <h1 className="font-display text-2xl font-bold text-gray-100 mb-6 animate-fade-up">מתכון חדש</h1>
 
       {/* AI Scan */}
-      <div className="relative overflow-hidden rounded-2xl mb-6 animate-fade-up" style={{ animationDelay: "50ms" }}>
+      <div className="relative overflow-hidden rounded-2xl mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
         <div className="absolute inset-0 bg-gradient-to-l from-fire-500/10 to-surface-200" />
         <div className="absolute inset-0 border border-fire-500/10 rounded-2xl" />
         <div className="relative p-5 flex items-center justify-between">
@@ -145,6 +172,54 @@ export default function NewRecipePage() {
             <Camera className="w-4 h-4" /> סריקה
           </Button>
           <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleScan} />
+        </div>
+      </div>
+
+      {/* Import from URL */}
+      <div className="relative overflow-hidden rounded-2xl mb-6 animate-fade-up" style={{ animationDelay: "75ms" }}>
+        <div className="absolute inset-0 bg-gradient-to-l from-fire-500/5 to-surface-200" />
+        <div className="absolute inset-0 border border-white/[0.06] rounded-2xl" />
+        <div className="relative p-5">
+          {!importOpen ? (
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-gray-100 mb-1 flex items-center gap-2">
+                  <Link2 className="w-4 h-4 text-fire-300" />
+                  ייבוא מקישור
+                </h3>
+                <p className="text-sm text-gray-500">הדביקו URL מבלוג מתכונים ונייבא אוטומטית</p>
+              </div>
+              <Button variant="secondary" onClick={() => setImportOpen(true)}>
+                <Link2 className="w-4 h-4" /> ייבוא
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <Input
+                id="import_url"
+                label="קישור למתכון"
+                value={importUrl}
+                onChange={(e) => setImportUrl(e.target.value)}
+                placeholder="https://example.com/recipe/..."
+                dir="ltr"
+                disabled={importing}
+              />
+              {importError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/15 text-red-400 text-sm">
+                  {importError}
+                </div>
+              )}
+              <div className="flex gap-2">
+                <Button onClick={handleImportFromUrl} loading={importing} disabled={!importUrl.trim()}>
+                  ייבוא
+                </Button>
+                <Button variant="secondary" onClick={() => { setImportOpen(false); setImportUrl(""); setImportError(""); }} disabled={importing}>
+                  ביטול
+                </Button>
+              </div>
+              <p className="text-xs text-gray-600">תומך באתרים עם נתונים מובנים (schema.org/Recipe). אם לא נמצא מבנה, נשתמש ב-AI לזיהוי תוכן.</p>
+            </div>
+          )}
         </div>
       </div>
 
