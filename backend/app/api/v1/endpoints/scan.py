@@ -8,7 +8,7 @@ from app.schemas.recipe import ScanResponse
 
 router = APIRouter(prefix="/scan", tags=["scan"])
 
-SCAN_PROMPT = """You are a recipe extraction assistant. Analyze the provided image of a recipe 
+SCAN_PROMPT = """You are a recipe extraction assistant. Analyze the provided image of a recipe
 (from a cookbook, notebook, or magazine) and extract structured data.
 
 Return ONLY valid JSON (no markdown, no explanation) with these fields:
@@ -20,12 +20,25 @@ Return ONLY valid JSON (no markdown, no explanation) with these fields:
   "servings": integer or null,
   "difficulty": "easy" | "medium" | "hard" or null,
   "kosher_type": "meat" | "dairy" | "pareve" | "non_kosher" or null,
-  "ingredients": [{"amount": number, "unit": "string or null", "name": "string"}],
+  "ingredients": [{"amount": number or null, "unit": "string or null", "name": "string"}],
   "instructions": [{"step": integer, "text": "string"}]
 }
 
-Extract ALL ingredients and ALL steps. If the recipe is in Hebrew, keep the text in Hebrew.
-If a value cannot be determined, use null."""
+IMPORTANT — amount conversion rules:
+- Convert ALL written fractions and Hebrew fraction words to decimal numbers:
+  חצי / 1/2 → 0.5
+  שליש / 1/3 → 0.33
+  רבע / 1/4 → 0.25
+  שני שליש / 2/3 → 0.67
+  שלושה רבע / 3/4 → 0.75
+  שליש וחצי / 1.5/3 → 0.5
+  1 וחצי / 1½ → 1.5
+  2 וחצי / 2½ → 2.5
+  וכן הלאה לכל שבר מורכב.
+- If the amount is vague (קורט, לפי הטעם, מעט, לפי הצורך, לפי הטעם) → set amount to null.
+- Extract ALL ingredients and ALL steps without skipping any.
+- If the recipe is in Hebrew, keep the text in Hebrew.
+- If a value cannot be determined, use null."""
 
 
 @router.post("", response_model=ScanResponse)

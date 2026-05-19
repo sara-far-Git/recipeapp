@@ -38,6 +38,8 @@ export default function NewRecipePage() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [scanSuccess, setScanSuccess] = useState(false);
+  const [scanError, setScanError] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importUrl, setImportUrl] = useState("");
@@ -79,7 +81,8 @@ export default function NewRecipePage() {
     if (data.servings) setServings(data.servings);
     if (data.difficulty) setDifficulty(data.difficulty);
     if (data.kosher_type) setKosherType(data.kosher_type);
-    if (data.ingredients?.length) setIngredients(data.ingredients);
+    if (data.ingredients?.length)
+      setIngredients(data.ingredients.map((ing: any) => ({ ...ing, amount: ing.amount ?? 0 })));
     if (data.instructions?.length) setInstructions(data.instructions);
   };
 
@@ -105,12 +108,20 @@ export default function NewRecipePage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setScanning(true);
+    setScanError("");
+    setScanSuccess(false);
     try {
       const { data } = await scanApi.scan(file);
       applyImported(data);
       setIsScanned(true);
-    } catch { alert("שגיאה בסריקת התמונה. נסו שוב."); }
+      setScanSuccess(true);
+      setTimeout(() => setScanSuccess(false), 5000);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail;
+      setScanError(typeof detail === "string" ? detail : "שגיאה בסריקת התמונה. נסו שוב.");
+    }
     setScanning(false);
+    e.target.value = "";
   };
 
   const addIngredient = () => setIngredients([...ingredients, { amount: 0, unit: "", name: "" }]);
@@ -174,6 +185,18 @@ export default function NewRecipePage() {
           <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleScan} />
         </div>
       </div>
+
+      {scanSuccess && (
+        <div className="flex items-center gap-2 p-3 mb-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm animate-fade-up">
+          <Check className="w-4 h-4 flex-shrink-0" />
+          המתכון זוהה בהצלחה! בדקו את הפרטים ועדכנו אם צריך.
+        </div>
+      )}
+      {scanError && (
+        <div className="flex items-center gap-2 p-3 mb-3 rounded-xl bg-red-500/10 border border-red-500/15 text-red-400 text-sm animate-fade-up">
+          {scanError}
+        </div>
+      )}
 
       {/* Import from URL */}
       <div className="relative overflow-hidden rounded-2xl mb-6 animate-fade-up" style={{ animationDelay: "75ms" }}>
