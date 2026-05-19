@@ -11,7 +11,7 @@ import StarRating from "@/components/ui/StarRating";
 import {
   Heart, Bookmark, Clock, Users, ChefHat, ArrowRight,
   Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send,
-  ShoppingCart, Share2, FolderPlus, Star, X,
+  ShoppingCart, Share2, FolderPlus, Star, X, Pencil, Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,9 @@ export default function RecipeDetailPage() {
   const [avgRating, setAvgRating] = useState(0);
   const [ratingsCount, setRatingsCount] = useState(0);
   const [userRating, setUserRating] = useState<number | null>(null);
+
+  // Delete
+  const [deleting, setDeleting] = useState(false);
 
   // Shopping list modal
   const [shoppingModalOpen, setShoppingModalOpen] = useState(false);
@@ -176,6 +179,17 @@ export default function RecipeDetailPage() {
       setTimeout(() => setShoppingToast(""), 3500);
     }
     setShoppingLoading(false);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("למחוק את המתכון? פעולה זו בלתי הפיכה.")) return;
+    setDeleting(true);
+    try {
+      await recipesApi.delete(recipe.id);
+      router.push("/profile/" + user?.username);
+    } catch {
+      setDeleting(false);
+    }
   };
 
   const handleShare = async () => {
@@ -409,6 +423,16 @@ export default function RecipeDetailPage() {
           <button onClick={toggleSave} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
             <Bookmark className={cn("w-5 h-5", saved ? "fill-primary-500 text-primary-500" : "text-gray-500")} />
           </button>
+          {user?.id === recipe.author.id && (
+            <>
+              <Link href={`/recipe/${recipe.id}/edit`} className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-500 hover:text-blue-500">
+                <Pencil className="w-5 h-5" />
+              </Link>
+              <button onClick={handleDelete} disabled={deleting} className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-500 hover:text-red-500">
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
