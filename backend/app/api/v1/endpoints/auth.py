@@ -99,42 +99,32 @@ def _unique_username(db: Session, base: str) -> str:
 
 
 def _verify_google_id_token(id_token_str: str) -> dict:
-    """Verify a Google id_token and return its decoded payload.
-
-    Raises HTTPException on any verification failure.
-    """
+    """Verify a Google id_token via Google's tokeninfo endpoint."""
     if not settings.GOOGLE_CLIENT_ID:
         raise HTTPException(
             status_code=503,
             detail="Google sign-in is not configured on the server",
         )
-    try:
-        from google.oauth2 import id_token as google_id_token
-        from google.auth.transport import requests as google_requests
-    except ImportError:
-        raise HTTPException(
-            status_code=503,
-            detail="Google auth library not installed",
-        )
 
+    import httpx
     try:
-        info = google_id_token.verify_oauth2_token(
-            id_token_str,
-            google_requests.Request(),
-            settings.GOOGLE_CLIENT_ID,
+        resp = httpx.get(
+            "https://oauth2.googleapis.com/tokeninfo",
+            params={"id_token": id_token_str},
+            timeout=10,
         )
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=401, detail=f"Invalid Google token: {exc}"
-        )
+        resp.raise_for_status()
+        info = resp.json()
+    except httpx.HTTPStatusError as exc:
+        raise HTTPException(status_code=401, detail=f"Invalid Google token: {exc.response.text}")
+    except httpx.RequestError as exc:
+        raise HTTPException(status_code=503, detail=f"Could not reach Google: {exc}")
 
-    # Defense in depth — these checks are redundant with verify_oauth2_token
-    # but make the contract explicit.
     if info.get("aud") != settings.GOOGLE_CLIENT_ID:
         raise HTTPException(status_code=401, detail="Token audience mismatch")
     if info.get("iss") not in ("https://accounts.google.com", "accounts.google.com"):
         raise HTTPException(status_code=401, detail="Token issuer mismatch")
-    if not info.get("email_verified"):
+    if str(info.get("email_verified", "")).lower() != "true":
         raise HTTPException(status_code=401, detail="Google email not verified")
 
     return info
