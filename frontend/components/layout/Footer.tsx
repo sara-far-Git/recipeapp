@@ -46,7 +46,7 @@ export default function Footer() {
           </nav>
 
           {/* Install button */}
-          {installPrompt && !installed && (
+          {installPrompt && !installed ? (
             <button
               onClick={handleInstall}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-white/[0.06] text-sm text-gray-300 hover:border-fire-500/30 hover:text-fire-300 transition-all"
@@ -54,6 +54,14 @@ export default function Footer() {
               <Download className="w-4 h-4" />
               התקנה כאפליקציה
             </button>
+          ) : (
+            <Link
+              href="/install"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-white/[0.06] text-sm text-gray-400 hover:border-fire-500/30 hover:text-fire-300 transition-all"
+            >
+              <Download className="w-4 h-4" />
+              הורידי כאפליקציה
+            </Link>
           )}
         </div>
       </div>
