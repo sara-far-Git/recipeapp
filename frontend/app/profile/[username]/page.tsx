@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { usersApi } from "@/lib/api";
+import { usersApi, uploadApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import Button from "@/components/ui/Button";
-import { UserCircle, Loader2 } from "lucide-react";
+import { UserCircle, Loader2, Pencil, X, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ProfilePage() {
@@ -23,6 +23,14 @@ export default function ProfilePage() {
     searchParams.get("tab") === "saved" ? "saved" : "recipes"
   );
   const [isFollowing, setIsFollowing] = useState(false);
+
+  // Edit profile
+  const [editOpen, setEditOpen] = useState(false);
+  const [editFullName, setEditFullName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editAvatar, setEditAvatar] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   const isOwn = currentUser?.username === username;
 
@@ -51,6 +59,38 @@ export default function ProfilePage() {
     load();
   }, [username, currentUser, isOwn]);
 
+  const openEdit = () => {
+    setEditFullName(profile.full_name || "");
+    setEditBio(profile.bio || "");
+    setEditAvatar(profile.avatar_url || "");
+    setEditOpen(true);
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const { data } = await uploadApi.upload(file);
+      setEditAvatar(data.url);
+    } catch {}
+    setAvatarUploading(false);
+  };
+
+  const handleSaveProfile = async () => {
+    setEditSaving(true);
+    try {
+      const { data } = await usersApi.updateMe({
+        full_name: editFullName || undefined,
+        bio: editBio || undefined,
+        avatar_url: editAvatar || undefined,
+      });
+      setProfile((prev: any) => ({ ...prev, ...data }));
+      setEditOpen(false);
+    } catch {}
+    setEditSaving(false);
+  };
+
   const handleFollow = async () => {
     const { data } = await usersApi.toggleFollow(username);
     setIsFollowing(data.following);
@@ -76,6 +116,62 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto">
+
+      {/* Edit profile modal */}
+      {editOpen && (
+        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setEditOpen(false)} />
+          <div className="relative w-full sm:max-w-md bg-surface-100 rounded-t-3xl sm:rounded-3xl border border-white/10 shadow-2xl">
+            <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
+              <h3 className="font-bold text-gray-100">עריכת פרופיל</h3>
+              <button onClick={() => setEditOpen(false)} className="p-1.5 rounded-xl hover:bg-white/10 transition-colors text-gray-400">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {/* Avatar */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  {editAvatar ? (
+                    <img src={editAvatar} alt="" className="w-16 h-16 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-surface-300 flex items-center justify-center">
+                      <UserCircle className="w-10 h-10 text-gray-600" />
+                    </div>
+                  )}
+                  <label className="absolute -bottom-1 -left-1 w-7 h-7 bg-fire-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-fire-400 transition-colors">
+                    {avatarUploading ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" /> : <Camera className="w-3.5 h-3.5 text-white" />}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                  </label>
+                </div>
+                <p className="text-sm text-gray-500">לחצי על המצלמה להחלפת תמונה</p>
+              </div>
+
+              {/* Full name */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-400 mb-1.5">שם מלא</label>
+                <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} placeholder="השם שיוצג" className="input-dark w-full" />
+              </div>
+
+              {/* Bio */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-400 mb-1.5">ביוגרפיה</label>
+                <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} placeholder="ספרי קצת על עצמך..." rows={3} className="input-dark w-full resize-none" />
+              </div>
+
+              <button
+                onClick={handleSaveProfile}
+                disabled={editSaving}
+                className="w-full py-3.5 rounded-2xl btn-fire font-semibold text-white disabled:opacity-40 flex items-center justify-center gap-2"
+              >
+                {editSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : "שמירת שינויים"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Profile header */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
         <div className="flex items-center gap-5">
@@ -115,13 +211,14 @@ export default function ProfilePage() {
           </div>
 
           {currentUser && !isOwn && (
-            <Button
-              variant={isFollowing ? "secondary" : "primary"}
-              size="sm"
-              onClick={handleFollow}
-            >
+            <Button variant={isFollowing ? "secondary" : "primary"} size="sm" onClick={handleFollow}>
               {isFollowing ? "עוקב/ת" : "מעקב"}
             </Button>
+          )}
+          {isOwn && (
+            <button onClick={openEdit} className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-700">
+              <Pencil className="w-5 h-5" />
+            </button>
           )}
         </div>
       </div>
