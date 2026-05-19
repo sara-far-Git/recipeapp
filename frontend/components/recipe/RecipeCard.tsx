@@ -6,7 +6,7 @@ import { Heart, Bookmark, Clock, ChefHat, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { recipesApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useRouter } from "next/navigation";
 
 interface RecipeCardProps {
@@ -28,7 +28,7 @@ const diffCfg: Record<string, { label: string; cls: string }> = {
 };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
 
-export default function RecipeCard({ recipe }: RecipeCardProps) {
+function RecipeCard({ recipe }: RecipeCardProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [liked, setLiked] = useState(recipe.is_liked);
@@ -149,3 +149,5 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     </Link>
   );
 }
+
+export default memo(RecipeCard);

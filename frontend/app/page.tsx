@@ -45,12 +45,18 @@ export default function FeedPage() {
   const clearFilters = () => { setDifficulty(""); setKosher(""); setMaxTime(0); };
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && hasMore && !loadingMore) {
-        setLoadingMore(true); loadRecipes(recipes.length);
-      }
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && hasMore && !loadingMore) {
+          setLoadingMore(true); loadRecipes(recipes.length);
+        }
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loadingMore, recipes.length, loadRecipes]);
 

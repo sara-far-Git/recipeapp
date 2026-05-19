@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import Header from "@/components/layout/Header";
@@ -8,6 +8,18 @@ import Footer from "@/components/layout/Footer";
 export const metadata: Metadata = {
   title: "RecipeApp — רשת חברתית למתכונים",
   description: "שתפו, גלו ובשלו מתכונים עם הקהילה",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "מתכונים",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2c1a0e",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -18,11 +30,13 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2c1a0e" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="מתכונים" />
+        {/* Font preconnect — faster than CSS @import */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;500;700;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-screen">
         <AuthProvider>
@@ -33,6 +47,18 @@ export default function RootLayout({
           <Footer />
           <BottomNav />
         </AuthProvider>
+        {/* Service Worker registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
