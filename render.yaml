@@ -1,9 +1,3 @@
-databases:
-  - name: recipeapp-db
-    plan: free
-    databaseName: recipeapp
-    user: recipeapp
-
 services:
   - type: web
     name: recipeapp-backend
@@ -14,9 +8,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: recipeapp-db
-          property: connectionString
+        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: ALGORITHM
