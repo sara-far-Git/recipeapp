@@ -11,7 +11,7 @@ import StarRating from "@/components/ui/StarRating";
 import {
   Heart, Bookmark, Clock, Users, ChefHat, ArrowRight,
   Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send,
-  ShoppingCart, Share2, FolderPlus, Star,
+  ShoppingCart, Share2, FolderPlus, Star, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,12 @@ export default function RecipeDetailPage() {
   const [avgRating, setAvgRating] = useState(0);
   const [ratingsCount, setRatingsCount] = useState(0);
   const [userRating, setUserRating] = useState<number | null>(null);
+
+  // Shopping list modal
+  const [shoppingModalOpen, setShoppingModalOpen] = useState(false);
+  const [selectedIngredients, setSelectedIngredients] = useState<Set<number>>(new Set());
+  const [shoppingLoading, setShoppingLoading] = useState(false);
+  const [shoppingToast, setShoppingToast] = useState("");
 
   // Comments
   const [comments, setComments] = useState<any[]>([]);
@@ -133,8 +139,14 @@ export default function RecipeDetailPage() {
     } catch {}
   };
 
-  const handleAddToShoppingList = async () => {
+  const openShoppingModal = () => {
     if (!user) { router.push("/login"); return; }
+    setSelectedIngredients(new Set(scaledIngredients.map((_: any, i: number) => i)));
+    setShoppingModalOpen(true);
+  };
+
+  const handleShoppingConfirm = async () => {
+    setShoppingLoading(true);
     try {
       const { data: lists } = await shoppingApi.list();
       let listId: number;
@@ -144,11 +156,26 @@ export default function RecipeDetailPage() {
       } else {
         listId = lists[0].id;
       }
-      await shoppingApi.addRecipe(listId, recipe.id, servingMultiplier);
-      alert("המצרכים נוספו לרשימת הקניות!");
+      const { data: currentList } = await shoppingApi.get(listId);
+      const existing = currentList.items || [];
+      const toAdd = scaledIngredients
+        .filter((_: any, i: number) => selectedIngredients.has(i))
+        .map((ing: any) => ({
+          name: ing.name,
+          amount: ing.amount || 0,
+          unit: ing.unit || null,
+          checked: false,
+          from_recipe: recipe.title,
+        }));
+      await shoppingApi.updateItems(listId, [...existing, ...toAdd]);
+      setShoppingModalOpen(false);
+      setShoppingToast(`${toAdd.length} מצרכים נוספו לרשימת הקניות`);
+      setTimeout(() => setShoppingToast(""), 3500);
     } catch {
-      alert("שגיאה בהוספה לרשימת קניות");
+      setShoppingToast("שגיאה בהוספה לרשימת קניות");
+      setTimeout(() => setShoppingToast(""), 3500);
     }
+    setShoppingLoading(false);
   };
 
   const handleShare = async () => {
@@ -158,7 +185,8 @@ export default function RecipeDetailPage() {
       try { await navigator.share({ title: text, url }); } catch {}
     } else {
       await navigator.clipboard.writeText(url);
-      alert("הקישור הועתק!");
+      setShoppingToast("הקישור הועתק!");
+      setTimeout(() => setShoppingToast(""), 3000);
     }
   };
 
@@ -255,6 +283,90 @@ export default function RecipeDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
+
+      {/* Toast notification */}
+      {shoppingToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-2xl bg-surface-100 border border-white/10 text-sm text-gray-200 shadow-xl animate-fade-up">
+          {shoppingToast}
+        </div>
+      )}
+
+      {/* Shopping list ingredient selection modal */}
+      {shoppingModalOpen && (
+        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
+          <div className="relative w-full sm:max-w-md bg-surface-100 rounded-t-3xl sm:rounded-3xl border border-white/10 shadow-2xl max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
+              <h3 className="font-bold text-gray-100">בחרי מצרכים לקנייה</h3>
+              <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-white/10 transition-colors text-gray-400">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 p-4 space-y-1">
+              <button
+                onClick={() => {
+                  if (selectedIngredients.size === scaledIngredients.length)
+                    setSelectedIngredients(new Set());
+                  else
+                    setSelectedIngredients(new Set(scaledIngredients.map((_: any, i: number) => i)));
+                }}
+                className="w-full text-right text-xs text-fire-400 hover:text-fire-300 mb-2 px-1"
+              >
+                {selectedIngredients.size === scaledIngredients.length ? "בטלי הכל" : "בחרי הכל"}
+              </button>
+
+              {scaledIngredients.map((ing: any, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setSelectedIngredients((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(i)) next.delete(i); else next.add(i);
+                      return next;
+                    });
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-xl text-right transition-all",
+                    selectedIngredients.has(i)
+                      ? "bg-fire-500/10 border border-fire-500/20"
+                      : "bg-surface-200/50 border border-transparent opacity-50"
+                  )}
+                >
+                  <div className={cn(
+                    "w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all",
+                    selectedIngredients.has(i) ? "bg-fire-500 border-fire-500" : "border-white/20"
+                  )}>
+                    {selectedIngredients.has(i) && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span className="flex-1 text-sm text-gray-200">{ing.name}</span>
+                  <span className="text-sm text-gray-500 font-medium" dir="ltr">
+                    {ing.amount || ""} {ing.unit || ""}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="p-4 border-t border-white/[0.06]">
+              <button
+                onClick={handleShoppingConfirm}
+                disabled={selectedIngredients.size === 0 || shoppingLoading}
+                className="w-full py-3.5 rounded-2xl btn-fire font-semibold text-white disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {shoppingLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <ShoppingCart className="w-4 h-4" />
+                    הוסיפי {selectedIngredients.size} מצרכים לרשימה
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={() => router.back()}
         className="flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-4 transition-colors"
@@ -341,7 +453,7 @@ export default function RecipeDetailPage() {
           <CookingPot className="w-5 h-5 ml-2" />
           בישול
         </Button>
-        <Button onClick={handleAddToShoppingList} variant="secondary" size="lg">
+        <Button onClick={openShoppingModal} variant="secondary" size="lg">
           <ShoppingCart className="w-5 h-5 ml-2" />
           קניות
         </Button>
