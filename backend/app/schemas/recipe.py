@@ -110,6 +110,12 @@ class CommentResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ScanIngredient(BaseModel):
+    amount: Optional[float] = None
+    unit: Optional[str] = None
+    name: str
+
+
 class ScanResponse(BaseModel):
     title: str
     description: Optional[str] = None
@@ -118,7 +124,7 @@ class ScanResponse(BaseModel):
     servings: Optional[int] = None
     difficulty: Optional[DifficultyLevel] = None
     kosher_type: Optional[KosherType] = None
-    ingredients: List[Ingredient] = []
+    ingredients: List[ScanIngredient] = []
     instructions: List[Instruction] = []
 
 
