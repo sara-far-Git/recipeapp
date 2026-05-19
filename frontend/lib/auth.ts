@@ -24,43 +24,54 @@ interface AuthState {
   loadUser: () => Promise<void>;
 }
 
+const persistSession = (token: string, user: User) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
+const clearSession = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+};
+
+const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>) => void) => {
+  localStorage.setItem("token", accessToken);
+  set({ token: accessToken, isLoading: true });
+  const { data: user } = await usersApi.getMe();
+  persistSession(accessToken, user);
+  set({ user, token: accessToken, isLoading: false });
+};
+
 export const useAuth = create<AuthState>((set) => ({
   user: null,
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   isLoading: true,
 
   login: async (email, password) => {
-    const { data } = await authApi.login(email, password);
-    localStorage.setItem("token", data.access_token);
-    set({ token: data.access_token });
-    const { data: user } = await usersApi.getMe();
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ user, isLoading: false });
+    const { data } = await authApi.login(email.trim(), password);
+    await finishLogin(data.access_token, set);
   },
 
   register: async (regData) => {
-    await authApi.register(regData);
-    const { data } = await authApi.login(regData.email, regData.password);
-    localStorage.setItem("token", data.access_token);
-    set({ token: data.access_token });
-    const { data: user } = await usersApi.getMe();
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ user, isLoading: false });
+    const payload = {
+      username: regData.username.trim(),
+      email: regData.email.trim(),
+      password: regData.password,
+      full_name: regData.full_name?.trim() || undefined,
+    };
+    await authApi.register(payload);
+    const { data } = await authApi.login(payload.email, payload.password);
+    await finishLogin(data.access_token, set);
   },
 
   loginWithGoogle: async (idToken) => {
     const { data } = await authApi.googleLogin(idToken);
-    localStorage.setItem("token", data.access_token);
-    set({ token: data.access_token });
-    const { data: user } = await usersApi.getMe();
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ user, isLoading: false });
+    await finishLogin(data.access_token, set);
   },
 
   logout: () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    set({ user: null, token: null });
+    clearSession();
+    set({ user: null, token: null, isLoading: false });
   },
 
   loadUser: async () => {
@@ -71,10 +82,10 @@ export const useAuth = create<AuthState>((set) => ({
     }
     try {
       const { data } = await usersApi.getMe();
+      localStorage.setItem("user", JSON.stringify(data));
       set({ user: data, token, isLoading: false });
     } catch {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      clearSession();
       set({ user: null, token: null, isLoading: false });
     }
   },

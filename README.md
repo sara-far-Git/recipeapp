@@ -94,6 +94,32 @@ cd mobile && npm install && npx expo start
 - **API Docs (Swagger):** http://localhost:8000/docs
 - **pgAdmin:** http://localhost:5050
 
+## Google Login
+
+כדי להפעיל התחברות עם Google צריך ליצור OAuth Client מסוג **Web application**
+ב-Google Cloud Console, ואז להגדיר את אותם ערכים גם ב-Frontend וגם ב-Backend.
+
+ב-Google OAuth Client:
+- **Authorized JavaScript origins:** כתובת ה-Frontend, למשל `https://recipeapp-roan.vercel.app`
+- **Authorized redirect URIs:** לא נדרש לזרימת הכפתור הנוכחית, אבל אפשר להשאיר ריק
+
+ב-Vercel, תחת Environment Variables של ה-Frontend:
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-backend.example.com
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
+```
+
+בשרת ה-Backend, למשל Render/Fly/Railway:
+
+```bash
+FRONTEND_URL=https://recipeapp-roan.vercel.app
+GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
+SECRET_KEY=replace-with-a-long-random-secret
+```
+
+אחרי שינוי משתני סביבה צריך לעשות redeploy גם ל-Frontend וגם ל-Backend.
+
 ## API Endpoints
 
 | Method | Path | Description |
