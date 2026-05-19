@@ -13,14 +13,7 @@ interface StarRatingProps {
   size?: "sm" | "md" | "lg";
 }
 
-export default function StarRating({
-  rating,
-  count,
-  interactive = false,
-  userRating,
-  onRate,
-  size = "md",
-}: StarRatingProps) {
+export default function StarRating({ rating, count, interactive = false, userRating, onRate, size = "md" }: StarRatingProps) {
   const [hovered, setHovered] = useState(0);
   const sizes = { sm: "w-3.5 h-3.5", md: "w-5 h-5", lg: "w-7 h-7" };
   const iconSize = sizes[size];
@@ -30,34 +23,19 @@ export default function StarRating({
     <div className="flex items-center gap-1.5">
       <div className="flex items-center gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
+          <button key={star}
             onClick={() => interactive && onRate?.(star)}
             onMouseEnter={() => interactive && setHovered(star)}
             onMouseLeave={() => interactive && setHovered(0)}
             disabled={!interactive}
-            className={cn(
-              "transition-all duration-200",
-              interactive && "hover:scale-125 cursor-pointer",
-              !interactive && "cursor-default"
-            )}
-          >
-            <Star
-              className={cn(
-                iconSize,
-                "transition-colors duration-200",
-                star <= Math.round(displayRating)
-                  ? "fill-cinnamon-300 text-cinnamon-400"
-                  : "text-smoke-300"
-              )}
-            />
+            className={cn("transition-all duration-200", interactive && "hover:scale-125 cursor-pointer", !interactive && "cursor-default")}>
+            <Star className={cn(iconSize, "transition-colors duration-200",
+              star <= Math.round(displayRating) ? "fill-cinnamon-400 text-cinnamon-500" : "text-smoke-200")} />
           </button>
         ))}
       </div>
       {count !== undefined && count > 0 && (
-        <span className="text-xs text-gray-500 mr-1">
-          ({rating.toFixed(1)} · {count})
-        </span>
+        <span className="text-xs text-bark-200 mr-1">({rating.toFixed(1)} · {count})</span>
       )}
     </div>
   );

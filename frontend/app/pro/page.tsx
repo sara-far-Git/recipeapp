@@ -77,8 +77,8 @@ export default function ProPage() {
         </div>
 
         {/* Pro */}
-        <div className="relative overflow-hidden rounded-2xl border-2 border-cinnamon-400/50 p-6" style={{ background: "linear-gradient(145deg, #2c1a0e 0%, #3d2515 50%, #4d3018 100%)" }}>
-          <div className="absolute top-0 right-0 w-40 h-40 blur-[60px] rounded-full" style={{ background: "rgba(212, 124, 58, 0.15)" }} />
+        <div className="relative overflow-hidden rounded-2xl border-2 border-cinnamon-400/50 p-6" style={{ background: "linear-gradient(145deg, #8b3a1f 0%, #732d18 50%, #5a2412 100%)" }}>
+          <div className="absolute top-0 right-0 w-40 h-40 blur-[60px] rounded-full" style={{ background: "rgba(245, 239, 226, 0.10)" }} />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <div>

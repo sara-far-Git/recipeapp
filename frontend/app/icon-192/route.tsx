@@ -1,26 +1,31 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const revalidate = 31536000;
+export const size = { width: 192, height: 192 };
+export const contentType = "image/png";
 
-export async function GET() {
+export default function Icon() {
   return new ImageResponse(
     (
       <div
         style={{
-          background: "linear-gradient(135deg, #d47c3a 0%, #b86028 60%, #9a4d20 100%)",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "22%",
-          fontSize: 120,
+          background: "#8b3a1f",
+          color: "#efe7d7",
+          fontFamily: "Georgia, serif",
+          fontStyle: "italic",
+          fontWeight: 700,
+          fontSize: 105,
+          letterSpacing: -2,
         }}
       >
-        🔥
+        R
       </div>
     ),
-    { width: 192, height: 192 }
+    { ...size }
   );
 }

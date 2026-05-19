@@ -7,18 +7,18 @@ import Footer from "@/components/layout/Footer";
 import InstallBanner from "@/components/ui/InstallBanner";
 
 export const metadata: Metadata = {
-  title: "RecipeApp — רשת חברתית למתכונים",
+  title: "Recipes Book — ספר המתכונים שלכם",
   description: "שתפו, גלו ובשלו מתכונים עם הקהילה",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "מתכונים",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2c1a0e",
+  themeColor: "#efe7d7",
   width: "device-width",
   initialScale: 1,
 };
@@ -31,11 +31,10 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <head>
-        {/* Font preconnect — faster than CSS @import */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;500;700;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,700&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -49,7 +48,6 @@ export default function RootLayout({
           <BottomNav />
           <InstallBanner />
         </AuthProvider>
-        {/* Capture install prompt ASAP (before React mounts) + register SW */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

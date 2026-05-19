@@ -34,11 +34,15 @@ export default function InstallPage() {
   return (
     <div className="max-w-lg mx-auto py-8 px-2">
       <div className="text-center mb-10 animate-fade-up">
-        <div className="w-20 h-20 rounded-3xl mx-auto mb-5 text-5xl shadow-glow flex items-center justify-center" style={{ background: "linear-gradient(135deg, #d47c3a, #b86028, #9a4d20)" }}>
-          🔥
+        <div className="w-20 h-20 rounded-3xl mx-auto mb-5 flex items-center justify-center shadow-warm-md" style={{ background: "#8b3a1f" }}>
+          <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
+            <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
+            <path d="M30 15v34" />
+          </svg>
         </div>
-        <h1 className="font-display text-3xl font-bold text-bark-600 mb-2">התקיני את RecipeApp</h1>
-        <p className="text-smoke-400 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
+        <h1 className="font-display text-3xl font-bold text-bark-500 mb-2">התקיני את Recipes Book</h1>
+        <p className="text-bark-300 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
       </div>
 
       {installed ? (
@@ -85,8 +89,11 @@ export default function InstallPage() {
           {(platform === "ios" || platform === "unknown") && (
             <div className="card-surface p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-surface-200 flex items-center justify-center text-xl">
-
+                <div className="w-10 h-10 rounded-xl bg-surface-200 flex items-center justify-center">
+                  <svg width="22" height="22" viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
+                    <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
+                  </svg>
                 </div>
                 <div>
                   <h2 className="font-bold text-gray-100 text-sm">iPhone / iPad (Safari)</h2>

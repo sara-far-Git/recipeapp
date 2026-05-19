@@ -1,23 +1,16 @@
 {
-  "name": "RecipeApp — מתכונים",
-  "short_name": "מתכונים",
-  "description": "שתפי, גלי ובשלי מתכונים עם הקהילה",
+  "name": "Recipes Book — ספר המתכונים",
+  "short_name": "Recipes",
+  "description": "אוסף מתכונים ביתיים, מסורת משפחתית וטעמי הילדות",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#faf6f0",
-  "theme_color": "#2c1a0e",
+  "background_color": "#efe7d7",
+  "theme_color": "#efe7d7",
   "lang": "he",
   "dir": "rtl",
   "icons": [
-    { "src": "/icon.png", "sizes": "32x32", "type": "image/png" },
-    { "src": "/apple-icon.png", "sizes": "180x180", "type": "image/png" },
-    { "src": "/icon-192", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-192", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icon-512", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ],
-  "screenshots": [],
-  "categories": ["food", "lifestyle"]
+    { "src": "/icon-192", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512", "sizes": "512x512", "type": "image/png" }
+  ]
 }

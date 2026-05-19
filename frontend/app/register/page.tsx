@@ -12,53 +12,68 @@ import { Eye, EyeOff } from "lucide-react";
 export default function RegisterPage() {
   const router = useRouter();
   const register = useAuth((s) => s.register);
-  const [form, setForm] = useState({ username: "", email: "", password: "", full_name: "" });
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
-    try { await register(form); router.push("/"); }
-    catch (err: any) { const d = err.response?.data?.detail; setError(typeof d === "string" ? d : Array.isArray(d) ? d.map((x: any) => x.msg).join(", ") : "שגיאה בהרשמה"); }
+    try { await register({ email, username, password, full_name: fullName || undefined }); router.push("/"); }
+    catch (err: any) {
+      const d = err.response?.data?.detail;
+      setError(typeof d === "string" ? d : Array.isArray(d) ? d.map((x: any) => x.msg).join(", ") : "שגיאה בהרשמה");
+    }
     finally { setLoading(false); }
   };
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8 animate-fade-up">
-          <div className="w-[72px] h-[72px] mx-auto mb-5 rounded-3xl flex items-center justify-center text-4xl shadow-glow animate-float" style={{ background: "linear-gradient(135deg, #d47c3a 0%, #b86028 60%, #9a4d20 100%)" }}>
-            🔥
+        <div className="text-center mb-10 animate-fade-up">
+          <svg viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 mx-auto mb-6 animate-float">
+            <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
+            <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
+            <path d="M30 15v34" />
+            <path d="M14 20h12M14 26h12M14 32h10" />
+            <path d="M36 20h12M36 26h12M36 32h10" />
+          </svg>
+          <div className="inline-flex items-center gap-3 text-xs font-bold uppercase mb-3" style={{ color: "#5a3e2a", letterSpacing: "0.28em" }}>
+            <span className="inline-block w-10 h-px" style={{ background: "#b8a385" }} />
+            הצטרפו אלינו
+            <span className="inline-block w-10 h-px" style={{ background: "#b8a385" }} />
           </div>
-          <h1 className="font-display text-3xl font-bold text-bark-600">הצטרפו לקהילה</h1>
-          <p className="text-smoke-400 mt-2">יצרו חשבון ותתחילו לשתף מתכונים</p>
+          <h1 className="text-3xl font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+            פותחים פה לספר משלכם
+          </h1>
+          <p className="text-bark-300 mt-3" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: 17 }}>
+            הרשמה בחינם, מתכון חדש בכל שבוע
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="card-surface p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
-          {error && <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium animate-scale-in">{error}</div>}
-          <Input id="full_name" label="שם מלא" value={form.full_name} onChange={update("full_name")} placeholder="השם שלך" />
-          <Input id="username" label="שם משתמש" value={form.username} onChange={update("username")} placeholder="username" required dir="ltr" />
-          <Input id="email" label="אימייל" type="email" value={form.email} onChange={update("email")} placeholder="name@example.com" required dir="ltr" />
+          {error && (
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium animate-scale-in">{error}</div>
+          )}
+          <Input id="fullName" label="שם מלא" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="ישראל ישראלי" />
+          <Input id="username" label="שם משתמש" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" required dir="ltr" />
+          <Input id="email" label="אימייל" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required dir="ltr" />
           <div className="relative">
-            <Input id="password" label="סיסמה" type={showPass ? "text" : "password"} value={form.password} onChange={update("password")} placeholder="לפחות 8 תווים" required dir="ltr" minLength={8} />
-            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute left-3 top-[38px] text-smoke-400 hover:text-bark-500 transition-colors">
+            <Input id="password" label="סיסמה" type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required dir="ltr" minLength={6} />
+            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute left-3 top-[42px] text-bark-200 hover:text-cinnamon-500 transition-colors">
               {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <Button type="submit" loading={loading} className="w-full" size="lg">יצירת חשבון</Button>
-
-          <GoogleSignInButton
-            onSuccess={() => router.push("/")}
-            onError={(msg) => setError(msg)}
-          />
+          <Button type="submit" loading={loading} className="w-full" size="lg">הרשמה</Button>
+          <GoogleSignInButton onSuccess={() => router.push("/")} onError={(msg) => setError(msg)} />
         </form>
 
-        <p className="text-center text-sm text-smoke-400 mt-6 animate-fade-up" style={{ animationDelay: "250ms" }}>
-          כבר יש לך חשבון? <Link href="/login" className="text-cinnamon-600 font-bold hover:text-cinnamon-500 transition-colors">התחברות</Link>
+        <p className="text-center text-sm text-bark-300 mt-6 animate-fade-up" style={{ animationDelay: "250ms" }}>
+          כבר יש לך חשבון?{" "}
+          <Link href="/login" className="text-cinnamon-500 font-bold hover:text-cinnamon-600 transition-colors">התחברות</Link>
         </p>
       </div>
     </div>
