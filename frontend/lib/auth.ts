@@ -48,10 +48,13 @@ const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>)
     persistSession(accessToken, user);
     set({ user, token: accessToken, isLoading: false });
   } catch (error) {
-    if (requestId === authRequestId && localStorage.getItem("token") === accessToken) {
-      clearSession();
-      set({ user: null, token: null, isLoading: false });
+    const isCurrentRequest =
+      requestId === authRequestId && localStorage.getItem("token") === accessToken;
+    if (!isCurrentRequest) {
+      return;
     }
+    clearSession();
+    set({ user: null, token: null, isLoading: false });
     throw error;
   }
 };
