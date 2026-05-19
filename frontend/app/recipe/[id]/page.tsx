@@ -525,7 +525,7 @@ export default function RecipeDetailPage() {
             <div key={comment.id} className="card-surface p-4">
               <div className="flex items-center justify-between mb-2">
                 <Link href={`/profile/${comment.author.username}`} className="text-sm font-semibold text-fire-400 hover:text-fire-300 transition-colors">
-                  @{comment.author.username}
+                  {comment.author.full_name || comment.author.username}
                 </Link>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-600">{new Date(comment.created_at).toLocaleDateString("he-IL")}</span>
