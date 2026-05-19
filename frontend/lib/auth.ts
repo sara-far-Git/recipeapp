@@ -24,6 +24,8 @@ interface AuthState {
   loadUser: () => Promise<void>;
 }
 
+let authRequestId = 0;
+
 const persistSession = (token: string, user: User) => {
   localStorage.setItem("token", token);
   localStorage.setItem("user", JSON.stringify(user));
@@ -35,11 +37,23 @@ const clearSession = () => {
 };
 
 const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>) => void) => {
+  const requestId = ++authRequestId;
   localStorage.setItem("token", accessToken);
   set({ token: accessToken, isLoading: true });
-  const { data: user } = await usersApi.getMe();
-  persistSession(accessToken, user);
-  set({ user, token: accessToken, isLoading: false });
+  try {
+    const { data: user } = await usersApi.getMe();
+    if (requestId !== authRequestId || localStorage.getItem("token") !== accessToken) {
+      return;
+    }
+    persistSession(accessToken, user);
+    set({ user, token: accessToken, isLoading: false });
+  } catch (error) {
+    if (requestId === authRequestId && localStorage.getItem("token") === accessToken) {
+      clearSession();
+      set({ user: null, token: null, isLoading: false });
+    }
+    throw error;
+  }
 };
 
 export const useAuth = create<AuthState>((set) => ({
@@ -70,23 +84,30 @@ export const useAuth = create<AuthState>((set) => ({
   },
 
   logout: () => {
+    authRequestId += 1;
     clearSession();
     set({ user: null, token: null, isLoading: false });
   },
 
   loadUser: async () => {
+    const requestId = ++authRequestId;
     const token = localStorage.getItem("token");
     if (!token) {
-      set({ isLoading: false });
+      set({ user: null, token: null, isLoading: false });
       return;
     }
     try {
       const { data } = await usersApi.getMe();
+      if (requestId !== authRequestId || localStorage.getItem("token") !== token) {
+        return;
+      }
       localStorage.setItem("user", JSON.stringify(data));
       set({ user: data, token, isLoading: false });
     } catch {
-      clearSession();
-      set({ user: null, token: null, isLoading: false });
+      if (requestId === authRequestId) {
+        clearSession();
+        set({ user: null, token: null, isLoading: false });
+      }
     }
   },
 }));
