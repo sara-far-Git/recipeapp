@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "backgroundColor": "#f97316",
+      "backgroundColor": "#faf6f0",
       "resizeMode": "contain"
     },
     "ios": {
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#f97316"
+        "backgroundColor": "#faf6f0"
       },
       "package": "com.recipeapp.mobile",
       "permissions": ["CAMERA"]

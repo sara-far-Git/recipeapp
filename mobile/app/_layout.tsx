@@ -16,11 +16,11 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "#0f0c08" },
+          contentStyle: { backgroundColor: "#faf6f0" },
           animation: "slide_from_left",
         }}
       >

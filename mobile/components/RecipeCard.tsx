@@ -47,7 +47,7 @@ export default function RecipeCard({ recipe }: Props) {
           <Image source={{ uri: recipe.image_url }} style={styles.image} />
         ) : (
           <View style={styles.placeholder}>
-            <Ionicons name="restaurant-outline" size={40} color={colors.gray[300]} />
+            <Ionicons name="restaurant-outline" size={40} color={colors.bark[100]} />
           </View>
         )}
 
@@ -55,7 +55,7 @@ export default function RecipeCard({ recipe }: Props) {
           <Ionicons
             name={saved ? "bookmark" : "bookmark-outline"}
             size={18}
-            color={saved ? colors.primary[500] : colors.gray[600]}
+            color={saved ? colors.cinnamon[500] : colors.bark[300]}
           />
         </TouchableOpacity>
 
@@ -92,7 +92,7 @@ export default function RecipeCard({ recipe }: Props) {
             <Ionicons
               name={liked ? "heart" : "heart-outline"}
               size={18}
-              color={liked ? colors.red[500] : colors.gray[400]}
+              color={liked ? colors.error : colors.bark[200]}
             />
             <ThemedText variant="caption" style={styles.likeCount}>{likesCount}</ThemedText>
           </TouchableOpacity>
@@ -100,7 +100,7 @@ export default function RecipeCard({ recipe }: Props) {
           {totalTime > 0 && (
             <View style={styles.timeRow}>
               <ThemedText variant="caption">{totalTime} דק׳</ThemedText>
-              <Ionicons name="time-outline" size={14} color={colors.gray[400]} />
+              <Ionicons name="time-outline" size={14} color={colors.bark[200]} />
             </View>
           )}
         </View>
@@ -116,9 +116,14 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.gray[100],
+    borderColor: colors.surface[300],
+    shadowColor: "#6e3c14",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  imageContainer: { aspectRatio: 4 / 3, backgroundColor: colors.gray[100] },
+  imageContainer: { aspectRatio: 4 / 3, backgroundColor: colors.surface[200] },
   image: { width: "100%", height: "100%" },
   placeholder: { flex: 1, alignItems: "center", justifyContent: "center" },
   saveBtn: {
