@@ -173,65 +173,67 @@ export default function ProfilePage() {
       )}
 
       {/* Profile header */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
-        <div className="flex items-center gap-5">
-          {profile.avatar_url ? (
-            <img
-              src={profile.avatar_url}
-              alt={profile.username}
-              className="w-20 h-20 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center">
-              <UserCircle className="w-12 h-12 text-primary-400" />
-            </div>
-          )}
+      <div className="card-surface p-6 mb-6 animate-fade-up">
+        <div className="flex items-start gap-5">
+          <div className="relative flex-shrink-0">
+            {profile.avatar_url ? (
+              <img src={profile.avatar_url} alt={profile.username} className="w-20 h-20 rounded-full object-cover ring-2 ring-fire-500/20" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-fire-500/15 flex items-center justify-center">
+                <UserCircle className="w-12 h-12 text-fire-400/60" />
+              </div>
+            )}
+          </div>
 
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-gray-900">
-              {profile.full_name || profile.username}
-            </h1>
-            <p className="text-gray-500 text-sm">@{profile.username}</p>
-            {profile.bio && <p className="text-gray-600 text-sm mt-2">{profile.bio}</p>}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h1 className="font-display text-xl font-bold text-gray-100">
+                  {profile.full_name || profile.username}
+                </h1>
+                <p className="text-gray-500 text-sm">@{profile.username}</p>
+              </div>
+              {currentUser && !isOwn && (
+                <Button variant={isFollowing ? "secondary" : "primary"} size="sm" onClick={handleFollow}>
+                  {isFollowing ? "עוקב/ת" : "מעקב"}
+                </Button>
+              )}
+              {isOwn && (
+                <button onClick={openEdit} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors text-gray-500 hover:text-fire-300">
+                  <Pencil className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+
+            {profile.bio && <p className="text-gray-400 text-sm mt-2 leading-relaxed">{profile.bio}</p>}
 
             <div className="flex items-center gap-5 mt-3 text-sm">
               <span>
-                <strong>{profile.recipes_count}</strong>{" "}
+                <strong className="text-gray-100">{profile.recipes_count}</strong>{" "}
                 <span className="text-gray-500">מתכונים</span>
               </span>
               <span>
-                <strong>{profile.followers_count}</strong>{" "}
+                <strong className="text-gray-100">{profile.followers_count}</strong>{" "}
                 <span className="text-gray-500">עוקבים</span>
               </span>
               <span>
-                <strong>{profile.following_count}</strong>{" "}
+                <strong className="text-gray-100">{profile.following_count}</strong>{" "}
                 <span className="text-gray-500">נעקבים</span>
               </span>
             </div>
           </div>
-
-          {currentUser && !isOwn && (
-            <Button variant={isFollowing ? "secondary" : "primary"} size="sm" onClick={handleFollow}>
-              {isFollowing ? "עוקב/ת" : "מעקב"}
-            </Button>
-          )}
-          {isOwn && (
-            <button onClick={openEdit} className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-700">
-              <Pencil className="w-5 h-5" />
-            </button>
-          )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-white/[0.08] mb-6 animate-fade-up" style={{ animationDelay: "60ms" }}>
         <button
           onClick={() => setActiveTab("recipes")}
           className={cn(
-            "flex-1 pb-3 text-sm font-medium text-center transition-colors border-b-2",
+            "flex-1 pb-3 text-sm font-semibold text-center transition-colors border-b-2",
             activeTab === "recipes"
-              ? "border-primary-500 text-primary-500"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-fire-500 text-fire-400"
+              : "border-transparent text-gray-500 hover:text-gray-300"
           )}
         >
           המתכונים ({recipes.length})
@@ -240,10 +242,10 @@ export default function ProfilePage() {
           <button
             onClick={() => setActiveTab("saved")}
             className={cn(
-              "flex-1 pb-3 text-sm font-medium text-center transition-colors border-b-2",
+              "flex-1 pb-3 text-sm font-semibold text-center transition-colors border-b-2",
               activeTab === "saved"
-                ? "border-primary-500 text-primary-500"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-fire-500 text-fire-400"
+                : "border-transparent text-gray-500 hover:text-gray-300"
             )}
           >
             השמורים ({savedRecipes.length})

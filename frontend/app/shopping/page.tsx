@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { shoppingApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
-import {
-  ShoppingCart, Trash2, Plus, Check, Circle, Loader2,
-} from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Check, Circle, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function ShoppingListPage() {
   const router = useRouter();
@@ -21,9 +20,7 @@ export default function ShoppingListPage() {
     try {
       const { data } = await shoppingApi.list();
       setLists(data);
-      if (data.length > 0 && !activeList) {
-        setActiveList(data[0]);
-      }
+      if (data.length > 0 && !activeList) setActiveList(data[0]);
     } catch {}
     setLoading(false);
   }, [activeList]);
@@ -56,7 +53,10 @@ export default function ShoppingListPage() {
 
   const addManualItem = async () => {
     if (!activeList || !newItemName.trim()) return;
-    const items = [...activeList.items, { name: newItemName.trim(), amount: 0, unit: null, checked: false, from_recipe: null }];
+    const items = [
+      ...activeList.items,
+      { name: newItemName.trim(), amount: 0, unit: null, checked: false, from_recipe: null },
+    ];
     const { data } = await shoppingApi.updateItems(activeList.id, items);
     setActiveList(data);
     setNewItemName("");
@@ -71,8 +71,10 @@ export default function ShoppingListPage() {
   if (!user) {
     return (
       <div className="text-center py-20">
-        <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <p className="text-gray-400 mb-4">התחברו כדי לנהל רשימת קניות</p>
+        <div className="w-16 h-16 rounded-2xl bg-surface-200 flex items-center justify-center mx-auto mb-4">
+          <ShoppingCart className="w-8 h-8 text-gray-600" />
+        </div>
+        <p className="text-gray-400 mb-4">התחברי כדי לנהל רשימת קניות</p>
         <Button onClick={() => router.push("/login")}>התחברות</Button>
       </div>
     );
@@ -81,43 +83,53 @@ export default function ShoppingListPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-fire-400" />
       </div>
     );
   }
 
   const checkedCount = activeList?.items?.filter((i: any) => i.checked).length || 0;
   const totalCount = activeList?.items?.length || 0;
+  const uncheckedItems = activeList?.items?.filter((i: any) => !i.checked) || [];
+  const checkedItems = activeList?.items?.filter((i: any) => i.checked) || [];
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">רשימת קניות</h1>
-        <Button variant="secondary" size="sm" onClick={createList}>
-          <Plus className="w-4 h-4 ml-1" />
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 animate-fade-up">
+        <h1 className="font-display text-2xl font-bold text-gray-100">רשימת קניות</h1>
+        <button
+          onClick={createList}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-white/[0.06] text-gray-300 hover:border-fire-500/30 hover:text-fire-300 transition-all text-sm font-medium"
+        >
+          <Plus className="w-4 h-4" />
           רשימה חדשה
-        </Button>
+        </button>
       </div>
 
       {lists.length === 0 ? (
-        <div className="text-center py-16">
-          <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-400 mb-4">אין רשימות קניות עדיין</p>
-          <p className="text-sm text-gray-400">צרו רשימה או הוסיפו מצרכים מדף מתכון</p>
+        <div className="text-center py-20 animate-fade-up">
+          <div className="w-20 h-20 rounded-3xl bg-surface-200 flex items-center justify-center mx-auto mb-5">
+            <ShoppingCart className="w-10 h-10 text-gray-600" />
+          </div>
+          <p className="text-gray-400 mb-2">אין רשימות קניות עדיין</p>
+          <p className="text-sm text-gray-600">צרי רשימה או הוסיפי מצרכים מדף מתכון</p>
         </div>
       ) : (
         <>
+          {/* List tabs */}
           {lists.length > 1 && (
-            <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+            <div className="flex gap-2 mb-4 overflow-x-auto pb-2 animate-fade-up">
               {lists.map((list) => (
                 <button
                   key={list.id}
                   onClick={() => setActiveList(list)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all border",
                     activeList?.id === list.id
-                      ? "bg-primary-500 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                      ? "btn-fire border-transparent text-white"
+                      : "bg-surface-200 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
+                  )}
                 >
                   {list.name}
                 </button>
@@ -126,67 +138,139 @@ export default function ShoppingListPage() {
           )}
 
           {activeList && (
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+            <div className="card-surface overflow-hidden animate-fade-up">
+              {/* List header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
                 <div>
-                  <h2 className="font-bold">{activeList.name}</h2>
-                  <p className="text-xs text-gray-400">{checkedCount}/{totalCount} פריטים</p>
+                  <h2 className="font-bold text-gray-100">{activeList.name}</h2>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {checkedCount} מתוך {totalCount} פריטים
+                    {totalCount > 0 && (
+                      <span className="mr-2 text-fire-400">
+                        ({Math.round((checkedCount / totalCount) * 100)}%)
+                      </span>
+                    )}
+                  </p>
                 </div>
-                <button onClick={() => deleteList(activeList.id)} className="p-2 text-gray-300 hover:text-red-500">
+                <button
+                  onClick={() => deleteList(activeList.id)}
+                  className="p-2 rounded-xl text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
 
+              {/* Progress bar */}
+              {totalCount > 0 && (
+                <div className="h-0.5 bg-surface-300">
+                  <div
+                    className="h-full bg-gradient-to-l from-fire-400 to-fire-600 transition-all duration-500"
+                    style={{ width: `${(checkedCount / totalCount) * 100}%` }}
+                  />
+                </div>
+              )}
+
               {/* Add manual item */}
-              <div className="flex gap-2 px-5 py-3 border-b border-gray-50">
+              <div className="flex gap-2 px-5 py-3 border-b border-white/[0.05]">
                 <input
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addManualItem()}
-                  placeholder="הוסיפו פריט..."
-                  className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-primary-500"
+                  placeholder="הוסיפי פריט..."
+                  className="input-dark flex-1 py-2"
                 />
-                <Button size="sm" onClick={addManualItem} disabled={!newItemName.trim()}>
+                <button
+                  onClick={addManualItem}
+                  disabled={!newItemName.trim()}
+                  className="px-3 py-2 rounded-xl btn-fire disabled:opacity-30 transition-all"
+                >
                   <Plus className="w-4 h-4" />
-                </Button>
+                </button>
               </div>
 
-              {/* Items */}
-              <ul>
-                {activeList.items?.map((item: any, i: number) => (
-                  <li
-                    key={i}
-                    className="flex items-center gap-3 px-5 py-3 border-b border-gray-50 last:border-b-0"
-                  >
-                    <button onClick={() => toggleItem(i)}>
-                      {item.checked ? (
-                        <Check className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-gray-300" />
-                      )}
-                    </button>
-                    <div className={`flex-1 ${item.checked ? "line-through text-gray-400" : ""}`}>
-                      <div className="flex items-center gap-2">
-                        {item.amount > 0 && (
-                          <span className="text-sm font-medium text-primary-600" dir="ltr">
-                            {item.amount} {item.unit || ""}
-                          </span>
-                        )}
-                        <span className="text-sm">{item.name}</span>
-                      </div>
-                      {item.from_recipe && (
-                        <p className="text-xs text-gray-400 mt-0.5">{item.from_recipe}</p>
-                      )}
-                    </div>
-                    <button onClick={() => removeItem(i)} className="p-1 text-gray-300 hover:text-red-400">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              {/* Unchecked items */}
+              {uncheckedItems.length > 0 && (
+                <ul>
+                  {uncheckedItems.map((item: any) => {
+                    const i = activeList.items.indexOf(item);
+                    return (
+                      <li
+                        key={i}
+                        className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.04] last:border-b-0 group"
+                      >
+                        <button
+                          onClick={() => toggleItem(i)}
+                          className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-white/20 hover:border-fire-400 transition-all"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            {item.amount > 0 && (
+                              <span className="text-sm font-semibold text-fire-400 flex-shrink-0" dir="ltr">
+                                {item.amount} {item.unit || ""}
+                              </span>
+                            )}
+                            <span className="text-sm text-gray-200 truncate">{item.name}</span>
+                          </div>
+                          {item.from_recipe && (
+                            <p className="text-xs text-gray-600 mt-0.5">{item.from_recipe}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => removeItem(i)}
+                          className="p-1.5 rounded-lg text-gray-700 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {/* Checked items */}
+              {checkedItems.length > 0 && (
+                <>
+                  <div className="px-5 py-2 border-t border-white/[0.05]">
+                    <p className="text-xs text-gray-600 font-medium">נרכש ({checkedItems.length})</p>
+                  </div>
+                  <ul>
+                    {checkedItems.map((item: any) => {
+                      const i = activeList.items.indexOf(item);
+                      return (
+                        <li
+                          key={i}
+                          className="flex items-center gap-3 px-5 py-3 border-b border-white/[0.03] last:border-b-0 group opacity-50"
+                        >
+                          <button onClick={() => toggleItem(i)} className="flex-shrink-0">
+                            <Check className="w-5 h-5 text-fire-400" />
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              {item.amount > 0 && (
+                                <span className="text-sm text-gray-500 line-through flex-shrink-0" dir="ltr">
+                                  {item.amount} {item.unit || ""}
+                                </span>
+                              )}
+                              <span className="text-sm text-gray-500 line-through truncate">{item.name}</span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => removeItem(i)}
+                            className="p-1.5 rounded-lg text-gray-700 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
 
               {totalCount === 0 && (
-                <p className="text-center text-gray-400 py-8 text-sm">הרשימה ריקה</p>
+                <div className="text-center py-10">
+                  <p className="text-gray-600 text-sm">הרשימה ריקה — הוסיפי פריט למעלה</p>
+                </div>
               )}
             </div>
           )}
