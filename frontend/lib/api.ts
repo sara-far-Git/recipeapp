@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -62,7 +62,7 @@ export const authApi = {
 
 // ---------- Users ----------
 export const usersApi = {
-  getMe: () => api.get("/users/me"),
+  getMe: (config?: AxiosRequestConfig) => api.get("/users/me", config),
   updateMe: (data: { full_name?: string; bio?: string; avatar_url?: string }) =>
     api.put("/users/me", data),
   getProfile: (username: string) => api.get(`/users/${username}`),
