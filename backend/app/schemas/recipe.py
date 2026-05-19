@@ -6,7 +6,7 @@ from app.schemas.user import UserPublic
 
 
 class Ingredient(BaseModel):
-    amount: float
+    amount: Optional[float] = None
     unit: Optional[str] = None
     name: str
 
