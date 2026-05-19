@@ -156,8 +156,8 @@ export default function NewRecipePage() {
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center">
           <div className="card-surface p-8 text-center max-w-sm mx-4 animate-scale-in">
             <div className="relative w-20 h-20 mx-auto mb-5">
-              <Sparkles className="w-10 h-10 text-fire-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-              <div className="w-20 h-20 rounded-full border-4 border-fire-500/20 border-t-fire-400 animate-spin" />
+              <Sparkles className="w-10 h-10 text-cinnamon-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+              <div className="w-20 h-20 rounded-full border-4 border-cinnamon-300 border-t-fire-400 animate-spin" />
             </div>
             <h3 className="text-lg font-bold text-gray-100 mb-2">השף הדיגיטלי עובד</h3>
             <p className="text-gray-500 text-sm">מפענח את המתכון מהתמונה...</p>
@@ -170,11 +170,11 @@ export default function NewRecipePage() {
       {/* AI Scan */}
       <div className="relative overflow-hidden rounded-2xl mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
         <div className="absolute inset-0 bg-gradient-to-l from-fire-500/10 to-surface-200" />
-        <div className="absolute inset-0 border border-fire-500/10 rounded-2xl" />
+        <div className="absolute inset-0 border border-cinnamon-300 rounded-2xl" />
         <div className="relative p-5 flex items-center justify-between">
           <div>
             <h3 className="font-bold text-gray-100 mb-1 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-fire-300" />
+              <Sparkles className="w-4 h-4 text-cinnamon-500" />
               השף הדיגיטלי
             </h3>
             <p className="text-sm text-gray-500">צלמו מתכון מספר ונמלא אוטומטית</p>
@@ -193,7 +193,7 @@ export default function NewRecipePage() {
         </div>
       )}
       {scanError && (
-        <div className="flex items-center gap-2 p-3 mb-3 rounded-xl bg-red-500/10 border border-red-500/15 text-red-400 text-sm animate-fade-up">
+        <div className="flex items-center gap-2 p-3 mb-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm animate-fade-up">
           {scanError}
         </div>
       )}
@@ -201,13 +201,13 @@ export default function NewRecipePage() {
       {/* Import from URL */}
       <div className="relative overflow-hidden rounded-2xl mb-6 animate-fade-up" style={{ animationDelay: "75ms" }}>
         <div className="absolute inset-0 bg-gradient-to-l from-fire-500/5 to-surface-200" />
-        <div className="absolute inset-0 border border-white/[0.06] rounded-2xl" />
+        <div className="absolute inset-0 border border-surface-400 rounded-2xl" />
         <div className="relative p-5">
           {!importOpen ? (
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-gray-100 mb-1 flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-fire-300" />
+                  <Link2 className="w-4 h-4 text-cinnamon-500" />
                   ייבוא מקישור
                 </h3>
                 <p className="text-sm text-gray-500">הדביקו URL מבלוג מתכונים ונייבא אוטומטית</p>
@@ -228,7 +228,7 @@ export default function NewRecipePage() {
                 disabled={importing}
               />
               {importError && (
-                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/15 text-red-400 text-sm">
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
                   {importError}
                 </div>
               )}
@@ -254,7 +254,7 @@ export default function NewRecipePage() {
             onClick={() => setStep(s)}
             className={cn(
               "flex-1 h-1.5 rounded-full transition-all duration-500",
-              step >= s ? "bg-gradient-to-l from-fire-400 to-fire-600" : "bg-white/[0.06]"
+              step >= s ? "bg-gradient-to-l from-fire-400 to-fire-600" : "bg-surface-200"
             )}
           />
         ))}
@@ -277,12 +277,12 @@ export default function NewRecipePage() {
               <div className="relative rounded-2xl overflow-hidden aspect-video bg-surface-300">
                 <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
                 <button onClick={() => setImageUrl("")} className="absolute top-3 left-3 p-2 bg-black/60 backdrop-blur-sm rounded-xl hover:bg-black/80 transition-colors">
-                  <Trash2 className="w-4 h-4 text-red-400" />
+                  <Trash2 className="w-4 h-4 text-red-600" />
                 </button>
               </div>
             ) : (
               <button onClick={() => fileInputRef.current?.click()} disabled={imageUploading}
-                className="w-full aspect-video rounded-2xl border-2 border-dashed border-white/[0.08] bg-surface-200/50 flex flex-col items-center justify-center gap-2 text-gray-600 hover:border-fire-500/30 hover:text-fire-300 transition-all duration-300">
+                className="w-full aspect-video rounded-2xl border-2 border-dashed border-white/[0.08] bg-surface-200/50 flex flex-col items-center justify-center gap-2 text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-all duration-300">
                 {imageUploading ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Upload className="w-8 h-8" /><span className="text-sm font-medium">העלו תמונה</span></>}
               </button>
             )}
@@ -338,14 +338,14 @@ export default function NewRecipePage() {
                 <input placeholder="שם המצרך" value={ing.name} onChange={(e) => updateIngredient(i, "name", e.target.value)} className="input-dark" />
               </div>
               {ingredients.length > 1 && (
-                <button onClick={() => removeIngredient(i)} className="p-2 text-gray-700 hover:text-red-400 transition-colors mt-0.5">
+                <button onClick={() => removeIngredient(i)} className="p-2 text-gray-700 hover:text-red-600 transition-colors mt-0.5">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
           ))}
 
-          <button onClick={addIngredient} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-fire-500/30 hover:text-fire-300 flex items-center justify-center gap-2 text-sm transition-all duration-300">
+          <button onClick={addIngredient} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 flex items-center justify-center gap-2 text-sm transition-all duration-300">
             <Plus className="w-4 h-4" /> הוספת מצרך
           </button>
 
@@ -363,19 +363,19 @@ export default function NewRecipePage() {
 
           {instructions.map((inst, i) => (
             <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-fire-500/15 text-fire-300 flex items-center justify-center text-sm font-bold mt-1">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-1">
                 {inst.step}
               </span>
               <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)} placeholder={`שלב ${inst.step}...`} rows={2} className="input-dark flex-1 resize-none" />
               {instructions.length > 1 && (
-                <button onClick={() => removeInstruction(i)} className="p-2 text-gray-700 hover:text-red-400 transition-colors">
+                <button onClick={() => removeInstruction(i)} className="p-2 text-gray-700 hover:text-red-600 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
           ))}
 
-          <button onClick={addInstruction} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-fire-500/30 hover:text-fire-300 flex items-center justify-center gap-2 text-sm transition-all duration-300">
+          <button onClick={addInstruction} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 flex items-center justify-center gap-2 text-sm transition-all duration-300">
             <Plus className="w-4 h-4" /> הוספת שלב
           </button>
 

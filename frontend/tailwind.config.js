@@ -8,15 +8,48 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Page/content backgrounds — warm parchment/cream
         surface: {
-          DEFAULT: "#1a1510",
-          50: "#28201a",
-          100: "#221b14",
-          200: "#1a150f",
-          300: "#14100a",
-          400: "#0f0c08",
-          500: "#0a0805",
+          DEFAULT: "#faf6f0",
+          50: "#fdfaf7",
+          100: "#faf6f0",
+          200: "#f5ede0",
+          300: "#ecddd0",
+          400: "#e0cbb8",
+          500: "#d4b8a0",
         },
+        // Muted text — warm mid-tones (used in dark header and content)
+        smoke: {
+          100: "#d4cec6",
+          200: "#b0a090",
+          300: "#8a7868",
+          400: "#6a5848",
+          500: "#4a3830",
+          600: "#322420",
+        },
+        // Espresso/bark — dark header bg, text, accents
+        bark: {
+          50: "#c4a882",
+          100: "#a07c56",
+          200: "#8b6040",
+          300: "#6b4a2d",
+          400: "#4d3018",
+          500: "#3d2515",
+          600: "#2c1a0e",
+          700: "#1e1008",
+        },
+        // Warm amber/cinnamon — primary accent color
+        cinnamon: {
+          50: "#fef3e8",
+          100: "#fde0c2",
+          200: "#f5bf8a",
+          300: "#e8965a",
+          400: "#d47c3a",
+          500: "#b86028",
+          600: "#9a4d20",
+          700: "#7a3a18",
+        },
+        // Keep fire for backward compat
         fire: {
           50: "#fef0ea",
           100: "#fdd5c7",
@@ -30,26 +63,21 @@ module.exports = {
           900: "#3a1008",
         },
         ember: {
-          300: "#d44030",
-          400: "#b83020",
+          300: "#d44040",
+          400: "#b83030",
           500: "#a02818",
           600: "#801e12",
         },
-        smoke: {
-          100: "#d4cec6",
-          200: "#a8a090",
-          300: "#7a7268",
-          400: "#5a5248",
-          500: "#3a3430",
-          600: "#2a2420",
-        },
       },
       boxShadow: {
-        glow: "0 0 24px rgba(200, 70, 30, 0.2)",
-        "glow-lg": "0 0 48px rgba(200, 70, 30, 0.3)",
-        "glow-sm": "0 0 12px rgba(200, 70, 30, 0.15)",
-        card: "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.03)",
-        inner: "inset 0 2px 6px rgba(0,0,0,0.3)",
+        warm: "0 2px 12px rgba(100, 60, 20, 0.08), 0 1px 3px rgba(100, 60, 20, 0.05)",
+        "warm-md": "0 4px 20px rgba(100, 60, 20, 0.12), 0 2px 6px rgba(100, 60, 20, 0.07)",
+        "warm-lg": "0 12px 40px rgba(100, 60, 20, 0.18), 0 4px 12px rgba(100, 60, 20, 0.1)",
+        glow: "0 0 24px rgba(196, 133, 74, 0.35)",
+        "glow-lg": "0 0 48px rgba(196, 133, 74, 0.45)",
+        "glow-sm": "0 0 12px rgba(196, 133, 74, 0.25)",
+        card: "0 2px 12px rgba(100, 60, 20, 0.08), 0 1px 3px rgba(100, 60, 20, 0.04)",
+        inner: "inset 0 1px 4px rgba(100, 60, 20, 0.08)",
       },
       fontFamily: {
         sans: ["'Rubik'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
@@ -81,8 +109,8 @@ module.exports = {
           "100%": { opacity: "1", transform: "scale(1)" },
         },
         pulseGlow: {
-          "0%, 100%": { boxShadow: "0 0 12px rgba(200,70,30,0.15)" },
-          "50%": { boxShadow: "0 0 32px rgba(200,70,30,0.4)" },
+          "0%, 100%": { boxShadow: "0 0 12px rgba(196, 133, 74, 0.2)" },
+          "50%": { boxShadow: "0 0 32px rgba(196, 133, 74, 0.5)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0px)" },

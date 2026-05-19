@@ -33,9 +33,9 @@ export default function GoogleSignInButton({
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <div className="w-full flex flex-col items-center gap-3">
         <div className="relative w-full flex items-center my-1">
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-surface-400" />
           <span className="px-3 text-xs text-smoke-400 uppercase tracking-wider">או</span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-surface-400" />
         </div>
 
         <div
@@ -44,7 +44,7 @@ export default function GoogleSignInButton({
           style={{ opacity: busy ? 0.6 : 1, pointerEvents: busy ? "none" : "auto" }}
         >
           <GoogleLogin
-            theme="filled_black"
+            theme="outline"
             size="large"
             shape="pill"
             text="continue_with"

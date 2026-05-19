@@ -163,7 +163,7 @@ export default function EditRecipePage() {
             onClick={() => setStep(s)}
             className={cn(
               "flex-1 h-1.5 rounded-full transition-all duration-500",
-              step >= s ? "bg-gradient-to-l from-fire-400 to-fire-600" : "bg-white/[0.06]"
+              step >= s ? "bg-gradient-to-l from-fire-400 to-fire-600" : "bg-surface-200"
             )}
           />
         ))}
@@ -185,12 +185,12 @@ export default function EditRecipePage() {
               <div className="relative rounded-2xl overflow-hidden aspect-video bg-surface-300">
                 <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
                 <button onClick={() => setImageUrl("")} className="absolute top-3 left-3 p-2 bg-black/60 backdrop-blur-sm rounded-xl hover:bg-black/80 transition-colors">
-                  <Trash2 className="w-4 h-4 text-red-400" />
+                  <Trash2 className="w-4 h-4 text-red-600" />
                 </button>
               </div>
             ) : (
               <button onClick={() => fileInputRef.current?.click()} disabled={imageUploading}
-                className="w-full aspect-video rounded-2xl border-2 border-dashed border-white/[0.08] bg-surface-200/50 flex flex-col items-center justify-center gap-2 text-gray-600 hover:border-fire-500/30 hover:text-fire-300 transition-all duration-300">
+                className="w-full aspect-video rounded-2xl border-2 border-dashed border-white/[0.08] bg-surface-200/50 flex flex-col items-center justify-center gap-2 text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-all duration-300">
                 {imageUploading ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Upload className="w-8 h-8" /><span className="text-sm font-medium">העלי תמונה</span></>}
               </button>
             )}
@@ -246,14 +246,14 @@ export default function EditRecipePage() {
                 <input placeholder="שם המצרך" value={ing.name} onChange={(e) => updateIngredient(i, "name", e.target.value)} className="input-dark" />
               </div>
               {ingredients.length > 1 && (
-                <button onClick={() => removeIngredient(i)} className="p-2 text-gray-700 hover:text-red-400 transition-colors mt-0.5">
+                <button onClick={() => removeIngredient(i)} className="p-2 text-gray-700 hover:text-red-600 transition-colors mt-0.5">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
           ))}
 
-          <button onClick={addIngredient} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-fire-500/30 hover:text-fire-300 flex items-center justify-center gap-2 text-sm transition-all duration-300">
+          <button onClick={addIngredient} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 flex items-center justify-center gap-2 text-sm transition-all duration-300">
             <Plus className="w-4 h-4" /> הוספת מצרך
           </button>
 
@@ -271,19 +271,19 @@ export default function EditRecipePage() {
 
           {instructions.map((inst, i) => (
             <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-fire-500/15 text-fire-300 flex items-center justify-center text-sm font-bold mt-1">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-1">
                 {inst.step}
               </span>
               <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)} placeholder={`שלב ${inst.step}...`} rows={2} className="input-dark flex-1 resize-none" />
               {instructions.length > 1 && (
-                <button onClick={() => removeInstruction(i)} className="p-2 text-gray-700 hover:text-red-400 transition-colors">
+                <button onClick={() => removeInstruction(i)} className="p-2 text-gray-700 hover:text-red-600 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
           ))}
 
-          <button onClick={addInstruction} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-fire-500/30 hover:text-fire-300 flex items-center justify-center gap-2 text-sm transition-all duration-300">
+          <button onClick={addInstruction} className="w-full py-3 rounded-xl border-2 border-dashed border-white/[0.06] text-gray-600 hover:border-cinnamon-300 hover:text-cinnamon-500 flex items-center justify-center gap-2 text-sm transition-all duration-300">
             <Plus className="w-4 h-4" /> הוספת שלב
           </button>
 

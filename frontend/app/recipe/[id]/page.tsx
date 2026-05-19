@@ -206,7 +206,7 @@ export default function RecipeDetailPage() {
             <h1 className="font-display text-xl font-bold text-gray-100">{recipe.title}</h1>
             <button
               onClick={() => setCookingMode(false)}
-              className="px-4 py-2 rounded-xl bg-surface-200 border border-white/[0.06] text-gray-300 text-sm hover:border-white/[0.1] transition-all"
+              className="px-4 py-2 rounded-xl bg-surface-200 border border-surface-400 text-gray-300 text-sm hover:border-white/[0.1] transition-all"
             >
               יציאה ממצב בישול
             </button>
@@ -214,13 +214,13 @@ export default function RecipeDetailPage() {
 
           <div className="card-surface p-5 mb-6">
             <h2 className="font-bold text-gray-100 mb-4 flex items-center gap-2">
-              <Users className="w-4 h-4 text-fire-400" />
+              <Users className="w-4 h-4 text-cinnamon-600" />
               מצרכים ({currentServings} סועדים)
             </h2>
             <ul className="space-y-2">
               {scaledIngredients.map((ing: any, i: number) => (
                 <li key={i} className="flex items-center gap-3 py-2 border-b border-white/[0.04] last:border-b-0">
-                  <span className="font-semibold text-fire-400 min-w-[5rem] text-sm" dir="ltr">
+                  <span className="font-semibold text-cinnamon-600 min-w-[5rem] text-sm" dir="ltr">
                     {ing.amount} {ing.unit || ""}
                   </span>
                   <span className="text-gray-200">{ing.name}</span>
@@ -254,7 +254,7 @@ export default function RecipeDetailPage() {
                       "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
                       completedSteps.has(inst.step)
                         ? "bg-fire-500 text-white"
-                        : "bg-fire-500/15 text-fire-300"
+                        : "bg-cinnamon-50 text-cinnamon-500"
                     )}>
                       {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
                     </span>
@@ -277,7 +277,7 @@ export default function RecipeDetailPage() {
     <div className="max-w-3xl mx-auto">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-2xl bg-surface-100 border border-white/10 text-sm text-gray-200 shadow-xl animate-fade-up whitespace-nowrap">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-2xl bg-bark-600 border border-bark-500 text-sm text-white shadow-xl animate-fade-up whitespace-nowrap">
           {toast}
         </div>
       )}
@@ -286,10 +286,10 @@ export default function RecipeDetailPage() {
       {shoppingModalOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
-          <div className="relative w-full sm:max-w-md bg-surface-100 rounded-t-3xl sm:rounded-3xl border border-white/10 shadow-2xl max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
-              <h3 className="font-bold text-gray-100">בחרי מצרכים לקנייה</h3>
-              <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-white/10 text-gray-400">
+          <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-surface-400 shadow-warm-lg max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-surface-300">
+              <h3 className="font-bold text-bark-600">בחרי מצרכים לקנייה</h3>
+              <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-surface-200 text-smoke-400">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -300,7 +300,7 @@ export default function RecipeDetailPage() {
                     ? new Set()
                     : new Set(scaledIngredients.map((_: any, i: number) => i))
                 )}
-                className="w-full text-right text-xs text-fire-400 hover:text-fire-300 mb-2 px-1"
+                className="w-full text-right text-xs text-cinnamon-600 hover:text-cinnamon-500 mb-2 px-1"
               >
                 {selectedIngredients.size === scaledIngredients.length ? "בטלי הכל" : "בחרי הכל"}
               </button>
@@ -315,24 +315,24 @@ export default function RecipeDetailPage() {
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl text-right transition-all",
                     selectedIngredients.has(i)
-                      ? "bg-fire-500/10 border border-fire-500/20"
-                      : "bg-surface-200/50 border border-transparent opacity-50"
+                      ? "bg-cinnamon-50 border border-cinnamon-200"
+                      : "bg-surface-100 border border-transparent opacity-60"
                   )}
                 >
                   <div className={cn(
                     "w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0",
-                    selectedIngredients.has(i) ? "bg-fire-500 border-fire-500" : "border-white/20"
+                    selectedIngredients.has(i) ? "bg-cinnamon-500 border-cinnamon-500" : "border-surface-400"
                   )}>
                     {selectedIngredients.has(i) && <Check className="w-3 h-3 text-white" />}
                   </div>
-                  <span className="flex-1 text-sm text-gray-200">{ing.name}</span>
-                  <span className="text-sm text-gray-500 font-medium" dir="ltr">
+                  <span className="flex-1 text-sm text-bark-600">{ing.name}</span>
+                  <span className="text-sm text-smoke-400 font-medium" dir="ltr">
                     {ing.amount || ""} {ing.unit || ""}
                   </span>
                 </button>
               ))}
             </div>
-            <div className="p-4 border-t border-white/[0.06]">
+            <div className="p-4 border-t border-surface-300">
               <button
                 onClick={handleShoppingConfirm}
                 disabled={selectedIngredients.size === 0 || shoppingLoading}
@@ -349,7 +349,7 @@ export default function RecipeDetailPage() {
       )}
 
       {/* Back */}
-      <button onClick={() => router.back()} className="flex items-center gap-1.5 text-gray-500 hover:text-gray-300 mb-5 transition-colors text-sm">
+      <button onClick={() => router.back()} className="flex items-center gap-1.5 text-smoke-400 hover:text-bark-600 mb-5 transition-colors text-sm">
         <ArrowRight className="w-4 h-4" />
         חזרה
       </button>
@@ -373,7 +373,7 @@ export default function RecipeDetailPage() {
       {/* Author + actions */}
       <div className="flex items-center justify-between mb-4 animate-fade-up" style={{ animationDelay: "60ms" }}>
         <Link href={`/profile/${recipe.author.username}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-          <div className="w-9 h-9 rounded-full bg-fire-500/20 flex items-center justify-center text-fire-300 font-bold text-sm">
+          <div className="w-9 h-9 rounded-full bg-cinnamon-100 flex items-center justify-center text-cinnamon-700 font-bold text-sm">
             {recipe.author.username[0].toUpperCase()}
           </div>
           <div>
@@ -383,19 +383,19 @@ export default function RecipeDetailPage() {
         </Link>
 
         <div className="flex items-center gap-1">
-          <button onClick={toggleLike} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+          <button onClick={toggleLike} className="p-2 rounded-xl hover:bg-surface-200 transition-colors">
             <Heart className={cn("w-5 h-5", liked ? "fill-red-500 text-red-500" : "text-gray-500")} />
           </button>
           <span className="text-sm text-gray-500 min-w-[1.5rem]">{likesCount}</span>
-          <button onClick={toggleSave} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors">
-            <Bookmark className={cn("w-5 h-5", saved ? "fill-fire-400 text-fire-400" : "text-gray-500")} />
+          <button onClick={toggleSave} className="p-2 rounded-xl hover:bg-surface-200 transition-colors">
+            <Bookmark className={cn("w-5 h-5", saved ? "fill-cinnamon-500 text-cinnamon-500" : "text-smoke-400")} />
           </button>
           {user?.id === recipe.author.id && (
             <>
-              <Link href={`/recipe/${recipe.id}/edit`} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors text-gray-500 hover:text-fire-300">
+              <Link href={`/recipe/${recipe.id}/edit`} className="p-2 rounded-xl hover:bg-surface-200 transition-colors text-smoke-400 hover:text-cinnamon-600">
                 <Pencil className="w-5 h-5" />
               </Link>
-              <button onClick={handleDelete} disabled={deleting} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors text-gray-500 hover:text-red-400">
+              <button onClick={handleDelete} disabled={deleting} className="p-2 rounded-xl hover:bg-surface-200 transition-colors text-smoke-400 hover:text-red-600">
                 <Trash2 className="w-5 h-5" />
               </button>
             </>
@@ -417,14 +417,14 @@ export default function RecipeDetailPage() {
       {/* Info chips */}
       <div className="flex flex-wrap gap-2 mb-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
         {totalTime > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-white/[0.06] text-sm text-gray-400">
-            <Clock className="w-3.5 h-3.5 text-fire-400" /> {totalTime} דק׳
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
+            <Clock className="w-3.5 h-3.5 text-cinnamon-600" /> {totalTime} דק׳
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-white/[0.06] text-sm text-gray-400">
-          <Users className="w-3.5 h-3.5 text-fire-400" /> {recipe.servings} סועדים
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
+          <Users className="w-3.5 h-3.5 text-cinnamon-600" /> {recipe.servings} סועדים
         </span>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-white/[0.06] text-sm text-gray-400">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
           {difficultyLabels[recipe.difficulty] || recipe.difficulty}
         </span>
       </div>
@@ -440,14 +440,14 @@ export default function RecipeDetailPage() {
         </button>
         <button
           onClick={openShoppingModal}
-          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-white/[0.06] text-gray-300 hover:border-fire-500/30 hover:text-fire-300 transition-all text-sm font-semibold"
+          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-surface-400 text-gray-300 hover:border-cinnamon-400 hover:text-cinnamon-500 transition-all text-sm font-semibold"
         >
           <ShoppingCart className="w-5 h-5" />
           קניות
         </button>
         <button
           onClick={handleShare}
-          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-white/[0.06] text-gray-300 hover:border-white/[0.1] transition-all text-sm font-semibold"
+          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-surface-400 text-gray-300 hover:border-white/[0.1] transition-all text-sm font-semibold"
         >
           <Share2 className="w-5 h-5" />
           שיתוף
@@ -458,20 +458,20 @@ export default function RecipeDetailPage() {
       <section className="mb-8 animate-fade-up" style={{ animationDelay: "160ms" }}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-lg font-bold text-gray-100">מצרכים</h2>
-          <div className="flex items-center gap-2 bg-surface-200 border border-white/[0.06] rounded-xl px-3 py-1.5">
-            <button onClick={() => handleServingsChange(-1)} className="p-0.5 hover:text-fire-300 text-gray-500 transition-colors">
+          <div className="flex items-center gap-2 bg-surface-200 border border-surface-400 rounded-xl px-3 py-1.5">
+            <button onClick={() => handleServingsChange(-1)} className="p-0.5 hover:text-cinnamon-500 text-gray-500 transition-colors">
               <Minus className="w-4 h-4" />
             </button>
             <span className="text-sm font-medium text-gray-200 min-w-[5rem] text-center">{currentServings} סועדים</span>
-            <button onClick={() => handleServingsChange(1)} className="p-0.5 hover:text-fire-300 text-gray-500 transition-colors">
+            <button onClick={() => handleServingsChange(1)} className="p-0.5 hover:text-cinnamon-500 text-gray-500 transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>
         </div>
-        <div className="card-surface divide-y divide-white/[0.04]">
+        <div className="card-surface divide-y divide-surface-300">
           {scaledIngredients.map((ing: any, i: number) => (
             <div key={i} className="flex items-center gap-3 px-4 py-3">
-              <span className="font-semibold text-fire-400 min-w-[5rem] text-sm text-left" dir="ltr">
+              <span className="font-semibold text-cinnamon-600 min-w-[5rem] text-sm text-left" dir="ltr">
                 {ing.amount} {ing.unit || ""}
               </span>
               <span className="text-gray-200 text-sm">{ing.name}</span>
@@ -486,7 +486,7 @@ export default function RecipeDetailPage() {
         <ol className="space-y-3">
           {recipe.instructions.map((inst: any) => (
             <li key={inst.step} className="flex items-start gap-3 card-surface p-4">
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-fire-500/15 text-fire-300 flex items-center justify-center text-sm font-bold mt-0.5">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
                 {inst.step}
               </span>
               <p className="text-gray-300 leading-relaxed text-sm flex-1">{inst.text}</p>
@@ -498,7 +498,7 @@ export default function RecipeDetailPage() {
       {/* Comments */}
       <section className="animate-fade-up" style={{ animationDelay: "200ms" }}>
         <h2 className="font-display text-lg font-bold text-gray-100 mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-fire-400" />
+          <MessageCircle className="w-5 h-5 text-cinnamon-600" />
           תגובות ({comments.length})
         </h2>
 
@@ -524,7 +524,7 @@ export default function RecipeDetailPage() {
           {comments.map((comment: any) => (
             <div key={comment.id} className="card-surface p-4">
               <div className="flex items-center justify-between mb-2">
-                <Link href={`/profile/${comment.author.username}`} className="text-sm font-semibold text-fire-400 hover:text-fire-300 transition-colors">
+                <Link href={`/profile/${comment.author.username}`} className="text-sm font-semibold text-cinnamon-600 hover:text-cinnamon-500 transition-colors">
                   {comment.author.full_name || comment.author.username}
                 </Link>
                 <div className="flex items-center gap-2">

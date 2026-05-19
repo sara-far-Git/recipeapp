@@ -46,7 +46,7 @@ export default function ProPage() {
     <div className="max-w-2xl mx-auto py-8 px-2">
       {/* Header */}
       <div className="text-center mb-12 animate-fade-up">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fire-500/10 border border-fire-500/20 text-fire-400 text-xs font-bold mb-5">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cinnamon-50 border border-cinnamon-200 text-cinnamon-600 text-xs font-bold mb-5">
           <Sparkles className="w-3.5 h-3.5" />
           בקרוב — Pro
         </div>
@@ -77,8 +77,8 @@ export default function ProPage() {
         </div>
 
         {/* Pro */}
-        <div className="relative overflow-hidden rounded-2xl border-2 border-fire-500/40 p-6" style={{ background: "linear-gradient(145deg, rgba(30,24,16,0.95) 0%, rgba(22,18,12,0.98) 100%)" }}>
-          <div className="absolute top-0 right-0 w-40 h-40 bg-fire-500/10 blur-[60px] rounded-full" />
+        <div className="relative overflow-hidden rounded-2xl border-2 border-cinnamon-400/50 p-6" style={{ background: "linear-gradient(145deg, #2c1a0e 0%, #3d2515 50%, #4d3018 100%)" }}>
+          <div className="absolute top-0 right-0 w-40 h-40 blur-[60px] rounded-full" style={{ background: "rgba(212, 124, 58, 0.15)" }} />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -89,14 +89,14 @@ export default function ProPage() {
                   ₪?<span className="text-sm text-gray-500 font-normal"> / לחודש</span>
                 </p>
               </div>
-              <span className="px-3 py-1 rounded-full bg-fire-500/20 text-fire-400 text-xs font-bold border border-fire-500/30">
+              <span className="px-3 py-1 rounded-full bg-cinnamon-400/20 text-cinnamon-300 text-xs font-bold border border-cinnamon-400/30">
                 בקרוב
               </span>
             </div>
             <ul className="space-y-3">
               {PRO_FEATURES.map((f) => (
                 <li key={f.text} className="flex items-start gap-2.5 text-sm">
-                  <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${f.hot ? "text-fire-400" : "text-gray-500"}`} />
+                  <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${f.hot ? "text-cinnamon-300" : "text-smoke-300"}`} />
                   <span className={f.hot ? "text-gray-200 font-medium" : "text-gray-400"}>{f.text}</span>
                 </li>
               ))}
@@ -109,8 +109,8 @@ export default function ProPage() {
       <div className="card-surface p-7 animate-fade-up" style={{ animationDelay: "200ms" }}>
         {submitted ? (
           <div className="text-center py-4">
-            <div className="w-14 h-14 rounded-2xl bg-fire-500/15 flex items-center justify-center mx-auto mb-4">
-              <Check className="w-7 h-7 text-fire-400" />
+            <div className="w-14 h-14 rounded-2xl bg-cinnamon-50 flex items-center justify-center mx-auto mb-4">
+              <Check className="w-7 h-7 text-cinnamon-600" />
             </div>
             <h3 className="font-display text-xl font-bold text-gray-100 mb-2">נרשמת בהצלחה!</h3>
             <p className="text-gray-400 text-sm">נעדכן אותך כשגרסת Pro תהיה זמינה.</p>
@@ -118,8 +118,8 @@ export default function ProPage() {
         ) : (
           <>
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-fire-500/15 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-fire-400" />
+              <div className="w-10 h-10 rounded-xl bg-cinnamon-50 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-cinnamon-600" />
               </div>
               <div>
                 <h3 className="font-bold text-gray-100">הצטרפי לרשימת ההמתנה</h3>

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { Loader2, ChefHat, Flame, Sparkles, ArrowLeft, SlidersHorizontal, X } from "lucide-react";
+import { Loader2, ChefHat, SlidersHorizontal, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -58,10 +58,10 @@ export default function FeedPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center animate-fade-up">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-fire-300 via-fire-500 to-ember-400 flex items-center justify-center animate-pulse-glow">
-            <Flame className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-pulse-glow text-4xl shadow-warm" style={{ background: "linear-gradient(135deg, #d47c3a, #9a4d20)" }}>
+            🔥
           </div>
-          <p className="text-sm text-smoke-400 font-medium">טוען מתכונים...</p>
+          <p className="text-sm text-bark-300 font-medium">טוען מתכונים...</p>
         </div>
       </div>
     );
@@ -69,27 +69,29 @@ export default function FeedPage() {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="relative mb-10 rounded-3xl overflow-hidden animate-fade-up">
-        <div className="absolute inset-0 bg-gradient-to-bl from-surface-100 via-surface to-surface-300" />
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-fire-500/8 blur-[120px]" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-ember-500/5 blur-[100px]" />
+      {/* Hero — dark espresso banner */}
+      <div className="relative mb-10 rounded-3xl overflow-hidden animate-fade-up" style={{ background: "linear-gradient(145deg, #2c1a0e 0%, #3d2515 40%, #4d3018 100%)" }}>
+        {/* Subtle warm glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full blur-[100px]" style={{ background: "rgba(212, 124, 58, 0.12)" }} />
+          <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full blur-[80px]" style={{ background: "rgba(196, 133, 74, 0.08)" }} />
         </div>
-        <div className="absolute inset-0 border border-white/[0.04] rounded-3xl" />
+        {/* Fine border */}
+        <div className="absolute inset-0 rounded-3xl border border-white/[0.06]" />
 
         <div className="relative p-7 sm:p-10">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-lg bg-fire-500/15 flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-fire-300" />
-            </div>
-            <span className="text-xs font-bold text-fire-300/70 uppercase tracking-widest">Recipe App</span>
+          <div className="flex items-center gap-2 mb-5">
+            <span className="text-2xl">📖</span>
+            <span className="text-xs font-bold text-cinnamon-300/80 uppercase tracking-widest font-display">ספר המתכונים שלנו</span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl font-bold mb-3 leading-tight text-gray-100">
-            {user ? (<>שלום, <span className="text-fire">{user.full_name || user.username}</span></>) : (<>גלו מתכונים <span className="text-fire">מדהימים</span></>)}
+          <h1 className="font-display text-3xl sm:text-4xl font-bold mb-3 leading-tight text-white/95">
+            {user
+              ? (<>שלום, <span className="text-fire">{user.full_name || user.username}</span> 👋</>)
+              : (<>גלו מתכונים <span className="text-fire">מיוחדים</span></>)
+            }
           </h1>
-          <p className="text-smoke-300 text-sm sm:text-base mb-8 max-w-lg leading-relaxed">
+          <p className="text-cinnamon-100/60 text-sm sm:text-base mb-8 max-w-lg leading-relaxed">
             שתפו, גלו ובשלו מתכונים עם הקהילה. סרקו מתכון מספר, קבלו הצעות מ-AI, ובנו את ספר המתכונים שלכם.
           </p>
 
@@ -100,10 +102,13 @@ export default function FeedPage() {
               </Link>
             ) : (
               <Link href="/register" className="btn-fire px-6 py-3 rounded-xl text-sm inline-flex items-center gap-2 transition-all duration-200">
-                הצטרפו עכשיו <ArrowLeft className="w-4 h-4" />
+                הצטרפו עכשיו →
               </Link>
             )}
-            <Link href="/search" className="px-6 py-3 rounded-xl text-sm font-bold inline-flex items-center gap-2 bg-white/[0.05] text-smoke-200 border border-white/[0.07] hover:bg-white/[0.08] transition-all duration-200 active:scale-[0.96]">
+            <Link
+              href="/search"
+              className="px-6 py-3 rounded-xl text-sm font-bold inline-flex items-center gap-2 border border-white/[0.12] text-white/75 hover:bg-white/[0.06] hover:text-white/90 transition-all duration-200 active:scale-[0.96]"
+            >
               חפשו מתכונים
             </Link>
           </div>
@@ -119,17 +124,19 @@ export default function FeedPage() {
               "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all",
               showFilters || hasFilters
                 ? "btn-fire border-transparent text-white"
-                : "bg-surface-200 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
+                : "bg-white border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
             )}
           >
             <SlidersHorizontal className="w-4 h-4" />
             סינון
-            {hasFilters && <span className="w-5 h-5 rounded-full bg-white/20 text-xs flex items-center justify-center">
-              {[difficulty, kosher, maxTime > 0].filter(Boolean).length}
-            </span>}
+            {hasFilters && (
+              <span className="w-5 h-5 rounded-full bg-white/25 text-xs flex items-center justify-center">
+                {[difficulty, kosher, maxTime > 0].filter(Boolean).length}
+              </span>
+            )}
           </button>
           {hasFilters && (
-            <button onClick={clearFilters} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 transition-colors">
+            <button onClick={clearFilters} className="flex items-center gap-1.5 text-xs text-smoke-400 hover:text-bark-500 transition-colors">
               <X className="w-3.5 h-3.5" /> נקה הכל
             </button>
           )}
@@ -137,64 +144,36 @@ export default function FeedPage() {
 
         {showFilters && (
           <div className="card-surface mt-3 p-4 space-y-4 animate-fade-up">
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">רמת קושי</p>
-              <div className="flex flex-wrap gap-2">
-                {DIFFICULTY_OPTS.map((o) => (
-                  <button key={o.v} onClick={() => setDifficulty(o.v)}
-                    className={cn("px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
-                      difficulty === o.v ? "btn-fire border-transparent text-white" : "bg-surface-300 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
-                    )}>{o.l}</button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">כשרות</p>
-              <div className="flex flex-wrap gap-2">
-                {KOSHER_OPTS.map((o) => (
-                  <button key={o.v} onClick={() => setKosher(o.v)}
-                    className={cn("px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
-                      kosher === o.v ? "btn-fire border-transparent text-white" : "bg-surface-300 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
-                    )}>{o.l}</button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">זמן הכנה</p>
-              <div className="flex flex-wrap gap-2">
-                {TIME_OPTS.map((o) => (
-                  <button key={o.v} onClick={() => setMaxTime(o.v)}
-                    className={cn("px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
-                      maxTime === o.v ? "btn-fire border-transparent text-white" : "bg-surface-300 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
-                    )}>{o.l}</button>
-                ))}
-              </div>
-            </div>
+            <FilterRow label="רמת קושי" opts={DIFFICULTY_OPTS} active={difficulty} onSelect={setDifficulty} />
+            <FilterRow label="כשרות" opts={KOSHER_OPTS} active={kosher} onSelect={setKosher} />
+            <FilterRow label="זמן הכנה" opts={TIME_OPTS} active={String(maxTime)} onSelect={(v) => setMaxTime(Number(v))} />
           </div>
         )}
       </div>
 
-      {/* Recipes */}
+      {/* Recipe grid */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-fire-400" />
+          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
         </div>
       ) : recipes.length === 0 ? (
         <div className="text-center py-20 animate-fade-up">
           <div className="w-24 h-24 mx-auto mb-6 card-surface flex items-center justify-center rounded-3xl">
-            <ChefHat className="w-12 h-12 text-smoke-500" />
+            <ChefHat className="w-12 h-12 text-bark-100" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-gray-200 mb-2">עדיין אין מתכונים</h2>
+          <h2 className="font-display text-2xl font-bold text-bark-600 mb-2">עדיין אין מתכונים</h2>
           <p className="text-smoke-400 mb-8">היו הראשונים לשתף מתכון עם הקהילה!</p>
           {user && (
-            <Link href="/recipe/new" className="btn-fire px-6 py-3 rounded-xl text-sm inline-flex items-center gap-2 transition-all"><ChefHat className="w-4 h-4" /> יצירת מתכון ראשון</Link>
+            <Link href="/recipe/new" className="btn-fire px-6 py-3 rounded-xl text-sm inline-flex items-center gap-2 transition-all">
+              <ChefHat className="w-4 h-4" /> יצירת מתכון ראשון
+            </Link>
           )}
         </div>
       ) : (
         <>
           <div className="flex items-center gap-3 mb-6 animate-fade-up">
-            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-fire-400 to-ember-500" />
-            <h2 className="font-display text-xl font-bold text-gray-200">מתכונים אחרונים</h2>
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-cinnamon-400 to-cinnamon-600" />
+            <h2 className="font-display text-xl font-bold text-bark-600">מתכונים אחרונים</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe, i) => (
@@ -207,8 +186,34 @@ export default function FeedPage() {
       )}
 
       {loadingMore && (
-        <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-fire-400" /></div>
+        <div className="flex justify-center py-10">
+          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+        </div>
       )}
+    </div>
+  );
+}
+
+function FilterRow({ label, opts, active, onSelect }: { label: string; opts: { v: string | number; l: string }[]; active: string; onSelect: (v: string) => void }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold text-bark-300 mb-2">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {opts.map((o) => (
+          <button
+            key={o.v}
+            onClick={() => onSelect(String(o.v))}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
+              String(active) === String(o.v)
+                ? "btn-fire border-transparent text-white"
+                : "bg-surface-100 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+            )}
+          >
+            {o.l}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

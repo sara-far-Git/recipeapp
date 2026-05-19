@@ -34,17 +34,17 @@ export default function InstallPage() {
   return (
     <div className="max-w-lg mx-auto py-8 px-2">
       <div className="text-center mb-10 animate-fade-up">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-fire-300 to-fire-600 flex items-center justify-center mx-auto mb-5 text-4xl shadow-glow">
+        <div className="w-20 h-20 rounded-3xl mx-auto mb-5 text-5xl shadow-glow flex items-center justify-center" style={{ background: "linear-gradient(135deg, #d47c3a, #b86028, #9a4d20)" }}>
           🔥
         </div>
-        <h1 className="font-display text-3xl font-bold text-gray-100 mb-2">התקיני את RecipeApp</h1>
-        <p className="text-gray-400 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
+        <h1 className="font-display text-3xl font-bold text-bark-600 mb-2">התקיני את RecipeApp</h1>
+        <p className="text-smoke-400 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
       </div>
 
       {installed ? (
         <div className="card-surface p-8 text-center animate-fade-up">
-          <div className="w-16 h-16 rounded-2xl bg-green-500/15 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-8 h-8 text-green-400" />
+          <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-green-600" />
           </div>
           <h2 className="font-bold text-gray-100 text-lg mb-2">האפליקציה הותקנה!</h2>
           <p className="text-gray-400 text-sm">תמצאי אותה במסך הבית שלך</p>
@@ -56,8 +56,8 @@ export default function InstallPage() {
           {(installPrompt || platform === "android" || platform === "desktop") && (
             <div className="card-surface p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-fire-500/15 flex items-center justify-center">
-                  {platform === "desktop" ? <Monitor className="w-5 h-5 text-fire-400" /> : <Smartphone className="w-5 h-5 text-fire-400" />}
+                <div className="w-10 h-10 rounded-xl bg-cinnamon-50 flex items-center justify-center">
+                  {platform === "desktop" ? <Monitor className="w-5 h-5 text-cinnamon-600" /> : <Smartphone className="w-5 h-5 text-cinnamon-600" />}
                 </div>
                 <div>
                   <h2 className="font-bold text-gray-100 text-sm">
@@ -112,7 +112,7 @@ export default function InstallPage() {
                 "ללא הורדה מ-App Store",
               ].map((b) => (
                 <li key={b} className="flex items-center gap-2.5 text-sm text-gray-400">
-                  <Check className="w-4 h-4 text-fire-400 flex-shrink-0" />
+                  <Check className="w-4 h-4 text-cinnamon-600 flex-shrink-0" />
                   {b}
                 </li>
               ))}
@@ -127,7 +127,7 @@ export default function InstallPage() {
 function Step({ n, text, icon }: { n: number; text: string; icon?: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-6 h-6 rounded-full bg-fire-500/15 text-fire-400 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+      <div className="w-6 h-6 rounded-full bg-fire-500/15 text-cinnamon-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
         {n}
       </div>
       <div className="flex items-center gap-1.5 text-sm text-gray-400">

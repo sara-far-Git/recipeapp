@@ -47,8 +47,8 @@ export default function StarRating({
                 iconSize,
                 "transition-colors duration-200",
                 star <= Math.round(displayRating)
-                  ? "fill-fire-200 text-fire-300"
-                  : "text-smoke-500"
+                  ? "fill-cinnamon-300 text-cinnamon-400"
+                  : "text-smoke-300"
               )}
             />
           </button>

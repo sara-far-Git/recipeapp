@@ -179,8 +179,8 @@ export default function ProfilePage() {
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt={profile.username} className="w-20 h-20 rounded-full object-cover ring-2 ring-fire-500/20" />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-fire-500/15 flex items-center justify-center">
-                <UserCircle className="w-12 h-12 text-fire-400/60" />
+              <div className="w-20 h-20 rounded-full bg-cinnamon-50 flex items-center justify-center">
+                <UserCircle className="w-12 h-12 text-cinnamon-600/60" />
               </div>
             )}
           </div>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                 </Button>
               )}
               {isOwn && (
-                <button onClick={openEdit} className="p-2 rounded-xl hover:bg-white/[0.06] transition-colors text-gray-500 hover:text-fire-300">
+                <button onClick={openEdit} className="p-2 rounded-xl hover:bg-surface-200 transition-colors text-gray-500 hover:text-cinnamon-500">
                   <Pencil className="w-5 h-5" />
                 </button>
               )}
@@ -232,7 +232,7 @@ export default function ProfilePage() {
           className={cn(
             "flex-1 pb-3 text-sm font-semibold text-center transition-colors border-b-2",
             activeTab === "recipes"
-              ? "border-fire-500 text-fire-400"
+              ? "border-fire-500 text-cinnamon-600"
               : "border-transparent text-gray-500 hover:text-gray-300"
           )}
         >
@@ -244,7 +244,7 @@ export default function ProfilePage() {
             className={cn(
               "flex-1 pb-3 text-sm font-semibold text-center transition-colors border-b-2",
               activeTab === "saved"
-                ? "border-fire-500 text-fire-400"
+                ? "border-fire-500 text-cinnamon-600"
                 : "border-transparent text-gray-500 hover:text-gray-300"
             )}
           >

@@ -83,7 +83,7 @@ export default function ShoppingListPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-fire-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-cinnamon-600" />
       </div>
     );
   }
@@ -100,7 +100,7 @@ export default function ShoppingListPage() {
         <h1 className="font-display text-2xl font-bold text-gray-100">רשימת קניות</h1>
         <button
           onClick={createList}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-white/[0.06] text-gray-300 hover:border-fire-500/30 hover:text-fire-300 transition-all text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-surface-400 text-gray-300 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-all text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           רשימה חדשה
@@ -128,7 +128,7 @@ export default function ShoppingListPage() {
                     "px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all border",
                     activeList?.id === list.id
                       ? "btn-fire border-transparent text-white"
-                      : "bg-surface-200 border-white/[0.06] text-gray-400 hover:border-white/[0.1]"
+                      : "bg-surface-200 border-surface-300 text-gray-400 hover:border-surface-300"
                   )}
                 >
                   {list.name}
@@ -140,13 +140,13 @@ export default function ShoppingListPage() {
           {activeList && (
             <div className="card-surface overflow-hidden animate-fade-up">
               {/* List header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-surface-300">
                 <div>
                   <h2 className="font-bold text-gray-100">{activeList.name}</h2>
                   <p className="text-xs text-gray-500 mt-0.5">
                     {checkedCount} מתוך {totalCount} פריטים
                     {totalCount > 0 && (
-                      <span className="mr-2 text-fire-400">
+                      <span className="mr-2 text-cinnamon-600">
                         ({Math.round((checkedCount / totalCount) * 100)}%)
                       </span>
                     )}
@@ -154,7 +154,7 @@ export default function ShoppingListPage() {
                 </div>
                 <button
                   onClick={() => deleteList(activeList.id)}
-                  className="p-2 rounded-xl text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                  className="p-2 rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -171,7 +171,7 @@ export default function ShoppingListPage() {
               )}
 
               {/* Add manual item */}
-              <div className="flex gap-2 px-5 py-3 border-b border-white/[0.05]">
+              <div className="flex gap-2 px-5 py-3 border-b border-surface-300">
                 <input
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
@@ -196,7 +196,7 @@ export default function ShoppingListPage() {
                     return (
                       <li
                         key={i}
-                        className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.04] last:border-b-0 group"
+                        className="flex items-center gap-3 px-5 py-3.5 border-b border-surface-300 last:border-b-0 group"
                       >
                         <button
                           onClick={() => toggleItem(i)}
@@ -205,7 +205,7 @@ export default function ShoppingListPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             {item.amount > 0 && (
-                              <span className="text-sm font-semibold text-fire-400 flex-shrink-0" dir="ltr">
+                              <span className="text-sm font-semibold text-cinnamon-600 flex-shrink-0" dir="ltr">
                                 {item.amount} {item.unit || ""}
                               </span>
                             )}
@@ -217,7 +217,7 @@ export default function ShoppingListPage() {
                         </div>
                         <button
                           onClick={() => removeItem(i)}
-                          className="p-1.5 rounded-lg text-gray-700 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                          className="p-1.5 rounded-lg text-gray-700 hover:text-red-600 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -230,7 +230,7 @@ export default function ShoppingListPage() {
               {/* Checked items */}
               {checkedItems.length > 0 && (
                 <>
-                  <div className="px-5 py-2 border-t border-white/[0.05]">
+                  <div className="px-5 py-2 border-t border-surface-300">
                     <p className="text-xs text-gray-600 font-medium">נרכש ({checkedItems.length})</p>
                   </div>
                   <ul>
@@ -239,10 +239,10 @@ export default function ShoppingListPage() {
                       return (
                         <li
                           key={i}
-                          className="flex items-center gap-3 px-5 py-3 border-b border-white/[0.03] last:border-b-0 group opacity-50"
+                          className="flex items-center gap-3 px-5 py-3 border-b border-surface-300 last:border-b-0 group opacity-50"
                         >
                           <button onClick={() => toggleItem(i)} className="flex-shrink-0">
-                            <Check className="w-5 h-5 text-fire-400" />
+                            <Check className="w-5 h-5 text-cinnamon-600" />
                           </button>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -256,7 +256,7 @@ export default function ShoppingListPage() {
                           </div>
                           <button
                             onClick={() => removeItem(i)}
-                            className="p-1.5 rounded-lg text-gray-700 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                            className="p-1.5 rounded-lg text-gray-700 hover:text-red-600 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
