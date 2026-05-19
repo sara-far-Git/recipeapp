@@ -1,6 +1,12 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    skipAuthRedirect?: boolean;
+  }
+}
+
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
@@ -20,7 +26,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
+    if (
+      error.response?.status === 401 &&
+      typeof window !== "undefined" &&
+      !error.config?.skipAuthRedirect
+    ) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       if (window.location.pathname !== "/login") {
@@ -36,22 +46,23 @@ export default api;
 // ---------- Auth ----------
 export const authApi = {
   register: (data: { username: string; email: string; password: string; full_name?: string }) =>
-    api.post("/auth/register", data),
+    api.post("/auth/register", data, { skipAuthRedirect: true }),
   login: (email: string, password: string) => {
     const form = new URLSearchParams();
     form.append("username", email);
     form.append("password", password);
     return api.post("/auth/login", form, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      skipAuthRedirect: true,
     });
   },
   googleLogin: (idToken: string) =>
-    api.post("/auth/google", { id_token: idToken }),
+    api.post("/auth/google", { id_token: idToken }, { skipAuthRedirect: true }),
 };
 
 // ---------- Users ----------
 export const usersApi = {
-  getMe: () => api.get("/users/me"),
+  getMe: (config?: AxiosRequestConfig) => api.get("/users/me", config),
   updateMe: (data: { full_name?: string; bio?: string; avatar_url?: string }) =>
     api.put("/users/me", data),
   getProfile: (username: string) => api.get(`/users/${username}`),
