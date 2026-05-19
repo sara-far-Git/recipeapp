@@ -4,6 +4,7 @@ import AuthProvider from "@/components/providers/AuthProvider";
 import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
+import InstallBanner from "@/components/ui/InstallBanner";
 
 export const metadata: Metadata = {
   title: "RecipeApp — רשת חברתית למתכונים",
@@ -46,11 +47,18 @@ export default function RootLayout({
           </main>
           <Footer />
           <BottomNav />
+          <InstallBanner />
         </AuthProvider>
-        {/* Service Worker registration */}
+        {/* Capture install prompt ASAP (before React mounts) + register SW */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              window.__pwaPrompt = null;
+              window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                window.__pwaPrompt = e;
+                window.dispatchEvent(new Event('pwa-prompt-ready'));
+              });
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js').catch(function() {});

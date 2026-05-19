@@ -1,36 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Download, Share, Plus, X } from "lucide-react";
+import { usePWA } from "@/lib/usePWA";
 
 export default function Footer() {
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
-  const [installed, setInstalled] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
+  const { canInstall, install, isIOS } = usePWA();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
 
-  useEffect(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    const ios = /iphone|ipad|ipod/.test(ua) && !(window as any).MSStream;
-    setIsIOS(ios);
-
-    const handler = (e: any) => { e.preventDefault(); setInstallPrompt(e); };
-    window.addEventListener("beforeinstallprompt", handler);
-    window.addEventListener("appinstalled", () => setInstalled(true));
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
-
   const handleInstall = async () => {
-    if (isIOS) { setShowIOSGuide(true); return; }
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    if (outcome === "accepted") setInstalled(true);
-    setInstallPrompt(null);
+    const result = await install();
+    if (result === "ios") setShowIOSGuide(true);
   };
-
-  const showButton = !installed && (installPrompt || isIOS);
 
   return (
     <>
@@ -38,17 +20,17 @@ export default function Footer() {
       {showIOSGuide && (
         <div className="fixed inset-0 z-[300] flex items-end justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowIOSGuide(false)} />
-          <div className="relative w-full max-w-sm bg-white rounded-t-3xl border-t border-surface-300 shadow-warm-lg p-6 pb-10 animate-slide-up">
+          <div className="relative w-full max-w-sm bg-white rounded-t-3xl border-t border-surface-300 shadow-warm-lg p-6 pb-12 animate-slide-up">
             <button onClick={() => setShowIOSGuide(false)} className="absolute top-4 left-4 p-1.5 rounded-xl hover:bg-surface-200 text-smoke-400">
               <X className="w-5 h-5" />
             </button>
             <div className="text-center mb-6">
               <div className="text-4xl mb-3">🔥</div>
               <h3 className="font-display text-xl font-bold text-bark-600">הוסיפי למסך הבית</h3>
-              <p className="text-sm text-smoke-400 mt-1">3 שלבים פשוטים</p>
+              <p className="text-sm text-smoke-400 mt-1">רק ב-Safari — 3 שלבים</p>
             </div>
             <div className="space-y-4">
-              <Step n={1} icon={<Share className="w-4 h-4 text-blue-500" />} text='לחצי על כפתור השיתוף בתחתית Safari' />
+              <Step n={1} icon={<Share className="w-4 h-4 text-blue-500" />} text='לחצי על כפתור השיתוף  בתחתית Safari' />
               <Step n={2} icon={<Plus className="w-4 h-4 text-bark-500" />} text='גללי ובחרי "הוספה למסך הבית"' />
               <Step n={3} text='לחצי "הוספה" — האפליקציה תופיע במסך הבית' />
             </div>
@@ -76,15 +58,15 @@ export default function Footer() {
             </nav>
 
             {/* Install button */}
-            {showButton ? (
+            {canInstall ? (
               <button
                 onClick={handleInstall}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl btn-fire text-sm font-semibold shadow-warm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl btn-fire text-sm font-semibold transition-all"
               >
                 <Download className="w-4 h-4" />
-                {isIOS ? "הוסיפי למסך הבית" : "התקיני את האפליקציה"}
+                {isIOS ? "הוסיפי למסך הבית" : "התקיני כאפליקציה"}
               </button>
-            ) : !installed ? (
+            ) : (
               <Link
                 href="/install"
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-200 border border-surface-400 text-sm text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600 transition-all"
@@ -92,7 +74,7 @@ export default function Footer() {
                 <Download className="w-4 h-4" />
                 הורידי כאפליקציה
               </Link>
-            ) : null}
+            )}
           </div>
         </div>
       </footer>
