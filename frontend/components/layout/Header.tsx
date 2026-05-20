@@ -30,15 +30,7 @@ export default function Header() {
   return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
   }, []);
 
-  const navLinks = [
-  ...NAV_ALWAYS,
-  ...(user
-  ? [
-  { href: `/profile/${user.username}?tab=saved`, label: "המועדפים" },
-  { href: `/profile/${user.username}`, label: "פרופיל" },
-  ]
-  : []),
-  ];
+  const navLinks = NAV_ALWAYS;
 
   return (
   <header
