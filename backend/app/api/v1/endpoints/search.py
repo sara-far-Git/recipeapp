@@ -17,6 +17,7 @@ def search_recipes(
     difficulty: Optional[DifficultyLevel] = Query(None),
     kosher_type: Optional[KosherType] = Query(None),
     max_prep_time: Optional[int] = Query(None, ge=1, description="Max prep time in minutes"),
+    category: Optional[str] = Query(None, description="Category filter"),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -36,6 +37,8 @@ def search_recipes(
         query = query.filter(Recipe.kosher_type == kosher_type)
     if max_prep_time:
         query = query.filter(Recipe.prep_time_minutes <= max_prep_time)
+    if category:
+        query = query.filter(Recipe.category == category)
 
     recipes = (
         query.options(joinedload(Recipe.author))

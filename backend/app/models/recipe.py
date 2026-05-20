@@ -36,6 +36,7 @@ class Recipe(Base):
     servings = Column(Integer, default=4)
     difficulty = Column(SAEnum(DifficultyLevel), default=DifficultyLevel.medium)
     kosher_type = Column(SAEnum(KosherType), nullable=True)
+    category = Column(String(50), nullable=True, index=True)
 
     # Step 2 - Ingredients (stored as JSON array)
     # Format: [{"amount": 2, "unit": "cups", "name": "flour"}, ...]

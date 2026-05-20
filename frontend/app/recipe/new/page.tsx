@@ -29,6 +29,10 @@ const KOSHER_OPTIONS = [
   { value: "non_kosher", label: "לא כשר" },
 ];
 
+const CATEGORY_OPTIONS = [
+  "ראשונות", "עיקריות", "מאפים", "קינוחים", "סלטים", "משקאות",
+];
+
 
 export default function NewRecipePage() {
   const router = useRouter();
@@ -55,6 +59,7 @@ export default function NewRecipePage() {
   const [servings, setServings] = useState(4);
   const [difficulty, setDifficulty] = useState("medium");
   const [kosherType, setKosherType] = useState("");
+  const [category, setCategory] = useState("");
   const [isScanned, setIsScanned] = useState(false);
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([{ amount: 0, unit: "", name: "" }]);
@@ -82,6 +87,7 @@ export default function NewRecipePage() {
   if (data.servings) setServings(data.servings);
   if (data.difficulty) setDifficulty(data.difficulty);
   if (data.kosher_type) setKosherType(data.kosher_type);
+  if (data.category) setCategory(data.category);
   if (data.ingredients?.length)
   setIngredients(data.ingredients.map((ing: any) => ({ ...ing, amount: ing.amount ?? 0 })));
   if (data.instructions?.length) setInstructions(data.instructions);
@@ -143,7 +149,7 @@ export default function NewRecipePage() {
   const { data } = await recipesApi.create({
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
-  servings, difficulty, kosher_type: kosherType || null,
+  servings, difficulty, kosher_type: kosherType || null, category: category || null,
   ingredients: ingredients.filter((i) => i.name.trim()),
   instructions: instructions.filter((i) => i.text.trim()), is_scanned: isScanned,
   });
@@ -366,6 +372,23 @@ export default function NewRecipePage() {
   <select value={kosherType} onChange={(e) => setKosherType(e.target.value)} className="input-dark">
   {KOSHER_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
   </select>
+  </div>
+
+  <div>
+  <label className="input-label mb-3">קטגוריה</label>
+  <div className="grid grid-cols-3 gap-2">
+  {CATEGORY_OPTIONS.map((cat) => (
+  <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
+  className={cn(
+  "py-3 text-sm font-semibold transition-all border",
+  category === cat
+  ? "btn-fire border-transparent text-white"
+  : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
+  )}>
+  {cat}
+  </button>
+  ))}
+  </div>
   </div>
 
   <button onClick={() => setStep(2)} disabled={!title.trim()}

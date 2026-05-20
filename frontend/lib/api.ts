@@ -96,6 +96,7 @@ export const searchApi = {
     difficulty?: string;
     kosher_type?: string;
     max_prep_time?: number;
+    category?: string;
     skip?: number;
     limit?: number;
   }) => api.get("/search", { params }),

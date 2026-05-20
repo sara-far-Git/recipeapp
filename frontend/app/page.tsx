@@ -58,7 +58,7 @@ export default function FeedPage() {
   const clearFilters = () => { setDifficulty(""); setKosher(""); setMaxTime(0); };
 
   const handleCategoryClick = (name: string) => {
-  router.push(`/search?q=${encodeURIComponent(name)}`);
+  router.push(`/search?category=${encodeURIComponent(name)}`);
   };
 
   useEffect(() => {

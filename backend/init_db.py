@@ -30,6 +30,8 @@ SOFT_MIGRATIONS = [
      "ALTER TABLE users ADD COLUMN auth_provider VARCHAR(20) NOT NULL DEFAULT 'local'"),
     ("users", "google_id",
      "ALTER TABLE users ADD COLUMN google_id VARCHAR(255)"),
+    ("recipes", "category",
+     "ALTER TABLE recipes ADD COLUMN category VARCHAR(50)"),
 ]
 
 

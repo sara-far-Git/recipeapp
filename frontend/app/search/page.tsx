@@ -32,8 +32,10 @@ const TIME_FILTERS = [
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialQ = searchParams.get("q") || "";
+  const initialCategory = searchParams.get("category") || "";
 
   const [query, setQuery] = useState(initialQ);
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [difficulty, setDifficulty] = useState("");
   const [kosherType, setKosherType] = useState("");
   const [maxPrepTime, setMaxPrepTime] = useState(0);
@@ -48,7 +50,7 @@ function SearchPageContent() {
   const [suggestions, setSuggestions] = useState<any[] | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<any[] | null>(null);
 
-  const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number) => {
+  const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number, cat: string) => {
   setLoading(true); setSearched(true);
   try {
   const params: any = {};
@@ -56,6 +58,7 @@ function SearchPageContent() {
   if (diff) params.difficulty = diff;
   if (kosh) params.kosher_type = kosh;
   if (time > 0) params.max_prep_time = time;
+  if (cat) params.category = cat;
   const { data } = await searchApi.search(params);
   setResults(data);
   } catch {}
@@ -65,19 +68,21 @@ function SearchPageContent() {
   // Auto-search when URL param changes (e.g., arriving from category click)
   useEffect(() => {
   const q = searchParams.get("q") || "";
+  const cat = searchParams.get("category") || "";
   setQuery(q);
-  if (q.length >= 2) doSearch(q, "", "", 0);
+  setActiveCategory(cat);
+  if (q.length >= 2 || cat) doSearch(q, "", "", 0, cat);
   }, [searchParams, doSearch]);
 
   // Debounced search on manual input or filter changes
   useEffect(() => {
   const timer = setTimeout(() => {
-  if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0) {
-  doSearch(query, difficulty, kosherType, maxPrepTime);
+  if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory) {
+  doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory);
   }
   }, 400);
   return () => clearTimeout(timer);
-  }, [query, difficulty, kosherType, maxPrepTime, doSearch]);
+  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch]);
 
   const hasActiveFilters = difficulty || kosherType || maxPrepTime > 0;
   const clearFilters = () => { setDifficulty(""); setKosherType(""); setMaxPrepTime(0); };

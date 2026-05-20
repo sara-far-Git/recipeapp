@@ -27,6 +27,10 @@ const KOSHER_OPTIONS = [
   { value: "non_kosher", label: "לא כשר" },
 ];
 
+const CATEGORY_OPTIONS = [
+  "ראשונות", "עיקריות", "מאפים", "קינוחים", "סלטים", "משקאות",
+];
+
 
 export default function EditRecipePage() {
   const router = useRouter();
@@ -48,6 +52,7 @@ export default function EditRecipePage() {
   const [servings, setServings] = useState(4);
   const [difficulty, setDifficulty] = useState("medium");
   const [kosherType, setKosherType] = useState("");
+  const [category, setCategory] = useState("");
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [instructions, setInstructions] = useState<Instruction[]>([]);
@@ -65,6 +70,7 @@ export default function EditRecipePage() {
   setServings(data.servings || 4);
   setDifficulty(data.difficulty || "medium");
   setKosherType(data.kosher_type || "");
+  setCategory(data.category || "");
   setIngredients(
   data.ingredients?.length
   ? data.ingredients.map((i: any) => ({ amount: i.amount || 0, unit: i.unit || "", name: i.name }))
@@ -111,7 +117,7 @@ export default function EditRecipePage() {
   await recipesApi.update(Number(params.id), {
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
-  servings, difficulty, kosher_type: kosherType || null,
+  servings, difficulty, kosher_type: kosherType || null, category: category || null,
   ingredients: ingredients.filter((i) => i.name.trim()),
   instructions: instructions.filter((i) => i.text.trim()),
   });
@@ -250,6 +256,23 @@ export default function EditRecipePage() {
   <select value={kosherType} onChange={(e) => setKosherType(e.target.value)} className="input-dark">
   {KOSHER_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
   </select>
+  </div>
+
+  <div>
+  <label className="input-label mb-3">קטגוריה</label>
+  <div className="grid grid-cols-3 gap-2">
+  {CATEGORY_OPTIONS.map((cat) => (
+  <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
+  className={cn(
+  "py-3 text-sm font-semibold transition-all border",
+  category === cat
+  ? "btn-fire border-transparent text-white"
+  : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
+  )}>
+  {cat}
+  </button>
+  ))}
+  </div>
   </div>
 
   <button onClick={() => setStep(2)} disabled={!title.trim()}
