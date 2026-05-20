@@ -20,23 +20,23 @@ export default function StarRating({ rating, count, interactive = false, userRat
   const displayRating = hovered || userRating || rating;
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="flex items-center gap-0.5">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button key={star}
-            onClick={() => interactive && onRate?.(star)}
-            onMouseEnter={() => interactive && setHovered(star)}
-            onMouseLeave={() => interactive && setHovered(0)}
-            disabled={!interactive}
-            className={cn("transition-all duration-200", interactive && "hover:scale-125 cursor-pointer", !interactive && "cursor-default")}>
-            <Star className={cn(iconSize, "transition-colors duration-200",
-              star <= Math.round(displayRating) ? "fill-cinnamon-400 text-cinnamon-500" : "text-smoke-200")} />
-          </button>
-        ))}
-      </div>
-      {count !== undefined && count > 0 && (
-        <span className="text-xs text-bark-200 mr-1">({rating.toFixed(1)} · {count})</span>
-      )}
-    </div>
+  <div className="flex items-center gap-1.5">
+  <div className="flex items-center gap-0.5">
+  {[1, 2, 3, 4, 5].map((star) => (
+  <button key={star}
+  onClick={() => interactive && onRate?.(star)}
+  onMouseEnter={() => interactive && setHovered(star)}
+  onMouseLeave={() => interactive && setHovered(0)}
+  disabled={!interactive}
+  className={cn("transition-all duration-200", interactive && "hover:scale-125 cursor-pointer", !interactive && "cursor-default")}>
+  <Star className={cn(iconSize, "transition-colors duration-200",
+  star <= Math.round(displayRating) ? "fill-cinnamon-400 text-cinnamon-500" : "text-smoke-200")} />
+  </button>
+  ))}
+  </div>
+  {count !== undefined && count > 0 && (
+  <span className="text-xs text-bark-200 mr-1">({rating.toFixed(1)} · {count})</span>
+  )}
+  </div>
   );
 }
