@@ -122,22 +122,68 @@
     color: #efe7d7;
   }
 
-  /* INPUT — light cream */
-  .input-dark {
-    @apply w-full rounded-xl px-4 py-3 text-sm transition-all duration-300;
+  /* INPUT — notepad underline (pencil-on-parchment) */
+  .input-label {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 15px;
     color: #3a2618;
-    background: #ffffff;
-    border: 1px solid #d9c79a;
-    box-shadow: inset 0 1px 3px rgba(58, 38, 24, 0.04);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .input-dark {
+    @apply w-full;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid #b8a385;
+    border-radius: 0;
+    padding: 7px 0;
+    color: #3a2618;
     font-family: 'Heebo', 'Inter', sans-serif;
-  }
-  .input-dark::placeholder { color: #b8a385; }
-  .input-dark:focus {
-    border-color: #8b3a1f;
+    font-size: 15px;
+    transition: border-color 0.2s ease;
     outline: none;
-    box-shadow: inset 0 1px 3px rgba(58, 38, 24, 0.04), 0 0 0 3px rgba(139, 58, 31, 0.10);
+    box-shadow: none;
   }
-  .input-dark:hover { border-color: #b39965; }
+  .input-dark::placeholder {
+    color: #b8a385;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+  }
+  .input-dark:hover { border-bottom-color: #8b6645; }
+  .input-dark:focus {
+    border-bottom: 2px solid #8b3a1f;
+    outline: none;
+    box-shadow: none;
+  }
+  textarea.input-dark {
+    border-bottom: none;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 27px,
+      #e8dcc4 27px,
+      #e8dcc4 28px
+    );
+    line-height: 28px;
+    padding-top: 4px;
+  }
+  select.input-dark {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    padding-left: 1.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%235a3e2a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 2px center;
+  }
 
   .badge {
     @apply px-2.5 py-1 rounded-md text-[11px] font-semibold;

@@ -134,6 +134,7 @@ function SearchPageContent() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="חפשו מתכון לפי שם או תיאור..."
             className="input-dark pr-12 pl-12"
+            style={{ fontSize: 22, paddingBottom: 12 }}
             autoFocus={!initialQ}
           />
           <button

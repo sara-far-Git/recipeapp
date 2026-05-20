@@ -189,7 +189,7 @@ export default function ShoppingListPage() {
                 <input value={newItemName} onChange={(e) => setNewItemName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addManualItem()}
                   placeholder="הוסיפי פריט..."
-                  className="input-dark flex-1 py-2.5" />
+                  className="input-dark flex-1" />
                 <button onClick={addManualItem} disabled={!newItemName.trim()}
                   className="px-4 py-2.5 rounded-xl btn-fire disabled:opacity-30 transition-all">
                   <Plus className="w-4 h-4" />

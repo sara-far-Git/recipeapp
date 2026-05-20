@@ -29,7 +29,6 @@ const KOSHER_OPTIONS = [
   { value: "non_kosher", label: "לא כשר" },
 ];
 
-const LABEL = "text-xs font-semibold uppercase tracking-widest text-bark-300 mb-2 block";
 
 export default function NewRecipePage() {
   const router = useRouter();
@@ -289,16 +288,16 @@ export default function NewRecipePage() {
 
       {/* Step 1 */}
       {step === 1 && (
-        <div className="space-y-5 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-          <div>
-            <label className={LABEL}>כותרת המתכון *</label>
+        <div className="space-y-6 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
+          <div className="field-row">
+            <label className="input-label">כותרת המתכון *</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)}
               placeholder="למשל: עוגת שוקולד קלאסית"
               className="input-dark" required />
           </div>
 
-          <div>
-            <label className={LABEL}>תיאור קצר</label>
+          <div className="field-row">
+            <label className="input-label">תיאור קצר</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)}
               placeholder="תיאור קצר של המתכון..." rows={3}
               className="input-dark resize-none" />
@@ -306,7 +305,7 @@ export default function NewRecipePage() {
 
           {/* Image upload */}
           <div>
-            <label className={LABEL}>תמונה ראשית</label>
+            <label className="input-label mb-2">תמונה ראשית</label>
             {imageUrl ? (
               <div className="relative rounded-2xl overflow-hidden aspect-video" style={{ background: "#e8dcc4" }}>
                 <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
@@ -326,27 +325,27 @@ export default function NewRecipePage() {
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={LABEL}>זמן הכנה (דקות)</label>
-              <input type="number" value={prepTime} onChange={(e) => setPrepTime(e.target.value ? Number(e.target.value) : "")}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="field-row">
+              <label className="input-label">זמן הכנה (דקות)</label>
+              <input type="number" inputMode="numeric" value={prepTime} onChange={(e) => setPrepTime(e.target.value ? Number(e.target.value) : "")}
                 min={0} className="input-dark" />
             </div>
-            <div>
-              <label className={LABEL}>זמן בישול (דקות)</label>
-              <input type="number" value={cookTime} onChange={(e) => setCookTime(e.target.value ? Number(e.target.value) : "")}
+            <div className="field-row">
+              <label className="input-label">זמן בישול (דקות)</label>
+              <input type="number" inputMode="numeric" value={cookTime} onChange={(e) => setCookTime(e.target.value ? Number(e.target.value) : "")}
                 min={0} className="input-dark" />
             </div>
           </div>
 
-          <div>
-            <label className={LABEL}>כמות סועדים</label>
-            <input type="number" value={servings} onChange={(e) => setServings(Number(e.target.value) || 1)}
+          <div className="field-row">
+            <label className="input-label">כמות סועדים</label>
+            <input type="number" inputMode="numeric" value={servings} onChange={(e) => setServings(Number(e.target.value) || 1)}
               min={1} className="input-dark" />
           </div>
 
           <div>
-            <label className={LABEL}>רמת קושי</label>
+            <label className="input-label mb-3">רמת קושי</label>
             <div className="flex gap-2">
               {DIFFICULTY_OPTIONS.map((opt) => (
                 <button key={opt.value} type="button" onClick={() => setDifficulty(opt.value)}
@@ -362,8 +361,8 @@ export default function NewRecipePage() {
             </div>
           </div>
 
-          <div>
-            <label className={LABEL}>סוג כשרות</label>
+          <div className="field-row">
+            <label className="input-label">סוג כשרות</label>
             <select value={kosherType} onChange={(e) => setKosherType(e.target.value)} className="input-dark">
               {KOSHER_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
             </select>

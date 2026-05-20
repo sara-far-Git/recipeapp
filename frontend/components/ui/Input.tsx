@@ -10,14 +10,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, ...props }, ref) => (
-    <div className="w-full">
+    <div className="field-row">
       {label && (
-        <label htmlFor={id} className="block text-xs font-semibold uppercase tracking-widest text-bark-300 mb-2">
+        <label htmlFor={id} className="input-label">
           {label}
         </label>
       )}
-      <input ref={ref} id={id} className={cn("input-dark", error && "border-red-400 focus:border-red-500", className)} {...props} />
-      {error && <p className="mt-1.5 text-xs font-medium text-red-600">{error}</p>}
+      <input ref={ref} id={id} className={cn("input-dark", error && "border-b-red-400 focus:border-b-red-600", className)} {...props} />
+      {error && <p className="mt-1 text-xs italic text-red-700" style={{ fontFamily: "'Heebo', sans-serif" }}>{error}</p>}
     </div>
   )
 );

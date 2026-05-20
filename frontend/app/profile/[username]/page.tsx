@@ -149,16 +149,16 @@ function ProfilePageContent() {
                 <p className="text-sm text-bark-300">לחצי על המצלמה להחלפת תמונה</p>
               </div>
 
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-widest text-bark-300 mb-2 block">שם מלא</label>
+              <div className="field-row">
+                <label className="input-label">שם מלא</label>
                 <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)}
-                  placeholder="השם שיוצג" className="input-dark w-full" />
+                  placeholder="השם שיוצג" className="input-dark" />
               </div>
 
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-widest text-bark-300 mb-2 block">ביוגרפיה</label>
+              <div className="field-row">
+                <label className="input-label">ביוגרפיה</label>
                 <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)}
-                  placeholder="ספרי קצת על עצמך..." rows={3} className="input-dark w-full resize-none" />
+                  placeholder="ספרי קצת על עצמך..." rows={3} className="input-dark resize-none" />
               </div>
 
               <button onClick={handleSaveProfile} disabled={editSaving}
