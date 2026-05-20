@@ -52,7 +52,8 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card-surface p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
+        <form onSubmit={handleSubmit} className="card-surface relative p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
+          <span aria-hidden className="absolute inset-[10px] border border-[rgba(184,145,106,0.45)] pointer-events-none rounded-sm" />
           {error && (
             <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium animate-scale-in">{error}</div>
           )}
@@ -64,6 +65,11 @@ export default function LoginPage() {
             </button>
           </div>
           <Button type="submit" loading={loading} className="w-full" size="lg">התחברות</Button>
+          <div className="flex items-center gap-3 text-bark-200 text-xs">
+            <span className="flex-1 h-px bg-surface-400" />
+            <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>או</span>
+            <span className="flex-1 h-px bg-surface-400" />
+          </div>
           <GoogleSignInButton onSuccess={() => router.push("/")} onError={(msg) => setError(msg)} />
         </form>
 

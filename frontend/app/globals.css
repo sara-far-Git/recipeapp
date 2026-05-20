@@ -68,28 +68,33 @@
     -webkit-backdrop-filter: blur(28px) saturate(160%);
   }
 
-  /* Warm cream card surface */
+  /* Vintage recipe-card surface */
   .card-surface {
-    @apply rounded-2xl;
-    background: #ffffff;
-    border: 1px solid #e8dcc4;
-    box-shadow: 0 2px 12px rgba(58, 38, 24, 0.06), 0 1px 3px rgba(58, 38, 24, 0.03);
+    border-radius: 4px;
+    background: #f7f1e3;
+    border: 1px solid #d9c79a;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 20px 50px -24px rgba(58,38,24,0.28),
+      0 4px 12px -6px rgba(58,38,24,0.18);
   }
   .card-surface-hover {
     @apply transition-all duration-500 ease-out;
   }
   .card-surface-hover:hover {
-    border-color: #c47a52;
-    box-shadow: 0 16px 44px rgba(58, 38, 24, 0.14), 0 4px 12px rgba(58, 38, 24, 0.06), 0 0 0 1px rgba(196, 122, 82, 0.16);
+    border-color: rgba(139,58,31,0.30);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 28px 60px -20px rgba(58,38,24,0.36),
+      0 8px 18px -8px rgba(58,38,24,0.24);
     transform: translateY(-6px);
   }
 
-  /* Display gradient text — for English serif accents */
+  /* Display accent text — warm cinnamon italic serif */
   .text-fire {
-    background: linear-gradient(135deg, #c47a52 0%, #a85a36 50%, #8b3a1f 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #8b3a1f;
+    font-style: italic;
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   /* PRIMARY BUTTON — flat brick red */
@@ -98,8 +103,10 @@
     background: #8b3a1f;
     color: #fff;
     border: 1px solid #8b3a1f;
+    border-radius: 2px;
     transition: background 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
   }
   .btn-fire:hover {
     background: #732d18;
@@ -186,10 +193,14 @@
   }
 
   .badge {
-    @apply px-2.5 py-1 rounded-md text-[11px] font-semibold;
-    backdrop-filter: blur(8px);
-    letter-spacing: 0.02em;
+    @apply px-2.5 py-1 rounded-sm text-[11px] font-semibold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
+  .badge-easy    { background: #e8f4e8; color: #3a6b3a; border: 1px solid #b8d9b8; }
+  .badge-medium  { background: #fef3e2; color: #8b5e1a; border: 1px solid #e8cc99; }
+  .badge-hard    { background: #fce8e3; color: #8b2a1a; border: 1px solid #e8b8ae; }
+  .badge-neutral { background: #f0ebe0; color: #5a3e2a; border: 1px solid #d9c79a; }
 
   /* Vintage cookbook ornament — em-dash decorative wrapper */
   .ornament-text {
