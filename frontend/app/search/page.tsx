@@ -121,7 +121,7 @@ function SearchPageContent() {
   ingredientMode ? "btn-fire text-white" : "bg-surface-50 border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
   )}
   >
-  <Sparkles className="w-4 h-4" /> מה אפשר לבשל?
+  <Sparkles className="w-4 h-4" /> מה אפשר להכין?
   </button>
   </div>
 

@@ -177,7 +177,7 @@ export default function RecipeDetailPage() {
   <h1 className="text-xl font-bold text-amber-100" style={{ fontFamily: "'Heebo', sans-serif" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2  bg-amber-900/40 border border-amber-700/40 text-amber-200 text-sm hover:bg-amber-900/60 transition-all">
-  יציאה ממצב בישול
+  יציאה ממצב הכנה
   </button>
   </div>
   <div className="bg-amber-950/60 border border-amber-800/30  p-5 mb-6">
@@ -389,7 +389,7 @@ export default function RecipeDetailPage() {
   <div className="grid grid-cols-3 gap-3 mb-10 animate-fade-up" style={{ animationDelay: "140ms" }}>
   <button onClick={() => setCookingMode(true)}
   className="flex flex-col items-center gap-2 py-4  btn-fire font-semibold text-sm">
-  <CookingPot className="w-5 h-5" /> מצב בישול
+  <CookingPot className="w-5 h-5" /> מצב הכנה
   </button>
   <button onClick={openShoppingModal}
   className="flex flex-col items-center gap-2 py-4  card-surface text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-500 transition-all text-sm font-semibold">

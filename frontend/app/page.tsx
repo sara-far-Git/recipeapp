@@ -94,7 +94,7 @@ export default function FeedPage() {
   {user ? <>שלום, <span className="text-cinnamon-500">{user.full_name || user.username}</span></> : <>המטבח של הבית, אצלכם.</>}
   </h1>
   <p className="text-bark-300 max-w-xl mx-auto text-base sm:text-lg" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
-  דפדפו, גלו, בשלו — מתכונים שעוברים אצלנו במשפחה דורות.
+  דפדפו, גלו, הכינו — מתכונים שעוברים אצלנו במשפחה דורות.
   </p>
   </section>
 
@@ -105,7 +105,7 @@ export default function FeedPage() {
   Browse by category
   </div>
   <h2 className="text-bark-500 mb-4" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
-  מה תרצו לבשל היום?
+  מה תרצו להכין היום?
   </h2>
   <Ornament />
   </div>
@@ -340,7 +340,7 @@ export default function FeedPage() {
   <Link href={`/recipe/${editorPick.id}`}
   className="inline-flex items-center gap-3 text-bark-500 hover:text-cinnamon-500 transition-colors border-b border-bark-500 hover:border-cinnamon-500 pb-1"
   style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 600 }}>
-  קרא את המתכון המלא
+  קראי את המתכון המלא
   <ArrowLeft className="w-4 h-4" />
   </Link>
   </div>
