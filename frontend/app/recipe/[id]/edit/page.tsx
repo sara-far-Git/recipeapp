@@ -131,7 +131,7 @@ export default function EditRecipePage() {
   };
 
   return (
-  <div className="max-w-2xl mx-auto">
+  <div className="max-w-2xl md:max-w-3xl mx-auto">
   {saveSuccess && (
   <div className="fixed inset-0 z-[100] bg-bark-600/80 flex items-center justify-center">
   <div className="card-surface p-8 text-center  animate-scale-in">
@@ -164,7 +164,7 @@ export default function EditRecipePage() {
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1">
   <div className={cn(
-  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
+  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
   step === s ? "bg-cinnamon-500 text-white" :
   "bg-surface-200 text-bark-200"
@@ -240,7 +240,7 @@ export default function EditRecipePage() {
   {DIFFICULTY_OPTIONS.map((opt) => (
   <button key={opt.value} type="button" onClick={() => setDifficulty(opt.value)}
   className={cn(
-  "flex-1 py-2.5  text-sm font-semibold transition-all duration-300 border",
+  "flex-1 py-4  text-sm font-semibold transition-all duration-300 border",
   difficulty === opt.value
   ? "btn-fire border-transparent text-white"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
@@ -264,7 +264,7 @@ export default function EditRecipePage() {
   {CATEGORY_OPTIONS.map((cat) => (
   <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
   className={cn(
-  "py-3 text-sm font-semibold transition-all border",
+  "py-4 text-sm font-semibold transition-all border",
   category === cat
   ? "btn-fire border-transparent text-white"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
@@ -333,7 +333,7 @@ export default function EditRecipePage() {
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
+  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
   {inst.step}
   </span>
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}

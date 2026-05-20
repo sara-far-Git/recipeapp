@@ -162,7 +162,7 @@ export default function NewRecipePage() {
   };
 
   return (
-  <div className="max-w-2xl mx-auto">
+  <div className="max-w-2xl md:max-w-3xl mx-auto">
   {/* Scan overlay */}
   {scanning && (
   <div className="fixed inset-0 z-[100] bg-bark-600/90 backdrop-blur-sm flex items-center justify-center">
@@ -210,7 +210,7 @@ export default function NewRecipePage() {
   </p>
   </div>
   <button onClick={() => scanInputRef.current?.click()} disabled={scanning}
-  className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5  btn-fire text-sm font-semibold uppercase tracking-widest">
+  className="flex-shrink-0 flex items-center gap-2 px-5 py-3.5 btn-fire text-sm font-semibold uppercase tracking-widest">
   <Camera className="w-4 h-4" /> סריקה
   </button>
   <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleScan} />
@@ -244,7 +244,7 @@ export default function NewRecipePage() {
   </p>
   </div>
   <button onClick={() => setImportOpen(true)}
-  className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5  btn-outline text-sm font-semibold uppercase tracking-widest">
+  className="flex-shrink-0 flex items-center gap-2 px-5 py-3.5 btn-outline text-sm font-semibold uppercase tracking-widest">
   <Link2 className="w-4 h-4" /> ייבוא
   </button>
   </div>
@@ -258,12 +258,12 @@ export default function NewRecipePage() {
   )}
   <div className="flex gap-2">
   <button onClick={handleImportFromUrl} disabled={importing || !importUrl.trim()}
-  className="flex items-center gap-2 px-5 py-2.5  btn-fire text-sm font-semibold disabled:opacity-40">
+  className="flex items-center gap-2 px-5 py-3.5 btn-fire text-sm font-semibold disabled:opacity-40">
   {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
   ייבוא
   </button>
   <button onClick={() => { setImportOpen(false); setImportUrl(""); setImportError(""); }} disabled={importing}
-  className="px-5 py-2.5  btn-outline text-sm font-semibold">
+  className="px-5 py-3.5 btn-outline text-sm font-semibold">
   ביטול
   </button>
   </div>
@@ -277,7 +277,7 @@ export default function NewRecipePage() {
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1">
   <div className={cn(
-  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
+  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
   step === s ? "bg-cinnamon-500 text-white" :
   "bg-surface-200 text-bark-200"
@@ -356,7 +356,7 @@ export default function NewRecipePage() {
   {DIFFICULTY_OPTIONS.map((opt) => (
   <button key={opt.value} type="button" onClick={() => setDifficulty(opt.value)}
   className={cn(
-  "flex-1 py-2.5  text-sm font-semibold transition-all duration-300 border",
+  "flex-1 py-4 text-sm font-semibold transition-all duration-300 border",
   difficulty === opt.value
   ? "btn-fire border-transparent text-white"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
@@ -380,7 +380,7 @@ export default function NewRecipePage() {
   {CATEGORY_OPTIONS.map((cat) => (
   <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
   className={cn(
-  "py-3 text-sm font-semibold transition-all border",
+  "py-4 text-sm font-semibold transition-all border",
   category === cat
   ? "btn-fire border-transparent text-white"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
@@ -453,7 +453,7 @@ export default function NewRecipePage() {
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
+  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
   {inst.step}
   </span>
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}

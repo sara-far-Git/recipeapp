@@ -92,6 +92,9 @@ def create_recipe(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    ALLOWED_PUBLISHERS = {"שרי פרקש", "רבקי פרקש"}
+    is_published = current_user.full_name in ALLOWED_PUBLISHERS
+
     recipe = Recipe(
         author_id=current_user.id,
         title=data.title,
@@ -106,6 +109,7 @@ def create_recipe(
         ingredients=[ing.model_dump() for ing in data.ingredients],
         instructions=[inst.model_dump() for inst in data.instructions],
         is_scanned=data.is_scanned,
+        is_published=is_published,
     )
     db.add(recipe)
     db.commit()

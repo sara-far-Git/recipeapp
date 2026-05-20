@@ -102,6 +102,11 @@
   background: #8b3a1f;
   color: #fff;
   border: 1px solid #8b3a1f;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 1.25rem;
   transition: background 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -119,6 +124,11 @@
   background: transparent;
   color: #3a2618;
   border: 1px solid #3a2618;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 1.25rem;
   transition: background 0.25s ease, color 0.25s ease;
   letter-spacing: 0.01em;
   }
@@ -149,10 +159,10 @@
   border: none;
   border-bottom: 1.5px solid #b8a385;
   border-radius: 0;
-  padding: 7px 0;
+  padding: 12px 0;
   color: #3a2618;
   font-family: 'Heebo', 'Inter', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   transition: border-color 0.2s ease;
   outline: none;
   box-shadow: none;
