@@ -1,4 +1,4 @@
-const CACHE = "recipeapp-v1";
+const CACHE = "recipeapp-v2";
 const PRECACHE = ["/", "/manifest.json", "/icon-192", "/icon-512"];
 
 // Install: pre-cache shell

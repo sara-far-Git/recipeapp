@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { Search, Plus, User, LogOut, ShoppingCart, Bookmark } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
@@ -17,6 +17,7 @@ export default function Header() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -78,11 +79,18 @@ export default function Header() {
   className="hidden sm:flex items-center gap-0 animate-fade-up"
   style={{ animationDelay: "60ms" }}>
   {navLinks.map((link) => {
-  const isActive =
-  link.href === "/"
-  ? pathname === "/"
-  : pathname.startsWith(link.href.split("?")[0].split("#")[0]) &&
-  link.href.split("?")[0].split("#")[0] !== "/";
+  const [pathPart, queryPart] = link.href.split("?");
+  const basePath = pathPart.split("#")[0];
+  const isActive = (() => {
+  if (link.href === "/") return pathname === "/";
+  if (!pathname.startsWith(basePath) || basePath === "/") return false;
+  if (queryPart) {
+  const lp = new URLSearchParams(queryPart);
+  if (lp.has("tab")) return searchParams.get("tab") === lp.get("tab");
+  }
+  if (basePath.startsWith("/profile/")) return searchParams.get("tab") !== "saved";
+  return true;
+  })();
   return (
   <NavTab key={link.href} href={link.href} active={isActive}>
   {link.label}

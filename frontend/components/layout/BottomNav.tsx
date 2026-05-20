@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Home, Search, Plus, Bookmark, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 export default function BottomNav() {
   const { user } = useAuth();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   if (!user) return null;
 
   const items = [
@@ -31,11 +32,18 @@ export default function BottomNav() {
   }}>
   <div className="flex items-center justify-around h-16 px-2">
   {items.map((item) => {
-  const basePath = item.href.split("?")[0];
-  const active =
-  item.href === "/"
-  ? pathname === "/"
-  : pathname.startsWith(basePath) && basePath !== "/";
+  const [pathPart, queryPart] = item.href.split("?");
+  const basePath = pathPart;
+  const active = (() => {
+  if (item.href === "/") return pathname === "/";
+  if (!pathname.startsWith(basePath) || basePath === "/") return false;
+  if (queryPart) {
+  const lp = new URLSearchParams(queryPart);
+  if (lp.has("tab")) return searchParams.get("tab") === lp.get("tab");
+  }
+  if (basePath.includes("/profile/")) return searchParams.get("tab") !== "saved";
+  return true;
+  })();
 
   if (item.special) {
   return (

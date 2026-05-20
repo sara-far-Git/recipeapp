@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import Header from "@/components/layout/Header";
@@ -40,12 +41,12 @@ export default function RootLayout({
   </head>
   <body className="min-h-screen">
   <AuthProvider>
-  <Header />
+  <Suspense fallback={null}><Header /></Suspense>
   <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-24 sm:pb-8">
   {children}
   </main>
   <Footer />
-  <BottomNav />
+  <Suspense fallback={null}><BottomNav /></Suspense>
   <InstallBanner />
   </AuthProvider>
   <script
