@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { Loader2, ChefHat, SlidersHorizontal, X } from "lucide-react";
+import { Loader2, ChefHat, SlidersHorizontal, X, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,15 @@ import { cn } from "@/lib/utils";
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
+
+const CATEGORIES = [
+  { name: "ראשונות",  count: "מנות פתיחה",   icon: "soup" },
+  { name: "עיקריות",  count: "ארוחה מלאה",   icon: "plate" },
+  { name: "מאפים",    count: "לחמים ובצקים", icon: "bread" },
+  { name: "קינוחים",  count: "מתוקים",       icon: "cake" },
+  { name: "סלטים",    count: "ירק וטרי",     icon: "salad" },
+  { name: "משקאות",   count: "חמים וקרים",   icon: "drink" },
+];
 
 export default function FeedPage() {
   const { user } = useAuth();
@@ -61,20 +70,12 @@ export default function FeedPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loadingMore, recipes.length, loadRecipes]);
 
-  if (loading && recipes.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center animate-fade-up">
-          <BookMark size={56} className="mx-auto mb-4 text-cinnamon-500 animate-float" />
-          <p className="text-sm text-bark-300 font-medium">טוען מתכונים...</p>
-        </div>
-      </div>
-    );
-  }
+  const editorPick = recipes[0];
+  const restRecipes = recipes.slice(1);
 
   return (
     <div>
-      {/* ── INTRO (small welcome banner) ── */}
+      {/* ── 1. INTRO BANNER ───────────────────────────── */}
       <section className="text-center py-16 sm:py-20 animate-fade-up">
         <div className="inline-flex items-center gap-4 text-xs sm:text-sm font-semibold uppercase mb-5"
           style={{ color: "#5a3e2a", letterSpacing: "0.28em", fontFamily: "'Heebo', sans-serif" }}>
@@ -90,20 +91,48 @@ export default function FeedPage() {
         </p>
       </section>
 
-      {/* ── HERO with parallax (centerpiece) ── */}
-      <section className="hero-section relative mb-16 overflow-hidden" style={{ height: "92vh", minHeight: 680, borderRadius: 20 }}>
-        <div className="absolute inset-0" style={{
+      {/* ── 2. CATEGORIES ─────────────────────────────── */}
+      <section className="py-12 sm:py-16 animate-fade-up">
+        <div className="text-center mb-14">
+          <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+            Browse by category
+          </div>
+          <h2 className="text-bark-500 mb-4" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+            מה תרצו לבשל היום?
+          </h2>
+          <Ornament />
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+          {CATEGORIES.map((cat) => (
+            <Link key={cat.name} href={`/search?q=${encodeURIComponent(cat.name)}`}
+              className="group text-center p-6 border border-transparent rounded transition-all duration-300 hover:border-bark-50 hover:bg-white/40 hover:-translate-y-1">
+              <div className="w-16 h-16 mx-auto mb-3 text-bark-300 group-hover:text-cinnamon-500 transition-all duration-300 group-hover:-rotate-3">
+                <CategoryIcon name={cat.icon} />
+              </div>
+              <div className="font-semibold text-bark-500 mb-1" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.01em" }}>
+                {cat.name}
+              </div>
+              <div className="text-xs text-bark-200 italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                {cat.count}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 3. HERO WITH PARALLAX (centerpiece) ───────── */}
+      <section className="relative my-16 overflow-hidden" style={{ height: "92vh", minHeight: 680, borderRadius: 20 }}>
+        <div className="absolute" style={{
+          inset: "-12% 0",
           background: "linear-gradient(135deg, #c89668 0%, #a06f3f 50%, #6b4423 100%)",
           transform: `translate3d(0,${-scrollY * 0.5}px,0)`,
-          inset: "-12% 0",
           willChange: "transform",
         }} />
         <div className="absolute inset-0" style={{ background: "rgba(58,38,24,0.32)", zIndex: 1 }} />
 
-        {/* Floating decorative icons with parallax */}
         <DecorIcons scrollY={scrollY} />
 
-        {/* Hero content */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6"
           style={{ transform: `translate3d(0,${-scrollY * 0.25}px,0)`, willChange: "transform" }}>
           <div className="inline-flex items-center gap-4 text-xs font-semibold uppercase mb-6"
@@ -117,35 +146,31 @@ export default function FeedPage() {
             fontSize: "clamp(2.6rem,6vw,5rem)", fontWeight: 400, letterSpacing: "0.18em",
             color: "#fff", lineHeight: 1, marginBottom: 10,
             textShadow: "0 2px 16px rgba(0,0,0,0.4)",
-          }}>
-            — RECIPES —
-          </h2>
+          }}>— RECIPES —</h2>
           <div style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             fontSize: "clamp(2.2rem,5vw,4.2rem)", fontWeight: 900, letterSpacing: "0.04em",
             color: "#faf3e3", lineHeight: 1, marginBottom: 28,
             textShadow: "0 2px 16px rgba(0,0,0,0.4)",
-          }}>
-            BOOK
-          </div>
+          }}>BOOK</div>
           <p className="max-w-xl text-base sm:text-lg leading-relaxed mb-9"
             style={{ color: "rgba(245,239,226,0.92)", fontFamily: "'Heebo', sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.3)" }}>
             אוסף מתכונים ביתיים, מסורת משפחתית וטעמי הילדות —<br />מהמטבח שלנו אליכם.
           </p>
           <Link href={user ? "/recipe/new" : "/register"}
-            className="inline-flex items-center gap-3 px-8 py-3.5 rounded-md text-sm font-semibold transition-all duration-200"
+            className="inline-flex items-center gap-3 px-8 py-3.5 rounded-md text-sm font-semibold transition-all duration-200 hover:bg-white hover:text-bark-500"
             style={{
               background: "transparent", color: "#fff", border: "1.5px solid #fff",
               letterSpacing: "0.22em", textTransform: "uppercase", fontFamily: "'Heebo', sans-serif",
             }}>
             {user ? "מתכון חדש" : "הצטרפו עכשיו"}
-            <ArrowLeft />
+            <ArrowLeft className="w-4 h-4" />
           </Link>
         </div>
       </section>
 
-      {/* ── Filters ─────────────────────────── */}
-      <div className="mb-8 animate-fade-up">
+      {/* ── 4. FILTERS ──────────────────────────────── */}
+      <div className="mb-6 animate-fade-up">
         <div className="flex items-center gap-3">
           <button onClick={() => setShowFilters(!showFilters)}
             className={cn(
@@ -154,8 +179,7 @@ export default function FeedPage() {
                 ? "btn-fire border-transparent text-white"
                 : "bg-white border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
             )}>
-            <SlidersHorizontal className="w-4 h-4" />
-            סינון
+            <SlidersHorizontal className="w-4 h-4" />סינון
             {hasFilters && (
               <span className="w-5 h-5 rounded-full bg-white/25 text-xs flex items-center justify-center">
                 {[difficulty, kosher, maxTime > 0].filter(Boolean).length}
@@ -178,36 +202,39 @@ export default function FeedPage() {
         )}
       </div>
 
-      {/* ── Recipe grid ─────────────────────── */}
-      {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
-        </div>
-      ) : recipes.length === 0 ? (
-        <div className="text-center py-20 animate-fade-up">
-          <div className="w-24 h-24 mx-auto mb-6 card-surface flex items-center justify-center rounded-3xl">
-            <ChefHat className="w-12 h-12 text-bark-100" />
+      {/* ── 5. FEATURED RECIPES ─────────────────────── */}
+      <section className="py-12 -mx-4 sm:-mx-6 px-4 sm:px-6" style={{ background: "#f5efe2" }}>
+        <div className="text-center mb-12">
+          <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+            Hand-picked favorites
           </div>
-          <h2 className="text-2xl font-bold text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
-            עדיין אין מתכונים
+          <h2 className="text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+            מתכונים נבחרים
           </h2>
-          <p className="text-bark-300 mb-8">היו הראשונים לשתף מתכון עם הקהילה!</p>
-          {user && (
-            <Link href="/recipe/new" className="px-7 py-3 rounded-md text-sm font-semibold inline-flex items-center gap-2 btn-fire transition-all uppercase tracking-widest">
-              <ChefHat className="w-4 h-4" />יצירת מתכון ראשון
-            </Link>
-          )}
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center justify-center gap-4 mb-9 animate-fade-up text-center">
-            <span className="inline-block h-px flex-1 max-w-[80px]" style={{ background: "#b8a385" }} />
-            <h2 className="text-2xl sm:text-3xl font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
-              מתכונים נבחרים
-            </h2>
-            <span className="inline-block h-px flex-1 max-w-[80px]" style={{ background: "#b8a385" }} />
+          <div className="italic" style={{ color: "#8a6f55", fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22 }}>
+            Featured Recipes
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+          </div>
+        ) : restRecipes.length === 0 && !editorPick ? (
+          <div className="text-center py-20">
+            <div className="w-24 h-24 mx-auto mb-6 card-surface flex items-center justify-center rounded-3xl">
+              <ChefHat className="w-12 h-12 text-bark-100" />
+            </div>
+            <h3 className="text-2xl font-bold text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif" }}>עדיין אין מתכונים</h3>
+            <p className="text-bark-300 mb-8">היו הראשונים לשתף מתכון עם הקהילה!</p>
+            {user && (
+              <Link href="/recipe/new" className="px-7 py-3 rounded-md text-sm font-semibold inline-flex items-center gap-2 btn-fire uppercase tracking-widest">
+                <ChefHat className="w-4 h-4" />יצירת מתכון ראשון
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {recipes.map((recipe, i) => (
               <div key={recipe.id} className="animate-slide-up opacity-0"
                 style={{ animationDelay: `${i * 80}ms`, animationFillMode: "forwards" }}>
@@ -215,14 +242,86 @@ export default function FeedPage() {
               </div>
             ))}
           </div>
-        </>
+        )}
+
+        {loadingMore && (
+          <div className="flex justify-center py-10">
+            <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+          </div>
+        )}
+      </section>
+
+      {/* ── 6. EDITOR'S PICK ──────────────────────── */}
+      {editorPick && (
+        <section className="py-20 animate-fade-up">
+          <div className="text-center mb-12">
+            <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Recipe of the week
+            </div>
+            <h2 className="text-bark-500" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+              המתכון של השבוע
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
+            <Link href={`/recipe/${editorPick.id}`} className="relative aspect-[5/6] overflow-hidden block group">
+              <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105" style={{
+                background: editorPick.image_url ? `url(${editorPick.image_url}) center/cover` : "linear-gradient(135deg, #8a6342, #5a3e2a)"
+              }} />
+              <div className="absolute top-4 right-4 bottom-4 left-4 border border-white/40 pointer-events-none" />
+              {!editorPick.image_url && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <ChefHat className="w-32 h-32 text-white/40" />
+                </div>
+              )}
+            </Link>
+
+            <div>
+              <div className="text-sm italic mb-4" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Featured this week
+              </div>
+              <h3 className="text-bark-500 mb-5" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 800, letterSpacing: "-0.025em", lineHeight: 1.08 }}>
+                {editorPick.title}
+              </h3>
+              {editorPick.description && (
+                <p className="text-bark-400 mb-7 leading-relaxed" style={{ fontFamily: "'Heebo', sans-serif", fontSize: 16, lineHeight: 1.75 }}>
+                  {editorPick.description}
+                </p>
+              )}
+              <Link href={`/recipe/${editorPick.id}`}
+                className="inline-flex items-center gap-3 text-bark-500 hover:text-cinnamon-500 transition-colors border-b border-bark-500 hover:border-cinnamon-500 pb-1"
+                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 600 }}>
+                קרא את המתכון המלא
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
       )}
 
-      {loadingMore && (
-        <div className="flex justify-center py-10">
-          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+      {/* ── 7. NEWSLETTER ──────────────────────────── */}
+      <section className="py-20 px-6 text-center -mx-4 sm:-mx-6 mt-12" style={{ background: "#3a2618", color: "#f5efe2" }}>
+        <div className="text-sm italic mb-3" style={{ color: "#c47a52", fontFamily: "'Playfair Display', Georgia, serif" }}>
+          Join our table
         </div>
-      )}
+        <h2 className="mb-4" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+          מתכון חדש בכל יום שישי
+        </h2>
+        <p className="max-w-xl mx-auto mb-9 leading-relaxed" style={{ color: "#b8a385", fontFamily: "'Heebo', sans-serif", fontSize: 16 }}>
+          הצטרפו לקהילה של אוהבי בישול ומתכוננים ביתיים. מתכון נבחר, סיפור קצר ורשימת קניות — מגיעים אליכם למייל בכל שבוע.
+        </p>
+        <form onSubmit={(e) => { e.preventDefault(); const btn = e.currentTarget.querySelector("button"); if (btn) btn.textContent = "נשלח ✓"; }}
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <input type="email" required placeholder="כתובת המייל שלכם"
+            className="flex-1 px-5 py-3.5 bg-transparent border border-bark-50/30 text-white placeholder:text-bark-50/60 focus:border-cinnamon-300 outline-none transition-colors"
+            style={{ fontFamily: "'Heebo', sans-serif" }} />
+          <button type="submit"
+            className="px-8 py-3.5 font-semibold uppercase tracking-widest text-sm transition-all hover:bg-transparent hover:text-white"
+            style={{ background: "#8b3a1f", color: "#fff", border: "1px solid #8b3a1f", fontFamily: "'Heebo', sans-serif" }}>
+            הרשמה
+          </button>
+        </form>
+      </section>
     </div>
   );
 }
@@ -242,24 +341,32 @@ function useScrollY() {
   return y;
 }
 
-// ── Hand-drawn book mark icon ──
-function BookMark({ size = 40, className = "" }: { size?: number; className?: string }) {
+// ── Decorative ornament ──
+function Ornament() {
   return (
-    <svg width={size} height={size} viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-      <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-      <path d="M30 15v34" />
-    </svg>
+    <div className="flex items-center justify-center gap-3" style={{ color: "#c47a52" }}>
+      <span className="inline-block w-20 h-px" style={{ background: "#b8a385" }} />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2}>
+        <path d="M12 2c-1 4-4 4-4 8 0 2 2 4 4 4s4-2 4-4c0-4-3-4-4-8z" />
+        <path d="M12 14v8" />
+      </svg>
+      <span className="inline-block w-20 h-px" style={{ background: "#b8a385" }} />
+    </div>
   );
 }
 
-function ArrowLeft() {
-  return (
-    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <line x1="19" y1="12" x2="5" y2="12" />
-      <polyline points="12 19 5 12 12 5" />
-    </svg>
-  );
+// ── Category icons ──
+function CategoryIcon({ name }: { name: string }) {
+  const common = { viewBox: "0 0 64 64", fill: "none" as const, stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  switch (name) {
+    case "soup":  return <svg {...common}><path d="M22 12c-2 4-6 6-6 12 0 6 4 12 4 18 0 4 4 8 12 8s12-4 12-8c0-6 4-12 4-18 0-6-4-8-6-12"/><path d="M32 6v8"/><path d="M28 8l4 4 4-4"/></svg>;
+    case "plate": return <svg {...common}><circle cx="32" cy="34" r="22"/><path d="M14 38h36"/><path d="M32 12v8"/></svg>;
+    case "bread": return <svg {...common}><path d="M16 28c0-8 6-14 16-14s16 6 16 14v18c0 2-2 4-4 4H20c-2 0-4-2-4-4V28z"/><path d="M12 28h40"/></svg>;
+    case "cake":  return <svg {...common}><path d="M14 22c0-2 2-4 4-4h28c2 0 4 2 4 4v6c0 8-4 16-12 18v6h-12v-6c-8-2-12-10-12-18v-6z"/><path d="M28 30v6M36 30v6"/></svg>;
+    case "salad": return <svg {...common}><path d="M32 12c-6 6-10 12-10 20 0 8 4 16 10 20 6-4 10-12 10-20 0-8-4-14-10-20z"/><path d="M32 12v40"/></svg>;
+    case "drink": return <svg {...common}><path d="M20 18c0-4 4-8 12-8s12 4 12 8v4H20v-4z"/><path d="M16 22h32l-2 28c0 2-2 4-4 4H22c-2 0-4-2-4-4l-2-28z"/><path d="M28 30v14M36 30v14"/></svg>;
+    default: return null;
+  }
 }
 
 // ── Floating decorative icons with parallax ──
@@ -291,8 +398,7 @@ function DecorIcons({ scrollY }: { scrollY: number }) {
           style={{
             top: it.top, left: it.left as any, right: it.right as any,
             transform: `translate3d(0,${-scrollY * it.speed}px,0) rotate(${scrollY * it.rot}deg)`,
-            willChange: "transform",
-            opacity: 0.9,
+            willChange: "transform", opacity: 0.9,
             filter: "drop-shadow(0 3px 12px rgba(0,0,0,0.3))",
           }}>
           {it.path}
