@@ -14,16 +14,39 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#8b3a1f",
-          color: "#efe7d7",
-          fontFamily: "Georgia, serif",
-          fontStyle: "italic",
-          fontWeight: 700,
-          fontSize: 22,
-          letterSpacing: -1,
+          background: "#efe7d7",
+          borderRadius: 6,
         }}
       >
-        R
+        {/* Book spine */}
+        <div style={{
+          display: "flex",
+          width: 22,
+          height: 20,
+          position: "relative",
+        }}>
+          {/* Left page */}
+          <div style={{
+            width: 9, height: 20,
+            background: "#fff",
+            border: "1.5px solid #8b3a1f",
+            borderRight: "none",
+            borderRadius: "2px 0 0 2px",
+          }} />
+          {/* Spine */}
+          <div style={{
+            width: 4, height: 20,
+            background: "#8b3a1f",
+          }} />
+          {/* Right page */}
+          <div style={{
+            width: 9, height: 20,
+            background: "#fff",
+            border: "1.5px solid #8b3a1f",
+            borderLeft: "none",
+            borderRadius: "0 2px 2px 0",
+          }} />
+        </div>
       </div>
     ),
     { ...size }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import Button from "@/components/ui/Button";
@@ -28,8 +29,11 @@ const TIME_FILTERS = [
   { value: 60, label: "עד שעה" },
 ];
 
-export default function SearchPage() {
-  const [query, setQuery] = useState("");
+function SearchPageContent() {
+  const searchParams = useSearchParams();
+  const initialQ = searchParams.get("q") || "";
+
+  const [query, setQuery] = useState(initialQ);
   const [difficulty, setDifficulty] = useState("");
   const [kosherType, setKosherType] = useState("");
   const [maxPrepTime, setMaxPrepTime] = useState(0);
@@ -44,30 +48,44 @@ export default function SearchPage() {
   const [suggestions, setSuggestions] = useState<any[] | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<any[] | null>(null);
 
-  const doSearch = useCallback(async () => {
+  const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number) => {
     setLoading(true); setSearched(true);
     try {
       const params: any = {};
-      if (query) params.q = query;
-      if (difficulty) params.difficulty = difficulty;
-      if (kosherType) params.kosher_type = kosherType;
-      if (maxPrepTime > 0) params.max_prep_time = maxPrepTime;
+      if (q) params.q = q;
+      if (diff) params.difficulty = diff;
+      if (kosh) params.kosher_type = kosh;
+      if (time > 0) params.max_prep_time = time;
       const { data } = await searchApi.search(params);
       setResults(data);
     } catch {}
     setLoading(false);
-  }, [query, difficulty, kosherType, maxPrepTime]);
+  }, []);
 
+  // Auto-search when URL param changes (e.g., arriving from category click)
+  useEffect(() => {
+    const q = searchParams.get("q") || "";
+    setQuery(q);
+    if (q.length >= 2) doSearch(q, "", "", 0);
+  }, [searchParams, doSearch]);
+
+  // Debounced search on manual input or filter changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0) doSearch();
+      if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0) {
+        doSearch(query, difficulty, kosherType, maxPrepTime);
+      }
     }, 400);
     return () => clearTimeout(timer);
   }, [query, difficulty, kosherType, maxPrepTime, doSearch]);
 
   const hasActiveFilters = difficulty || kosherType || maxPrepTime > 0;
   const clearFilters = () => { setDifficulty(""); setKosherType(""); setMaxPrepTime(0); };
-  const addIngredientTag = () => { const t = ingredientInput.trim(); if (t && !ingredientTags.includes(t)) setIngredientTags([...ingredientTags, t]); setIngredientInput(""); };
+  const addIngredientTag = () => {
+    const t = ingredientInput.trim();
+    if (t && !ingredientTags.includes(t)) setIngredientTags([...ingredientTags, t]);
+    setIngredientInput("");
+  };
   const removeIngredientTag = (tag: string) => setIngredientTags(ingredientTags.filter((t) => t !== tag));
 
   const searchByIngredients = async () => {
@@ -80,7 +98,10 @@ export default function SearchPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="font-display text-2xl font-bold text-gray-100 mb-6 animate-fade-up">חיפוש מתכונים</h1>
+      <h1 className="text-2xl font-bold text-bark-500 mb-6 animate-fade-up"
+        style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+        {initialQ ? `תוצאות עבור "${initialQ}"` : "חיפוש מתכונים"}
+      </h1>
 
       {/* Mode toggle */}
       <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
@@ -88,7 +109,7 @@ export default function SearchPage() {
           onClick={() => { setIngredientMode(false); setSuggestions(null); setAiSuggestions(null); }}
           className={cn(
             "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-            !ingredientMode ? "btn-fire text-white" : "bg-white border-surface-400 text-bark-400 border hover:border-cinnamon-400 hover:text-cinnamon-600"
+            !ingredientMode ? "btn-fire text-white" : "bg-white border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
           <Search className="w-4 h-4" /> חיפוש רגיל
@@ -97,7 +118,7 @@ export default function SearchPage() {
           onClick={() => setIngredientMode(true)}
           className={cn(
             "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-            ingredientMode ? "btn-fire text-white" : "bg-white border-surface-400 text-bark-400 border hover:border-cinnamon-400 hover:text-cinnamon-600"
+            ingredientMode ? "btn-fire text-white" : "bg-white border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
           <Sparkles className="w-4 h-4" /> מה אפשר לבשל?
@@ -107,19 +128,19 @@ export default function SearchPage() {
       {/* Search bar */}
       {!ingredientMode && (
         <div className="relative mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
-          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
+          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-bark-200" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="חפשו מתכון לפי שם או תיאור..."
             className="input-dark pr-12 pl-12"
-            autoFocus
+            autoFocus={!initialQ}
           />
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
               "absolute left-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-300",
-              hasActiveFilters || showFilters ? "text-cinnamon-600 bg-cinnamon-500/10" : "text-smoke-400 hover:text-bark-500"
+              hasActiveFilters || showFilters ? "text-cinnamon-600 bg-cinnamon-500/10" : "text-bark-200 hover:text-bark-500"
             )}
           >
             <SlidersHorizontal className="w-5 h-5" />
@@ -130,9 +151,12 @@ export default function SearchPage() {
       {/* Ingredient mode */}
       {ingredientMode && (
         <div className="card-surface p-5 mb-6 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-          <p className="text-sm text-gray-400 mb-4">הקלידו מצרכים שיש לכם בבית ונמצא מתכונים מתאימים</p>
+          <p className="text-sm text-bark-300 mb-4">הקלידו מצרכים שיש לכם בבית ונמצא מתכונים מתאימים</p>
           <div className="flex gap-2 mb-3">
-            <input value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addIngredientTag()} placeholder="למשל: עוף, אורז, בצל..." className="input-dark flex-1" />
+            <input value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addIngredientTag()}
+              placeholder="למשל: עוף, אורז, בצל..."
+              className="input-dark flex-1" />
             <Button onClick={addIngredientTag} disabled={!ingredientInput.trim()}>הוסף</Button>
           </div>
           {ingredientTags.length > 0 && (
@@ -150,15 +174,15 @@ export default function SearchPage() {
           </Button>
 
           {aiSuggestions && aiSuggestions.length > 0 && (
-            <div className="mt-6 pt-5 border-t border-white/[0.06]">
-              <h3 className="font-bold text-sm mb-4 flex items-center gap-2 text-gray-300">
-                <Sparkles className="w-4 h-4 text-fire-300" /> הצעות AI
+            <div className="mt-6 pt-5 border-t border-surface-300">
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-2 text-bark-400">
+                <Sparkles className="w-4 h-4 text-cinnamon-500" /> הצעות AI
               </h3>
               <div className="space-y-3">
                 {aiSuggestions.map((s: any, i: number) => (
-                  <div key={i} className="p-4 rounded-xl bg-surface-200 border border-cinnamon-100 animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
-                    <h4 className="font-bold text-bark-600 mb-1">{s.title}</h4>
-                    <p className="text-sm text-smoke-400 mb-2">{s.description}</p>
+                  <div key={i} className="p-4 rounded-xl bg-surface-100 border border-cinnamon-100 animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
+                    <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
+                    <p className="text-sm text-bark-300 mb-2">{s.description}</p>
                     <div className="flex gap-2 text-xs text-bark-300">
                       <span className="px-2 py-0.5 rounded-lg bg-surface-300 font-medium">
                         {s.difficulty === "easy" ? "קל" : s.difficulty === "medium" ? "בינוני" : "מאתגר"}
@@ -166,7 +190,7 @@ export default function SearchPage() {
                       {s.prep_time_minutes && <span className="px-2 py-0.5 rounded-lg bg-surface-300 font-medium">{s.prep_time_minutes} דק׳</span>}
                     </div>
                     {s.extra_ingredients?.length > 0 && (
-                      <p className="text-xs text-gray-600 mt-2">צריך גם: {s.extra_ingredients.join(", ")}</p>
+                      <p className="text-xs text-bark-200 mt-2">צריך גם: {s.extra_ingredients.join(", ")}</p>
                     )}
                   </div>
                 ))}
@@ -180,7 +204,7 @@ export default function SearchPage() {
       {!ingredientMode && showFilters && (
         <div className="card-surface p-5 mb-6 space-y-5 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-sm text-gray-300">סינון תוצאות</h3>
+            <h3 className="font-bold text-sm text-bark-400">סינון תוצאות</h3>
             {hasActiveFilters && (
               <button onClick={clearFilters} className="text-xs text-cinnamon-600 font-medium flex items-center gap-1 hover:text-cinnamon-500">
                 <X className="w-3 h-3" /> נקה הכל
@@ -197,48 +221,69 @@ export default function SearchPage() {
       {ingredientMode ? (
         suggestions && suggestions.length > 0 ? (
           <div>
-            <h3 className="font-bold text-sm mb-4 text-gray-300">מתכונים מהקהילה:</h3>
+            <h3 className="font-bold text-sm mb-4 text-bark-400">מתכונים מהקהילה:</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {suggestions.map((r: any) => <RecipeCard key={r.id} recipe={r} />)}
             </div>
           </div>
         ) : suggestions !== null ? <EmptyState /> : null
       ) : loading ? (
-        <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-fire-400" /></div>
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+        </div>
       ) : results.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {results.map((r, i) => (
-            <div key={r.id} className="animate-slide-up opacity-0" style={{ animationDelay: `${i * 60}ms`, animationFillMode: "forwards" }}>
-              <RecipeCard recipe={r} />
-            </div>
-          ))}
+        <div>
+          <p className="text-sm text-bark-300 mb-5">{results.length} מתכונים נמצאו</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {results.map((r, i) => (
+              <div key={r.id} className="animate-slide-up opacity-0" style={{ animationDelay: `${i * 60}ms`, animationFillMode: "forwards" }}>
+                <RecipeCard recipe={r} />
+              </div>
+            ))}
+          </div>
         </div>
       ) : searched ? <EmptyState /> : (
         <div className="text-center py-20">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-surface-200 border border-surface-400 flex items-center justify-center">
             <Search className="w-7 h-7 text-bark-200" />
           </div>
-          <p className="text-smoke-400 font-medium">הקלידו לפחות 2 תווים לחיפוש</p>
+          <p className="text-bark-300 font-medium">הקלידו לפחות 2 תווים לחיפוש</p>
         </div>
       )}
     </div>
   );
 }
 
-function FilterRow({ label, options, value, onChange }: { label: string; options: { value: string; label: string }[]; value: string; onChange: (v: string) => void; }) {
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
+  );
+}
+
+function FilterRow({ label, options, value, onChange }: {
+  label: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div>
-      <p className="text-xs font-semibold text-gray-500 mb-2">{label}</p>
+      <p className="text-xs font-semibold text-bark-300 mb-2">{label}</p>
       <div className="flex gap-2 flex-wrap">
         {options.map((f) => (
-          <button
-            key={f.value}
-            onClick={() => onChange(f.value)}
+          <button key={f.value} onClick={() => onChange(f.value)}
             className={cn(
               "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300",
-              value === f.value ? "btn-fire text-white" : "bg-surface-100 text-bark-400 border border-surface-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
-            )}
-          >
+              value === f.value
+                ? "btn-fire text-white"
+                : "bg-white text-bark-400 border border-surface-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+            )}>
             {f.label}
           </button>
         ))}
@@ -253,7 +298,7 @@ function EmptyState() {
       <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-surface-200 border border-surface-400 flex items-center justify-center">
         <ChefHat className="w-7 h-7 text-bark-200" />
       </div>
-      <p className="text-gray-600 font-medium">לא נמצאו מתכונים</p>
+      <p className="text-bark-300 font-medium">לא נמצאו מתכונים</p>
     </div>
   );
 }
