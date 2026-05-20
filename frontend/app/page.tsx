@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import { Loader2, ChefHat, SlidersHorizontal, X, ArrowLeft } from "lucide-react";
@@ -31,14 +31,19 @@ export default function FeedPage() {
   const [difficulty, setDifficulty] = useState("");
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const recipesRef = useRef<HTMLDivElement>(null);
   const scrollY = useScrollY();
 
   const hasFilters = difficulty || kosher || maxTime > 0;
 
-  const loadRecipes = useCallback(async (skip = 0, diff = difficulty, kosh = kosher, time = maxTime) => {
+  const loadRecipes = useCallback(async (skip = 0, diff = difficulty, kosh = kosher, time = maxTime, category: string | null = selectedCategory) => {
     try {
       let data: any[];
-      if (diff || kosh || time) {
+      if (category) {
+        const res = await searchApi.search({ q: category, skip, limit: 20 });
+        data = res.data;
+      } else if (diff || kosh || time) {
         const res = await searchApi.search({ difficulty: diff || undefined, kosher_type: kosh || undefined, max_prep_time: time || undefined, skip, limit: 20 });
         data = res.data;
       } else {
@@ -48,11 +53,18 @@ export default function FeedPage() {
       if (skip === 0) setRecipes(data); else setRecipes((p) => [...p, ...data]);
       setHasMore(data.length === 20);
     } catch {} finally { setLoading(false); setLoadingMore(false); }
-  }, [difficulty, kosher, maxTime]);
+  }, [difficulty, kosher, maxTime, selectedCategory]);
 
-  useEffect(() => { setLoading(true); loadRecipes(0, difficulty, kosher, maxTime); }, [difficulty, kosher, maxTime]);
+  useEffect(() => { setLoading(true); loadRecipes(0, difficulty, kosher, maxTime, selectedCategory); }, [difficulty, kosher, maxTime, selectedCategory]);
 
   const clearFilters = () => { setDifficulty(""); setKosher(""); setMaxTime(0); };
+
+  const handleCategoryClick = (name: string) => {
+    const next = selectedCategory === name ? null : name;
+    setSelectedCategory(next);
+    setDifficulty(""); setKosher(""); setMaxTime(0);
+    setTimeout(() => recipesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+  };
 
   useEffect(() => {
     let ticking = false;
@@ -104,20 +116,33 @@ export default function FeedPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.name} href={`/search?q=${encodeURIComponent(cat.name)}`}
-              className="group text-center p-6 border border-transparent rounded transition-all duration-300 hover:border-bark-50 hover:bg-white/40 hover:-translate-y-1">
-              <div className="w-16 h-16 mx-auto mb-3 text-bark-300 group-hover:text-cinnamon-500 transition-all duration-300 group-hover:-rotate-3">
-                <CategoryIcon name={cat.icon} />
-              </div>
-              <div className="font-semibold text-bark-500 mb-1" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.01em" }}>
-                {cat.name}
-              </div>
-              <div className="text-xs text-bark-200 italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                {cat.count}
-              </div>
-            </Link>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isActive = selectedCategory === cat.name;
+            return (
+              <button key={cat.name} onClick={() => handleCategoryClick(cat.name)}
+                className={cn(
+                  "group text-center p-6 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1",
+                  isActive
+                    ? "border-cinnamon-500 bg-cinnamon-50 -translate-y-1 shadow-warm"
+                    : "border-transparent hover:border-surface-400 hover:bg-white/60"
+                )}>
+                <div className={cn(
+                  "w-14 h-14 mx-auto mb-3 transition-all duration-300",
+                  isActive ? "text-cinnamon-500" : "text-bark-300 group-hover:text-cinnamon-500 group-hover:-rotate-3"
+                )}>
+                  <CategoryIcon name={cat.icon} />
+                </div>
+                <div className={cn("font-semibold mb-1 text-sm", isActive ? "text-cinnamon-600" : "text-bark-500")}
+                  style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.01em" }}>
+                  {cat.name}
+                </div>
+                <div className={cn("text-xs italic", isActive ? "text-cinnamon-400" : "text-bark-200")}
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  {cat.count}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -203,17 +228,34 @@ export default function FeedPage() {
       </div>
 
       {/* ── 5. FEATURED RECIPES ─────────────────────── */}
-      <section className="py-12 -mx-4 sm:-mx-6 px-4 sm:px-6" style={{ background: "#f5efe2" }}>
+      <section ref={recipesRef} className="py-12 -mx-4 sm:-mx-6 px-4 sm:px-6" style={{ background: "#f5efe2" }}>
         <div className="text-center mb-12">
-          <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Hand-picked favorites
-          </div>
-          <h2 className="text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            מתכונים נבחרים
-          </h2>
-          <div className="italic" style={{ color: "#8a6f55", fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22 }}>
-            Featured Recipes
-          </div>
+          {selectedCategory ? (
+            <>
+              <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Filtered by category
+              </div>
+              <h2 className="text-bark-500 mb-3" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+                {selectedCategory}
+              </h2>
+              <button onClick={() => setSelectedCategory(null)}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm text-cinnamon-600 border border-cinnamon-300 bg-white hover:bg-cinnamon-50 transition-all">
+                <X className="w-3.5 h-3.5" /> הצג את כל המתכונים
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="text-sm italic mb-3" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Hand-picked favorites
+              </div>
+              <h2 className="text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+                מתכונים נבחרים
+              </h2>
+              <div className="italic" style={{ color: "#8a6f55", fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22 }}>
+                Featured Recipes
+              </div>
+            </>
+          )}
         </div>
 
         {loading ? (
