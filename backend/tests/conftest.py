@@ -80,6 +80,27 @@ def client(db_engine):
 
 
 @pytest.fixture()
+def publisher_user(client):
+    """Register an approved publisher (שרי פרקש) and return credentials."""
+    payload = {
+        "username": "sara_farkas",
+        "email": "sara.pub@example.com",
+        "password": "supersecret123",
+        "full_name": "שרי פרקש",
+    }
+    r = client.post("/api/v1/auth/register", json=payload)
+    assert r.status_code == 201, r.text
+    login = client.post(
+        "/api/v1/auth/login",
+        data={"username": payload["email"], "password": payload["password"]},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    assert login.status_code == 200, login.text
+    token = login.json()["access_token"]
+    return {**payload, "token": token, "auth_header": {"Authorization": f"Bearer {token}"}}
+
+
+@pytest.fixture()
 def registered_user(client):
     """Register a sample user and return credentials + token."""
     payload = {

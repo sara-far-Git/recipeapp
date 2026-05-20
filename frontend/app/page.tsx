@@ -135,13 +135,30 @@ export default function FeedPage() {
 
   {/* ── 3. HERO WITH PARALLAX (centerpiece) ───────── */}
   <section className="relative my-16 overflow-hidden" style={{ height: "92vh", minHeight: 680 }}>
+  {/* Main background — richer multi-stop gradient */}
   <div className="absolute" style={{
-  inset: "-12% 0",
-  background: "linear-gradient(135deg, #c89668 0%, #a06f3f 50%, #6b4423 100%)",
-  transform: `translate3d(0,${-scrollY * 0.5}px,0)`,
+  inset: "-15% 0",
+  background: "linear-gradient(145deg, #d4956a 0%, #b07840 20%, #8c5428 50%, #6b3d1e 75%, #4a2510 100%)",
+  transform: `translate3d(0,${-scrollY * 0.45}px,0)`,
   willChange: "transform",
   }} />
-  <div className="absolute inset-0" style={{ background: "rgba(58,38,24,0.32)", zIndex: 1 }} />
+  {/* Diagonal vintage stripe texture */}
+  <div className="absolute inset-0" style={{
+  background: "repeating-linear-gradient(42deg, transparent, transparent 38px, rgba(0,0,0,0.025) 38px, rgba(0,0,0,0.025) 39px)",
+  zIndex: 0,
+  }} />
+  {/* Dark overlay */}
+  <div className="absolute inset-0" style={{ background: "rgba(40,22,8,0.30)", zIndex: 1 }} />
+  {/* Top vignette */}
+  <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none" style={{
+  background: "linear-gradient(to bottom, rgba(40,22,8,0.45), transparent)",
+  zIndex: 4,
+  }} />
+  {/* Bottom fade into page background */}
+  <div className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none" style={{
+  background: "linear-gradient(to bottom, transparent, #efe7d7)",
+  zIndex: 6,
+  }} />
 
   <DecorIcons scrollY={scrollY} />
 
@@ -419,13 +436,13 @@ function DecorIcons({ scrollY }: { scrollY: number }) {
   <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
   {items.map((it, i) => (
   <svg key={i} width={it.w} height={it.h} viewBox="0 0 64 80" fill="none"
-  stroke="rgba(255,255,255,0.95)" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round"
+  stroke="rgba(255,255,255,0.90)" strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round"
   className="absolute"
   style={{
   top: it.top, left: it.left as any, right: it.right as any,
   transform: `translate3d(0,${-scrollY * it.speed}px,0) rotate(${scrollY * it.rot}deg)`,
-  willChange: "transform", opacity: 0.9,
-  filter: "drop-shadow(0 3px 12px rgba(0,0,0,0.3))",
+  willChange: "transform", opacity: 0.85,
+  filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.45)) drop-shadow(0 1px 4px rgba(0,0,0,0.3))",
   }}>
   {it.path}
   </svg>

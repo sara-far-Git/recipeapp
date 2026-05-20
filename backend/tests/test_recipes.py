@@ -44,7 +44,22 @@ def test_recipe_create_and_get(client, registered_user):
     assert r2.json()["id"] == rid
 
 
-def test_recipe_list_returns_published(client, registered_user):
+def test_recipe_list_returns_published(client, publisher_user):
+    """Approved-author recipes appear in the public feed."""
+    client.post(
+        "/api/v1/recipes",
+        json=_sample_recipe(),
+        headers=publisher_user["auth_header"],
+    )
+    r = client.get("/api/v1/recipes")
+    assert r.status_code == 200
+    items = r.json()
+    assert isinstance(items, list)
+    assert any(i["title"] == "עוגת שוקולד" for i in items)
+
+
+def test_non_publisher_recipe_stays_private(client, registered_user):
+    """Non-approved-author recipes are NOT in the public feed."""
     client.post(
         "/api/v1/recipes",
         json=_sample_recipe(),
@@ -54,7 +69,7 @@ def test_recipe_list_returns_published(client, registered_user):
     assert r.status_code == 200
     items = r.json()
     assert isinstance(items, list)
-    assert any(i["title"] == "עוגת שוקולד" for i in items)
+    assert not any(i["title"] == "עוגת שוקולד" for i in items)
 
 
 def test_recipe_like_toggle(client, registered_user):
