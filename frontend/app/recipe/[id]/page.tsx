@@ -39,16 +39,12 @@ export default function RecipeDetailPage() {
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Shopping modal
   const [shoppingModalOpen, setShoppingModalOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<Set<number>>(new Set());
   const [shoppingLoading, setShoppingLoading] = useState(false);
   const [toast, setToast] = useState("");
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3500);
-  };
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3500); };
 
   useEffect(() => {
     const load = async () => {
@@ -63,11 +59,8 @@ export default function RecipeDetailPage() {
         setUserRating(data.user_rating ?? null);
         const { data: commentData } = await recipesApi.getComments(Number(params.id));
         setComments(commentData);
-      } catch {
-        router.push("/");
-      } finally {
-        setLoading(false);
-      }
+      } catch { router.push("/"); }
+      finally { setLoading(false); }
     };
     load();
   }, [params.id, router]);
@@ -97,8 +90,7 @@ export default function RecipeDetailPage() {
   const toggleLike = async () => {
     if (!user) { router.push("/login"); return; }
     const { data } = await recipesApi.toggleLike(recipe.id);
-    setLiked(data.liked);
-    setLikesCount(data.likes_count);
+    setLiked(data.liked); setLikesCount(data.likes_count);
   };
 
   const toggleSave = async () => {
@@ -111,9 +103,7 @@ export default function RecipeDetailPage() {
     if (!user) { router.push("/login"); return; }
     try {
       const { data } = await recipesApi.rate(recipe.id, score);
-      setUserRating(score);
-      setAvgRating(data.average_rating);
-      setRatingsCount(data.ratings_count);
+      setUserRating(score); setAvgRating(data.average_rating); setRatingsCount(data.ratings_count);
     } catch {}
   };
 
@@ -128,49 +118,31 @@ export default function RecipeDetailPage() {
     try {
       const { data: lists } = await shoppingApi.list();
       let listId: number;
-      if (lists.length === 0) {
-        const { data: newList } = await shoppingApi.create("רשימת קניות");
-        listId = newList.id;
-      } else {
-        listId = lists[0].id;
-      }
+      if (lists.length === 0) { const { data: newList } = await shoppingApi.create("רשימת קניות"); listId = newList.id; }
+      else { listId = lists[0].id; }
       const { data: currentList } = await shoppingApi.get(listId);
       const existing = currentList.items || [];
       const toAdd = scaledIngredients
         .filter((_: any, i: number) => selectedIngredients.has(i))
-        .map((ing: any) => ({
-          name: ing.name,
-          amount: ing.amount || 0,
-          unit: ing.unit || null,
-          checked: false,
-          from_recipe: recipe.title,
-        }));
+        .map((ing: any) => ({ name: ing.name, amount: ing.amount || 0, unit: ing.unit || null, checked: false, from_recipe: recipe.title }));
       await shoppingApi.updateItems(listId, [...existing, ...toAdd]);
       setShoppingModalOpen(false);
       showToast(`${toAdd.length} מצרכים נוספו לרשימה`);
-    } catch {
-      showToast("שגיאה בהוספה לרשימת קניות");
-    }
+    } catch { showToast("שגיאה בהוספה לרשימת קניות"); }
     setShoppingLoading(false);
   };
 
   const handleDelete = async () => {
     if (!confirm("למחוק את המתכון? פעולה זו בלתי הפיכה.")) return;
     setDeleting(true);
-    try {
-      await recipesApi.delete(recipe.id);
-      router.push("/profile/" + user?.username);
-    } catch { setDeleting(false); }
+    try { await recipesApi.delete(recipe.id); router.push("/profile/" + user?.username); }
+    catch { setDeleting(false); }
   };
 
   const handleShare = async () => {
     const url = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: recipe.title, url }); } catch {}
-    } else {
-      await navigator.clipboard.writeText(url);
-      showToast("הקישור הועתק!");
-    }
+    if (navigator.share) { try { await navigator.share({ title: recipe.title, url }); } catch {} }
+    else { await navigator.clipboard.writeText(url); showToast("הקישור הועתק!"); }
   };
 
   const handleComment = async (e: React.FormEvent) => {
@@ -179,8 +151,7 @@ export default function RecipeDetailPage() {
     setSendingComment(true);
     try {
       const { data } = await recipesApi.addComment(recipe.id, newComment.trim());
-      setComments((prev) => [data, ...prev]);
-      setNewComment("");
+      setComments((prev) => [data, ...prev]); setNewComment("");
     } catch {}
     setSendingComment(false);
   };
@@ -188,7 +159,7 @@ export default function RecipeDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 animate-spin rounded-full border-4 border-fire-500 border-t-transparent" />
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-surface-400 border-t-cinnamon-500" />
       </div>
     );
   }
@@ -197,76 +168,50 @@ export default function RecipeDetailPage() {
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const currentServings = Math.round(recipe.servings * servingMultiplier);
 
-  // ── Cooking mode ──────────────────────────────────────────────────────────
+  // ── Cooking mode — intentionally dark for kitchen readability ──────────────
   if (cookingMode) {
     return (
-      <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#0f0c08" }}>
+      <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#1a1008" }}>
         <div className="max-w-2xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="font-display text-xl font-bold text-gray-100">{recipe.title}</h1>
-            <button
-              onClick={() => setCookingMode(false)}
-              className="px-4 py-2 rounded-xl bg-surface-200 border border-surface-400 text-gray-300 text-sm hover:border-white/[0.1] transition-all"
-            >
+            <h1 className="text-xl font-bold text-amber-100" style={{ fontFamily: "'Heebo', sans-serif" }}>{recipe.title}</h1>
+            <button onClick={() => setCookingMode(false)}
+              className="px-4 py-2 rounded-xl bg-amber-900/40 border border-amber-700/40 text-amber-200 text-sm hover:bg-amber-900/60 transition-all">
               יציאה ממצב בישול
             </button>
           </div>
-
-          <div className="card-surface p-5 mb-6">
-            <h2 className="font-bold text-gray-100 mb-4 flex items-center gap-2">
-              <Users className="w-4 h-4 text-cinnamon-600" />
-              מצרכים ({currentServings} סועדים)
+          <div className="bg-amber-950/60 border border-amber-800/30 rounded-2xl p-5 mb-6">
+            <h2 className="font-bold text-amber-100 mb-4 flex items-center gap-2">
+              <Users className="w-4 h-4 text-amber-400" /> מצרכים ({currentServings} סועדים)
             </h2>
             <ul className="space-y-2">
               {scaledIngredients.map((ing: any, i: number) => (
-                <li key={i} className="flex items-center gap-3 py-2 border-b border-white/[0.04] last:border-b-0">
-                  <span className="font-semibold text-cinnamon-600 min-w-[5rem] text-sm" dir="ltr">
-                    {ing.amount} {ing.unit || ""}
-                  </span>
-                  <span className="text-gray-200">{ing.name}</span>
+                <li key={i} className="flex items-center gap-3 py-2 border-b border-amber-900/40 last:border-b-0">
+                  <span className="font-semibold text-amber-400 min-w-[5rem] text-sm" dir="ltr">{ing.amount} {ing.unit || ""}</span>
+                  <span className="text-amber-100">{ing.name}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          <div>
-            <h2 className="font-bold text-gray-100 mb-4">שלבי הכנה</h2>
-            <ol className="space-y-3">
-              {recipe.instructions.map((inst: any) => (
-                <li
-                  key={inst.step}
-                  onClick={() => {
-                    setCompletedSteps((prev) => {
-                      const next = new Set(prev);
-                      if (next.has(inst.step)) next.delete(inst.step); else next.add(inst.step);
-                      return next;
-                    });
-                  }}
-                  className={cn(
-                    "p-4 rounded-2xl border-2 cursor-pointer transition-all",
-                    completedSteps.has(inst.step)
-                      ? "border-fire-500/40 bg-fire-500/10"
-                      : "border-white/[0.06] bg-surface-200/50 hover:border-white/[0.1]"
-                  )}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className={cn(
-                      "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
-                      completedSteps.has(inst.step)
-                        ? "bg-fire-500 text-white"
-                        : "bg-cinnamon-50 text-cinnamon-500"
-                    )}>
-                      {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
-                    </span>
-                    <p className={cn(
-                      "flex-1 leading-relaxed text-sm",
-                      completedSteps.has(inst.step) ? "line-through text-gray-600" : "text-gray-200"
-                    )}>{inst.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          <h2 className="font-bold text-amber-100 mb-4">שלבי הכנה</h2>
+          <ol className="space-y-3">
+            {recipe.instructions.map((inst: any) => (
+              <li key={inst.step}
+                onClick={() => setCompletedSteps((prev) => { const n = new Set(prev); if (n.has(inst.step)) n.delete(inst.step); else n.add(inst.step); return n; })}
+                className={cn("p-4 rounded-2xl border-2 cursor-pointer transition-all",
+                  completedSteps.has(inst.step) ? "border-amber-600/40 bg-amber-800/20" : "border-amber-900/40 bg-amber-950/40 hover:border-amber-800/40")}>
+                <div className="flex items-start gap-3">
+                  <span className={cn("flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
+                    completedSteps.has(inst.step) ? "bg-amber-600 text-white" : "bg-amber-900/60 text-amber-400")}>
+                    {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
+                  </span>
+                  <p className={cn("flex-1 leading-relaxed text-sm", completedSteps.has(inst.step) ? "line-through text-amber-700" : "text-amber-100")}>
+                    {inst.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     );
@@ -277,7 +222,7 @@ export default function RecipeDetailPage() {
     <div className="max-w-3xl mx-auto">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-2xl bg-bark-600 border border-bark-500 text-sm text-white shadow-xl animate-fade-up whitespace-nowrap">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-2xl bg-bark-500 text-white text-sm shadow-warm-lg animate-fade-up whitespace-nowrap">
           {toast}
         </div>
       )}
@@ -285,11 +230,11 @@ export default function RecipeDetailPage() {
       {/* Shopping modal */}
       {shoppingModalOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
-          <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-surface-400 shadow-warm-lg max-h-[80vh] flex flex-col">
+          <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
+          <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-5 border-b border-surface-300">
-              <h3 className="font-bold text-bark-600">בחרי מצרכים לקנייה</h3>
-              <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-surface-200 text-smoke-400">
+              <h3 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>בחרי מצרכים לקנייה</h3>
+              <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-surface-200 text-bark-200 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -297,51 +242,31 @@ export default function RecipeDetailPage() {
               <button
                 onClick={() => setSelectedIngredients(
                   selectedIngredients.size === scaledIngredients.length
-                    ? new Set()
-                    : new Set(scaledIngredients.map((_: any, i: number) => i))
+                    ? new Set() : new Set(scaledIngredients.map((_: any, i: number) => i))
                 )}
-                className="w-full text-right text-xs text-cinnamon-600 hover:text-cinnamon-500 mb-2 px-1"
-              >
+                className="w-full text-right text-xs text-cinnamon-600 hover:text-cinnamon-500 mb-2 px-1 transition-colors">
                 {selectedIngredients.size === scaledIngredients.length ? "בטלי הכל" : "בחרי הכל"}
               </button>
               {scaledIngredients.map((ing: any, i: number) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedIngredients((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(i)) next.delete(i); else next.add(i);
-                    return next;
-                  })}
-                  className={cn(
-                    "w-full flex items-center gap-3 p-3 rounded-xl text-right transition-all",
-                    selectedIngredients.has(i)
-                      ? "bg-cinnamon-50 border border-cinnamon-200"
-                      : "bg-surface-100 border border-transparent opacity-60"
-                  )}
-                >
-                  <div className={cn(
-                    "w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0",
-                    selectedIngredients.has(i) ? "bg-cinnamon-500 border-cinnamon-500" : "border-surface-400"
-                  )}>
+                <button key={i}
+                  onClick={() => setSelectedIngredients((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
+                  className={cn("w-full flex items-center gap-3 p-3 rounded-xl text-right transition-all",
+                    selectedIngredients.has(i) ? "bg-cinnamon-50 border border-cinnamon-200" : "bg-surface-100 border border-transparent opacity-60")}>
+                  <div className={cn("w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0",
+                    selectedIngredients.has(i) ? "bg-cinnamon-500 border-cinnamon-500" : "border-surface-400")}>
                     {selectedIngredients.has(i) && <Check className="w-3 h-3 text-white" />}
                   </div>
-                  <span className="flex-1 text-sm text-bark-600">{ing.name}</span>
-                  <span className="text-sm text-smoke-400 font-medium" dir="ltr">
-                    {ing.amount || ""} {ing.unit || ""}
-                  </span>
+                  <span className="flex-1 text-sm text-bark-500">{ing.name}</span>
+                  <span className="text-sm text-bark-300 font-medium" dir="ltr">{ing.amount || ""} {ing.unit || ""}</span>
                 </button>
               ))}
             </div>
             <div className="p-4 border-t border-surface-300">
-              <button
-                onClick={handleShoppingConfirm}
-                disabled={selectedIngredients.size === 0 || shoppingLoading}
-                className="w-full py-3.5 rounded-2xl btn-fire font-semibold text-white disabled:opacity-40 flex items-center justify-center gap-2"
-              >
+              <button onClick={handleShoppingConfirm} disabled={selectedIngredients.size === 0 || shoppingLoading}
+                className="w-full py-3.5 rounded-2xl btn-fire font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
                 {shoppingLoading
                   ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  : <><ShoppingCart className="w-4 h-4" />הוסיפי {selectedIngredients.size} מצרכים</>
-                }
+                  : <><ShoppingCart className="w-4 h-4" />הוסיפי {selectedIngredients.size} מצרכים</>}
               </button>
             </div>
           </div>
@@ -349,53 +274,89 @@ export default function RecipeDetailPage() {
       )}
 
       {/* Back */}
-      <button onClick={() => router.back()} className="flex items-center gap-1.5 text-smoke-400 hover:text-bark-600 mb-5 transition-colors text-sm">
-        <ArrowRight className="w-4 h-4" />
-        חזרה
+      <button onClick={() => router.back()}
+        className="flex items-center gap-1.5 text-bark-300 hover:text-cinnamon-500 mb-5 transition-colors text-sm">
+        <ArrowRight className="w-4 h-4" /> חזרה
       </button>
 
       {/* Hero image */}
-      <div className="relative aspect-video rounded-3xl overflow-hidden bg-surface-200 mb-6 animate-fade-up">
+      <div className="relative rounded-3xl overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#e8dcc4" }}>
         {recipe.image_url ? (
           <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <ChefHat className="w-16 h-16 text-gray-700" />
+            <ChefHat className="w-16 h-16 text-bark-100" />
           </div>
         )}
         {recipe.kosher_type && (
-          <span className="absolute top-3 right-3 badge bg-black/60 text-gray-300 backdrop-blur-sm">
+          <span className="absolute top-4 right-4 px-3 py-1 rounded-md bg-white/80 backdrop-blur-sm text-xs font-semibold text-bark-500">
             {kosherLabels[recipe.kosher_type]}
           </span>
         )}
       </div>
 
-      {/* Author + actions */}
-      <div className="flex items-center justify-between mb-4 animate-fade-up" style={{ animationDelay: "60ms" }}>
-        <Link href={`/profile/${recipe.author.username}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-          <div className="w-9 h-9 rounded-full bg-cinnamon-100 flex items-center justify-center text-cinnamon-700 font-bold text-sm">
+      {/* Meta eyebrow */}
+      <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
+        <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+          {recipe.author.full_name || recipe.author.username}
+          {totalTime > 0 && <><span className="text-bark-100 font-normal">·</span>{totalTime} דק׳</>}
+          {recipe.kosher_type && <><span className="text-bark-100 font-normal">·</span>{kosherLabels[recipe.kosher_type]}</>}
+        </div>
+      </div>
+
+      {/* Title */}
+      <div className="text-center mb-5 animate-fade-up" style={{ animationDelay: "60ms" }}>
+        <h1 className="text-bark-500 mb-3"
+          style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(2rem,5vw,3rem)", fontWeight: 800, letterSpacing: "-0.025em", lineHeight: 1.1 }}>
+          {recipe.title}
+        </h1>
+        {recipe.description && (
+          <p className="text-bark-300 max-w-xl mx-auto text-base leading-relaxed"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+            {recipe.description}
+          </p>
+        )}
+      </div>
+
+      {/* Rating */}
+      <div className="flex justify-center mb-6 animate-fade-up" style={{ animationDelay: "80ms" }}>
+        <StarRating rating={avgRating} count={ratingsCount} interactive userRating={userRating} onRate={handleRate} />
+      </div>
+
+      {/* Action row: author + like/save/share */}
+      <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid #e8dcc4", animationDelay: "100ms" }}>
+        <Link href={`/profile/${recipe.author.username}`}
+          className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
+            style={{ background: "#8b3a1f" }}>
             {recipe.author.username[0].toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-200">{recipe.author.full_name || recipe.author.username}</p>
-            <p className="text-xs text-gray-500">@{recipe.author.username}</p>
+            <p className="text-sm font-semibold text-bark-500">{recipe.author.full_name || recipe.author.username}</p>
+            <p className="text-xs text-bark-200">@{recipe.author.username}</p>
           </div>
         </Link>
 
         <div className="flex items-center gap-1">
-          <button onClick={toggleLike} className="p-2 rounded-xl hover:bg-surface-200 transition-colors">
-            <Heart className={cn("w-5 h-5", liked ? "fill-red-500 text-red-500" : "text-gray-500")} />
+          <button onClick={toggleLike} className="p-2.5 rounded-xl hover:bg-surface-200 transition-colors group">
+            <Heart className={cn("w-5 h-5 transition-all", liked ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
           </button>
-          <span className="text-sm text-gray-500 min-w-[1.5rem]">{likesCount}</span>
-          <button onClick={toggleSave} className="p-2 rounded-xl hover:bg-surface-200 transition-colors">
-            <Bookmark className={cn("w-5 h-5", saved ? "fill-cinnamon-500 text-cinnamon-500" : "text-smoke-400")} />
+          <span className="text-sm text-bark-300 min-w-[1.5rem]">{likesCount}</span>
+          <button onClick={toggleSave} className="p-2.5 rounded-xl hover:bg-surface-200 transition-colors group">
+            <Bookmark className={cn("w-5 h-5 transition-all", saved ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
+          </button>
+          <button onClick={handleShare} className="p-2.5 rounded-xl hover:bg-surface-200 transition-colors text-bark-200 hover:text-bark-400">
+            <Share2 className="w-5 h-5" />
           </button>
           {user?.id === recipe.author.id && (
             <>
-              <Link href={`/recipe/${recipe.id}/edit`} className="p-2 rounded-xl hover:bg-surface-200 transition-colors text-smoke-400 hover:text-cinnamon-600">
+              <Link href={`/recipe/${recipe.id}/edit`}
+                className="p-2.5 rounded-xl hover:bg-surface-200 transition-colors text-bark-200 hover:text-cinnamon-500">
                 <Pencil className="w-5 h-5" />
               </Link>
-              <button onClick={handleDelete} disabled={deleting} className="p-2 rounded-xl hover:bg-surface-200 transition-colors text-smoke-400 hover:text-red-600">
+              <button onClick={handleDelete} disabled={deleting}
+                className="p-2.5 rounded-xl hover:bg-red-50 transition-colors text-bark-200 hover:text-red-500">
                 <Trash2 className="w-5 h-5" />
               </button>
             </>
@@ -403,93 +364,84 @@ export default function RecipeDetailPage() {
         </div>
       </div>
 
-      {/* Title + description */}
-      <div className="mb-4 animate-fade-up" style={{ animationDelay: "80ms" }}>
-        <h1 className="font-display text-2xl font-bold text-gray-100 mb-2">{recipe.title}</h1>
-        {recipe.description && <p className="text-gray-400 leading-relaxed">{recipe.description}</p>}
-      </div>
-
-      {/* Rating */}
-      <div className="mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
-        <StarRating rating={avgRating} count={ratingsCount} interactive userRating={userRating} onRate={handleRate} />
-      </div>
-
-      {/* Info chips */}
-      <div className="flex flex-wrap gap-2 mb-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
+      {/* Stats strip */}
+      <div className="grid grid-cols-3 gap-3 mb-8 animate-fade-up" style={{ animationDelay: "120ms" }}>
         {totalTime > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
-            <Clock className="w-3.5 h-3.5 text-cinnamon-600" /> {totalTime} דק׳
-          </span>
+          <div className="card-surface p-4 text-center">
+            <Clock className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
+            <div className="text-sm font-bold text-bark-500">{totalTime} דק׳</div>
+            <div className="text-xs text-bark-200">זמן כולל</div>
+          </div>
         )}
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
-          <Users className="w-3.5 h-3.5 text-cinnamon-600" /> {recipe.servings} סועדים
-        </span>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-200 border border-surface-400 text-sm text-smoke-400">
-          {difficultyLabels[recipe.difficulty] || recipe.difficulty}
-        </span>
+        <div className="card-surface p-4 text-center">
+          <Users className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
+          <div className="text-sm font-bold text-bark-500">{recipe.servings}</div>
+          <div className="text-xs text-bark-200">סועדים</div>
+        </div>
+        <div className="card-surface p-4 text-center">
+          <ChefHat className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
+          <div className="text-sm font-bold text-bark-500">{difficultyLabels[recipe.difficulty] || "בינוני"}</div>
+          <div className="text-xs text-bark-200">רמת קושי</div>
+        </div>
       </div>
 
       {/* CTA buttons */}
-      <div className="grid grid-cols-3 gap-3 mb-8 animate-fade-up" style={{ animationDelay: "140ms" }}>
-        <button
-          onClick={() => setCookingMode(true)}
-          className="flex flex-col items-center gap-2 py-4 rounded-2xl btn-fire font-semibold text-sm"
-        >
-          <CookingPot className="w-5 h-5" />
-          מצב בישול
+      <div className="grid grid-cols-3 gap-3 mb-10 animate-fade-up" style={{ animationDelay: "140ms" }}>
+        <button onClick={() => setCookingMode(true)}
+          className="flex flex-col items-center gap-2 py-4 rounded-2xl btn-fire font-semibold text-sm">
+          <CookingPot className="w-5 h-5" /> מצב בישול
         </button>
-        <button
-          onClick={openShoppingModal}
-          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-surface-400 text-gray-300 hover:border-cinnamon-400 hover:text-cinnamon-500 transition-all text-sm font-semibold"
-        >
-          <ShoppingCart className="w-5 h-5" />
-          קניות
+        <button onClick={openShoppingModal}
+          className="flex flex-col items-center gap-2 py-4 rounded-2xl card-surface text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-500 transition-all text-sm font-semibold">
+          <ShoppingCart className="w-5 h-5" /> קניות
         </button>
-        <button
-          onClick={handleShare}
-          className="flex flex-col items-center gap-2 py-4 rounded-2xl bg-surface-200 border border-surface-400 text-gray-300 hover:border-white/[0.1] transition-all text-sm font-semibold"
-        >
-          <Share2 className="w-5 h-5" />
-          שיתוף
+        <button onClick={handleShare}
+          className="flex flex-col items-center gap-2 py-4 rounded-2xl card-surface text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-500 transition-all text-sm font-semibold">
+          <Share2 className="w-5 h-5" /> שיתוף
         </button>
       </div>
 
       {/* Ingredients */}
-      <section className="mb-8 animate-fade-up" style={{ animationDelay: "160ms" }}>
+      <section className="mb-10 animate-fade-up" style={{ animationDelay: "160ms" }}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-bold text-gray-100">מצרכים</h2>
-          <div className="flex items-center gap-2 bg-surface-200 border border-surface-400 rounded-xl px-3 py-1.5">
-            <button onClick={() => handleServingsChange(-1)} className="p-0.5 hover:text-cinnamon-500 text-gray-500 transition-colors">
+          <h2 className="font-bold text-bark-500 text-xl" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+            מצרכים
+          </h2>
+          <div className="flex items-center gap-2 card-surface px-3 py-1.5">
+            <button onClick={() => handleServingsChange(-1)} className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
               <Minus className="w-4 h-4" />
             </button>
-            <span className="text-sm font-medium text-gray-200 min-w-[5rem] text-center">{currentServings} סועדים</span>
-            <button onClick={() => handleServingsChange(1)} className="p-0.5 hover:text-cinnamon-500 text-gray-500 transition-colors">
+            <span className="text-sm font-semibold text-bark-500 min-w-[5rem] text-center">{currentServings} סועדים</span>
+            <button onClick={() => handleServingsChange(1)} className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>
         </div>
         <div className="card-surface divide-y divide-surface-300">
           {scaledIngredients.map((ing: any, i: number) => (
-            <div key={i} className="flex items-center gap-3 px-4 py-3">
-              <span className="font-semibold text-cinnamon-600 min-w-[5rem] text-sm text-left" dir="ltr">
+            <div key={i} className="flex items-center gap-3 px-5 py-3.5">
+              <span className="w-2 h-2 rounded-full bg-cinnamon-500 flex-shrink-0" />
+              <span className="font-semibold text-cinnamon-500 min-w-[5rem] text-sm" dir="ltr">
                 {ing.amount} {ing.unit || ""}
               </span>
-              <span className="text-gray-200 text-sm">{ing.name}</span>
+              <span className="text-bark-400 text-sm">{ing.name}</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* Instructions */}
-      <section className="mb-8 animate-fade-up" style={{ animationDelay: "180ms" }}>
-        <h2 className="font-display text-lg font-bold text-gray-100 mb-4">שלבי הכנה</h2>
-        <ol className="space-y-3">
+      <section className="mb-10 animate-fade-up" style={{ animationDelay: "180ms" }}>
+        <h2 className="font-bold text-bark-500 text-xl mb-5" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+          אופן ההכנה
+        </h2>
+        <ol className="space-y-4">
           {recipe.instructions.map((inst: any) => (
-            <li key={inst.step} className="flex items-start gap-3 card-surface p-4">
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
+            <li key={inst.step} className="flex items-start gap-4 card-surface p-5">
+              <span className="flex-shrink-0 w-9 h-9 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
                 {inst.step}
               </span>
-              <p className="text-gray-300 leading-relaxed text-sm flex-1">{inst.text}</p>
+              <p className="text-bark-400 leading-relaxed flex-1" style={{ lineHeight: 1.7 }}>{inst.text}</p>
             </li>
           ))}
         </ol>
@@ -497,24 +449,18 @@ export default function RecipeDetailPage() {
 
       {/* Comments */}
       <section className="animate-fade-up" style={{ animationDelay: "200ms" }}>
-        <h2 className="font-display text-lg font-bold text-gray-100 mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-cinnamon-600" />
+        <h2 className="font-bold text-bark-500 text-xl mb-5 flex items-center gap-2"
+          style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+          <MessageCircle className="w-5 h-5 text-cinnamon-500" />
           תגובות ({comments.length})
         </h2>
 
         {user && (
           <form onSubmit={handleComment} className="flex gap-2 mb-5">
-            <input
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="הוסיפי תגובה..."
-              className="input-dark flex-1"
-            />
-            <button
-              type="submit"
-              disabled={sendingComment || !newComment.trim()}
-              className="px-4 rounded-xl btn-fire disabled:opacity-40 transition-all"
-            >
+            <input value={newComment} onChange={(e) => setNewComment(e.target.value)}
+              placeholder="הוסיפי תגובה..." className="input-dark flex-1" />
+            <button type="submit" disabled={sendingComment || !newComment.trim()}
+              className="px-4 rounded-xl btn-fire disabled:opacity-40 transition-all">
               <Send className="w-4 h-4" />
             </button>
           </form>
@@ -524,23 +470,28 @@ export default function RecipeDetailPage() {
           {comments.map((comment: any) => (
             <div key={comment.id} className="card-surface p-4">
               <div className="flex items-center justify-between mb-2">
-                <Link href={`/profile/${comment.author.username}`} className="text-sm font-semibold text-cinnamon-600 hover:text-cinnamon-500 transition-colors">
+                <Link href={`/profile/${comment.author.username}`}
+                  className="text-sm font-semibold text-cinnamon-500 hover:text-cinnamon-600 transition-colors">
                   {comment.author.full_name || comment.author.username}
                 </Link>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-600">{new Date(comment.created_at).toLocaleDateString("he-IL")}</span>
+                  <span className="text-xs text-bark-200">{new Date(comment.created_at).toLocaleDateString("he-IL")}</span>
                   {user && (
-                    <button onClick={() => recipesApi.reportComment(recipe.id, comment.id)} className="p-1 text-gray-700 hover:text-red-400 transition-colors">
+                    <button onClick={() => recipesApi.reportComment(recipe.id, comment.id)}
+                      className="p-1 text-bark-100 hover:text-red-400 transition-colors">
                       <Flag className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed">{comment.content}</p>
+              <p className="text-bark-400 text-sm leading-relaxed">{comment.content}</p>
             </div>
           ))}
           {comments.length === 0 && (
-            <p className="text-center text-gray-600 py-8 text-sm">אין תגובות עדיין — היי הראשונה!</p>
+            <p className="text-center text-bark-200 py-8 text-sm"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+              אין תגובות עדיין — היי הראשונה!
+            </p>
           )}
         </div>
       </section>
