@@ -116,7 +116,7 @@ function ProfilePageContent() {
       {editOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setEditOpen(false)} />
-          <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-surface-300 shadow-warm-lg">
+          <div className="relative w-full sm:max-w-md bg-surface-50 rounded-t-3xl sm:rounded-3xl border border-surface-300 shadow-warm-lg">
             <div className="flex items-center justify-between p-5 border-b border-surface-300">
               <h3 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>עריכת פרופיל</h3>
               <button onClick={() => setEditOpen(false)}

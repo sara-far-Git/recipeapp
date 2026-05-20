@@ -145,7 +145,7 @@ export default function ShoppingListPage() {
                     "px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border",
                     activeList?.id === list.id
                       ? "btn-fire border-transparent text-white"
-                      : "bg-white border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500"
+                      : "bg-surface-50 border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500"
                   )}>
                   {list.name}
                 </button>

@@ -97,7 +97,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
     <Link href={`/recipe/${recipe.id}`} className="group block">
       <article
         className="overflow-hidden transition-all duration-500 ease-out group-hover:-translate-y-2"
-        style={{ borderRadius: 4, background: "#fff", border: "1px solid #e8dcc4", boxShadow: "0 2px 12px rgba(58,38,24,0.06)" }}>
+        style={{ borderRadius: 4, background: "#f7f1e4", border: "1px solid #e8dcc4", boxShadow: "0 2px 12px rgba(58,38,24,0.06)" }}>
 
         {/* ── Image / placeholder ─────────────────── */}
         <div className="relative overflow-hidden" style={{ aspectRatio: "1/1" }}>

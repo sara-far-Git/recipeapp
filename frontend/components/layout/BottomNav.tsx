@@ -20,27 +20,58 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 sm:hidden"
-      style={{ background: "#f5efe2", borderTop: "1px solid #d9c79a", boxShadow: "0 -4px 20px rgba(58,38,24,0.06)" }}>
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 sm:hidden"
+      style={{
+        background: "rgba(247,241,228,0.94)",
+        backdropFilter: "blur(12px) saturate(140%)",
+        WebkitBackdropFilter: "blur(12px) saturate(140%)",
+        borderTop: "1px solid #d9c79a",
+        boxShadow: "0 -4px 20px rgba(58,38,24,0.06)",
+      }}>
       <div className="flex items-center justify-around h-16 px-2">
         {items.map((item) => {
-          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href.split("?")[0]));
+          const basePath = item.href.split("?")[0];
+          const active =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(basePath) && basePath !== "/";
+
           if (item.special) {
             return (
               <Link key={item.href} href={item.href} className="flex flex-col items-center -mt-5">
-                <div className="rounded-2xl flex items-center justify-center active:scale-90 transition-all duration-200"
-                  style={{ width: 52, height: 52, background: "#8b3a1f", boxShadow: "0 4px 12px rgba(139,58,31,0.32)" }}>
+                <div
+                  className="rounded-full flex items-center justify-center transition-transform duration-200 active:scale-90"
+                  style={{
+                    width: 52,
+                    height: 52,
+                    background: "#8b3a1f",
+                    boxShadow: "0 4px 12px rgba(139,58,31,0.32)",
+                  }}>
                   <item.icon className="w-5 h-5 text-white stroke-[2.5]" />
                 </div>
               </Link>
             );
           }
+
           return (
-            <Link key={item.href} href={item.href}
-              className={cn("flex flex-col items-center gap-1 px-3 py-1.5 transition-all duration-300",
-                active ? "text-cinnamon-500" : "text-bark-300")}>
-              <item.icon className={cn("w-5 h-5", active && "stroke-[2.5]")} />
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "relative flex flex-col items-center gap-1 px-3 py-1.5 transition-all duration-300",
+                active ? "text-cinnamon-500" : "text-bark-300",
+              )}>
+              <item.icon
+                className={cn("w-5 h-5 transition-all duration-300", active && "stroke-[2.5]")}
+                strokeWidth={active ? 2.5 : 2}
+              />
               <span className="text-[10px] font-medium">{item.label}</span>
+              {active && (
+                <span
+                  className="absolute -top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-cinnamon-500 animate-scale-in"
+                />
+              )}
             </Link>
           );
         })}

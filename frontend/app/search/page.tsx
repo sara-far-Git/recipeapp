@@ -109,7 +109,7 @@ function SearchPageContent() {
           onClick={() => { setIngredientMode(false); setSuggestions(null); setAiSuggestions(null); }}
           className={cn(
             "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-            !ingredientMode ? "btn-fire text-white" : "bg-white border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+            !ingredientMode ? "btn-fire text-white" : "bg-surface-50 border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
           <Search className="w-4 h-4" /> חיפוש רגיל
@@ -118,7 +118,7 @@ function SearchPageContent() {
           onClick={() => setIngredientMode(true)}
           className={cn(
             "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-            ingredientMode ? "btn-fire text-white" : "bg-white border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+            ingredientMode ? "btn-fire text-white" : "bg-surface-50 border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
           <Sparkles className="w-4 h-4" /> מה אפשר לבשל?
@@ -283,7 +283,7 @@ function FilterRow({ label, options, value, onChange }: {
               "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300",
               value === f.value
                 ? "btn-fire text-white"
-                : "bg-white text-bark-400 border border-surface-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+                : "bg-surface-50 text-bark-400 border border-surface-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
             )}>
             {f.label}
           </button>

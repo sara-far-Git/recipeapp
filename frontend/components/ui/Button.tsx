@@ -14,7 +14,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const base = "inline-flex items-center justify-center rounded-md font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cinnamon-400/30 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-40 disabled:pointer-events-none tracking-wide";
     const variants = {
       primary: "btn-fire",
-      secondary: "bg-white text-bark-500 border border-bark-500 hover:bg-bark-500 hover:text-surface-100",
+      secondary: "bg-surface-50 text-bark-500 border border-bark-500 hover:bg-bark-500 hover:text-surface-100",
       ghost: "bg-transparent text-bark-400 hover:text-cinnamon-500 hover:bg-cinnamon-50",
       danger: "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100",
     };

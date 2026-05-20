@@ -310,7 +310,7 @@ export default function NewRecipePage() {
               <div className="relative rounded-2xl overflow-hidden aspect-video" style={{ background: "#e8dcc4" }}>
                 <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
                 <button onClick={() => setImageUrl("")}
-                  className="absolute top-3 left-3 p-2 bg-white/80 backdrop-blur-sm rounded-xl hover:bg-white transition-colors">
+                  className="absolute top-3 left-3 p-2 bg-surface-50/80 backdrop-blur-sm rounded-xl hover:bg-surface-50 transition-colors">
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
               </div>
@@ -353,7 +353,7 @@ export default function NewRecipePage() {
                     "flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border",
                     difficulty === opt.value
                       ? "btn-fire border-transparent text-white"
-                      : "bg-white text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
+                      : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
                   )}>
                   {opt.label}
                 </button>

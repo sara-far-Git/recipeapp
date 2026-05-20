@@ -124,7 +124,7 @@ export default function FeedPage() {
                   "group text-center p-6 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1",
                   isActive
                     ? "border-cinnamon-500 bg-cinnamon-50 -translate-y-1 shadow-warm"
-                    : "border-transparent hover:border-surface-400 hover:bg-white/60"
+                    : "border-transparent hover:border-surface-400 hover:bg-surface-50/60"
                 )}>
                 <div className={cn(
                   "w-14 h-14 mx-auto mb-3 transition-all duration-300",
@@ -145,6 +145,9 @@ export default function FeedPage() {
           })}
         </div>
       </section>
+
+      {/* ── 2b. CATEGORIES anchor ─── */}
+      <div id="categories" style={{ scrollMarginTop: 80 }} />
 
       {/* ── 3. HERO WITH PARALLAX (centerpiece) ───────── */}
       <section className="relative my-16 overflow-hidden" style={{ height: "92vh", minHeight: 680, borderRadius: 20 }}>
@@ -183,7 +186,7 @@ export default function FeedPage() {
             אוסף מתכונים ביתיים, מסורת משפחתית וטעמי הילדות —<br />מהמטבח שלנו אליכם.
           </p>
           <Link href={user ? "/recipe/new" : "/register"}
-            className="inline-flex items-center gap-3 px-8 py-3.5 rounded-md text-sm font-semibold transition-all duration-200 hover:bg-white hover:text-bark-500"
+            className="inline-flex items-center gap-3 px-8 py-3.5 rounded-md text-sm font-semibold transition-all duration-200 hover:bg-surface-50 hover:text-bark-500"
             style={{
               background: "transparent", color: "#fff", border: "1.5px solid #fff",
               letterSpacing: "0.22em", textTransform: "uppercase", fontFamily: "'Heebo', sans-serif",
@@ -202,7 +205,7 @@ export default function FeedPage() {
               "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all",
               showFilters || hasFilters
                 ? "btn-fire border-transparent text-white"
-                : "bg-white border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+                : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
             )}>
             <SlidersHorizontal className="w-4 h-4" />סינון
             {hasFilters && (
@@ -239,7 +242,7 @@ export default function FeedPage() {
                 {selectedCategory}
               </h2>
               <button onClick={() => setSelectedCategory(null)}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm text-cinnamon-600 border border-cinnamon-300 bg-white hover:bg-cinnamon-50 transition-all">
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm text-cinnamon-600 border border-cinnamon-300 bg-surface-50 hover:bg-cinnamon-50 transition-all">
                 <X className="w-3.5 h-3.5" /> הצג את כל המתכונים
               </button>
             </>
@@ -306,18 +309,55 @@ export default function FeedPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
-            <Link href={`/recipe/${editorPick.id}`} className="relative aspect-[5/6] overflow-hidden block group">
-              <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105" style={{
-                background: editorPick.image_url ? `url(${editorPick.image_url}) center/cover` : "linear-gradient(135deg, #8a6342, #5a3e2a)"
-              }} />
-              <div className="absolute top-4 right-4 bottom-4 left-4 border border-white/40 pointer-events-none" />
+            {/* Book-cover card */}
+            <Link href={`/recipe/${editorPick.id}`}
+              className="relative block group overflow-hidden"
+              style={{ aspectRatio: "5/6", borderRadius: 4 }}>
+              {/* Background: image or warm gradient */}
+              <div
+                className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                style={{
+                  background: editorPick.image_url
+                    ? `url(${editorPick.image_url}) center/cover`
+                    : "linear-gradient(155deg, #c89668 0%, #a06f3f 45%, #6b4423 100%)",
+                }}
+              />
+              {/* Dark overlay for readability when image present */}
+              {editorPick.image_url && (
+                <div className="absolute inset-0" style={{ background: "rgba(58,38,24,0.22)" }} />
+              )}
+              {/* Decorative inner frame */}
+              <div className="absolute inset-5 pointer-events-none"
+                style={{ border: "1px solid rgba(255,255,255,0.45)" }} />
+              {/* No-image center illustration */}
               {!editorPick.image_url && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <ChefHat className="w-32 h-32 text-white/40" />
+                  <svg viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,0.80)"
+                    strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round"
+                    className="w-28 h-28">
+                    <path d="M32 54V24" />
+                    <path d="M32 24c0-12 10-18 18-18-2 10-8 18-18 18z" />
+                    <path d="M32 30c0-10-10-16-18-14 2 8 8 14 18 14z" />
+                    <path d="M32 38c0-8 6-14 14-14-2 6-6 12-14 14z" />
+                    <path d="M32 44c0-6-6-12-14-10 1 4 5 10 14 10z" />
+                  </svg>
                 </div>
               )}
+              {/* "Friday Special" style caption at bottom */}
+              <div className="absolute bottom-10 left-0 right-0 text-center px-6">
+                <p style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontStyle: "italic",
+                  color: "rgba(245,239,226,0.90)",
+                  fontSize: 14,
+                  textShadow: "0 1px 6px rgba(0,0,0,0.4)",
+                }}>
+                  {new Date().toLocaleDateString("he-IL", { weekday: "long" })} מיוחד
+                </p>
+              </div>
             </Link>
 
+            {/* Text side */}
             <div>
               <div className="text-sm italic mb-4" style={{ color: "#8b3a1f", fontFamily: "'Playfair Display', Georgia, serif" }}>
                 Featured this week
@@ -458,7 +498,7 @@ function FilterRow({ label, opts, active, onSelect }: { label: string; opts: { v
         {opts.map((o) => (
           <button key={o.v} onClick={() => onSelect(String(o.v))}
             className={cn("px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
-              String(active) === String(o.v) ? "btn-fire border-transparent text-white" : "bg-white border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+              String(active) === String(o.v) ? "btn-fire border-transparent text-white" : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
             )}>{o.l}</button>
         ))}
       </div>

@@ -231,7 +231,7 @@ export default function RecipeDetailPage() {
       {shoppingModalOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
-          <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
+          <div className="relative w-full sm:max-w-md bg-surface-50 rounded-t-3xl sm:rounded-3xl border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-5 border-b border-surface-300">
               <h3 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>בחרי מצרכים לקנייה</h3>
               <button onClick={() => setShoppingModalOpen(false)} className="p-1.5 rounded-xl hover:bg-surface-200 text-bark-200 transition-colors">
@@ -289,7 +289,7 @@ export default function RecipeDetailPage() {
           </div>
         )}
         {recipe.kosher_type && (
-          <span className="absolute top-4 right-4 px-3 py-1 rounded-md bg-white/80 backdrop-blur-sm text-xs font-semibold text-bark-500">
+          <span className="absolute top-4 right-4 px-3 py-1 rounded-md bg-surface-50/80 backdrop-blur-sm text-xs font-semibold text-bark-500">
             {kosherLabels[recipe.kosher_type]}
           </span>
         )}

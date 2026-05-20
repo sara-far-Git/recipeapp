@@ -28,7 +28,7 @@ export default function Footer() {
       {showIOSGuide && (
         <div className="fixed inset-0 z-[300] flex items-end justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowIOSGuide(false)} />
-          <div className="relative w-full max-w-sm bg-white rounded-t-3xl border-t border-surface-400 shadow-warm-lg p-6 pb-12 animate-slide-up">
+          <div className="relative w-full max-w-sm bg-surface-50 rounded-t-3xl border-t border-surface-400 shadow-warm-lg p-6 pb-12 animate-slide-up">
             <button onClick={() => setShowIOSGuide(false)} className="absolute top-4 left-4 p-1.5 rounded-xl hover:bg-surface-200 text-bark-300">
               <X className="w-5 h-5" />
             </button>
