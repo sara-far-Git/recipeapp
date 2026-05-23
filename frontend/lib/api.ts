@@ -30,7 +30,7 @@ function cachedGet(url: string, params?: Record<string, any>, ttlMs = 30_000): P
 }
 
 export function invalidateCache(prefix: string) {
-  for (const k of _getCache.keys()) { if (k.startsWith(prefix)) _getCache.delete(k); }
+  Array.from(_getCache.keys()).forEach((k) => { if (k.startsWith(prefix)) _getCache.delete(k); });
 }
 
 declare module "axios" {
