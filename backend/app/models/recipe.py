@@ -1,6 +1,6 @@
 from sqlalchemy import (
     Column, Integer, String, Boolean, DateTime, Text,
-    Float, ForeignKey, Enum as SAEnum, JSON
+    Float, ForeignKey, Enum as SAEnum, JSON, Index
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -34,8 +34,8 @@ class Recipe(Base):
     prep_time_minutes = Column(Integer, nullable=True)
     cook_time_minutes = Column(Integer, nullable=True)
     servings = Column(Integer, default=4)
-    difficulty = Column(SAEnum(DifficultyLevel), default=DifficultyLevel.medium)
-    kosher_type = Column(SAEnum(KosherType), nullable=True)
+    difficulty = Column(SAEnum(DifficultyLevel), default=DifficultyLevel.medium, index=True)
+    kosher_type = Column(SAEnum(KosherType), nullable=True, index=True)
     category = Column(String(50), nullable=True, index=True)
 
     # Step 2 - Ingredients (stored as JSON array)
@@ -48,7 +48,7 @@ class Recipe(Base):
 
     # AI Scan tracking
     is_scanned = Column(Boolean, default=False)
-    is_published = Column(Boolean, default=True)
+    is_published = Column(Boolean, default=True, index=True)
 
     # Stats (denormalized for performance)
     likes_count = Column(Integer, default=0)
@@ -57,7 +57,7 @@ class Recipe(Base):
     ratings_sum = Column(Integer, default=0)
     ratings_count = Column(Integer, default=0)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
@@ -76,6 +76,7 @@ class Recipe(Base):
 
 class Like(Base):
     __tablename__ = "likes"
+    __table_args__ = (Index("ix_likes_recipe_id", "recipe_id"),)
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"), primary_key=True)
@@ -87,6 +88,7 @@ class Like(Base):
 
 class SavedRecipe(Base):
     __tablename__ = "saved_recipes"
+    __table_args__ = (Index("ix_saved_recipes_recipe_id", "recipe_id"),)
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"), primary_key=True)
@@ -100,7 +102,7 @@ class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=False)
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=False, index=True)
     author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     content = Column(Text, nullable=False)
     is_reported = Column(Boolean, default=False)
@@ -112,6 +114,7 @@ class Comment(Base):
 
 class Rating(Base):
     __tablename__ = "ratings"
+    __table_args__ = (Index("ix_ratings_recipe_id", "recipe_id"),)
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"), primary_key=True)

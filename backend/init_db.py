@@ -82,4 +82,27 @@ except Exception as exc:  # noqa: BLE001
     print(f"  ! could not create google_id index: {exc}")
 
 
+# Performance indexes — idempotent, safe to run on every boot.
+_PERF_INDEXES = [
+    "CREATE INDEX IF NOT EXISTS ix_recipes_is_published ON recipes (is_published)",
+    "CREATE INDEX IF NOT EXISTS ix_recipes_difficulty    ON recipes (difficulty)",
+    "CREATE INDEX IF NOT EXISTS ix_recipes_kosher_type   ON recipes (kosher_type)",
+    "CREATE INDEX IF NOT EXISTS ix_recipes_created_at    ON recipes (created_at DESC)",
+    "CREATE INDEX IF NOT EXISTS ix_likes_recipe_id        ON likes (recipe_id)",
+    "CREATE INDEX IF NOT EXISTS ix_saved_recipes_recipe_id ON saved_recipes (recipe_id)",
+    "CREATE INDEX IF NOT EXISTS ix_ratings_recipe_id      ON ratings (recipe_id)",
+    "CREATE INDEX IF NOT EXISTS ix_comments_recipe_id     ON comments (recipe_id)",
+]
+
+try:
+    with engine.begin() as conn:
+        for ddl in _PERF_INDEXES:
+            try:
+                conn.execute(text(ddl))
+            except Exception as idx_exc:  # noqa: BLE001
+                print(f"  ! index ddl skipped: {idx_exc}")
+except Exception as exc:  # noqa: BLE001
+    print(f"  ! could not apply performance indexes: {exc}")
+
+
 print("Done — database ready.")

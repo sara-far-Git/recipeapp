@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
 from app.core.database import get_db
 from app.core.security import get_current_user, get_optional_current_user
-from app.models.user import User
+from app.models.user import User, Follow
 from app.models.recipe import Recipe, Like, SavedRecipe, Comment, Rating, DifficultyLevel, KosherType
 from app.schemas.recipe import (
     RecipeCreate, RecipeUpdate, RecipeResponse, RecipeListItem,
@@ -12,6 +13,46 @@ from app.schemas.recipe import (
 )
 
 router = APIRouter(prefix="/recipes", tags=["recipes"])
+
+
+def _batch_author_stats(db: Session, author_ids: list) -> tuple:
+    """Return (followers_ct, following_ct, recipes_ct) dicts in 3 queries instead of N*3."""
+    if not author_ids:
+        return {}, {}, {}
+    followers_ct = dict(
+        db.query(Follow.followed_id, func.count(Follow.follower_id))
+        .filter(Follow.followed_id.in_(author_ids))
+        .group_by(Follow.followed_id)
+        .all()
+    )
+    following_ct = dict(
+        db.query(Follow.follower_id, func.count(Follow.followed_id))
+        .filter(Follow.follower_id.in_(author_ids))
+        .group_by(Follow.follower_id)
+        .all()
+    )
+    recipes_ct = dict(
+        db.query(Recipe.author_id, func.count(Recipe.id))
+        .filter(Recipe.author_id.in_(author_ids))
+        .group_by(Recipe.author_id)
+        .all()
+    )
+    return followers_ct, following_ct, recipes_ct
+
+
+def _batch_flags(db: Session, recipe_ids: list, user_id: Optional[int]) -> tuple:
+    """Return (liked_ids, saved_ids) sets scoped to the given recipe IDs only."""
+    if not user_id or not recipe_ids:
+        return set(), set()
+    liked = {
+        row[0] for row in db.query(Like.recipe_id)
+        .filter(Like.user_id == user_id, Like.recipe_id.in_(recipe_ids))
+    }
+    saved = {
+        row[0] for row in db.query(SavedRecipe.recipe_id)
+        .filter(SavedRecipe.user_id == user_id, SavedRecipe.recipe_id.in_(recipe_ids))
+    }
+    return liked, saved
 
 
 def _enrich_author(user: User) -> User:
@@ -52,14 +93,21 @@ def list_recipes(
         .limit(limit)
         .all()
     )
-    result = []
+    if not recipes:
+        return []
+
+    author_ids = list({r.author_id for r in recipes})
+    recipe_ids = [r.id for r in recipes]
+    followers_ct, following_ct, recipes_ct = _batch_author_stats(db, author_ids)
+    liked_ids, saved_ids = _batch_flags(db, recipe_ids, current_user.id if current_user else None)
+
     for r in recipes:
-        _enrich_author(r.author)
-        flags = _recipe_flags(r, current_user)
-        r.is_liked = flags["is_liked"]
-        r.is_saved = flags["is_saved"]
-        result.append(r)
-    return result
+        r.author.followers_count = followers_ct.get(r.author_id, 0)
+        r.author.following_count = following_ct.get(r.author_id, 0)
+        r.author.recipes_count = recipes_ct.get(r.author_id, 0)
+        r.is_liked = r.id in liked_ids
+        r.is_saved = r.id in saved_ids
+    return recipes
 
 
 @router.get("/{recipe_id}", response_model=RecipeResponse)

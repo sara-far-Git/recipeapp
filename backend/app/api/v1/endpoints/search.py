@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
 from app.core.database import get_db
 from app.core.security import get_optional_current_user
-from app.models.user import User
-from app.models.recipe import Recipe, DifficultyLevel, KosherType
+from app.models.user import User, Follow
+from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, KosherType
 from app.schemas.recipe import RecipeListItem
 
 router = APIRouter(prefix="/search", tags=["search"])
@@ -48,16 +49,44 @@ def search_recipes(
         .all()
     )
 
-    liked_ids = set()
-    saved_ids = set()
+    if not recipes:
+        return []
+
+    author_ids = list({r.author_id for r in recipes})
+    recipe_ids = [r.id for r in recipes]
+
+    followers_ct = dict(
+        db.query(Follow.followed_id, func.count(Follow.follower_id))
+        .filter(Follow.followed_id.in_(author_ids))
+        .group_by(Follow.followed_id).all()
+    )
+    following_ct = dict(
+        db.query(Follow.follower_id, func.count(Follow.followed_id))
+        .filter(Follow.follower_id.in_(author_ids))
+        .group_by(Follow.follower_id).all()
+    )
+    recipes_ct = dict(
+        db.query(Recipe.author_id, func.count(Recipe.id))
+        .filter(Recipe.author_id.in_(author_ids))
+        .group_by(Recipe.author_id).all()
+    )
+
+    liked_ids: set = set()
+    saved_ids: set = set()
     if current_user:
-        liked_ids = {l.recipe_id for l in current_user.likes}
-        saved_ids = {s.recipe_id for s in current_user.saved_recipes}
+        liked_ids = {
+            row[0] for row in db.query(Like.recipe_id)
+            .filter(Like.user_id == current_user.id, Like.recipe_id.in_(recipe_ids))
+        }
+        saved_ids = {
+            row[0] for row in db.query(SavedRecipe.recipe_id)
+            .filter(SavedRecipe.user_id == current_user.id, SavedRecipe.recipe_id.in_(recipe_ids))
+        }
 
     for r in recipes:
-        r.author.followers_count = len(r.author.followers)
-        r.author.following_count = len(r.author.following)
-        r.author.recipes_count = len(r.author.recipes)
+        r.author.followers_count = followers_ct.get(r.author_id, 0)
+        r.author.following_count = following_ct.get(r.author_id, 0)
+        r.author.recipes_count = recipes_ct.get(r.author_id, 0)
         r.is_liked = r.id in liked_ids
         r.is_saved = r.id in saved_ids
 
