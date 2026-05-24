@@ -375,7 +375,7 @@ export default function NewRecipePage() {
   </div>
 
   <div>
-  <label className="input-label mb-3">קטגוריה</label>
+  <label className="input-label mb-3">קטגוריה <span className="text-red-500">*</span></label>
   <div className="grid grid-cols-3 gap-2">
   {CATEGORY_OPTIONS.map((cat) => (
   <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
@@ -391,7 +391,7 @@ export default function NewRecipePage() {
   </div>
   </div>
 
-  <button onClick={() => setStep(2)} disabled={!title.trim()}
+  <button onClick={() => setStep(2)} disabled={!title.trim() || !category}
   className="w-full py-3.5  btn-fire font-semibold uppercase tracking-widest text-sm flex items-center justify-center gap-2 disabled:opacity-40">
   הבא — מצרכים <ArrowLeft className="w-4 h-4" />
   </button>
