@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v11";
+const KEY = "logo-intro-v12";
 
 function unlock() {
   const html = document.documentElement;
@@ -21,6 +21,7 @@ export default function LogoIntro() {
   const [gone, setGone] = useState(false);
   const [hole, setHole] = useState(0);
   const [src, setSrc] = useState("");
+  const [cue, setCue] = useState(false);
   const phase = useRef<"play" | "reveal" | "done">("play");
   const p = useRef(0);
   const detach = useRef(() => {});
@@ -46,21 +47,25 @@ export default function LogoIntro() {
       setGone(true);
     };
 
+    const openReveal = () => {
+      if (phase.current !== "play") return;
+      phase.current = "reveal";
+      setCue(true);
+    };
+
     const apply = (next: number) => {
       p.current = Math.min(1, Math.max(0, next));
       setHole(p.current * 150);
       if (p.current >= 0.995) complete();
     };
 
-    const ready = window.setTimeout(() => {
-      if (phase.current === "play") phase.current = "reveal";
-    }, 8000);
+    const ready = window.setTimeout(openReveal, 8000);
 
     const onWheel = (e: WheelEvent) => {
       if (phase.current === "done") return;
       e.preventDefault();
       if (phase.current !== "reveal") return;
-      apply(p.current + e.deltaY / (window.innerHeight * 0.85));
+      apply(p.current + e.deltaY / (window.innerHeight * 2.6));
     };
     let touchY = 0;
     const onTouchStart = (e: TouchEvent) => {
@@ -71,7 +76,7 @@ export default function LogoIntro() {
       e.preventDefault();
       if (phase.current !== "reveal") return;
       const y = e.touches[0].clientY;
-      apply(p.current + (touchY - y) / (window.innerHeight * 0.7));
+      apply(p.current + (touchY - y) / (window.innerHeight * 2.2));
       touchY = y;
     };
     const onKey = (e: KeyboardEvent) => {
@@ -83,7 +88,7 @@ export default function LogoIntro() {
       if (phase.current !== "reveal") return;
       if (e.key === "ArrowDown" || e.key === " " || e.key === "PageDown") {
         e.preventDefault();
-        apply(p.current + 0.16);
+        apply(p.current + 0.055);
       }
     };
 
@@ -108,6 +113,8 @@ export default function LogoIntro() {
 
   if (gone) return null;
 
+  const cueOn = cue && hole < 18;
+
   return (
     <div
       className="logo-intro-veil"
@@ -128,13 +135,28 @@ export default function LogoIntro() {
           autoPlay
           style={{ opacity: 1 - Math.min(1, hole / 90) }}
           onEnded={() => {
-            if (phase.current === "play") phase.current = "reveal";
+            if (phase.current === "play") {
+              phase.current = "reveal";
+              setCue(true);
+            }
           }}
           onError={() => {
-            if (phase.current === "play") phase.current = "reveal";
+            if (phase.current === "play") {
+              phase.current = "reveal";
+              setCue(true);
+            }
           }}
         />
       ) : null}
+      <p
+        className={cueOn ? "logo-intro-cue is-on" : "logo-intro-cue"}
+        style={{ opacity: cueOn ? 1 - hole / 18 : 0 }}
+      >
+        <span>גללו לכניסה</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </p>
     </div>
   );
 }

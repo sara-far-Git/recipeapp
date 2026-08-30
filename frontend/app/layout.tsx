@@ -77,7 +77,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro-v11') && window.scrollY < 48) {
+              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro-v12') && window.scrollY < 48) {
                 document.documentElement.classList.add('logo-intro');
               }
               window.__pwaPrompt = null;

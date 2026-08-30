@@ -605,11 +605,46 @@
   }
   .logo-intro-video {
     display: block;
-    width: min(92vw, 48rem);
-    max-height: 78vh;
+    width: min(98vw, 64rem);
+    max-height: 88vh;
     height: auto;
     object-fit: contain;
     background: transparent;
+  }
+  .logo-intro-cue {
+    position: absolute;
+    bottom: max(1.6rem, calc(env(safe-area-inset-bottom) + 0.9rem));
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-heebo), sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #e8ebe7;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .logo-intro-cue.is-on {
+    animation: logo-cue-in 0.55s ease forwards;
+  }
+  .logo-intro-cue svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    animation: logo-cue-bob 1.35s ease-in-out infinite;
+  }
+  @keyframes logo-cue-in {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  @keyframes logo-cue-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
   }
   html.logo-intro header,
   html.logo-intro footer,
@@ -621,6 +656,8 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .logo-intro-veil { mask-image: none; -webkit-mask-image: none; }
+    .logo-intro-cue.is-on,
+    .logo-intro-cue svg { animation: none; }
   }
 
 }
