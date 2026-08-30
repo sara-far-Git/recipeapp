@@ -4,13 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { recipesApi, scanApi, uploadApi, importApi } from "@/lib/api";
-import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import {
-  Camera, Upload, Plus, Trash2, GripVertical, ChefHat,
-  ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Link2,
+  Camera, Upload, Plus, Trash2, GripVertical,
+  ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Link2, Mic, Square,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/categories";
 
 interface Ingredient { amount: number; unit: string; name: string; }
 interface Instruction { step: number; text: string; }
@@ -29,9 +29,7 @@ const KOSHER_OPTIONS = [
   { value: "non_kosher", label: "לא כשר" },
 ];
 
-const CATEGORY_OPTIONS = [
-  "ראשונות", "עיקריות", "מאפים", "קינוחים", "סלטים", "משקאות",
-];
+const CATEGORY_OPTIONS = CATEGORIES.map((c) => c.name);
 
 
 export default function NewRecipePage() {
@@ -39,12 +37,19 @@ export default function NewRecipePage() {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scanInputRef = useRef<HTMLInputElement>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const tickRef = useRef<number | null>(null);
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanSuccess, setScanSuccess] = useState(false);
   const [scanError, setScanError] = useState("");
+  const [recording, setRecording] = useState(false);
+  const [recordSecs, setRecordSecs] = useState(0);
+  const [transcribing, setTranscribing] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importUrl, setImportUrl] = useState("");
@@ -68,6 +73,95 @@ export default function NewRecipePage() {
   useEffect(() => {
   if (!user && !useAuth.getState().isLoading) router.push("/login");
   }, [user, router]);
+
+  useEffect(() => {
+    return () => {
+      if (tickRef.current) window.clearInterval(tickRef.current);
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
+  const stopTracks = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    if (tickRef.current) {
+      window.clearInterval(tickRef.current);
+      tickRef.current = null;
+    }
+  };
+
+  const sendVoice = async (blob: Blob) => {
+    const type = blob.type.split(";")[0] || "audio/webm";
+    const ext = type.includes("mp4") ? "m4a" : type.includes("ogg") ? "ogg" : "webm";
+    const file = new File([blob], `recipe.${ext}`, { type });
+    setTranscribing(true);
+    setScanError("");
+    setScanSuccess(false);
+    try {
+      const { data } = await scanApi.voice(file);
+      applyImported(data);
+      setIsScanned(true);
+      setScanSuccess(true);
+      setTimeout(() => setScanSuccess(false), 5000);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail;
+      setScanError(typeof detail === "string" ? detail : "שגיאה בתמלול ההקלטה. נסו שוב.");
+    }
+    setTranscribing(false);
+  };
+
+  const startRecording = async () => {
+    if (recording || transcribing || scanning) return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setScanError("הדפדפן לא תומך בהקלטה. נסו Chrome או Safari.");
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const mime = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((t) =>
+        MediaRecorder.isTypeSupported(t)
+      );
+      const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      chunksRef.current = [];
+      rec.ondataavailable = (e) => {
+        if (e.data.size) chunksRef.current.push(e.data);
+      };
+      rec.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
+        stopTracks();
+        setRecording(false);
+        setRecordSecs(0);
+        if (blob.size < 800) {
+          setScanError("ההקלטה קצרה מדי. ספרו את המתכון בקול, אחר כך לחצו עצירה.");
+          return;
+        }
+        sendVoice(blob);
+      };
+      recorderRef.current = rec;
+      rec.start();
+      setRecording(true);
+      setRecordSecs(0);
+      setScanError("");
+      tickRef.current = window.setInterval(() => {
+        setRecordSecs((s) => {
+          if (s + 1 >= 180) {
+            rec.stop();
+            return 180;
+          }
+          return s + 1;
+        });
+      }, 1000);
+    } catch {
+      setScanError("צריך אישור למיקרופון כדי להקליט מתכון.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (recorderRef.current && recorderRef.current.state !== "inactive") {
+      recorderRef.current.stop();
+    }
+  };
 
   if (!user) return null;
 
@@ -164,7 +258,7 @@ export default function NewRecipePage() {
   return (
   <div className="max-w-2xl md:max-w-3xl mx-auto">
   {/* Scan overlay */}
-  {scanning && (
+  {(scanning || transcribing) && (
   <div className="fixed inset-0 z-[100] bg-bark-600/90 backdrop-blur-sm flex items-center justify-center">
   <div className="card-surface p-8 text-center max-w-sm mx-4 animate-scale-in">
   <div className="relative w-20 h-20 mx-auto mb-5">
@@ -174,7 +268,9 @@ export default function NewRecipePage() {
   <h3 className="section-title text-bark-500 mb-2">
   השף הדיגיטלי עובד
   </h3>
-  <p className="text-bark-300 text-sm">מפענח את המתכון מהתמונה...</p>
+  <p className="text-bark-300 text-sm">
+    {transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
+  </p>
   </div>
   </div>
   )}
@@ -205,7 +301,7 @@ export default function NewRecipePage() {
   צלמו מתכון מספר ונמלא אוטומטית
   </p>
   </div>
-  <button onClick={() => scanInputRef.current?.click()} disabled={scanning}
+  <button onClick={() => scanInputRef.current?.click()} disabled={scanning || recording || transcribing}
   className="flex-shrink-0 flex items-center gap-2 btn-block text-sm">
   <Camera className="w-4 h-4" /> סריקה
   </button>
@@ -216,7 +312,7 @@ export default function NewRecipePage() {
   {scanSuccess && (
   <div className="flex items-center gap-2 p-3 mb-3  bg-cinnamon-50 border border-cinnamon-200 text-cinnamon-600 text-sm animate-fade-up">
   <Check className="w-4 h-4 flex-shrink-0" />
-  המתכון זוהה בהצלחה! בדקי את הפרטים ועדכני אם צריך.
+  המתכון זוהה בהצלחה. בדקו את הפרטים ועדכנו אם צריך.
   </div>
   )}
   {scanError && (
@@ -224,6 +320,48 @@ export default function NewRecipePage() {
   {scanError}
   </div>
   )}
+
+  <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "60ms" }}>
+    <div className="flex items-center justify-between gap-4">
+      <div>
+        <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
+          <Mic className="w-4 h-4 text-cinnamon-500" />
+          הקלטה
+        </h3>
+        <p className="text-sm text-bark-300">
+          {recording
+            ? "ספרו את המתכון בקול — שם, מצרכים ושלבי הכנה"
+            : "הקליטו בקול ונתמלל ונמלא את השדות"}
+        </p>
+        {recording && (
+          <p className="text-sm font-bold text-cinnamon-500 mt-2 tabular-nums">
+            {String(Math.floor(recordSecs / 60)).padStart(2, "0")}:{String(recordSecs % 60).padStart(2, "0")}
+            <span className="text-bark-200 font-medium mr-2"> / 03:00</span>
+          </p>
+        )}
+      </div>
+      {recording ? (
+        <button
+          type="button"
+          onClick={stopRecording}
+          className="flex-shrink-0 flex items-center gap-2 btn-fire text-sm"
+        >
+          <Square className="w-4 h-4 fill-current" />
+          עצירה
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={startRecording}
+          disabled={scanning || transcribing}
+          className="flex-shrink-0 flex items-center gap-2 btn-block text-sm disabled:opacity-40"
+        >
+          <Mic className="w-4 h-4" />
+          הקלטה
+        </button>
+      )}
+    </div>
+  </div>
 
   {/* Import from URL card */}
   <div className="card-surface p-5 mb-8 animate-fade-up" style={{ animationDelay: "75ms" }}>
@@ -272,7 +410,7 @@ export default function NewRecipePage() {
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1">
   <div className={cn(
-  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
+  "w-10 h-10 flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
   step === s ? "bg-cinnamon-500 text-white" :
   "bg-surface-200 text-bark-200"
@@ -320,7 +458,7 @@ export default function NewRecipePage() {
   className="w-full aspect-video  border-2 border-dashed border-surface-400 bg-surface-100 flex flex-col items-center justify-center gap-2 text-bark-200 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-all duration-300">
   {imageUploading
   ? <Loader2 className="w-8 h-8 animate-spin text-cinnamon-500" />
-  : <><Upload className="w-8 h-8" /><span className="text-sm font-medium">העלי תמונה</span></>}
+  : <><Upload className="w-8 h-8" /><span className="text-sm font-medium">העלאת תמונה</span></>}
   </button>
   )}
   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
@@ -448,7 +586,7 @@ export default function NewRecipePage() {
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
+  <span className="flex-shrink-0 w-10 h-10 bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
   {inst.step}
   </span>
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}

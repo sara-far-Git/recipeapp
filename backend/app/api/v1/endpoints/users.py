@@ -15,7 +15,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 def _enrich_user(user: User) -> User:
     user.followers_count = len(user.followers)
     user.following_count = len(user.following)
-    user.recipes_count = len(user.recipes)
+    user.recipes_count = sum(1 for r in user.recipes if r.is_published)
     return user
 
 
@@ -64,10 +64,11 @@ def get_user_recipes(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    q = db.query(Recipe).filter(Recipe.author_id == user.id)
+    if not current_user or current_user.id != user.id:
+        q = q.filter(Recipe.is_published == True)
     recipes = (
-        db.query(Recipe)
-        .filter(Recipe.author_id == user.id, Recipe.is_published == True)
-        .options(joinedload(Recipe.author))
+        q.options(joinedload(Recipe.author))
         .order_by(Recipe.created_at.desc())
         .offset(skip)
         .limit(limit)

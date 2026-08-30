@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import Button from "@/components/ui/Button";
-import { Search, SlidersHorizontal, X, Loader2, Sparkles, ChefHat, Plus } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_FILTERS = [
   { value: "", label: "הכל" },
@@ -51,265 +52,350 @@ function SearchPageContent() {
   const [aiSuggestions, setAiSuggestions] = useState<any[] | null>(null);
 
   const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number, cat: string) => {
-  setLoading(true); setSearched(true);
-  try {
-  const params: any = {};
-  if (q) params.q = q;
-  if (diff) params.difficulty = diff;
-  if (kosh) params.kosher_type = kosh;
-  if (time > 0) params.max_prep_time = time;
-  if (cat) params.category = cat;
-  const { data } = await searchApi.search(params);
-  setResults(data);
-  } catch {}
-  setLoading(false);
+    setLoading(true);
+    setSearched(true);
+    try {
+      const params: any = {};
+      if (q) params.q = q;
+      if (diff) params.difficulty = diff;
+      if (kosh) params.kosher_type = kosh;
+      if (time > 0) params.max_prep_time = time;
+      if (cat) params.category = cat;
+      const { data } = await searchApi.search(params);
+      setResults(data);
+    } catch {}
+    setLoading(false);
   }, []);
 
-  // Auto-search when URL param changes (e.g., arriving from category click)
   useEffect(() => {
-  const q = searchParams.get("q") || "";
-  const cat = searchParams.get("category") || "";
-  setQuery(q);
-  setActiveCategory(cat);
-  if (q.length >= 2 || cat) doSearch(q, "", "", 0, cat);
+    const q = searchParams.get("q") || "";
+    const cat = searchParams.get("category") || "";
+    setQuery(q);
+    setActiveCategory(cat);
+    if (q.length >= 2 || cat) doSearch(q, "", "", 0, cat);
   }, [searchParams, doSearch]);
 
-  // Debounced search on manual input or filter changes
   useEffect(() => {
-  const timer = setTimeout(() => {
-  if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory) {
-  doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory);
-  }
-  }, 400);
-  return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory) {
+        doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
   }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch]);
 
-  const hasActiveFilters = difficulty || kosherType || maxPrepTime > 0;
-  const clearFilters = () => { setDifficulty(""); setKosherType(""); setMaxPrepTime(0); };
+  const hasActiveFilters = Boolean(difficulty || kosherType || maxPrepTime > 0);
+  const clearFilters = () => {
+    setDifficulty("");
+    setKosherType("");
+    setMaxPrepTime(0);
+  };
   const addIngredientTag = () => {
-  const t = ingredientInput.trim();
-  if (t && !ingredientTags.includes(t)) setIngredientTags([...ingredientTags, t]);
-  setIngredientInput("");
+    const t = ingredientInput.trim();
+    if (t && !ingredientTags.includes(t)) setIngredientTags([...ingredientTags, t]);
+    setIngredientInput("");
   };
   const removeIngredientTag = (tag: string) => setIngredientTags(ingredientTags.filter((t) => t !== tag));
 
   const searchByIngredients = async () => {
-  if (ingredientTags.length === 0) return;
-  setSuggestLoading(true); setSuggestions(null); setAiSuggestions(null);
-  try { const { data } = await suggestApi.fromIngredients(ingredientTags); setSuggestions(data); } catch {}
-  try { const { data } = await suggestApi.aiGenerate(ingredientTags); setAiSuggestions(data.suggestions); } catch {}
-  setSuggestLoading(false);
+    if (ingredientTags.length === 0) return;
+    setSuggestLoading(true);
+    setSuggestions(null);
+    setAiSuggestions(null);
+    try {
+      const { data } = await suggestApi.fromIngredients(ingredientTags);
+      setSuggestions(data);
+    } catch {}
+    try {
+      const { data } = await suggestApi.aiGenerate(ingredientTags);
+      setAiSuggestions(data.suggestions);
+    } catch {}
+    setSuggestLoading(false);
   };
 
   return (
-  <div className="max-w-4xl mx-auto">
-  <div className="mb-8 animate-fade-up">
-  <span className="eyebrow mb-3">
-  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
-  האוסף
-  </span>
-  <h1 className="display-lg text-bark-500">
-  {initialQ ? `«${initialQ}»` : "חיפוש מתכונים"}
-  </h1>
-  </div>
+    <div className="max-w-5xl mx-auto">
+      <div className="mb-8 animate-fade-up">
+        <span className="eyebrow mb-3">
+          <span className="plus-badge text-bark-500">
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
+          </span>
+          האוסף
+        </span>
+        <h1 className="display-lg text-bark-500">
+          {initialQ ? `«${initialQ}»` : "חיפוש מתכונים"}
+        </h1>
+      </div>
 
-  {/* Mode toggle */}
-  <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
-  <button
-  onClick={() => { setIngredientMode(false); setSuggestions(null); setAiSuggestions(null); }}
-  className={cn(
-  "px-4 py-2.5  text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-  !ingredientMode ? "btn-fire text-white" : "bg-surface-50 border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
-  )}
-  >
-  <Search className="w-4 h-4" /> חיפוש רגיל
-  </button>
-  <button
-  onClick={() => setIngredientMode(true)}
-  className={cn(
-  "px-4 py-2.5  text-sm font-semibold transition-all duration-300 flex items-center gap-2",
-  ingredientMode ? "btn-fire text-white" : "bg-surface-50 border border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
-  )}
-  >
-  <Sparkles className="w-4 h-4" /> מה אפשר להכין?
-  </button>
-  </div>
+      <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
+        <button
+          type="button"
+          onClick={() => {
+            setIngredientMode(false);
+            setSuggestions(null);
+            setAiSuggestions(null);
+          }}
+          className={cn(
+            "px-4 py-2.5 text-sm font-semibold transition-all border",
+            !ingredientMode
+              ? "btn-fire border-transparent text-white"
+              : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+          )}
+        >
+          <Search className="w-4 h-4 inline-block ml-1.5" />
+          חיפוש רגיל
+        </button>
+        <button
+          type="button"
+          onClick={() => setIngredientMode(true)}
+          className={cn(
+            "px-4 py-2.5 text-sm font-semibold transition-all border",
+            ingredientMode
+              ? "btn-fire border-transparent text-white"
+              : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+          )}
+        >
+          <Sparkles className="w-4 h-4 inline-block ml-1.5" />
+          מה אפשר להכין?
+        </button>
+      </div>
 
-  {/* Search bar */}
-  {!ingredientMode && (
-  <div className="relative mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
-  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-bark-200" />
-  <input
-  value={query}
-  onChange={(e) => setQuery(e.target.value)}
-  placeholder="חפשו מתכון לפי שם או תיאור..."
-  className="input-dark pr-12 pl-12"
-  style={{ fontSize: 22, paddingBottom: 12 }}
-  autoFocus={!initialQ}
-  />
-  <button
-  onClick={() => setShowFilters(!showFilters)}
-  className={cn(
-  "absolute left-3 top-1/2 -translate-y-1/2 p-1.5  transition-all duration-300",
-  hasActiveFilters || showFilters ? "text-cinnamon-600 bg-cinnamon-500/10" : "text-bark-200 hover:text-bark-500"
-  )}
-  >
-  <SlidersHorizontal className="w-5 h-5" />
-  </button>
-  </div>
-  )}
+      {!ingredientMode && (
+        <div className="relative mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
+          <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-bark-200" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="חפשו מתכון לפי שם או תיאור..."
+            className="input-dark pr-8 pl-12"
+            style={{ fontSize: 22, paddingBottom: 12 }}
+            autoFocus={!initialQ}
+          />
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className={cn(
+              "absolute left-0 top-1/2 -translate-y-1/2 p-2 transition-colors",
+              hasActiveFilters || showFilters ? "text-cinnamon-500" : "text-bark-200 hover:text-bark-500"
+            )}
+            aria-label="סינון"
+          >
+            <SlidersHorizontal className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
-  {/* Ingredient mode */}
-  {ingredientMode && (
-  <div className="card-surface p-5 mb-6 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <p className="text-sm text-bark-300 mb-4">הקלידו מצרכים שיש לכם בבית ונמצא מתכונים מתאימים</p>
-  <div className="flex gap-2 mb-3">
-  <input value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)}
-  onKeyDown={(e) => e.key === "Enter" && addIngredientTag()}
-  placeholder="למשל: עוף, אורז, בצל..."
-  className="input-dark flex-1" />
-  <Button onClick={addIngredientTag} disabled={!ingredientInput.trim()}>הוסף</Button>
-  </div>
-  {ingredientTags.length > 0 && (
-  <div className="flex flex-wrap gap-2 mb-4">
-  {ingredientTags.map((tag) => (
-  <span key={tag} className="inline-flex items-center gap-1.5 px-3.5 py-1.5  bg-cinnamon-50 border border-cinnamon-200 text-cinnamon-700 text-sm font-medium">
-  {tag}
-  <button onClick={() => removeIngredientTag(tag)} className="hover:text-red-400 transition-colors"><X className="w-3 h-3" /></button>
-  </span>
-  ))}
-  </div>
-  )}
-  <Button onClick={searchByIngredients} loading={suggestLoading} disabled={ingredientTags.length === 0}>
-  <ChefHat className="w-4 h-4" /> מצא מתכונים
-  </Button>
+      {!ingredientMode && (
+        <div className="flex flex-wrap gap-2 mb-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.name}
+              type="button"
+              onClick={() => setActiveCategory(activeCategory === cat.name ? "" : cat.name)}
+              className={cn(
+                "px-3.5 py-1.5 text-xs font-bold border transition-colors",
+                activeCategory === cat.name
+                  ? "btn-fire border-transparent text-white"
+                  : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
+              )}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
 
-  {aiSuggestions && aiSuggestions.length > 0 && (
-  <div className="mt-6 pt-5 border-t border-surface-300">
-  <h3 className="font-bold text-sm mb-4 flex items-center gap-2 text-bark-400">
-  <Sparkles className="w-4 h-4 text-cinnamon-500" /> הצעות AI
-  </h3>
-  <div className="space-y-3">
-  {aiSuggestions.map((s: any, i: number) => (
-  <div key={i} className="p-4  bg-surface-100 border border-cinnamon-100 animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
-  <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
-  <p className="text-sm text-bark-300 mb-2">{s.description}</p>
-  <div className="flex gap-2 text-xs text-bark-300">
-  <span className="px-2 py-0.5  bg-surface-300 font-medium">
-  {s.difficulty === "easy" ? "קל" : s.difficulty === "medium" ? "בינוני" : "מאתגר"}
-  </span>
-  {s.prep_time_minutes && <span className="px-2 py-0.5  bg-surface-300 font-medium">{s.prep_time_minutes} דק׳</span>}
-  </div>
-  {s.extra_ingredients?.length > 0 && (
-  <p className="text-xs text-bark-200 mt-2">צריך גם: {s.extra_ingredients.join(", ")}</p>
-  )}
-  </div>
-  ))}
-  </div>
-  </div>
-  )}
-  </div>
-  )}
+      {ingredientMode && (
+        <div className="card-surface p-6 mb-6 animate-fade-up">
+          <p className="text-sm text-bark-300 mb-4">הקלידו מצרכים שיש בבית — נמצא מה אפשר להכין</p>
+          <form
+            className="flex items-end gap-2 mb-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              addIngredientTag();
+            }}
+          >
+            <input
+              value={ingredientInput}
+              onChange={(e) => setIngredientInput(e.target.value)}
+              placeholder="למשל: עוף, אורז, בצל..."
+              className="input-dark flex-1"
+            />
+            <button type="submit" disabled={!ingredientInput.trim()} className="btn-fire h-11 min-h-0 px-4 disabled:opacity-30">
+              <Plus className="w-4 h-4" />
+              <span className="mr-1.5 text-sm">הוספה</span>
+            </button>
+          </form>
+          {ingredientTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {ingredientTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-cinnamon-50 border border-cinnamon-200 text-cinnamon-700 text-sm font-medium"
+                >
+                  {tag}
+                  <button type="button" onClick={() => removeIngredientTag(tag)} className="hover:text-red-500" aria-label={`הסרת ${tag}`}>
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={searchByIngredients}
+            disabled={ingredientTags.length === 0 || suggestLoading}
+            className="btn-block disabled:opacity-40"
+          >
+            {suggestLoading ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Sparkles className="w-4 h-4 ml-2" />}
+            מצאו מתכונים
+          </button>
 
-  {/* Filters */}
-  {!ingredientMode && showFilters && (
-  <div className="card-surface p-5 mb-6 space-y-5 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <div className="flex items-center justify-between">
-  <h3 className="font-bold text-sm text-bark-400">סינון תוצאות</h3>
-  {hasActiveFilters && (
-  <button onClick={clearFilters} className="text-xs text-cinnamon-600 font-medium flex items-center gap-1 hover:text-cinnamon-500">
-  <X className="w-3 h-3" /> נקה הכל
-  </button>
-  )}
-  </div>
-  <FilterRow label="רמת קושי" options={DIFFICULTY_FILTERS} value={difficulty} onChange={setDifficulty} />
-  <FilterRow label="סוג כשרות" options={KOSHER_FILTERS} value={kosherType} onChange={setKosherType} />
-  <FilterRow label="זמן הכנה" options={TIME_FILTERS.map(f => ({ value: String(f.value), label: f.label }))} value={String(maxPrepTime)} onChange={(v) => setMaxPrepTime(Number(v))} />
-  </div>
-  )}
+          {aiSuggestions && aiSuggestions.length > 0 && (
+            <div className="mt-6 pt-5" style={{ borderTop: "1px solid #d9c79a" }}>
+              <p className="eyebrow mb-4">
+                <Sparkles className="w-3.5 h-3.5" />
+                הצעות
+              </p>
+              <div className="space-y-3">
+                {aiSuggestions.map((s: any, i: number) => (
+                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid #d9c79a" }}>
+                    <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
+                    <p className="text-sm text-bark-300 mb-2">{s.description}</p>
+                    <div className="flex gap-2 text-xs text-bark-300">
+                      <span className="badge badge-neutral">
+                        {s.difficulty === "easy" ? "קל" : s.difficulty === "medium" ? "בינוני" : "מאתגר"}
+                      </span>
+                      {s.prep_time_minutes && <span className="badge badge-neutral">{s.prep_time_minutes} דק׳</span>}
+                    </div>
+                    {s.extra_ingredients?.length > 0 && (
+                      <p className="text-xs text-bark-200 mt-2">צריך גם: {s.extra_ingredients.join(", ")}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
-  {/* Results */}
-  {ingredientMode ? (
-  suggestions && suggestions.length > 0 ? (
-  <div>
-  <h3 className="font-bold text-sm mb-4 text-bark-400">מתכונים מהקהילה:</h3>
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-  {suggestions.map((r: any) => <RecipeCard key={r.id} recipe={r} />)}
-  </div>
-  </div>
-  ) : suggestions !== null ? <EmptyState /> : null
-  ) : loading ? (
-  <div className="flex items-center justify-center py-20">
-  <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
-  </div>
-  ) : results.length > 0 ? (
-  <div>
-  <p className="text-sm text-bark-300 mb-5">{results.length} מתכונים נמצאו</p>
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-  {results.map((r, i) => (
-  <div key={r.id} className="animate-slide-up opacity-0" style={{ animationDelay: `${i * 60}ms`, animationFillMode: "forwards" }}>
-  <RecipeCard recipe={r} />
-  </div>
-  ))}
-  </div>
-  </div>
-  ) : searched ? <EmptyState /> : (
-  <div className="text-center py-20">
-  <div className="w-16 h-16 mx-auto mb-4  bg-surface-200 border border-surface-400 flex items-center justify-center">
-  <Search className="w-7 h-7 text-bark-200" />
-  </div>
-  <p className="text-bark-300 font-medium">הקלידו לפחות 2 תווים לחיפוש</p>
-  </div>
-  )}
-  </div>
+      {!ingredientMode && showFilters && (
+        <div className="card-surface p-5 mb-6 space-y-5 animate-fade-up">
+          <div className="flex items-center justify-between">
+            <h3 className="section-title text-bark-500">סינון</h3>
+            {hasActiveFilters && (
+              <button type="button" onClick={clearFilters} className="text-xs font-bold text-cinnamon-500 hover:text-cinnamon-600">
+                נקה הכל
+              </button>
+            )}
+          </div>
+          <FilterRow label="רמת קושי" options={DIFFICULTY_FILTERS} value={difficulty} onChange={setDifficulty} />
+          <FilterRow label="סוג כשרות" options={KOSHER_FILTERS} value={kosherType} onChange={setKosherType} />
+          <FilterRow
+            label="זמן הכנה"
+            options={TIME_FILTERS.map((f) => ({ value: String(f.value), label: f.label }))}
+            value={String(maxPrepTime)}
+            onChange={(v) => setMaxPrepTime(Number(v))}
+          />
+        </div>
+      )}
+
+      {ingredientMode ? (
+        suggestions && suggestions.length > 0 ? (
+          <div>
+            <p className="eyebrow mb-4">מהקהילה</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {suggestions.map((r: any) => (
+                <RecipeCard key={r.id} recipe={r} />
+              ))}
+            </div>
+          </div>
+        ) : suggestions !== null ? (
+          <EmptyState title="לא נמצאו מתכונים מהמצרכים האלה" />
+        ) : null
+      ) : loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+        </div>
+      ) : results.length > 0 ? (
+        <div>
+          <p className="text-sm text-bark-200 mb-5">{results.length} מתכונים</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {results.map((r, i) => (
+              <div key={r.id} className="animate-slide-up" style={{ animationDelay: `${i * 40}ms` }}>
+                <RecipeCard recipe={r} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : searched ? (
+        <EmptyState title="לא נמצאו מתכונים" />
+      ) : (
+        <EmptyState title="הקלידו לפחות 2 תווים, או בחרו קטגוריה" action={false} />
+      )}
+    </div>
   );
 }
 
-export default function SearchPage() {
-  return (
-  <Suspense fallback={
-  <div className="flex items-center justify-center py-20">
-  <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
-  </div>
-  }>
-  <SearchPageContent />
-  </Suspense>
-  );
-}
-
-function FilterRow({ label, options, value, onChange }: {
+function FilterRow({
+  label,
+  options,
+  value,
+  onChange,
+}: {
   label: string;
   options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
 }) {
   return (
-  <div>
-  <p className="text-xs font-semibold text-bark-300 mb-2">{label}</p>
-  <div className="flex gap-2 flex-wrap">
-  {options.map((f) => (
-  <button key={f.value} onClick={() => onChange(f.value)}
-  className={cn(
-  "px-3.5 py-1.5  text-xs font-semibold transition-all duration-300",
-  value === f.value
-  ? "btn-fire text-white"
-  : "bg-surface-50 text-bark-400 border border-surface-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
-  )}>
-  {f.label}
-  </button>
-  ))}
-  </div>
-  </div>
+    <div>
+      <p className="input-label mb-2">{label}</p>
+      <div className="flex gap-2 flex-wrap">
+        {options.map((f) => (
+          <button
+            key={f.value}
+            type="button"
+            onClick={() => onChange(f.value)}
+            className={cn(
+              "px-3.5 py-1.5 text-xs font-bold border transition-colors",
+              value === f.value
+                ? "btn-fire border-transparent text-white"
+                : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
+            )}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
-function EmptyState() {
+function EmptyState({ title, action = true }: { title: string; action?: boolean }) {
   return (
-  <div className="text-center py-20 animate-fade-up">
-  <div className="w-16 h-16 mx-auto mb-4  bg-surface-200 border border-surface-400 flex items-center justify-center">
-  <ChefHat className="w-7 h-7 text-bark-200" />
-  </div>
-  <p className="text-bark-300 font-medium">לא נמצאו מתכונים</p>
-  </div>
+    <div className="card-surface p-8 sm:p-10 text-center animate-fade-up">
+      <p className="section-title text-bark-500 mb-2">{title}</p>
+      <p className="text-bark-300 text-sm mb-6">אפשר לנסות מילה אחרת, או לעבור לקטגוריה</p>
+      {action && (
+        <Link href="/#categories" className="btn-outline inline-flex">
+          לכל הקטגוריות
+        </Link>
+      )}
+    </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+        </div>
+      }
+    >
+      <SearchPageContent />
+    </Suspense>
   );
 }

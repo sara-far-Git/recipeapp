@@ -99,8 +99,8 @@ export const usersApi = {
   updateMe: (data: { full_name?: string; bio?: string; avatar_url?: string }) =>
     api.put("/users/me", data).then((r) => { invalidateCache("/users/me"); return r; }),
   getProfile: (username: string) => cachedGet(`/users/${username}`, undefined, 60_000),
-  getRecipes: (username: string, skip = 0) => cachedGet(`/users/${username}/recipes`, { skip }, 30_000),
-  getSaved: (username: string, skip = 0) => cachedGet(`/users/${username}/saved`, { skip }, 30_000),
+  getRecipes: (username: string, skip = 0) => cachedGet(`/users/${username}/recipes`, { skip, limit: 100 }, 30_000),
+  getSaved: (username: string, skip = 0) => cachedGet(`/users/${username}/saved`, { skip, limit: 100 }, 30_000),
   toggleFollow: (username: string) =>
     api.post(`/users/${username}/follow`).then((r) => { invalidateCache(`/users/${username}`); return r; }),
   getFollowers: (username: string) => cachedGet(`/users/${username}/followers`, undefined, 60_000),
@@ -150,6 +150,14 @@ export const scanApi = {
     form.append("file", file);
     return api.post("/scan", form, {
       headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+  voice: (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return api.post("/scan/voice", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 120_000,
     });
   },
 };

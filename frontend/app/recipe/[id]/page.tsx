@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
 import StarRating from "@/components/ui/StarRating";
 import {
-  Heart, Bookmark, Clock, Users, ChefHat, ArrowRight,
+  Heart, Bookmark, Clock, Users, ChefHat,
   Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send,
   ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer,
 } from "lucide-react";
@@ -198,9 +198,10 @@ export default function RecipeDetailPage() {
 
   {/* Header */}
   <div className="flex items-center justify-between mb-6">
-  <h1 className="section-title text-amber-100 flex-1 ml-4">{recipe.title}</h1>
+  <h1 className="section-title flex-1 ml-4" style={{ color: "#f7f1e4" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
-  className="px-4 py-2 bg-amber-900/40 border border-amber-700/40 text-amber-200 text-sm hover:bg-amber-900/60 transition-all flex-shrink-0">
+  className="px-4 py-2 text-sm flex-shrink-0"
+  style={{ background: "#3a2618", color: "#f7f1e4", border: "1px solid #8b3a1f" }}>
   יציאה ממצב הכנה
   </button>
   </div>
@@ -282,7 +283,7 @@ export default function RecipeDetailPage() {
   className={cn("p-4 border-2 cursor-pointer transition-all select-none",
   completedSteps.has(inst.step) ? "border-amber-600/40 bg-amber-800/20" : "border-amber-900/40 bg-amber-950/40 hover:border-amber-800/40")}>
   <div className="flex items-start gap-3">
-  <span className={cn("flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
+  <span className={cn("flex-shrink-0 w-8 h-8 flex items-center justify-center text-sm font-bold",
   completedSteps.has(inst.step) ? "bg-amber-600 text-white" : "bg-amber-900/60 text-amber-400")}>
   {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
   </span>
@@ -327,7 +328,7 @@ export default function RecipeDetailPage() {
   ? new Set() : new Set(scaledIngredients.map((_: any, i: number) => i))
   )}
   className="w-full text-right text-xs text-cinnamon-600 hover:text-cinnamon-500 mb-2 px-1 transition-colors">
-  {selectedIngredients.size === scaledIngredients.length ? "בטלי הכל" : "בחרי הכל"}
+  {selectedIngredients.size === scaledIngredients.length ? "בטלו הכל" : "בחרו הכל"}
   </button>
   {scaledIngredients.map((ing: any, i: number) => (
   <button key={i}
@@ -348,26 +349,27 @@ export default function RecipeDetailPage() {
   className="w-full py-3.5  btn-fire font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
   {shoppingLoading
   ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-  : <><ShoppingCart className="w-4 h-4" />הוסיפי {selectedIngredients.size} מצרכים</>}
+  : <><ShoppingCart className="w-4 h-4" />הוסיפו {selectedIngredients.size} מצרכים</>}
   </button>
   </div>
   </div>
   </div>
   )}
 
-  {/* Back */}
-  <button onClick={() => router.back()}
-  className="flex items-center gap-1.5 text-bark-300 hover:text-cinnamon-500 mb-5 transition-colors text-sm">
-  <ArrowRight className="w-4 h-4" /> חזרה
-  </button>
+  <Link href="/search" className="eyebrow mb-6 hover:text-cinnamon-500 transition-colors">
+  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
+  מתכון
+  </Link>
 
   {/* Hero image */}
   <div className="relative  overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#e8dcc4" }}>
   {recipe.image_url ? (
   <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
   ) : (
-  <div className="flex items-center justify-center h-full">
-  <ChefHat className="w-16 h-16 text-bark-100" />
+  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#efe7d7" }}>
+  <span className="eyebrow">{recipe.category || "מתכון"}</span>
+  <p className="card-title text-bark-500 text-center line-clamp-2">{recipe.title}</p>
+  <span className="block h-px w-10" style={{ background: "#8b3a1f" }} />
   </div>
   )}
   {recipe.kosher_type && (
@@ -409,7 +411,7 @@ export default function RecipeDetailPage() {
   {hideAuthor ? <div /> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
+  <div className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm"
                   style={{ background: "#8b3a1f" }}>
   {recipe.author.username[0].toUpperCase()}
   </div>
@@ -503,7 +505,7 @@ export default function RecipeDetailPage() {
   {scaledIngredients.map((ing: any, i: number) => (
   <div key={i} className="flex items-center gap-3 px-5 py-3.5">
   <span className="w-2 h-2 rounded-full bg-cinnamon-500 flex-shrink-0" />
-  <span className="font-semibold text-cinnamon-500 min-w-[5rem] text-sm" dir="ltr">
+  <span className="font-semibold text-cinnamon-500 min-w-[5rem] text-sm">
   {ing.amount} {ing.unit || ""}
   </span>
   <span className="text-bark-400 text-sm">{ing.name}</span>
@@ -520,7 +522,7 @@ export default function RecipeDetailPage() {
   <ol className="space-y-4">
   {recipe.instructions.map((inst: any) => (
   <li key={inst.step} className="flex items-start gap-4 card-surface p-5">
-  <span className="flex-shrink-0 w-9 h-9 rounded-full bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
+  <span className="flex-shrink-0 w-9 h-9 bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
   {inst.step}
   </span>
   <p className="text-bark-400 leading-relaxed flex-1" style={{ lineHeight: 1.7 }}>{inst.text}</p>
@@ -539,7 +541,7 @@ export default function RecipeDetailPage() {
   {user && (
   <form onSubmit={handleComment} className="flex gap-2 mb-5">
   <input value={newComment} onChange={(e) => setNewComment(e.target.value)}
-  placeholder="הוסיפי תגובה..." className="input-dark flex-1" />
+  placeholder="הוסיפו תגובה..." className="input-dark flex-1" />
   <button type="submit" disabled={sendingComment || !newComment.trim()}
   className="px-4  btn-fire disabled:opacity-40 transition-all">
   <Send className="w-4 h-4" />

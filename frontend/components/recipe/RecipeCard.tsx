@@ -79,13 +79,15 @@ function RecipeCard({ recipe }: RecipeCardProps) {
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const diffLabel = difficultyLabels[recipe.difficulty] || "";
   const kosherLabel = recipe.kosher_type ? kosherLabels[recipe.kosher_type] : null;
-  const tags = [diffLabel, kosherLabel].filter(Boolean) as string[];
+  const tags = [recipe.category, diffLabel, kosherLabel].filter(Boolean) as string[];
+  const hasImage = Boolean(recipe.image_url);
+  const isDraft = recipe.is_published === false;
 
   return (
     <Link href={`/recipe/${recipe.id}`} className="group block h-full">
       <article className="card-surface card-surface-hover h-full flex flex-col overflow-hidden">
         <div className="relative overflow-hidden shrink-0" style={{ aspectRatio: "4/3" }}>
-          {recipe.image_url ? (
+          {hasImage ? (
             <Image
               src={recipe.image_url}
               alt={recipe.title}
@@ -95,19 +97,35 @@ function RecipeCard({ recipe }: RecipeCardProps) {
             />
           ) : (
             <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                background: "linear-gradient(160deg, #f7f1e4 0%, #e8dcc4 55%, #d9c79a 100%)",
-              }}>
-              <div className="w-20 h-20 text-bark-500/70 transition-transform duration-500 group-hover:scale-110">
-                <CardIcon index={recipe.id} />
+              className="absolute inset-0 p-4"
+              style={{ background: "#efe7d7" }}>
+              <div
+                className="h-full flex flex-col justify-between p-4"
+                style={{ border: "1px solid #d9c79a" }}>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="eyebrow text-[11px]">{recipe.category || "מתכון"}</span>
+                  <div className="w-9 h-9 text-bark-500/50">
+                    <CardIcon index={recipe.id} />
+                  </div>
+                </div>
+                <h3 className="card-title text-bark-500 line-clamp-3 group-hover:text-cinnamon-500 transition-colors">
+                  {recipe.title}
+                </h3>
+                <span className="block h-px w-10" style={{ background: "#8b3a1f" }} />
               </div>
             </div>
           )}
 
+          {isDraft && (
+            <span className="absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold"
+              style={{ background: "#3a2618", color: "#f7f1e4" }}>
+              טיוטה
+            </span>
+          )}
+
           {totalTime > 0 && (
             <span className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold"
-              style={{ background: "rgba(247,241,228,0.94)", color: "#3a2618", borderRadius: 2 }}>
+              style={{ background: "rgba(247,241,228,0.94)", color: "#3a2618" }}>
               <Clock className="w-3 h-3" strokeWidth={2} />
               {totalTime} דק׳
             </span>
@@ -123,12 +141,14 @@ function RecipeCard({ recipe }: RecipeCardProps) {
             </div>
           )}
 
-          <h3 className="card-title line-clamp-2 text-bark-500 transition-colors duration-300 group-hover:text-cinnamon-500">
-            {recipe.title}
-          </h3>
+          {hasImage && (
+            <h3 className="card-title line-clamp-2 text-bark-500 transition-colors duration-300 group-hover:text-cinnamon-500">
+              {recipe.title}
+            </h3>
+          )}
 
           {recipe.description && (
-            <p className="line-clamp-2 mt-2 text-bark-200 text-[14px] leading-relaxed">
+            <p className={cn("line-clamp-2 text-bark-200 text-[14px] leading-relaxed", hasImage && "mt-2")}>
               {recipe.description}
             </p>
           )}

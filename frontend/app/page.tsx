@@ -8,19 +8,11 @@ import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
-
-const CATEGORIES = [
-  { name: "ראשונות", desc: "מנות פתיחה שפותחות את הארוחה" },
-  { name: "עיקריות", desc: "ארוחה מלאה על צלחת אחת" },
-  { name: "מאפים",   desc: "לחמים, בצקים וכל מה שבתנור" },
-  { name: "קינוחים", desc: "הסוף המתוק, בלי להתנצל" },
-  { name: "סלטים",   desc: "ירק, טרי, ובעיקר מהיר" },
-  { name: "משקאות",  desc: "חמים, קרים, ומשהו באמצע" },
-];
 
 const REASONS = [
   { t: "בגלל האוסף",        d: "כל המתכונים במקום אחד, מסודרים לפי קטגוריה, רמת קושי וזמן הכנה." },
@@ -40,8 +32,6 @@ export default function FeedPage() {
   const [difficulty, setDifficulty] = useState("");
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
-
-  useSmoothStackScroll();
 
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
@@ -360,75 +350,6 @@ export default function FeedPage() {
   );
 }
 
-/** Eases wheel/trackpad scrolling so each stacked panel glides over the last. */
-function useSmoothStackScroll() {
-  useEffect(() => {
-    const html = document.documentElement;
-    html.classList.add("home-stack-scroll");
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return () => html.classList.remove("home-stack-scroll");
-    }
-
-    let current = window.scrollY;
-    let target = window.scrollY;
-    let raf = 0;
-
-    const maxScroll = () => Math.max(0, html.scrollHeight - window.innerHeight);
-
-    const nestedAllows = (start: EventTarget | null, deltaY: number) => {
-      let node = start instanceof HTMLElement ? start : null;
-      while (node && node !== document.body) {
-        const { overflowY } = getComputedStyle(node);
-        if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight + 2) {
-          const top = node.scrollTop <= 0;
-          const bottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
-          if ((deltaY < 0 && !top) || (deltaY > 0 && !bottom)) return true;
-        }
-        node = node.parentElement;
-      }
-      return false;
-    };
-
-    const tick = () => {
-      current += (target - current) * 0.12;
-      if (Math.abs(target - current) < 0.35) {
-        current = target;
-        raf = 0;
-      } else {
-        raf = requestAnimationFrame(tick);
-      }
-      window.scrollTo(0, current);
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      if (nestedAllows(e.target, e.deltaY)) return;
-      e.preventDefault();
-      target = Math.max(0, Math.min(maxScroll(), target + e.deltaY));
-      if (!raf) {
-        current = window.scrollY;
-        raf = requestAnimationFrame(tick);
-      }
-    };
-
-    const onScroll = () => {
-      if (!raf) {
-        current = window.scrollY;
-        target = window.scrollY;
-      }
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      html.classList.remove("home-stack-scroll");
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-}
-
 function CinematicSection({
   id, tone, children, layer = 1, className,
 }: {
@@ -441,6 +362,25 @@ function CinematicSection({
   const ref = useRef<HTMLElement>(null);
   const isFirst = layer === 1;
   const [inView, setInView] = useState(isFirst);
+  const [tall, setTall] = useState(false);
+
+  /* A pinned panel can only ever show one screenful, so a panel whose content
+     outgrows the viewport drops out of the stack and scrolls normally. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => {
+      setTall(el.getBoundingClientRect().height > window.innerHeight - 64 + 4);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
@@ -470,6 +410,7 @@ function CinematicSection({
       className={cn(
         "stack-panel",
         isFirst && "is-first",
+        tall && "is-tall",
         tone === "bark" ? "panel-bark" : "panel-cream",
         inView && "in-view",
         className,

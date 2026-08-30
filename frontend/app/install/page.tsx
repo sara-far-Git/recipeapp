@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download, Share, MoreVertical, Plus, Smartphone, Monitor, Check } from "lucide-react";
+import { Download, Share, Plus, Smartphone, Monitor, Check } from "lucide-react";
 
 export default function InstallPage() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -9,142 +9,143 @@ export default function InstallPage() {
   const [platform, setPlatform] = useState<"ios" | "android" | "desktop" | "unknown">("unknown");
 
   useEffect(() => {
-  const ua = navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(ua);
-  const isAndroid = /android/.test(ua);
-  const isMobile = isIOS || isAndroid;
-  if (isIOS) setPlatform("ios");
-  else if (isAndroid) setPlatform("android");
-  else if (!isMobile) setPlatform("desktop");
+    const ua = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const isAndroid = /android/.test(ua);
+    if (isIOS) setPlatform("ios");
+    else if (isAndroid) setPlatform("android");
+    else if (!(isIOS || isAndroid)) setPlatform("desktop");
 
-  const handler = (e: any) => { e.preventDefault(); setInstallPrompt(e); };
-  window.addEventListener("beforeinstallprompt", handler);
-  window.addEventListener("appinstalled", () => setInstalled(true));
-  return () => window.removeEventListener("beforeinstallprompt", handler);
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", () => setInstalled(true));
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   const handleInstall = async () => {
-  if (!installPrompt) return;
-  installPrompt.prompt();
-  const { outcome } = await installPrompt.userChoice;
-  if (outcome === "accepted") setInstalled(true);
-  setInstallPrompt(null);
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") setInstalled(true);
+    setInstallPrompt(null);
   };
 
   return (
-  <div className="max-w-lg mx-auto py-8 px-2">
-  <div className="text-center mb-10 animate-fade-up">
-          <div className="w-20 h-20 mx-auto mb-5 flex items-center justify-center" style={{ background: "#3a2618", borderRadius: 2 }}>
-            <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-  <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-  <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-  <path d="M30 15v34" />
-  </svg>
-  </div>
-  <span className="eyebrow mb-3 justify-center">
-  <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
-  אפליקציה
-  </span>
-  <h1 className="display-lg text-bark-500 mb-2">התקינו את ספר המתכונים</h1>
-  <p className="text-bark-300 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
-  </div>
+    <div className="max-w-lg mx-auto py-8">
+      <div className="text-center mb-10 animate-fade-up">
+        <div className="w-20 h-20 mx-auto mb-5 flex items-center justify-center" style={{ background: "#3a2618" }}>
+          <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
+            <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
+            <path d="M30 15v34" />
+          </svg>
+        </div>
+        <span className="eyebrow mb-3 justify-center">
+          <span className="plus-badge text-cinnamon-500">
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
+          </span>
+          אפליקציה
+        </span>
+        <h1 className="display-lg text-bark-500 mb-2">הספר על המסך</h1>
+        <p className="text-bark-300 text-sm">גישה מהירה מהמסך הראשי, בלי דפדפן</p>
+      </div>
 
-  {installed ? (
-  <div className="card-surface p-8 text-center animate-fade-up">
-  <div className="w-16 h-16  bg-green-50 flex items-center justify-center mx-auto mb-4">
-  <Check className="w-8 h-8 text-green-600" />
-  </div>
-  <h2 className="font-bold text-gray-100 text-lg mb-2">האפליקציה הותקנה!</h2>
-  <p className="text-gray-400 text-sm">תמצאי אותה במסך הבית שלך</p>
-  </div>
-  ) : (
-  <div className="space-y-4 animate-fade-up" style={{ animationDelay: "80ms" }}>
+      {installed ? (
+        <div className="card-surface p-8 text-center animate-fade-up">
+          <div className="w-14 h-14 bg-cinnamon-50 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-7 h-7 text-cinnamon-600" />
+          </div>
+          <h2 className="section-title text-bark-500 mb-2">האפליקציה הותקנה</h2>
+          <p className="text-bark-300 text-sm">תמצאו אותה במסך הבית</p>
+        </div>
+      ) : (
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: "80ms" }}>
+          {(installPrompt || platform === "android" || platform === "desktop") && (
+            <div className="card-surface p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-cinnamon-50 flex items-center justify-center">
+                  {platform === "desktop" ? (
+                    <Monitor className="w-5 h-5 text-cinnamon-600" />
+                  ) : (
+                    <Smartphone className="w-5 h-5 text-cinnamon-600" />
+                  )}
+                </div>
+                <div>
+                  <h2 className="font-bold text-bark-500 text-sm">
+                    {platform === "desktop" ? "מחשב (Chrome / Edge)" : "Android"}
+                  </h2>
+                  <p className="text-xs text-bark-200">התקנה בלחיצה אחת</p>
+                </div>
+              </div>
+              {installPrompt ? (
+                <button onClick={handleInstall} className="w-full btn-block flex items-center justify-center gap-2">
+                  <Download className="w-5 h-5" />
+                  התקנת האפליקציה
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <Step n={1} text="פתחו את האתר ב-Chrome" />
+                  <Step n={2} text="לחצו על שלוש הנקודות בפינה" />
+                  <Step n={3} text={'בחרו "הוספה למסך הבית" / Install App'} />
+                </div>
+              )}
+            </div>
+          )}
 
-  {/* Android / Desktop — auto prompt */}
-  {(installPrompt || platform === "android" || platform === "desktop") && (
-  <div className="card-surface p-5">
-  <div className="flex items-center gap-3 mb-4">
-  <div className="w-10 h-10  bg-cinnamon-50 flex items-center justify-center">
-  {platform === "desktop" ? <Monitor className="w-5 h-5 text-cinnamon-600" /> : <Smartphone className="w-5 h-5 text-cinnamon-600" />}
-  </div>
-  <div>
-  <h2 className="font-bold text-gray-100 text-sm">
-  {platform === "desktop" ? "מחשב (Chrome / Edge)" : "Android"}
-  </h2>
-  <p className="text-xs text-gray-500">התקנה בלחיצה אחת</p>
-  </div>
-  </div>
-  {installPrompt ? (
-  <button onClick={handleInstall} className="w-full btn-block flex items-center justify-center gap-2">
-  <Download className="w-5 h-5" />
-  התקיני את האפליקציה
-  </button>
-  ) : (
-  <div className="space-y-3 text-sm text-gray-400">
-  <Step n={1} text='פתחי את האתר ב-Chrome' />
-  <Step n={2} text='לחצי על שלוש הנקודות ⋮ בפינה הימנית העליונה' />
-  <Step n={3} text='בחרי "הוספה למסך הבית" / "Install App"' />
-  </div>
-  )}
-  </div>
-  )}
+          {(platform === "ios" || platform === "unknown") && (
+            <div className="card-surface p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-cinnamon-50 flex items-center justify-center">
+                  <Share className="w-5 h-5 text-cinnamon-600" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-bark-500 text-sm">iPhone / iPad (Safari)</h2>
+                  <p className="text-xs text-bark-200">3 שלבים</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <Step n={1} icon={<Share className="w-4 h-4" />} text="פתחו ב-Safari ולחצו על כפתור השיתוף" />
+                <Step n={2} icon={<Plus className="w-4 h-4" />} text={'גללו ובחרו "הוספה למסך הבית"'} />
+                <Step n={3} icon={<Check className="w-4 h-4" />} text={'לחצו "הוספה" — האפליקציה תופיע במסך הבית'} />
+              </div>
+            </div>
+          )}
 
-  {/* iOS instructions */}
-  {(platform === "ios" || platform === "unknown") && (
-  <div className="card-surface p-5">
-  <div className="flex items-center gap-3 mb-4">
-  <div className="w-10 h-10  bg-surface-200 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-  <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-  <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-  </svg>
-  </div>
-  <div>
-  <h2 className="font-bold text-gray-100 text-sm">iPhone / iPad (Safari)</h2>
-  <p className="text-xs text-gray-500">3 שלבים פשוטים</p>
-  </div>
-  </div>
-  <div className="space-y-3">
-  <Step n={1} icon={<Share className="w-4 h-4" />} text='פתחי את האתר ב-Safari ולחצי על כפתור השיתוף' />
-  <Step n={2} icon={<Plus className="w-4 h-4" />} text='גללי למטה ובחרי "הוספה למסך הבית"' />
-  <Step n={3} icon={<Check className="w-4 h-4" />} text='לחצי "הוספה" — האפליקציה תופיע במסך הבית' />
-  </div>
-  </div>
-  )}
-
-  {/* Benefits */}
-  <div className="card-surface p-5">
-  <h3 className="font-bold text-gray-200 text-sm mb-3">יתרונות האפליקציה</h3>
-  <ul className="space-y-2">
-  {[
-  "גישה מהירה ממסך הבית",
-  "חוויה מלאה ללא שורת הכתובת",
-  "נראה ומרגיש כמו אפליקציה אמיתית",
-  "ללא הורדה מ-App Store",
-  ].map((b) => (
-  <li key={b} className="flex items-center gap-2.5 text-sm text-gray-400">
-  <Check className="w-4 h-4 text-cinnamon-600 flex-shrink-0" />
-  {b}
-  </li>
-  ))}
-  </ul>
-  </div>
-  </div>
-  )}
-  </div>
+          <div className="card-surface p-5">
+            <p className="eyebrow mb-4">למה כדאי</p>
+            <ul className="space-y-2.5">
+              {[
+                "גישה מהירה ממסך הבית",
+                "בלי שורת הכתובת",
+                "נראה כמו אפליקציה",
+                "בלי הורדה מ-App Store",
+              ].map((b) => (
+                <li key={b} className="flex items-center gap-2.5 text-sm text-bark-400">
+                  <Check className="w-4 h-4 text-cinnamon-500 flex-shrink-0" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
 function Step({ n, text, icon }: { n: number; text: string; icon?: React.ReactNode }) {
   return (
-  <div className="flex items-start gap-3">
-  <div className="w-6 h-6 rounded-full bg-fire-500/15 text-cinnamon-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-  {n}
-  </div>
-  <div className="flex items-center gap-1.5 text-sm text-gray-400">
-  {icon && <span className="text-gray-500">{icon}</span>}
-  {text}
-  </div>
-  </div>
+    <div className="flex items-start gap-3">
+      <div className="w-6 h-6 bg-cinnamon-50 text-cinnamon-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+        {n}
+      </div>
+      <div className="flex items-center gap-1.5 text-sm text-bark-400">
+        {icon && <span className="text-cinnamon-500">{icon}</span>}
+        {text}
+      </div>
+    </div>
   );
 }

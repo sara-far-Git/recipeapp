@@ -33,11 +33,6 @@
 
   input, textarea, select { color-scheme: light; }
 
-  html.home-stack-scroll {
-    scroll-behavior: auto;
-    overscroll-behavior-y: none;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {
@@ -91,16 +86,26 @@
     position: relative;
   }
   .stack-panel {
-    position: sticky;
-    top: 4rem;
+    position: relative;
     z-index: var(--stack-z, 1);
-    height: calc(100svh - 4rem);
     min-height: calc(100svh - 4rem);
-    max-height: calc(100svh - 4rem);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 -28px 80px rgba(58, 38, 24, 0.28);
+  }
+
+  /* The stacking itself is a large-screen affair. Below that the panels are
+     plain sections: a pinned panel taller than the screen hides everything
+     under the fold, and on a phone most of them are.
+     `.is-tall` is set from JS on any panel whose content outgrows the viewport,
+     and the last panel stays in the flow — nothing slides over it, and sticky
+     would clamp it to the stack's bottom edge and cut its CTA off. */
+  @media (min-width: 1024px) {
+    .stack-panel:not(.is-tall):not(:last-child) {
+      position: sticky;
+      top: 4rem;
+    }
   }
   .panel-copy {
     position: relative;

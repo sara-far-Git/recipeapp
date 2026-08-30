@@ -95,6 +95,7 @@ class RecipeListItem(BaseModel):
     author: UserPublic
     is_liked: bool = False
     is_saved: bool = False
+    is_published: bool = True
     created_at: datetime
 
     model_config = {"from_attributes": True}
