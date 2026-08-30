@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { ArrowRight, Loader2, ChefHat } from "lucide-react";
+import { ArrowRight, Loader2, ChefHat, Plus } from "lucide-react";
 
 const CATEGORY_ICONS: Record<string, string> = {
   ראשונות: "🥗",
@@ -33,25 +33,25 @@ export default function CategoryPage() {
   }, [name]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-8">
+    <div className="max-w-5xl mx-auto">
+      <div className="flex items-start gap-4 mb-10">
         <button
           onClick={() => router.back()}
-          className="p-2 rounded-full hover:bg-surface-100 transition-colors text-bark-300 hover:text-bark-500"
+          className="mt-2 p-2 hover:bg-surface-100 transition-colors text-bark-300 hover:text-bark-500"
           aria-label="חזרה"
         >
           <ArrowRight className="w-5 h-5" />
         </button>
-        <span className="text-3xl">{CATEGORY_ICONS[name] ?? "🍴"}</span>
         <div>
-          <h1
-            className="text-2xl font-bold text-bark-500"
-            style={{ fontFamily: "'Frank Ruhl Libre', serif" }}
-          >
+          <span className="eyebrow mb-3">
+            <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
+            {CATEGORY_ICONS[name] ?? "🍴"} קטגוריה
+          </span>
+          <h1 className="display-lg text-bark-500">
             {name}
           </h1>
           {!loading && (
-            <p className="text-sm text-bark-200 mt-0.5">
+            <p className="text-sm text-bark-200 mt-2">
               {recipes.length} מתכונים
             </p>
           )}

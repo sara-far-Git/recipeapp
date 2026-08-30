@@ -46,12 +46,12 @@ export default function ProPage() {
   <div className="max-w-2xl mx-auto py-8 px-2">
   {/* Header */}
   <div className="text-center mb-12 animate-fade-up">
-  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cinnamon-50 border border-cinnamon-200 text-cinnamon-600 text-xs font-bold mb-5">
-  <Sparkles className="w-3.5 h-3.5" />
+  <span className="eyebrow mb-4 justify-center">
+  <span className="plus-badge text-cinnamon-500"><Sparkles className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   בקרוב — Pro
-  </div>
-  <h1 className="font-display text-4xl font-bold text-gray-100 mb-3">
-  בשלי ושתפי עם <span className="text-fire">הקהילה</span>
+  </span>
+  <h1 className="display-lg text-bark-500 mb-3">
+  בשלו ושתפו עם <span className="text-cinnamon-500">הקהילה</span>
   </h1>
   <p className="text-gray-400 leading-relaxed max-w-md mx-auto">
   גרסת Pro מאפשרת לפרסם מתכונים לכלל המשתמשים, לקבל תגובות ולבנות קהל עוקבים.
@@ -64,7 +64,7 @@ export default function ProPage() {
   <div className="card-surface p-6">
   <div className="mb-4">
   <p className="text-sm text-gray-500 font-semibold mb-1">חינמי</p>
-  <p className="font-display text-3xl font-bold text-gray-200">₪0<span className="text-sm text-gray-500 font-normal"> / לחודש</span></p>
+  <p className="display-md text-bark-500">₪0<span className="text-sm text-bark-200 font-normal"> / לחודש</span></p>
   </div>
   <ul className="space-y-3">
   {FREE_FEATURES.map((f) => (
@@ -85,8 +85,8 @@ export default function ProPage() {
   <p className="text-sm text-fire-400 font-bold mb-1 flex items-center gap-1.5">
   <Flame className="w-3.5 h-3.5" /> Pro
   </p>
-  <p className="font-display text-3xl font-bold text-gray-100">
-  ₪?<span className="text-sm text-gray-500 font-normal"> / לחודש</span>
+  <p className="display-md text-surface-50">
+  ₪?<span className="text-sm text-surface-300 font-normal"> / לחודש</span>
   </p>
   </div>
   <span className="px-3 py-1 rounded-full bg-cinnamon-400/20 text-cinnamon-300 text-xs font-bold border border-cinnamon-400/30">
@@ -112,7 +112,7 @@ export default function ProPage() {
   <div className="w-14 h-14  bg-cinnamon-50 flex items-center justify-center mx-auto mb-4">
   <Check className="w-7 h-7 text-cinnamon-600" />
   </div>
-  <h3 className="font-display text-xl font-bold text-gray-100 mb-2">נרשמת בהצלחה!</h3>
+  <h3 className="section-title text-bark-500 mb-2">נרשמתם בהצלחה!</h3>
   <p className="text-gray-400 text-sm">נעדכן אותך כשגרסת Pro תהיה זמינה.</p>
   </div>
   ) : (
@@ -145,7 +145,7 @@ export default function ProPage() {
   <button
   type="submit"
   disabled={loading || !email.trim()}
-  className="w-full py-3.5  btn-fire font-bold text-white disabled:opacity-40 flex items-center justify-center gap-2"
+  className="w-full btn-block disabled:opacity-40 flex items-center justify-center gap-2"
   >
   {loading ? (
   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

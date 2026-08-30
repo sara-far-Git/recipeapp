@@ -49,8 +49,8 @@ export default function InstallBanner() {
   </button>
   <div className="text-center mb-6">
   <BookMark className="w-10 h-10 mx-auto text-cinnamon-500 mb-3" />
-  <h3 className="text-xl font-bold text-bark-500" style={{ fontFamily: "Heebo, sans-serif", letterSpacing: "-0.02em" }}>
-  הוסיפי למסך הבית
+  <h3 className="section-title text-bark-500">
+  הוסיפו למסך הבית
   </h3>
   <p className="text-sm text-bark-300 mt-1">רק ב-Safari — 3 שלבים פשוטים</p>
   </div>
@@ -75,7 +75,7 @@ export default function InstallBanner() {
   </div>
   <button
   onClick={handleInstall}
-  className="flex items-center gap-1.5 px-3 py-1.5  btn-fire text-xs font-semibold shrink-0"
+  className="flex items-center gap-1.5 px-3 py-1.5 btn-block text-xs font-semibold shrink-0"
   >
   <Download className="w-3.5 h-3.5" />
   התקנה

@@ -6,7 +6,6 @@ export default function PrivacyPage() {
         <span className="eyebrow mb-4">
           <span className="eyebrow-rule" />
           מדיניות האתר
-          <span className="eyebrow-rule" />
         </span>
         <h1 className="display-lg text-bark-500 font-extrabold mb-3">
           מדיניות פרטיות
@@ -50,7 +49,7 @@ export default function PrivacyPage() {
 function PolicySection({ title, children, last = false }: { title: string; children: React.ReactNode; last?: boolean }) {
   return (
   <div className={!last ? "pb-8 mb-8 border-b border-surface-300" : ""}>
-  <h2 className="font-bold text-bark-500 mb-3 text-lg" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+  <h2 className="section-title text-bark-500 mb-3">
   {title}
   </h2>
   <p className="text-bark-400 leading-relaxed" style={{ lineHeight: 1.75 }}>{children}</p>

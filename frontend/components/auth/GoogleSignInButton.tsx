@@ -40,7 +40,7 @@ export default function GoogleSignInButton({
   <GoogleLogin
   theme="outline"
   size="large"
-  shape="pill"
+  shape="rectangular"
   text="continue_with"
   locale="he"
   onSuccess={async (credentialResponse) => {

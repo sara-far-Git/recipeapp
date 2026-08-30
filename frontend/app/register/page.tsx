@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Plus } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -42,11 +42,10 @@ export default function RegisterPage() {
   <path d="M36 20h12M36 26h12M36 32h10" />
   </svg>
           <span className="eyebrow mb-4">
-            <span className="eyebrow-rule" />
+            <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
             הצטרפו אלינו
-            <span className="eyebrow-rule" />
           </span>
-          <h1 className="display-md text-bark-500 font-extrabold">
+          <h1 className="display-lg text-bark-500">
             פותחים פה לספר משלכם
           </h1>
           <p className="text-bark-200 mt-3 text-[17px]">

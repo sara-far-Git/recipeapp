@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import Button from "@/components/ui/Button";
-import { Search, SlidersHorizontal, X, Loader2, Sparkles, ChefHat } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Sparkles, ChefHat, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const DIFFICULTY_FILTERS = [
@@ -103,10 +103,15 @@ function SearchPageContent() {
 
   return (
   <div className="max-w-4xl mx-auto">
-  <h1 className="text-2xl font-bold text-bark-500 mb-6 animate-fade-up"
-  style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
-  {initialQ ? `תוצאות עבור "${initialQ}"` : "חיפוש מתכונים"}
+  <div className="mb-8 animate-fade-up">
+  <span className="eyebrow mb-3">
+  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
+  האוסף
+  </span>
+  <h1 className="display-lg text-bark-500">
+  {initialQ ? `«${initialQ}»` : "חיפוש מתכונים"}
   </h1>
+  </div>
 
   {/* Mode toggle */}
   <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>

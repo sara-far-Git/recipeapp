@@ -198,7 +198,7 @@ export default function RecipeDetailPage() {
 
   {/* Header */}
   <div className="flex items-center justify-between mb-6">
-  <h1 className="text-xl font-bold text-amber-100 flex-1 ml-4" style={{ fontFamily: "'Heebo', sans-serif" }}>{recipe.title}</h1>
+  <h1 className="section-title text-amber-100 flex-1 ml-4">{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2 bg-amber-900/40 border border-amber-700/40 text-amber-200 text-sm hover:bg-amber-900/60 transition-all flex-shrink-0">
   יציאה ממצב הכנה
@@ -315,7 +315,7 @@ export default function RecipeDetailPage() {
   <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
   <div className="relative w-full sm:max-w-md bg-surface-50  border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
   <div className="flex items-center justify-between p-5 border-b border-surface-300">
-  <h3 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>בחרי מצרכים לקנייה</h3>
+  <h3 className="section-title text-bark-500">בחרו מצרכים לקנייה</h3>
   <button onClick={() => setShoppingModalOpen(false)} className="p-1.5  hover:bg-surface-200 text-bark-200 transition-colors">
   <X className="w-5 h-5" />
   </button>
@@ -379,8 +379,7 @@ export default function RecipeDetailPage() {
 
   {/* Meta eyebrow */}
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
-  <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500">
   {!hideAuthor && <>{recipe.author.full_name || recipe.author.username}</>}
   {!hideAuthor && totalTime > 0 && <span className="text-bark-100 font-normal">·</span>}
   {totalTime > 0 && <>{totalTime} דק׳</>}
@@ -390,13 +389,11 @@ export default function RecipeDetailPage() {
 
   {/* Title */}
   <div className="text-center mb-5 animate-fade-up" style={{ animationDelay: "60ms" }}>
-  <h1 className="text-bark-500 mb-3"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(2rem,5vw,3rem)", fontWeight: 800, letterSpacing: "-0.025em", lineHeight: 1.1 }}>
+  <h1 className="display-lg text-bark-500 mb-3">
   {recipe.title}
   </h1>
   {recipe.description && (
-  <p className="text-bark-300 max-w-xl mx-auto text-base leading-relaxed"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <p className="text-bark-300 max-w-xl mx-auto text-base leading-relaxed">
   {recipe.description}
   </p>
   )}
@@ -489,7 +486,7 @@ export default function RecipeDetailPage() {
   {/* Ingredients */}
   <section className="mb-10 animate-fade-up" style={{ animationDelay: "160ms" }}>
   <div className="flex items-center justify-between mb-4">
-  <h2 className="font-bold text-bark-500 text-xl" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+  <h2 className="section-title text-bark-500">
   מצרכים
   </h2>
   <div className="flex items-center gap-2 card-surface px-3 py-1.5">
@@ -517,7 +514,7 @@ export default function RecipeDetailPage() {
 
   {/* Instructions */}
   <section className="mb-10 animate-fade-up" style={{ animationDelay: "180ms" }}>
-  <h2 className="font-bold text-bark-500 text-xl mb-5" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+  <h2 className="section-title text-bark-500 mb-5">
   אופן ההכנה
   </h2>
   <ol className="space-y-4">
@@ -534,8 +531,7 @@ export default function RecipeDetailPage() {
 
   {/* Comments */}
   <section className="animate-fade-up" style={{ animationDelay: "200ms" }}>
-  <h2 className="font-bold text-bark-500 text-xl mb-5 flex items-center gap-2"
-  style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+  <h2 className="section-title text-bark-500 mb-5 flex items-center gap-2">
   <MessageCircle className="w-5 h-5 text-cinnamon-500" />
   תגובות ({comments.length})
   </h2>
@@ -573,9 +569,8 @@ export default function RecipeDetailPage() {
   </div>
   ))}
   {comments.length === 0 && (
-  <p className="text-center text-bark-200 py-8 text-sm"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
-  אין תגובות עדיין — היי הראשונה!
+  <p className="text-center text-bark-200 py-8 text-sm">
+  אין תגובות עדיין — היו הראשונים!
   </p>
   )}
   </div>

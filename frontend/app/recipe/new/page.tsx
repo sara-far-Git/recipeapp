@@ -171,7 +171,7 @@ export default function NewRecipePage() {
   <Sparkles className="w-10 h-10 text-cinnamon-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
   <div className="w-20 h-20 rounded-full border-4 border-surface-400 border-t-cinnamon-500 animate-spin" />
   </div>
-  <h3 className="text-lg font-bold text-bark-500 mb-2" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <h3 className="section-title text-bark-500 mb-2">
   השף הדיגיטלי עובד
   </h3>
   <p className="text-bark-300 text-sm">מפענח את המתכון מהתמונה...</p>
@@ -180,19 +180,16 @@ export default function NewRecipePage() {
   )}
 
   {/* Page header */}
-  <div className="text-center mb-10 animate-fade-up">
-  <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-4"
-  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
-  <span className="inline-block w-10 h-px bg-smoke-200" />
+  <div className="mb-10 animate-fade-up">
+  <span className="eyebrow mb-3">
+  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   מתכון חדש
-  <span className="inline-block w-10 h-px bg-smoke-200" />
-  </div>
-  <h1 className="text-bark-500 mb-2"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-0.025em" }}>
-  שתפי מתכון עם הקהילה
+  </span>
+  <h1 className="display-lg text-bark-500 mb-3">
+  שתפו מתכון
   </h1>
-  <p className="text-bark-300 text-base" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  כל מתכון הוא סיפור — ספרי אותו
+  <p className="text-bark-300 text-base">
+  כל מתכון הוא סיפור — ספרו אותו
   </p>
   </div>
 
@@ -200,17 +197,16 @@ export default function NewRecipePage() {
   <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
   <div className="flex items-center justify-between gap-4">
   <div>
-  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: 16 }}>
+  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
   <Sparkles className="w-4 h-4 text-cinnamon-500" />
   השף הדיגיטלי
   </h3>
-  <p className="text-sm text-bark-300" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  צלמי מתכון מספר ונמלא אוטומטית
+  <p className="text-sm text-bark-300">
+  צלמו מתכון מספר ונמלא אוטומטית
   </p>
   </div>
   <button onClick={() => scanInputRef.current?.click()} disabled={scanning}
-  className="flex-shrink-0 flex items-center gap-2 px-5 py-3.5 btn-fire text-sm font-semibold uppercase tracking-widest">
+  className="flex-shrink-0 flex items-center gap-2 btn-block text-sm">
   <Camera className="w-4 h-4" /> סריקה
   </button>
   <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleScan} />
@@ -234,17 +230,16 @@ export default function NewRecipePage() {
   {!importOpen ? (
   <div className="flex items-center justify-between gap-4">
   <div>
-  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: 16 }}>
+  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
   <Link2 className="w-4 h-4 text-cinnamon-500" />
   ייבוא מקישור
   </h3>
-  <p className="text-sm text-bark-300" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  הדביקי URL מבלוג מתכונים ונייבא אוטומטית
+  <p className="text-sm text-bark-300">
+  הדביקו URL מבלוג מתכונים ונייבא אוטומטית
   </p>
   </div>
   <button onClick={() => setImportOpen(true)}
-  className="flex-shrink-0 flex items-center gap-2 px-5 py-3.5 btn-outline text-sm font-semibold uppercase tracking-widest">
+  className="flex-shrink-0 flex items-center gap-2 btn-outline text-sm">
   <Link2 className="w-4 h-4" /> ייבוא
   </button>
   </div>
@@ -392,7 +387,7 @@ export default function NewRecipePage() {
   </div>
 
   <button onClick={() => setStep(2)} disabled={!title.trim() || !category}
-  className="w-full py-3.5  btn-fire font-semibold uppercase tracking-widest text-sm flex items-center justify-center gap-2 disabled:opacity-40">
+  className="w-full btn-block text-sm flex items-center justify-center gap-2 disabled:opacity-40">
   הבא — מצרכים <ArrowLeft className="w-4 h-4" />
   </button>
   </div>
@@ -401,7 +396,7 @@ export default function NewRecipePage() {
   {/* Step 2 */}
   {step === 2 && (
   <div className="space-y-4 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <h2 className="font-bold text-bark-500 text-lg" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <h2 className="section-title text-bark-500">
   רשימת מצרכים
   </h2>
 
@@ -447,7 +442,7 @@ export default function NewRecipePage() {
   {/* Step 3 */}
   {step === 3 && (
   <div className="space-y-4 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <h2 className="font-bold text-bark-500 text-lg" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <h2 className="section-title text-bark-500">
   שלבי הכנה
   </h2>
 

@@ -58,8 +58,7 @@ export default function FeedPage() {
         data = res.data;
       }
       if (skip === 0) setRecipes(data); else setRecipes((p) => [...p, ...data]);
-      setHasMore(data.length === 20);
-    } catch {} finally { setLoading(false); setLoadingMore(false); }
+    } catch {} finally { setLoading(false); }
   }, [difficulty, kosher, maxTime]);
 
   useEffect(() => { setLoading(true); loadRecipes(0, difficulty, kosher, maxTime); }, [difficulty, kosher, maxTime]);
@@ -70,24 +69,8 @@ export default function FeedPage() {
     router.push(`/category/${encodeURIComponent(name)}`);
   };
 
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && hasMore && !loadingMore) {
-          setLoadingMore(true); loadRecipes(recipes.length);
-        }
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loadingMore, recipes.length, loadRecipes]);
-
   const editorPick = filtersActive ? null : recipes[0];
-  const gridRecipes = filtersActive ? recipes : recipes.slice(1);
+  const gridRecipes = (filtersActive ? recipes : recipes.slice(1)).slice(0, 3);
 
   const sections = [
     { id: "hero", label: "ברוכים הבאים", dark: false },
@@ -131,7 +114,7 @@ export default function FeedPage() {
           </div>
 
           <Reveal delay={80} className="order-1 lg:order-2 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[520px]">
+            <div className="relative w-full max-w-[680px]">
               <KitchenCollage />
               <Seal />
             </div>
@@ -140,12 +123,12 @@ export default function FeedPage() {
       </CinematicSection>
 
       <CinematicSection id="categories" tone="bark" layer={2}>
-        <div className="bleed-inner py-16">
+        <div className="bleed-inner py-8 sm:py-10">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#f7f1e4" }}>מה תרצו<br />להכין היום?</h2>
           </Reveal>
           <Reveal delay={100}>
-            <div className="flex items-center gap-3 mt-5 mb-10">
+            <div className="flex items-center gap-3 mt-4 mb-6">
               <span className="plus-badge" style={{ color: "#f7f1e4" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
               <p className="text-lg" style={{ color: "#d4c8b6" }}>בחרו סוג, ומיד מגיעים למתכונים</p>
             </div>
@@ -155,7 +138,7 @@ export default function FeedPage() {
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)}
-                  className="row-wipe group w-full text-right py-6 flex items-center gap-5 sm:gap-8 text-surface-100 hover:text-bark-500 transition-colors duration-500"
+                  className="row-wipe group w-full text-right py-3.5 sm:py-4 flex items-center gap-5 sm:gap-8 text-surface-100 hover:text-bark-500 transition-colors duration-500"
                   style={{ borderBottom: "1px solid rgba(247,241,228,0.18)" }}>
                   <span className="tabular text-sm w-8 text-surface-400 group-hover:text-bark-200">
                     {String(i + 1).padStart(2, "0")}
@@ -177,12 +160,12 @@ export default function FeedPage() {
       </CinematicSection>
 
       <CinematicSection id="recipes" tone="cream" layer={3}>
-        <div className="bleed-inner h-full overflow-y-auto py-16 sm:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-8">
+        <div className="bleed-inner py-8 sm:py-10">
+          <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
               <div>
                 <h2 className="display-lg text-bark-500">מתכונים<br />נבחרים</h2>
-                <div className="flex items-center gap-3 mt-5">
+                <div className="flex items-center gap-3 mt-4">
                   <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
                   <p className="text-bark-300 text-lg">האוסף שנאסף באהבה</p>
                 </div>
@@ -190,6 +173,9 @@ export default function FeedPage() {
             </Reveal>
 
             <div className="flex items-center gap-3">
+              <Link href="/search" className="text-sm font-bold text-bark-300 hover:text-cinnamon-500">
+                לכל המתכונים
+              </Link>
               <button onClick={() => setShowFilters(!showFilters)}
                 className={cn(
                   "flex items-center gap-2 px-5 h-12 text-sm font-bold border transition-all",
@@ -215,20 +201,20 @@ export default function FeedPage() {
           </div>
 
           {showFilters && (
-            <div className="card-surface mt-8 p-6 space-y-5">
+            <div className="card-surface mt-5 p-5 space-y-4 shrink-0">
               <FilterRow label="רמת קושי" opts={DIFFICULTY_OPTS} active={difficulty} onSelect={setDifficulty} />
               <FilterRow label="כשרות" opts={KOSHER_OPTS} active={kosher} onSelect={setKosher} />
               <FilterRow label="זמן הכנה" opts={TIME_OPTS} active={String(maxTime)} onSelect={(v) => setMaxTime(Number(v))} />
             </div>
           )}
 
-          <div className="mt-14">
+          <div className="mt-8">
             {loading ? (
-              <div className="flex justify-center py-20">
+              <div className="flex justify-center py-16">
                 <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
               </div>
             ) : recipes.length === 0 ? (
-              <div className="text-center py-20">
+              <div className="text-center py-12">
                 <ChefHat className="w-12 h-12 mx-auto text-bark-50 mb-6" strokeWidth={1.2} />
                 <h3 className="display-md text-bark-500 mb-3">
                   {filtersActive ? "אין מתכונים שמתאימים לסינון" : "עדיין אין מתכונים"}
@@ -247,18 +233,12 @@ export default function FeedPage() {
                 זה כל האוסף כרגע — המתכון היחיד מחכה לכם למטה.
               </p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {gridRecipes.map((recipe, i) => (
                   <Reveal key={recipe.id} delay={(i % 3) * 90}>
-                    <RecipeCard recipe={recipe} />
+                    <RecipeCard recipe={recipe} compact />
                   </Reveal>
                 ))}
-              </div>
-            )}
-
-            {loadingMore && (
-              <div className="flex justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
               </div>
             )}
           </div>
@@ -458,43 +438,57 @@ function CinematicSection({
   className?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
+  const isFirst = layer === 1;
+  const [inView, setInView] = useState(isFirst);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (isFirst || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setInView(true);
       return;
     }
-    if (el.getBoundingClientRect().top < window.innerHeight * 0.85) {
-      setInView(true);
-    }
+    const mark = () => setInView(true);
+    if (window.location.hash === `#${id}`) mark();
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) setInView(true);
-    }, { threshold: 0.16 });
+      if (e.isIntersecting) mark();
+    }, { threshold: 0.08 });
     io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    const onHash = () => { if (window.location.hash === `#${id}`) mark(); };
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      io.disconnect();
+      window.removeEventListener("hashchange", onHash);
+    };
+  }, [isFirst, id]);
 
   return (
-    <section
-      ref={ref}
-      id={id}
-      className={cn(
-        "stack-panel",
-        tone === "bark" ? "panel-bark" : "panel-cream",
-        inView && "in-view",
-        className,
+    <>
+      {!isFirst && (
+        <div
+          className={cn("panel-lead", tone === "bark" ? "panel-bark" : "panel-cream")}
+          aria-hidden="true"
+        />
       )}
-      style={{ ["--stack-z" as string]: layer }}>
-      <div className="cinematic-slabs" aria-hidden="true">
-        <span className="slab slab-a" />
-        <span className="slab slab-b slab-left slab-delay-1" />
-        <span className="slab slab-c slab-left slab-delay-2" />
-      </div>
-      <div className="relative z-10 w-full h-full flex flex-col justify-center">{children}</div>
-    </section>
+      <section
+        ref={ref}
+        id={id}
+        className={cn(
+          "stack-panel",
+          isFirst && "is-first",
+          tone === "bark" ? "panel-bark" : "panel-cream",
+          inView && "in-view",
+          className,
+        )}
+        style={{ ["--stack-z" as string]: layer }}>
+        <div className="cinematic-slabs" aria-hidden="true">
+          <span className="slab slab-a" />
+          <span className="slab slab-b slab-left slab-delay-1" />
+          <span className="slab slab-c slab-left slab-delay-2" />
+        </div>
+        <div className="panel-copy">{children}</div>
+      </section>
+    </>
   );
 }
 
@@ -505,32 +499,10 @@ function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setShown(true);
-      return;
-    }
-    if (el.getBoundingClientRect().top < window.innerHeight * 0.88) {
-      setShown(true);
-      return;
-    }
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setShown(true); io.disconnect(); }
-    }, { rootMargin: "0px 0px -10% 0px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
     <div
-      ref={ref}
-      className={cn("reveal", shown && "is-shown", className)}
-      style={{ transitionDelay: shown ? `${delay}ms` : "0ms" }}>
+      className={cn("reveal", className)}
+      style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
   );

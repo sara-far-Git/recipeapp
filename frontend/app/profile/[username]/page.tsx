@@ -101,8 +101,7 @@ function ProfilePageContent() {
 
   if (!profile) {
   return (
-  <p className="text-center text-bark-300 py-20"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <p className="text-center text-bark-300 py-20">
   משתמש לא נמצא
   </p>
   );
@@ -118,7 +117,7 @@ function ProfilePageContent() {
   <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setEditOpen(false)} />
   <div className="relative w-full sm:max-w-md bg-surface-50  border border-surface-300 shadow-warm-lg">
   <div className="flex items-center justify-between p-5 border-b border-surface-300">
-  <h3 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>עריכת פרופיל</h3>
+  <h3 className="section-title text-bark-500">עריכת פרופיל</h3>
   <button onClick={() => setEditOpen(false)}
   className="p-1.5  hover:bg-surface-200 transition-colors text-bark-200">
   <X className="w-5 h-5" />
@@ -133,8 +132,7 @@ function ProfilePageContent() {
   <img src={editAvatar} alt="" className="w-16 h-16 rounded-full object-cover" />
   ) : (
   <div className="w-16 h-16 rounded-full bg-cinnamon-50 border border-cinnamon-200 flex items-center justify-center">
-  <span className="text-2xl font-bold text-cinnamon-500"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <span className="text-2xl font-bold text-cinnamon-500">
   {username[0].toUpperCase()}
   </span>
   </div>
@@ -180,8 +178,7 @@ function ProfilePageContent() {
   className="w-24 h-24 rounded-full object-cover ring-2 ring-cinnamon-200" />
   ) : (
   <div className="w-24 h-24 rounded-full bg-cinnamon-500 flex items-center justify-center">
-  <span className="text-4xl font-bold text-white"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <span className="text-4xl font-bold text-white">
   {username[0].toUpperCase()}
   </span>
   </div>
@@ -191,8 +188,7 @@ function ProfilePageContent() {
   <div className="flex-1 min-w-0">
   <div className="flex items-start justify-between gap-2 mb-2">
   <div>
-  <h1 className="font-bold text-bark-500 text-xl leading-tight"
-  style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
+  <h1 className="display-md text-bark-500 leading-tight">
   {profile.full_name || profile.username}
   </h1>
   <p className="text-bark-200 text-sm">@{profile.username}</p>
@@ -213,8 +209,7 @@ function ProfilePageContent() {
   </div>
 
   {profile.bio && (
-  <p className="text-bark-300 text-sm mb-3 leading-relaxed"
-  style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <p className="text-bark-300 text-sm mb-3 leading-relaxed">
   {profile.bio}
   </p>
   )}
@@ -282,7 +277,7 @@ function ProfilePageContent() {
   <div className="w-16 h-16 mx-auto mb-4 card-surface flex items-center justify-center ">
   <BookOpen className="w-8 h-8 text-bark-100" />
   </div>
-  <p className="text-bark-300 text-base" style={{ fontFamily: "'Assistant', sans-serif" }}>
+  <p className="text-bark-300 text-base">
   {activeTab === "saved" ? "אין מתכונים שמורים עדיין" : "אין מתכונים עדיין"}
   </p>
   </div>

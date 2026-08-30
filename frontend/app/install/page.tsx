@@ -34,14 +34,18 @@ export default function InstallPage() {
   return (
   <div className="max-w-lg mx-auto py-8 px-2">
   <div className="text-center mb-10 animate-fade-up">
-          <div className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style={{ background: "#8b3a1f" }}>
+          <div className="w-20 h-20 mx-auto mb-5 flex items-center justify-center" style={{ background: "#3a2618", borderRadius: 2 }}>
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
   <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
   <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
   <path d="M30 15v34" />
   </svg>
   </div>
-  <h1 className="font-display text-3xl font-bold text-bark-500 mb-2">התקיני את Recipes Book</h1>
+  <span className="eyebrow mb-3 justify-center">
+  <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
+  אפליקציה
+  </span>
+  <h1 className="display-lg text-bark-500 mb-2">התקינו את ספר המתכונים</h1>
   <p className="text-bark-300 text-sm">גישה מהירה מהמסך הראשי, ללא דפדפן</p>
   </div>
 
@@ -71,7 +75,7 @@ export default function InstallPage() {
   </div>
   </div>
   {installPrompt ? (
-  <button onClick={handleInstall} className="w-full py-3.5  btn-fire font-bold text-white flex items-center justify-center gap-2">
+  <button onClick={handleInstall} className="w-full btn-block flex items-center justify-center gap-2">
   <Download className="w-5 h-5" />
   התקיני את האפליקציה
   </button>

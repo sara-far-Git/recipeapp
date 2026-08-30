@@ -70,17 +70,17 @@ export default function ShoppingListPage() {
   if (!user) {
   return (
   <div className="text-center py-20 animate-fade-up">
-  <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5 ">
+  <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
   <ShoppingCart className="w-10 h-10 text-bark-100" />
   </div>
-  <p className="text-bark-400 mb-2 font-semibold" style={{ fontFamily: "'Heebo', sans-serif" }}>
-  התחברי כדי לנהל רשימת קניות
+  <p className="section-title text-bark-500 mb-2">
+  התחברו כדי לנהל רשימת קניות
   </p>
-  <p className="text-bark-300 text-sm mb-6" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  שמרי את כל המצרכים במקום אחד
+  <p className="text-bark-300 text-sm mb-6">
+  כל המצרכים במקום אחד
   </p>
   <button onClick={() => router.push("/login")}
-  className="px-7 py-3  btn-fire font-semibold uppercase tracking-widest text-sm">
+  className="btn-block">
   התחברות
   </button>
   </div>
@@ -103,21 +103,18 @@ export default function ShoppingListPage() {
   return (
   <div className="max-w-2xl mx-auto">
   {/* Header */}
-  <div className="flex items-center justify-between mb-8 animate-fade-up">
+  <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 animate-fade-up">
   <div>
-  <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-2"
-  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
-  <span className="inline-block w-8 h-px bg-smoke-200" />
+  <span className="eyebrow mb-3">
+  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   ניהול קניות
-  <span className="inline-block w-8 h-px bg-smoke-200" />
-  </div>
-  <h1 className="text-bark-500"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-0.025em" }}>
+  </span>
+  <h1 className="display-lg text-bark-500">
   רשימת קניות
   </h1>
   </div>
   <button onClick={createList}
-  className="flex items-center gap-2 px-5 py-2.5  btn-fire text-sm font-semibold uppercase tracking-widest">
+  className="flex items-center gap-2 btn-block text-sm shrink-0">
   <Plus className="w-4 h-4" /> רשימה חדשה
   </button>
   </div>
@@ -127,11 +124,11 @@ export default function ShoppingListPage() {
   <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5 ">
   <ShoppingCart className="w-10 h-10 text-bark-100" />
   </div>
-  <p className="text-bark-400 font-semibold mb-2" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <p className="section-title text-bark-500 mb-2">
   אין רשימות קניות עדיין
   </p>
-  <p className="text-bark-300 text-sm" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  צרי רשימה או הוסיפי מצרכים מדף מתכון
+  <p className="text-bark-300 text-sm">
+  צרו רשימה או הוסיפו מצרכים מדף מתכון
   </p>
   </div>
   ) : (
@@ -158,7 +155,7 @@ export default function ShoppingListPage() {
   {/* List header */}
   <div className="flex items-center justify-between px-5 py-4 border-b border-surface-300">
   <div>
-  <h2 className="font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <h2 className="section-title text-bark-500">
   {activeList.name}
   </h2>
   <p className="text-xs text-bark-200 mt-0.5">
@@ -233,7 +230,7 @@ export default function ShoppingListPage() {
   {checkedItems.length > 0 && (
   <>
   <div className="px-5 py-2.5 border-t border-surface-300 bg-surface-100">
-  <p className="text-xs text-bark-200 font-semibold uppercase tracking-wide">נרכש ({checkedItems.length})</p>
+  <p className="text-xs text-bark-200 font-bold">נרכש ({checkedItems.length})</p>
   </div>
   <ul>
   {checkedItems.map((item: any) => {
@@ -267,8 +264,8 @@ export default function ShoppingListPage() {
 
   {totalCount === 0 && (
   <div className="text-center py-10">
-  <p className="text-bark-200 text-sm" style={{ fontFamily: "'Assistant', sans-serif" }}>
-  הרשימה ריקה — הוסיפי פריט למעלה
+  <p className="text-bark-200 text-sm">
+  הרשימה ריקה — הוסיפו פריט למעלה
   </p>
   </div>
   )}

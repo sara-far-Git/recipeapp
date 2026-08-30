@@ -114,7 +114,7 @@ export default function Header() {
               </button>
             </>
           ) : (
-            <Link href="/login" className="mr-2 btn-fire h-10 px-6 text-sm" style={{ minHeight: 40 }}>
+            <Link href="/login" className="mr-2 btn-block h-10 px-6 text-sm" style={{ minHeight: 40 }}>
               התחברות
             </Link>
           )}

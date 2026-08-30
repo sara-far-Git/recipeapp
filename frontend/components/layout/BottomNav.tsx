@@ -48,12 +48,13 @@ export default function BottomNav() {
   return (
   <Link key={item.href} href={item.href} className="flex flex-col items-center -mt-5">
   <div
-  className="rounded-full flex items-center justify-center transition-transform duration-200 active:scale-90"
+  className="flex items-center justify-center transition-transform duration-200 active:scale-90"
                   style={{
                     width: 52,
                     height: 52,
-                    background: "#8b3a1f",
-                    boxShadow: "0 8px 20px -6px rgba(139,58,31,0.55)",
+                    borderRadius: 2,
+                    background: "#3a2618",
+                    boxShadow: "0 8px 20px -6px rgba(58,38,24,0.45)",
                   }}>
                   <item.icon className="w-5 h-5 text-surface-100 stroke-[2.5]" />
   </div>

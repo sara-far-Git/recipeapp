@@ -138,7 +138,7 @@ export default function EditRecipePage() {
   <div className="w-16 h-16 rounded-full bg-cinnamon-50 border border-cinnamon-200 flex items-center justify-center mx-auto mb-4">
   <Check className="w-8 h-8 text-cinnamon-500" />
   </div>
-  <p className="text-bark-500 font-bold text-lg" style={{ fontFamily: "'Heebo', sans-serif" }}>
+  <p className="section-title text-bark-500">
   המתכון עודכן בהצלחה!
   </p>
   </div>
@@ -146,15 +146,12 @@ export default function EditRecipePage() {
   )}
 
   {/* Page header */}
-  <div className="text-center mb-10 animate-fade-up">
-  <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-4"
-  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
-  <span className="inline-block w-10 h-px bg-smoke-200" />
+  <div className="mb-10 animate-fade-up">
+  <span className="eyebrow mb-3">
+  <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   עריכת מתכון
-  <span className="inline-block w-10 h-px bg-smoke-200" />
-  </div>
-  <h1 className="text-bark-500"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-0.025em" }}>
+  </span>
+  <h1 className="display-lg text-bark-500">
   עדכון המתכון
   </h1>
   </div>
@@ -276,7 +273,7 @@ export default function EditRecipePage() {
   </div>
 
   <button onClick={() => setStep(2)} disabled={!title.trim() || !category}
-  className="w-full py-3.5  btn-fire font-semibold uppercase tracking-widest text-sm flex items-center justify-center gap-2 disabled:opacity-40">
+  className="w-full btn-block text-sm flex items-center justify-center gap-2 disabled:opacity-40">
   הבא — מצרכים <ArrowLeft className="w-4 h-4" />
   </button>
   </div>
@@ -285,7 +282,7 @@ export default function EditRecipePage() {
   {/* Step 2 */}
   {step === 2 && (
   <div className="space-y-4 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <h2 className="font-bold text-bark-500 text-lg" style={{ fontFamily: "'Heebo', sans-serif" }}>רשימת מצרכים</h2>
+  <h2 className="section-title text-bark-500">רשימת מצרכים</h2>
 
   {ingredients.map((ing, i) => (
   <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
@@ -329,7 +326,7 @@ export default function EditRecipePage() {
   {/* Step 3 */}
   {step === 3 && (
   <div className="space-y-4 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
-  <h2 className="font-bold text-bark-500 text-lg" style={{ fontFamily: "'Heebo', sans-serif" }}>שלבי הכנה</h2>
+  <h2 className="section-title text-bark-500">שלבי הכנה</h2>
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
