@@ -188,9 +188,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding-bottom: 5.5rem;
-    transform-origin: center center;
+    justify-content: flex-start;
+    padding-top: 0.75rem;
+    padding-bottom: 2rem;
+    transform-origin: top center;
     transform: scale(var(--panel-scale, 1));
   }
   .stack-panel.is-first .panel-copy {

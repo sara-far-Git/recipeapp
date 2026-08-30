@@ -128,7 +128,7 @@ export default function FeedPage() {
       <StackSentinel name="after-hero" />
 
       <CinematicSection id="categories" tone="bark" layer={2}>
-        <div className="bleed-inner py-6 sm:py-8">
+        <div className="bleed-inner pt-1 pb-6 sm:pb-8">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#e8ebe7" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
