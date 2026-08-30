@@ -285,7 +285,7 @@ export default function EditRecipePage() {
 
   {ingredients.map((ing, i) => (
   <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <GripVertical className="w-4 h-4 text-bark-100 mt-2.5 flex-shrink-0" />
+  <GripVertical className="w-4 h-4 text-bark-200 mt-2.5 flex-shrink-0" />
   <div className="flex-1 grid grid-cols-[1fr_1fr_2fr] gap-2">
   <input type="number" placeholder="כמות" value={ing.amount || ""}
   onChange={(e) => updateIngredient(i, "amount", Number(e.target.value))}
@@ -297,7 +297,7 @@ export default function EditRecipePage() {
   </div>
   {ingredients.length > 1 && (
   <button onClick={() => removeIngredient(i)}
-  className="p-2 text-bark-100 hover:text-red-500 hover:bg-red-50  transition-colors mt-0.5">
+  className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50  transition-colors mt-0.5">
   <Trash2 className="w-4 h-4" />
   </button>
   )}
@@ -337,7 +337,7 @@ export default function EditRecipePage() {
   className="input-dark flex-1 resize-none" />
   {instructions.length > 1 && (
   <button onClick={() => removeInstruction(i)}
-  className="p-2 text-bark-100 hover:text-red-500 hover:bg-red-50  transition-colors">
+  className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50  transition-colors">
   <Trash2 className="w-4 h-4" />
   </button>
   )}

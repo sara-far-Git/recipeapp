@@ -12,7 +12,7 @@ export default function PrivacyPage() {
         <h1 className="display-lg text-bark-500 mb-3">
           מדיניות פרטיות
         </h1>
-        <p className="text-bark-100 text-[15px] font-semibold">
+        <p className="text-bark-200 text-[15px] font-semibold">
           בתוקף ממאי 2026
         </p>
   </div>
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
   </div>
 
   <div className="text-center mt-12 pt-6 border-t border-surface-300">
-        <p className="text-bark-100 text-xs">עדכון אחרון: מאי 2026</p>
+        <p className="text-bark-200 text-xs">עדכון אחרון: מאי 2026</p>
   </div>
   </div>
   );

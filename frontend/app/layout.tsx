@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import { Assistant, Heebo } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import Header from "@/components/layout/Header";
@@ -7,14 +8,28 @@ import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
 import InstallBanner from "@/components/ui/InstallBanner";
 
+// Self-hosted by Next at build time: no render-blocking request to Google and
+// no reflow when the Hebrew faces land.
+const assistant = Assistant({
+  subsets: ["hebrew", "latin"],
+  display: "swap",
+  variable: "--font-assistant",
+});
+
+const heebo = Heebo({
+  subsets: ["hebrew", "latin"],
+  display: "swap",
+  variable: "--font-heebo",
+});
+
 export const metadata: Metadata = {
   title: "Recipes Book — ספר המתכונים שלכם",
   description: "שתפו, גלו ובשלו מתכונים עם הקהילה",
   manifest: "/manifest.json",
   appleWebApp: {
-  capable: true,
-  statusBarStyle: "default",
-  title: "מתכונים",
+    capable: true,
+    statusBarStyle: "default",
+    title: "מתכונים",
   },
 };
 
@@ -30,43 +45,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-  <html lang="he" dir="rtl">
-  <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-  <link
-          href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&family=Heebo:wght@300;400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
-  />
-  </head>
-  <body className="min-h-screen">
-  <AuthProvider>
-  <Suspense fallback={null}><Header /></Suspense>
-  <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-24 sm:pb-8">
-  {children}
-  </main>
-  <Footer />
-  <Suspense fallback={null}><BottomNav /></Suspense>
-  <InstallBanner />
-  </AuthProvider>
-  <script
-  dangerouslySetInnerHTML={{
-  __html: `
-  window.__pwaPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  window.__pwaPrompt = e;
-  window.dispatchEvent(new Event('pwa-prompt-ready'));
-  });
-  if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-  navigator.serviceWorker.register('/sw.js').catch(function() {});
-  });
-  }
-  `,
-  }}
-  />
-  </body>
-  </html>
+    <html lang="he" dir="rtl" className={`${assistant.variable} ${heebo.variable}`}>
+      <body className="min-h-screen">
+        <AuthProvider>
+          <Suspense fallback={null}><Header /></Suspense>
+          <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-24 sm:pb-8">
+            {children}
+          </main>
+          <Footer />
+          <Suspense fallback={null}><BottomNav /></Suspense>
+          <InstallBanner />
+        </AuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__pwaPrompt = null;
+              window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                window.__pwaPrompt = e;
+                window.dispatchEvent(new Event('pwa-prompt-ready'));
+              });
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
+                });
+              }
+            `,
+          }}
+        />
+      </body>
+    </html>
   );
 }

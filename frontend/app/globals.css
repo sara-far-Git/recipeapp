@@ -13,7 +13,7 @@
 
   body {
     @apply antialiased;
-    font-family: 'Assistant', 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-assistant), var(--font-heebo), -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: #efe7d7;
     color: #3a2618;
     min-height: 100vh;
@@ -71,16 +71,6 @@
 
   /* ─── Display typography ──────────────────────────────────
      Oversized, light and tightly tracked — the headline voice. */
-  /* Full-viewport panel — Siur Mochot's "one idea per screen" */
-  .panel {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
   /* Next blank rises over the previous one */
   .stack-root {
     position: relative;
@@ -107,6 +97,22 @@
       top: 4rem;
     }
   }
+  /* Smooth scrolling done natively: the browser eases the tail end of a scroll
+     onto the next panel and stays interruptible, instead of us taking over the
+     wheel. `proximity` only pulls when you're already close, and a panel taller
+     than the screen opts out so it can be read at any offset. */
+  @media (min-width: 1024px) {
+    html.home-snap {
+      scroll-snap-type: y proximity;
+      scroll-padding-top: 4rem;
+    }
+    html.home-snap .stack-panel { scroll-snap-align: start; }
+    html.home-snap .stack-panel.is-tall { scroll-snap-align: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.home-snap { scroll-snap-type: none; }
+  }
+
   .panel-copy {
     position: relative;
     z-index: 10;
@@ -172,21 +178,21 @@
   .row-wipe:hover::before { transform: scaleX(1); }
 
   .display-hero {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: var(--font-heebo), var(--font-assistant), sans-serif;
     font-size: clamp(3.2rem, 9vw, 7.2rem);
     font-weight: 900;
     line-height: 0.92;
     letter-spacing: -0.04em;
   }
   .display-lg {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: var(--font-heebo), var(--font-assistant), sans-serif;
     font-size: clamp(2.4rem, 6vw, 5rem);
     font-weight: 900;
     line-height: 0.94;
     letter-spacing: -0.035em;
   }
   .display-md {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: var(--font-heebo), var(--font-assistant), sans-serif;
     font-size: clamp(1.6rem, 3.4vw, 2.5rem);
     font-weight: 800;
     line-height: 1.05;
@@ -194,7 +200,7 @@
   }
 
   .section-title {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: var(--font-heebo), var(--font-assistant), sans-serif;
     font-size: clamp(1.25rem, 2.4vw, 1.75rem);
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -202,7 +208,7 @@
   }
 
   .card-title {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: var(--font-heebo), var(--font-assistant), sans-serif;
     font-size: 21px;
     font-weight: 800;
     letter-spacing: -0.035em;
@@ -245,29 +251,6 @@
     transition: background 0.25s ease, color 0.25s ease;
   }
 
-  /* ─── Marquee ─────────────────────────────────────────────*/
-  .marquee {
-    display: flex;
-    width: max-content;
-    will-change: transform;
-  }
-  .marquee-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 28px;
-    padding-inline: 14px;
-    white-space: nowrap;
-  }
-
-  /* ─── Section rail (vertical index on the screen edge) ────*/
-  .rail-label {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    letter-spacing: 0.18em;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
   /* ─── Surfaces ────────────────────────────────────────────*/
   .card-surface {
     background: #f7f1e4;
@@ -282,25 +265,15 @@
     box-shadow: 0 24px 60px -28px rgba(58, 38, 24, 0.34);
   }
 
-  .glass {
-    background: rgba(239, 231, 215, 0.88);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-  }
-  .glass-strong {
-    background: rgba(239, 231, 215, 0.96);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-  }
-
-  /* ─── Buttons — dark rectangles, same language as homepage ─*/
-  .btn-fire {
+  /* ─── Buttons — dark rectangles, same language as homepage ─
+     One filled button in two sizes: `btn-fire` inline, `btn-block` for the
+     page-level calls to action. */
+  .btn-fire, .btn-block {
     background: #3a2618;
     color: #f7f1e4;
     border: 1px solid #3a2618;
     border-radius: 2px;
     font-weight: 700;
-    min-height: 48px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -309,11 +282,12 @@
     text-transform: none;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
   }
-  .btn-fire:hover {
+  .btn-fire { min-height: 48px; }
+  .btn-fire:hover, .btn-block:hover {
     background: #8b3a1f;
     border-color: #8b3a1f;
   }
-  .btn-fire:active { transform: scale(0.97); }
+  .btn-fire:active, .btn-block:active { transform: scale(0.97); }
 
   .btn-outline {
     background: transparent;
@@ -335,82 +309,14 @@
     color: #f7f1e4;
   }
 
-  .btn-ink {
-    background: #3a2618;
-    color: #f7f1e4;
-    border: 1px solid #3a2618;
-    border-radius: 2px;
-    font-weight: 700;
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding-inline: 1.75rem;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-  .btn-ink:hover {
-    background: #8b3a1f;
-    border-color: #8b3a1f;
-  }
-
-  /* Dark rectangle CTA — Siur Mochot's consultation button */
   .btn-block {
-    background: #3a2618;
-    color: #f7f1e4;
-    border-radius: 2px;
     min-height: 52px;
-    padding-inline: 1.75rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
     font-size: 15px;
-    transition: background 0.2s ease;
   }
-  .btn-block:hover { background: #8b3a1f; }
-
-  /* Wide pill holding a long arrow */
-  .btn-arrow {
-    background: #8b3a1f;
-    color: #f7f1e4;
-    border-radius: 999px;
-    height: 56px;
-    padding-inline: 2.25rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.25s ease, transform 0.25s ease;
-  }
-  .btn-arrow:hover {
-    background: #3a2618;
-    transform: translateX(-6px);
-  }
-
-  /* Text link with an underline that sweeps away on hover */
-  .link-sweep {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    padding-bottom: 4px;
-  }
-  .link-sweep::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1.5px;
-    background: currentColor;
-    transform: scaleX(1);
-    transform-origin: right;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .link-sweep:hover::after { transform: scaleX(0); }
 
   /* ─── Form fields — hairline underline ────────────────────*/
   .input-label {
-    font-family: 'Assistant', 'Heebo', sans-serif;
+    font-family: var(--font-assistant), var(--font-heebo), sans-serif;
     font-weight: 700;
     font-size: 13px;
     letter-spacing: 0.06em;
@@ -433,15 +339,15 @@
     border-radius: 0;
     padding: 12px 0;
     color: #3a2618;
-    font-family: 'Assistant', 'Heebo', sans-serif;
+    font-family: var(--font-assistant), var(--font-heebo), sans-serif;
     font-size: 16px;
     transition: border-color 0.2s ease;
     outline: none;
     box-shadow: none;
   }
   .input-dark::placeholder {
-    color: #b8a385;
-    font-family: 'Assistant', 'Heebo', sans-serif;
+    color: #7d5f44;
+    font-family: var(--font-assistant), var(--font-heebo), sans-serif;
     font-style: normal;
   }
   .input-dark:hover { border-bottom-color: #8a6f55; }
@@ -478,42 +384,9 @@
   .badge-hard    { background: #3a2618; color: #f7f1e4; border: 1px solid #3a2618; }
   .badge-neutral { background: #efe7d7; color: #5a3e2a; border: 1px solid #d9c79a; }
 
-  /* Kept so pages that still use it stay valid — now a plain wrapper */
-  .ornament-text {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* ─── Nav ─────────────────────────────────────────────────*/
-  .nav-tab {
-    font-family: 'Assistant', 'Heebo', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: none;
-    color: #5a3e2a;
-    cursor: pointer;
-    padding: 6px 0;
-    position: relative;
-    transition: color 0.2s;
-  }
-  .nav-tab.active, .nav-tab:hover { color: #8b3a1f; }
 }
 
 @layer utilities {
-  /* Dark-theme text utils still referenced across pages → warm browns */
-  .text-gray-100 { color: #3a2618; }
-  .text-gray-200 { color: #4a3024; }
-  .text-gray-300 { color: #5a3e2a; }
-  .text-gray-400 { color: #8a6f55; }
-  .text-gray-500 { color: #a08060; }
-  .text-gray-600 { color: #b8a385; }
-
-  /* Legacy display helpers — remapped off the vintage serif */
-  .font-display-en   { font-family: 'Assistant', 'Heebo', sans-serif; letter-spacing: -0.02em; }
-  .font-italic-serif { font-family: 'Assistant', 'Heebo', sans-serif; font-style: normal; }
-
   .tabular { font-variant-numeric: tabular-nums; }
 
   .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }

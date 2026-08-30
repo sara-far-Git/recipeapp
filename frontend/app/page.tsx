@@ -33,6 +33,13 @@ export default function FeedPage() {
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
 
+  /* Scoped to this page: the snap points only make sense over the panel stack. */
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.add("home-snap");
+    return () => html.classList.remove("home-snap");
+  }, []);
+
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
   const loadRecipes = useCallback(async (diff = difficulty, kosh = kosher, time = maxTime) => {
@@ -104,6 +111,8 @@ export default function FeedPage() {
           </Reveal>
         </div>
       </CinematicSection>
+
+      <StackSentinel name="after-hero" />
 
       <CinematicSection id="categories" tone="bark" layer={2}>
         <div className="bleed-inner py-8 sm:py-10">
@@ -206,11 +215,11 @@ export default function FeedPage() {
               </div>
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
-                <ChefHat className="w-12 h-12 mx-auto text-bark-50 mb-6" strokeWidth={1.2} />
+                <ChefHat className="w-12 h-12 mx-auto text-bark-200 mb-6" strokeWidth={1.2} />
                 <h3 className="display-md text-bark-500 mb-3">
                   {filtersActive ? "אין מתכונים שמתאימים לסינון" : "עדיין אין מתכונים"}
                 </h3>
-                <p className="text-bark-100 mb-9 text-[15px]">
+                <p className="text-bark-200 mb-9 text-[15px]">
                   {filtersActive ? "נסו לשחרר אחד מהמסננים." : "היו הראשונים לשתף מתכון עם הקהילה."}
                 </p>
                 {filtersActive ? (
@@ -220,7 +229,7 @@ export default function FeedPage() {
                 ) : null}
               </div>
             ) : gridRecipes.length === 0 ? (
-              <p className="text-center py-10 text-bark-100 text-[15px]">
+              <p className="text-center py-10 text-bark-200 text-[15px]">
                 זה כל האוסף כרגע — המתכון היחיד מחכה לכם למטה.
               </p>
             ) : (
@@ -315,6 +324,8 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
+      <StackSentinel name="before-last" />
+
       <CinematicSection id="join" tone="bark" layer={6}>
         <div className="bleed-inner py-16 text-center">
           <Reveal>
@@ -373,6 +384,8 @@ function CinematicSection({
       setTall(el.getBoundingClientRect().height > window.innerHeight - 64 + 4);
     };
     measure();
+    // The webfont lands after the first measurement and reflows the copy.
+    document.fonts?.ready.then(measure).catch(() => {});
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     window.addEventListener("resize", measure);
@@ -428,17 +441,34 @@ function CinematicSection({
 
 function JoinBar({ user }: { user: { username?: string } | null }) {
   const [hidden, setHidden] = useState(false);
-  const [atJoin, setAtJoin] = useState(false);
+  const [atCta, setAtCta] = useState(true);
 
+  /* The hero and the closing panel both carry this exact call to action, so the
+     bar only shows in between them. Measured off layout, not visibility — a
+     pinned panel stays inside the viewport all the way down. */
   useEffect(() => {
-    const el = document.getElementById("join");
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setAtJoin(e.isIntersecting), { threshold: 0.35 });
-    io.observe(el);
+    const afterHero = document.querySelector('[data-sentinel="after-hero"]');
+    const beforeLast = document.querySelector('[data-sentinel="before-last"]');
+    if (!afterHero || !beforeLast) return;
+
+    let pastHero = false;
+    let atLast = true;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.target === afterHero) pastHero = e.boundingClientRect.top <= 0;
+          else atLast = e.isIntersecting || e.boundingClientRect.top <= 0;
+        });
+        setAtCta(!pastHero || atLast);
+      },
+      { threshold: 0 },
+    );
+    io.observe(afterHero);
+    io.observe(beforeLast);
     return () => io.disconnect();
   }, []);
 
-  if (hidden || atJoin) return null;
+  if (hidden || atCta) return null;
 
   return (
     <div className="hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
@@ -454,6 +484,13 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
       </div>
     </div>
   );
+}
+
+/** Hairline marker in the stack's flow — the panels themselves pin, so their own
+ *  position can't say how far down the page you are. One pixel, not zero: an
+ *  observer never reports a zero-area target as intersecting. */
+function StackSentinel({ name }: { name: string }) {
+  return <div data-sentinel={name} aria-hidden="true" style={{ height: 1 }} />;
 }
 
 function Reveal({
@@ -563,7 +600,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
             <span className={cn("tabular text-[12px] font-extrabold transition-colors",
               isActive
                 ? onDark ? "text-cinnamon-200" : "text-cinnamon-500"
-                : onDark ? "text-smoke-200" : "text-bark-50")}>
+                : onDark ? "text-smoke-200" : "text-bark-200")}>
               {String(i + 1).padStart(2, "0")}
             </span>
           </a>
@@ -576,7 +613,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
 function FilterRow({ label, opts, active, onSelect }: { label: string; opts: { v: string | number; l: string }[]; active: string; onSelect: (v: string) => void }) {
   return (
     <div>
-      <p className="text-xs font-bold text-bark-100 mb-3">{label}</p>
+      <p className="text-xs font-bold text-bark-200 mb-3">{label}</p>
       <div className="flex flex-wrap gap-2">
         {opts.map((o) => (
           <button key={o.v} onClick={() => onSelect(String(o.v))}

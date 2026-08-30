@@ -94,7 +94,7 @@ export default function ShoppingListPage() {
     return (
       <div className="text-center py-20 animate-fade-up">
         <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
-          <ShoppingCart className="w-10 h-10 text-bark-100" />
+          <ShoppingCart className="w-10 h-10 text-bark-200" />
         </div>
         <p className="section-title text-bark-500 mb-2">
           התחברו כדי לנהל רשימת קניות
@@ -145,7 +145,7 @@ export default function ShoppingListPage() {
       {lists.length === 0 ? (
         <div className="text-center py-20 animate-fade-up">
           <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
-            <ShoppingCart className="w-10 h-10 text-bark-100" />
+            <ShoppingCart className="w-10 h-10 text-bark-200" />
           </div>
           <p className="section-title text-bark-500 mb-2">אין רשימות קניות עדיין</p>
           <p className="text-bark-300 text-sm">צרו רשימה או הוסיפו מצרכים מדף מתכון</p>
@@ -198,7 +198,7 @@ export default function ShoppingListPage() {
                   <button
                     type="button"
                     onClick={() => deleteList(activeList.id)}
-                    className="p-2 text-bark-100 hover:text-red-500 hover:bg-red-50 transition-all"
+                    className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50 transition-all"
                     aria-label="מחיקת הרשימה"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -272,7 +272,7 @@ export default function ShoppingListPage() {
                       <button
                         type="button"
                         onClick={() => removeItem(index)}
-                        className="px-4 min-w-[48px] text-bark-100 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                        className="px-4 min-w-[48px] text-bark-200 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
                         aria-label={`מחיקת ${item.name}`}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function ShoppingListPage() {
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="px-4 min-w-[48px] text-bark-100 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                          className="px-4 min-w-[48px] text-bark-200 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
                           aria-label={`מחיקת ${item.name}`}
                         >
                           <Trash2 className="w-4 h-4" />

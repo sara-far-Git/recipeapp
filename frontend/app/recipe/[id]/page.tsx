@@ -383,9 +383,9 @@ export default function RecipeDetailPage() {
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
   <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500">
   {!hideAuthor && <>{recipe.author.full_name || recipe.author.username}</>}
-  {!hideAuthor && totalTime > 0 && <span className="text-bark-100 font-normal">·</span>}
+  {!hideAuthor && totalTime > 0 && <span className="text-bark-200 font-normal">·</span>}
   {totalTime > 0 && <>{totalTime} דק׳</>}
-  {recipe.kosher_type && <><span className="text-bark-100 font-normal">·</span>{kosherLabels[recipe.kosher_type]}</>}
+  {recipe.kosher_type && <><span className="text-bark-200 font-normal">·</span>{kosherLabels[recipe.kosher_type]}</>}
   </div>
   </div>
 
@@ -561,7 +561,7 @@ export default function RecipeDetailPage() {
   <span className="text-xs text-bark-200">{new Date(comment.created_at).toLocaleDateString("he-IL")}</span>
   {user && (
   <button onClick={() => recipesApi.reportComment(recipe.id, comment.id)}
-  className="p-1 text-bark-100 hover:text-red-400 transition-colors">
+  className="p-1 text-bark-200 hover:text-red-400 transition-colors">
   <Flag className="w-3.5 h-3.5" />
   </button>
   )}

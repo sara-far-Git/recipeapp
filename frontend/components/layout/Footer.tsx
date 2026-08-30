@@ -77,7 +77,7 @@ export default function Footer() {
               </Link>
             )}
 
-            <div className="text-[13px] text-bark-100">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
+            <div className="text-[13px] text-bark-200">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
           </div>
         </div>
       </footer>

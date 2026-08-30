@@ -162,7 +162,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
               onClick={handleLike}
               aria-label={liked ? "בטלו לייק" : "אהבתי"}
               className={cn("flex items-center gap-1.5 text-[13px] font-semibold transition-colors duration-300",
-                liked ? "text-cinnamon-500" : "text-bark-100 hover:text-cinnamon-500")}>
+                liked ? "text-cinnamon-500" : "text-bark-200 hover:text-cinnamon-500")}>
               <Heart className={cn("w-4 h-4 transition-transform duration-300 flex-shrink-0", liked && "fill-current", likeAnim && "scale-125")} strokeWidth={1.8} />
               {likesCount}
             </button>
