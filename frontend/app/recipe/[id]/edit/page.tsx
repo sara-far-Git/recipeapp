@@ -193,7 +193,7 @@ export default function EditRecipePage() {
   <div>
   <label className="input-label mb-2">תמונה ראשית</label>
   {imageUrl ? (
-  <div className="relative  overflow-hidden aspect-video" style={{ background: "#e8dcc4" }}>
+  <div className="relative  overflow-hidden aspect-video" style={{ background: "#13241e" }}>
   <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
   <button onClick={() => setImageUrl("")}
   className="absolute top-3 left-3 p-2 bg-surface-50/80 backdrop-blur-sm  hover:bg-surface-50 transition-colors">

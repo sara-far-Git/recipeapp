@@ -1,12 +1,12 @@
 {
   "name": "Recipes Book — ספר המתכונים",
   "short_name": "Recipes",
-  "description": "אוסף מתכונים ביתיים, מסורת משפחתית וטעמי הילדות",
+  "description": "המתכונים של הבית, במקום אחד — עם רשימת קניות שנבנית מהם",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#efe7d7",
-  "theme_color": "#efe7d7",
+  "background_color": "#0c1814",
+  "theme_color": "#0c1814",
   "lang": "he",
   "dir": "rtl",
   "icons": [

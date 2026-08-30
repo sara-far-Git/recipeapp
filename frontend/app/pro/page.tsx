@@ -77,23 +77,23 @@ export default function ProPage() {
           </ul>
         </div>
 
-        <div className="relative overflow-hidden p-6" style={{ background: "#3a2618" }}>
+        <div className="relative overflow-hidden p-6" style={{ background: "#0f1f1a", borderRadius: "1.25rem" }}>
           <div className="relative">
             <div className="flex items-start justify-between mb-5">
               <div>
-                <p className="eyebrow mb-2" style={{ color: "#e5a47e" }}>Pro</p>
+                <p className="eyebrow mb-2" style={{ color: "#e86b24" }}>Pro</p>
                 <p className="display-md text-surface-50">
-                  ₪?<span className="text-sm font-normal" style={{ color: "#d4c8b6" }}> / לחודש</span>
+                  ₪?<span className="text-sm font-normal" style={{ color: "#c5cbc6" }}> / לחודש</span>
                 </p>
               </div>
-              <span className="px-3 py-1 text-xs font-bold" style={{ background: "#8b3a1f", color: "#f7f1e4", borderRadius: 2 }}>
+              <span className="px-3 py-1 text-xs font-bold" style={{ background: "#e86b24", color: "#0c1814", borderRadius: 999 }}>
                 בקרוב
               </span>
             </div>
             <ul className="space-y-3">
               {PRO_FEATURES.map((f) => (
-                <li key={f.text} className="flex items-start gap-2.5 text-sm" style={{ color: f.hot ? "#f7f1e4" : "#d4c8b6" }}>
-                  <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#c47a52" }} />
+                <li key={f.text} className="flex items-start gap-2.5 text-sm" style={{ color: f.hot ? "#e8ebe7" : "#b4bbb4" }}>
+                  <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#e86b24" }} />
                   {f.text}
                 </li>
               ))}

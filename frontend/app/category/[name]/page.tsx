@@ -40,7 +40,7 @@ export default function CategoryPage() {
         </Link>
         <h1 className="display-lg text-bark-500">{name}</h1>
         <p className="text-bark-300 text-lg mt-3 max-w-md leading-snug">
-          {meta?.desc ?? "מתכונים מהאוסף, לפי סוג"}
+          {meta?.desc ?? "מתכונים לפי סוג מנה"}
         </p>
         {!loading && (
           <p className="text-sm text-bark-200 mt-3">
@@ -61,18 +61,18 @@ export default function CategoryPage() {
               {meta?.desc ?? "עוד לא נכתב כאן כלום."} אפשר להתחיל במתכון ראשון, או לעבור לקטגוריה אחרת.
             </p>
             <Link href={user ? "/recipe/new" : "/login"} className="btn-block inline-flex">
-              {user ? "כתיבת מתכון" : "התחברות כדי לכתוב"}
+              {user ? "כותבים מתכון" : "נכנסים כדי לכתוב"}
             </Link>
           </div>
 
           <p className="eyebrow mb-4">עוד באוסף</p>
-          <div style={{ borderTop: "1px solid #d9c79a" }}>
+          <div style={{ borderTop: "1px solid rgba(232,235,231,0.12)" }}>
             {others.map((cat, i) => (
               <Link
                 key={cat.name}
                 href={`/category/${encodeURIComponent(cat.name)}`}
                 className="group w-full text-right py-4 flex items-center gap-5 sm:gap-8 hover:bg-surface-100/70 transition-colors"
-                style={{ borderBottom: "1px solid #d9c79a" }}
+                style={{ borderBottom: "1px solid rgba(232,235,231,0.12)" }}
               >
                 <span className="tabular text-sm w-8 text-bark-200">
                   {String(i + 1).padStart(2, "0")}

@@ -98,10 +98,10 @@ function RecipeCard({ recipe }: RecipeCardProps) {
           ) : (
             <div
               className="absolute inset-0 p-4"
-              style={{ background: "#efe7d7" }}>
+              style={{ background: "#13241e" }}>
               <div
                 className="h-full flex flex-col justify-between p-4"
-                style={{ border: "1px solid #d9c79a" }}>
+                style={{ border: "1px solid rgba(232,235,231,0.14)" }}>
                 <div className="flex items-start justify-between gap-3">
                   <span className="eyebrow text-[11px]">{recipe.category || "מתכון"}</span>
                   <div className="w-9 h-9 text-bark-500/50">
@@ -118,14 +118,14 @@ function RecipeCard({ recipe }: RecipeCardProps) {
 
           {isDraft && (
             <span className="absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold"
-              style={{ background: "#3a2618", color: "#f7f1e4" }}>
+              style={{ background: "#0c1814", color: "#e8ebe7", borderRadius: 999 }}>
               טיוטה
             </span>
           )}
 
           {totalTime > 0 && (
             <span className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold"
-              style={{ background: "rgba(247,241,228,0.94)", color: "#3a2618" }}>
+              style={{ background: "rgba(12,24,20,0.82)", color: "#e8ebe7", borderRadius: 999 }}>
               <Clock className="w-3 h-3" strokeWidth={2} />
               {totalTime} דק׳
             </span>

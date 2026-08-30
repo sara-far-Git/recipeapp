@@ -205,7 +205,7 @@ function ProfilePageContent() {
               src={profile.avatar_url}
               alt={profile.username}
               className="w-16 h-16 sm:w-20 sm:h-20 object-cover shrink-0"
-              style={{ border: "1px solid #d9c79a" }}
+              style={{ border: "1px solid rgba(232,235,231,0.12)" }}
             />
           ) : (
             <div
@@ -260,7 +260,7 @@ function ProfilePageContent() {
 
       <div
         className="flex items-end gap-8 mb-8 pb-4 animate-fade-up"
-        style={{ borderBottom: "1px solid #d9c79a", animationDelay: "60ms" }}
+        style={{ borderBottom: "1px solid rgba(232,235,231,0.12)", animationDelay: "60ms" }}
       >
         <Stat n={recipeCount} label="מתכונים" icon={BookOpen} />
         <Stat n={profile.followers_count} label="עוקבים" icon={Users} />

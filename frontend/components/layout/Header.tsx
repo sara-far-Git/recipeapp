@@ -6,6 +6,7 @@ import { Search, Plus, User, LogOut, ShoppingCart } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import Logo from "@/components/brand/Logo";
 
 const NAV_ALWAYS = [
   { href: "/", label: "בית" },
@@ -36,29 +37,18 @@ export default function Header() {
     <header
       className="sticky top-0 z-50"
       style={{
-        background: scrolled ? "rgba(239, 231, 215, 0.94)" : "#efe7d7",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: `1px solid ${scrolled ? "#d9c79a" : "transparent"}`,
+        background: scrolled ? "rgba(12, 24, 20, 0.72)" : "rgba(12, 24, 20, 0.45)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        borderBottom: `1px solid ${scrolled ? "rgba(232,235,231,0.12)" : "rgba(232,235,231,0.06)"}`,
         transition: "border-color 0.3s ease, background 0.3s ease",
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
         {/* Brand — RTL right side (first in DOM) */}
-        <Link href="/"
-          className="flex items-center gap-2.5 group flex-shrink-0 text-bark-500 hover:text-cinnamon-500 transition-colors duration-300">
-          <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth={1.6}
-            strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-            <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-            <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-            <path d="M30 15v34" />
-            <path d="M14 20h12M14 26h12M14 32h10" />
-            <path d="M36 20h12M36 26h12M36 32h10" />
-          </svg>
-          <span className="hidden sm:inline text-[19px] font-extrabold" style={{ letterSpacing: "-0.035em" }}>
-            ספר המתכונים
-          </span>
+        <Link href="/" className="flex items-center flex-shrink-0" aria-label="ספר המתכונים — דף הבית">
+          <Logo size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
         </Link>
 
         {/* Center nav — desktop only */}
@@ -110,16 +100,16 @@ export default function Header() {
           </NavIcon>
           {user ? (
             <>
-              <div className="w-px h-5 mx-2 flex-shrink-0 bg-surface-400" />
+              <div className="w-px h-5 mx-2 flex-shrink-0 bg-cream-100/20" />
               <button
                 onClick={() => { logout(); router.push("/"); }}
-                className="w-9 h-9 flex items-center justify-center rounded-full text-bark-200 hover:text-cinnamon-500 hover:bg-cinnamon-50 transition-all duration-300"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-cream-200 hover:text-cinnamon-300 hover:bg-cream-100/10 transition-all duration-300"
                 aria-label="יציאה">
                 <LogOut className="w-[18px] h-[18px]" strokeWidth={1.8} />
               </button>
             </>
           ) : (
-            <Link href="/login" className="mr-2 btn-block h-10 px-6 text-sm" style={{ minHeight: 40 }}>
+            <Link href="/login" className="mr-2 btn-cream h-10 px-6 text-sm" style={{ minHeight: 40 }}>
               התחברות
             </Link>
           )}
@@ -135,7 +125,7 @@ function NavTab({ href, active, children }: { href: string; active: boolean; chi
       href={href}
       className={cn(
         "group relative px-4 py-2 text-sm font-bold transition-colors duration-200",
-        active ? "text-cinnamon-500" : "text-bark-300 hover:text-bark-500",
+        active ? "text-cinnamon-300" : "text-cream-200 hover:text-cream-100",
       )}>
       {children}
       <span
@@ -165,8 +155,8 @@ function NavIcon({
       className={cn(
         "relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300",
         active
-          ? "text-cinnamon-500 bg-cinnamon-50"
-          : "text-bark-200 hover:text-cinnamon-500 hover:bg-cinnamon-50",
+          ? "text-cinnamon-300 bg-cream-100/10"
+          : "text-cream-200 hover:text-cinnamon-300 hover:bg-cream-100/10",
         className,
       )}>
       {children}

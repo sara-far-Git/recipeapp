@@ -24,10 +24,10 @@ export default function BottomNav() {
   <nav
   className="fixed bottom-0 inset-x-0 z-50 sm:hidden"
       style={{
-        background: "rgba(239,231,215,0.94)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderTop: "1px solid #d9c79a",
+        background: "rgba(12,24,20,0.88)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        borderTop: "1px solid rgba(232,235,231,0.12)",
       }}>
   <div className="flex items-center justify-around h-16 px-2">
   {items.map((item) => {
@@ -52,11 +52,11 @@ export default function BottomNav() {
                   style={{
                     width: 52,
                     height: 52,
-                    borderRadius: 2,
-                    background: "#3a2618",
-                    boxShadow: "0 8px 20px -6px rgba(58,38,24,0.45)",
+                    borderRadius: 999,
+                    background: "#e86b24",
+                    boxShadow: "0 8px 20px -6px rgba(0,0,0,0.45)",
                   }}>
-                  <item.icon className="w-5 h-5 text-surface-100 stroke-[2.5]" />
+                  <item.icon className="w-5 h-5 text-forest-300 stroke-[2.5]" />
   </div>
   </Link>
   );
@@ -68,7 +68,7 @@ export default function BottomNav() {
   href={item.href}
   className={cn(
                 "relative flex flex-col items-center gap-1 px-3 py-1.5 transition-all duration-300",
-                active ? "text-cinnamon-500" : "text-bark-200",
+                active ? "text-cinnamon-300" : "text-cream-200",
               )}>
   <item.icon
   className={cn("w-5 h-5 transition-all duration-300", active && "stroke-[2.5]")}

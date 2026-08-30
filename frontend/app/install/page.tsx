@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Download, Share, Plus, Smartphone, Monitor, Check } from "lucide-react";
+import Logo from "@/components/brand/Logo";
 
 export default function InstallPage() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -36,13 +37,7 @@ export default function InstallPage() {
   return (
     <div className="max-w-lg mx-auto py-8">
       <div className="text-center mb-10 animate-fade-up">
-        <div className="w-20 h-20 mx-auto mb-5 flex items-center justify-center" style={{ background: "#3a2618" }}>
-          <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-            <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-            <path d="M30 15v34" />
-          </svg>
-        </div>
+        <Logo size={88} priority className="mx-auto mb-5" />
         <span className="eyebrow mb-3 justify-center">
           <span className="plus-badge text-cinnamon-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />

@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { ChefHat, SlidersHorizontal, X, Plus } from "lucide-react";
+import { ChefHat, SlidersHorizontal, X, Plus, Users, ShoppingCart } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,12 +16,12 @@ const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשר�
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
 
 const REASONS = [
-  { t: "בגלל האוסף",        d: "כל המתכונים במקום אחד, מסודרים לפי קטגוריה, רמת קושי וזמן הכנה." },
-  { t: "בגלל הסינון",       d: "כשרות, קושי וזמן — מסננים עד שנשאר בדיוק מה שמתאים להיום." },
-  { t: "בגלל רשימת הקניות", d: "כל מה שצריך לקנות נאסף לרשימה אחת מהמתכונים שבחרתם." },
-  { t: "בגלל הקהילה",       d: "לייקים, דירוגים ותגובות — ככה יודעים מה באמת עובד במטבח." },
-  { t: "בגלל הסימניות",     d: "שומרים מתכון בלחיצה אחת, וחוזרים אליו מכל מכשיר." },
-  { t: "בגלל שזה על המסך",  d: "פותחים במחשב, שומרים במקום אחד, וחוזרים אליו מתי שרוצים." },
+  { t: "הכל במקום אחד",   d: "מתכונים מסודרים לפי סוג, קושי וזמן. בלי לחפש במחברות ובצילומים." },
+  { t: "סינון שחותך",      d: "כשרות, רמה וזמן — נשאר בדיוק מה שמתאים להיום." },
+  { t: "רשימת קניות",      d: "בוחרים מתכונים, והרשימה נבנית לבד. יוצאים לקנות עם מה שחסר." },
+  { t: "מה שבאמת עובד",    d: "לייקים, דירוגים ותגובות מהמטבחים של אחרים — לא רק תמונה יפה." },
+  { t: "שמירה לכל מכשיר",  d: "סימניה אחת, וחוזרים לאותו מתכון מהטלפון או מהמחשב." },
+  { t: "מול המסך",         d: "מבשלים מהמחשב, ידיים על הסיר, בלי להלכלך דף." },
 ];
 
 export default function FeedPage() {
@@ -63,52 +64,63 @@ export default function FeedPage() {
   const gridRecipes = (filtersActive ? recipes : recipes.slice(1)).slice(0, 3);
 
   const sections = [
-    { id: "hero", label: "ברוכים הבאים", dark: false },
+    { id: "hero", label: "פתיחה", dark: true },
     { id: "categories", label: "קטגוריות", dark: true },
-    { id: "recipes", label: "האוסף", dark: false },
-    ...(editorPick ? [{ id: "weekly", label: "המתכון של השבוע", dark: true }] : []),
-    { id: "why", label: "למה כאן", dark: false },
-    { id: "join", label: "להצטרף", dark: true },
+    { id: "recipes", label: "האוסף", dark: true },
+    ...(editorPick ? [{ id: "weekly", label: "השבוע", dark: true }] : []),
+    { id: "why", label: "למה כאן", dark: true },
+    { id: "join", label: "הצטרפות", dark: true },
   ];
 
   return (
     <div>
       <SectionRail sections={sections} />
 
-      <div className="full-bleed stack-root -mt-6">
-      <CinematicSection id="hero" tone="cream" layer={1}>
-        <div className="bleed-inner grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-6 items-center py-10">
-          <div className="order-2 lg:order-1">
-            <Reveal>
-              <h1 className="display-hero text-bark-500">
-                {user ? (
-                  <>שלום,<br /><span className="text-cinnamon-500">{user.full_name || user.username}</span></>
-                ) : (
-                  <>המטבח<br />של הבית</>
-                )}
-              </h1>
-            </Reveal>
-            <Reveal delay={120}>
-              <div className="flex items-center gap-3 mt-6">
-                <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+      <div className="full-bleed stack-root">
+      <CinematicSection id="hero" tone="bark" layer={1}>
+        <div className="bleed-inner py-8 sm:py-10">
+          <div className="glass-stage overflow-visible">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-2 items-center px-6 py-10 sm:px-10 lg:pl-14 lg:pr-8">
+              <div className="order-2 lg:order-1">
+                <Reveal>
+                  <p className="eyebrow mb-4">ספר אחד לבית</p>
+                  <div className="flex items-start gap-4">
+                    <span className="gold-rule mt-2 hidden sm:block" />
+                    <h1 className="display-hero" style={{ color: "#e8ebe7" }}>
+                      {user ? (
+                        <>שלום,<br /><span style={{ color: "#e86b24" }}>{user.full_name || user.username}</span></>
+                      ) : (
+                        <>המתכונים<br />שנשארים</>
+                      )}
+                    </h1>
+                  </div>
+                </Reveal>
+                <Reveal delay={120}>
+                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-sm leading-snug" style={{ color: "#b4bbb4" }}>
+                    {user ? "מה על השולחן הערב?" : "שומרים מה שעובד, מוצאים כשצריך, וקונים בדיוק מה שחסר."}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-5 mt-6 text-sm font-bold" style={{ color: "#c5cbc6" }}>
+                    <span className="inline-flex items-center gap-2"><Users className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> קהילה מבשלת</span>
+                    <span className="inline-flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> רשימת קניות</span>
+                  </div>
+                </Reveal>
+                <Reveal delay={220}>
+                  <div className="flex flex-wrap items-center gap-4 mt-8">
+                    <Link href={user ? "/recipe/new" : "/register"} className="btn-cream inline-flex">
+                      {user ? "מתכון חדש" : "פותחים חשבון"}
+                    </Link>
+                    <Link href="/search" className="btn-outline">לכל המתכונים</Link>
+                  </div>
+                </Reveal>
               </div>
-              <p className="text-bark-400 mt-4 text-lg sm:text-xl font-medium max-w-sm leading-snug">
-                {user ? "מה מתבשל אצלכם היום?" : "מתכונים שעוברים במשפחה, עם רשימת קניות שנבנית לבד"}
-              </p>
-            </Reveal>
-            <Reveal delay={220}>
-              <Link href={user ? "/recipe/new" : "/register"} className="btn-block mt-8 inline-flex">
-                {user ? "מתכון חדש" : "הצטרפו בחינם"}
-              </Link>
-            </Reveal>
-          </div>
 
-          <Reveal delay={80} className="order-1 lg:order-2 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[680px]">
-              <KitchenCollage />
-              <Seal />
+              <Reveal delay={80} className="order-1 lg:order-2 relative flex justify-center lg:justify-end">
+                <div className="food-orb">
+                  <Image src="/food/hero.png" alt="קערת ירקות קלויים" fill className="object-cover" sizes="(max-width: 1024px) 90vw, 36rem" priority />
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
         </div>
       </CinematicSection>
 
@@ -117,33 +129,30 @@ export default function FeedPage() {
       <CinematicSection id="categories" tone="bark" layer={2}>
         <div className="bleed-inner py-8 sm:py-10">
           <Reveal>
-            <h2 className="display-lg" style={{ color: "#f7f1e4" }}>מה תרצו<br />להכין היום?</h2>
+            <h2 className="display-lg" style={{ color: "#e8ebe7" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
             <div className="flex items-center gap-3 mt-4 mb-6">
-              <span className="plus-badge" style={{ color: "#f7f1e4" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-lg" style={{ color: "#d4c8b6" }}>בחרו סוג, ומיד מגיעים למתכונים</p>
+              <span className="plus-badge" style={{ color: "#e8ebe7" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+              <p className="text-lg" style={{ color: "#b4bbb4" }}>בחרו סוג מנה — ותגיעו ישר למתכונים</p>
             </div>
           </Reveal>
 
-          <div className="border-t" style={{ borderColor: "rgba(247,241,228,0.18)" }}>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
-                <button onClick={() => handleCategoryClick(cat.name)}
-                  className="row-wipe group w-full text-right py-3.5 sm:py-4 flex items-center gap-5 sm:gap-8 text-surface-100 hover:text-bark-500 transition-colors duration-500"
-                  style={{ borderBottom: "1px solid rgba(247,241,228,0.18)" }}>
-                  <span className="tabular text-sm w-8 text-surface-400 group-hover:text-bark-200">
+                <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
+                  <div className="relative aspect-square rounded-full overflow-hidden mb-4 mx-auto w-[78%]"
+                    style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
+                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18vw" />
+                  </div>
+                  <p className="tabular text-xs font-bold mb-1" style={{ color: "#e86b24" }}>
                     {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-2xl sm:text-4xl font-extrabold" style={{ letterSpacing: "-0.03em" }}>
+                  </p>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
                     {cat.name}
-                  </span>
-                  <span className="hidden sm:block flex-1 text-[15px] text-smoke-200 group-hover:text-bark-300">
-                    {cat.desc}
-                  </span>
-                  <span className="plus-badge mr-auto group-hover:border-bark-500">
-                    <Plus className="w-4 h-4" strokeWidth={2.4} />
-                  </span>
+                  </h3>
+                  <p className="hidden sm:block text-[13px] text-smoke-200 mt-1 leading-snug">{cat.desc}</p>
                 </button>
               </Reveal>
             ))}
@@ -156,10 +165,10 @@ export default function FeedPage() {
           <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
               <div>
-                <h2 className="display-lg text-bark-500">מתכונים<br />נבחרים</h2>
+                <h2 className="display-lg text-bark-500">מהאוסף</h2>
                 <div className="flex items-center gap-3 mt-4">
                   <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-                  <p className="text-bark-300 text-lg">האוסף שנאסף באהבה</p>
+                  <p className="text-bark-300 text-lg">שלושה ששווה לפתוח עכשיו</p>
                 </div>
               </div>
             </Reveal>
@@ -172,10 +181,10 @@ export default function FeedPage() {
                 className={cn(
                   "flex items-center gap-2 px-5 h-12 text-sm font-bold border transition-all",
                   showFilters || filtersActive
-                    ? "bg-bark-500 border-bark-500 text-surface-100"
-                    : "bg-transparent border-bark-500 text-bark-500",
+                    ? "bg-cinnamon-500 border-cinnamon-500 text-forest-300"
+                    : "bg-transparent border-bark-400 text-bark-400",
                 )}
-                style={{ borderRadius: 2 }}>
+                style={{ borderRadius: 999 }}>
                 <SlidersHorizontal className="w-4 h-4" strokeWidth={1.8} />
                 סינון
                 {filtersActive && (
@@ -205,10 +214,10 @@ export default function FeedPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="card-surface overflow-hidden">
-                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#e8dcc4" }} />
+                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#1a332b" }} />
                     <div className="p-4 space-y-3">
-                      <div className="h-3 w-16" style={{ background: "#e8dcc4" }} />
-                      <div className="h-5 w-3/4" style={{ background: "#e8dcc4" }} />
+                      <div className="h-3 w-16" style={{ background: "#1a332b" }} />
+                      <div className="h-5 w-3/4" style={{ background: "#1a332b" }} />
                     </div>
                   </div>
                 ))}
@@ -217,20 +226,20 @@ export default function FeedPage() {
               <div className="text-center py-12">
                 <ChefHat className="w-12 h-12 mx-auto text-bark-200 mb-6" strokeWidth={1.2} />
                 <h3 className="display-md text-bark-500 mb-3">
-                  {filtersActive ? "אין מתכונים שמתאימים לסינון" : "עדיין אין מתכונים"}
+                  {filtersActive ? "שום מתכון לא תפס את הסינון" : "האוסף עדיין ריק"}
                 </h3>
                 <p className="text-bark-200 mb-9 text-[15px]">
-                  {filtersActive ? "נסו לשחרר אחד מהמסננים." : "היו הראשונים לשתף מתכון עם הקהילה."}
+                  {filtersActive ? "נסו לשחרר מסנן אחד, ותראו מה נפתח." : "אפשר להיות הראשונים לכתוב מתכון."}
                 </p>
                 {filtersActive ? (
-                  <button onClick={clearFilters} className="btn-block">נקו את הסינון</button>
+                  <button onClick={clearFilters} className="btn-block">מנקים את הסינון</button>
                 ) : user ? (
-                  <Link href="/recipe/new" className="btn-block">יצירת מתכון ראשון</Link>
+                  <Link href="/recipe/new" className="btn-block">כותבים מתכון ראשון</Link>
                 ) : null}
               </div>
             ) : gridRecipes.length === 0 ? (
               <p className="text-center py-10 text-bark-200 text-[15px]">
-                זה כל האוסף כרגע — המתכון היחיד מחכה לכם למטה.
+                זה כל מה שיש כרגע — המתכון היחיד מחכה למטה.
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -247,80 +256,64 @@ export default function FeedPage() {
 
       {editorPick && (
         <CinematicSection id="weekly" tone="bark" layer={4}>
-          <div className="bleed-inner grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center py-10">
-            <Reveal>
-              {/* Portrait ratio, but capped: at 1920 the column is ~780 wide, which
-                  would make this 975px tall on its own and push the panel off
-                  the screen and out of the stack. */}
-              <Link href={`/recipe/${editorPick.id}`} className="relative block group overflow-hidden"
-                style={{ aspectRatio: "4/5", maxHeight: "calc(100svh - 18rem)" }}>
-                <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
-                  style={{
-                    background: editorPick.image_url
-                      ? `url(${editorPick.image_url}) center/cover`
-                      : "linear-gradient(150deg, #c89668 0%, #a06f3f 50%, #6b4423 100%)",
-                  }} />
-                {!editorPick.image_url && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <ChefHat className="w-24 h-24 text-surface-100/70" strokeWidth={0.9} />
-                  </div>
-                )}
-                <span className="absolute top-5 right-5 px-3 py-1 text-xs font-bold"
-                  style={{ background: "#8b3a1f", color: "#f7f1e4" }}>
-                  {new Date().toLocaleDateString("he-IL", { weekday: "long" })}
-                </span>
-              </Link>
-            </Reveal>
+          <div className="bleed-inner py-10">
+            <div className="glass-stage overflow-visible">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 py-10 sm:px-10">
+                <Reveal>
+                  <Link href={`/recipe/${editorPick.id}`} className="relative block group mx-auto md:mx-0" style={{ width: "min(100%, 22rem)" }}>
+                    <div className="relative aspect-square rounded-full overflow-hidden border border-white/10"
+                      style={{ boxShadow: "0 28px 70px rgba(0,0,0,0.45)" }}>
+                      {editorPick.image_url ? (
+                        <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="22rem" />
+                      ) : (
+                        <Image src="/food/dessert.png" alt="" fill className="object-cover" sizes="22rem" />
+                      )}
+                    </div>
+                    <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
+                      style={{ background: "#e86b24", color: "#0c1814", borderRadius: 999 }}>
+                      {new Date().toLocaleDateString("he-IL", { weekday: "long" })}
+                    </span>
+                  </Link>
+                </Reveal>
 
-            <Reveal delay={140}>
-              <div>
-                <h2 className="display-lg" style={{ color: "#f7f1e4" }}>
-                  המתכון
-                  <br />
-                  של <span style={{ color: "#c47a52" }}>השבוע</span>
-                </h2>
-                <p className="mt-8 text-xl font-extrabold" style={{ color: "#f7f1e4" }}>
-                  {editorPick.title}
-                </p>
-                {editorPick.description && (
-                  <p className="mt-4 text-base leading-relaxed line-clamp-4" style={{ color: "#d4c8b6" }}>
-                    {editorPick.description}
-                  </p>
-                )}
-                <Link href={`/recipe/${editorPick.id}`} className="btn-block mt-8"
-                  style={{ background: "transparent", border: "1.5px solid #c47a52", color: "#f7f1e4" }}>
-                  למתכון המלא ←
-                </Link>
+                <Reveal delay={140}>
+                  <p className="eyebrow mb-4">המתכון של השבוע</p>
+                  <h2 className="display-lg" style={{ color: "#e8ebe7" }}>
+                    {editorPick.title}
+                  </h2>
+                  {editorPick.description && (
+                    <p className="mt-5 text-base leading-relaxed line-clamp-4" style={{ color: "#b4bbb4" }}>
+                      {editorPick.description}
+                    </p>
+                  )}
+                  <Link href={`/recipe/${editorPick.id}`} className="btn-outline mt-8">
+                    פותחים את המתכון
+                  </Link>
+                </Reveal>
               </div>
-            </Reveal>
+            </div>
           </div>
         </CinematicSection>
       )}
 
       <CinematicSection id="why" tone="cream" layer={5}>
-        <div className="bleed-inner py-16">
+        <div className="bleed-inner py-12 sm:py-16">
           <Reveal>
-            <h2 className="display-lg text-bark-500">למה לבשל<br />מכאן</h2>
-            <div className="flex items-center gap-3 mt-5 mb-14">
+            <h2 className="display-lg text-bark-500">למה כאן</h2>
+            <div className="flex items-center gap-3 mt-5 mb-10">
               <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-bark-300 text-lg">ספר מתכונים שבאמת משתמשים בו</p>
+              <p className="text-bark-300 text-lg">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
             </div>
           </Reveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
             {REASONS.map((r, i) => (
-              <Reveal key={r.t} delay={(i % 3) * 90}>
+              <Reveal key={r.t} delay={(i % 3) * 80}>
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="plus-badge text-bark-500" style={{ width: 28, height: 28 }}>
-                      <Plus className="w-3 h-3" strokeWidth={2.5} />
-                    </span>
-                    <span className="tabular text-xs font-bold text-cinnamon-500">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <h3 className="text-bark-500 text-xl font-extrabold mb-3">{r.t}</h3>
-                  <p className="text-bark-300 text-[15px] leading-relaxed">{r.d}</p>
+                  <span className="tabular text-xs font-bold text-cinnamon-500">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="text-bark-500 text-lg font-extrabold mt-2 mb-2">{r.t}</h3>
+                  <p className="text-bark-300 text-[14px] leading-relaxed">{r.d}</p>
                 </div>
               </Reveal>
             ))}
@@ -331,31 +324,33 @@ export default function FeedPage() {
       <StackSentinel name="before-last" />
 
       <CinematicSection id="join" tone="bark" layer={6}>
-        <div className="bleed-inner py-16 text-center">
-          <Reveal>
-            <h2 className="display-hero" style={{ color: "#f7f1e4" }}>
-              יש לכם
-              <br />
-              מתכון?
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="flex items-center justify-center gap-3 mt-6">
-              <span className="plus-badge" style={{ color: "#f7f1e4" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+        <div className="bleed-inner py-12 sm:py-16">
+          <div className="relative overflow-hidden rounded-[2rem] min-h-[22rem] flex items-center justify-center text-center">
+            <ParallaxPhoto src="/food/mezze.png" alt="" />
+            <div className="absolute inset-0" style={{ background: "rgba(12,24,20,0.62)" }} />
+            <div className="relative z-10 px-6 py-14 max-w-xl">
+              <Reveal>
+                <h2 className="display-hero" style={{ color: "#e8ebe7" }}>
+                  יש מתכון
+                  <br />
+                  ששווה לשמור?
+                </h2>
+              </Reveal>
+              <Reveal delay={120}>
+                <p className="text-xl mt-5" style={{ color: "#d8ddd8" }}>כותבים פעם אחת — והוא נשאר, עם רשימת קניות מוכנה.</p>
+                <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+                  <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
+                    {user ? "כותבים מתכון" : "פותחים חשבון"}
+                  </Link>
+                  {!user && (
+                    <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#e8ebe7" }}>
+                      כבר רשומים? כניסה
+                    </Link>
+                  )}
+                </div>
+              </Reveal>
             </div>
-            <p className="text-xl mt-4" style={{ color: "#d4c8b6" }}>זה שכולם מבקשים — הזמן לכתוב אותו כאן.</p>
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-              <Link href={user ? "/recipe/new" : "/register"} className="btn-block"
-                style={{ background: "#efe7d7", color: "#3a2618" }}>
-                {user ? "כתיבת מתכון" : "פתיחת חשבון"}
-              </Link>
-              {!user && (
-                <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#d9c79a" }}>
-                  כבר יש לי חשבון
-                </Link>
-              )}
-            </div>
-          </Reveal>
+          </div>
         </div>
       </CinematicSection>
       </div>
@@ -500,13 +495,13 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
 
   return (
     <div className="hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
-      style={{ background: "#efe7d7", borderTop: "1px solid #3a2618" }}>
-      <p className="text-bark-500 font-extrabold text-lg">רוצים לשמור מתכונים ורשימת קניות במקום אחד?</p>
+      style={{ background: "rgba(12, 24, 20, 0.88)", borderTop: "1px solid rgba(232,235,231,0.12)", backdropFilter: "blur(16px)" }}>
+      <p className="font-extrabold text-lg" style={{ color: "#e8ebe7" }}>המתכונים ורשימת הקניות — באותו מקום</p>
       <div className="flex items-center gap-4">
-        <Link href={user ? "/recipe/new" : "/register"} className="btn-block">
-          {user ? "מתכון חדש" : "הצטרפו בחינם"}
+        <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
+          {user ? "מתכון חדש" : "פותחים חשבון"}
         </Link>
-        <button onClick={() => setHidden(true)} className="text-bark-200 hover:text-bark-500" aria-label="סגירה">
+        <button onClick={() => setHidden(true)} className="text-cream-200 hover:text-cream-100" aria-label="סגירה">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -521,6 +516,47 @@ function StackSentinel({ name }: { name: string }) {
   return <div data-sentinel={name} aria-hidden="true" style={{ height: 1 }} />;
 }
 
+function ParallaxPhoto({ src, alt }: { src: string; alt: string }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const layerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const layer = layerRef.current;
+    if (!wrap || !layer) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = wrap.getBoundingClientRect();
+      const view = window.innerHeight || 1;
+      const shift = ((rect.top + rect.height / 2 - view / 2) / view) * -64;
+      layer.style.transform = `translate3d(0, ${shift}px, 0) scale(1.2)`;
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div ref={wrapRef} className="absolute inset-0 overflow-hidden">
+      <div ref={layerRef} className="absolute inset-[-14%]" style={{ willChange: "transform" }}>
+        <Image src={src} alt={alt} fill className="object-cover" sizes="100vw" />
+      </div>
+    </div>
+  );
+}
+
 function Reveal({
   children, delay = 0, className,
 }: {
@@ -533,65 +569,6 @@ function Reveal({
       className={cn("reveal", className)}
       style={{ animationDelay: `${delay}ms` }}>
       {children}
-    </div>
-  );
-}
-
-/** Bold kitchen collage — black ink on cream, Siur's graphic weight. */
-function KitchenCollage() {
-  return (
-    <svg viewBox="0 0 520 480" className="w-full h-auto animate-float" fill="#3a2618" aria-hidden="true">
-      {/* open book — furthest back, so the pot reads as standing in front of it */}
-      <path d="M40 86c38-18 78-10 110 8v150c-36-22-78-28-110-8V86z" />
-      <path d="M480 86c-38-18-78-10-110 8v150c36-22 78-28 110-8V86z" />
-      <path d="M150 96c0 40-8 70-8 118" fill="none" stroke="#efe7d7" strokeWidth="9" strokeLinecap="round" />
-      <path d="M370 96c0 40 8 70 8 118" fill="none" stroke="#efe7d7" strokeWidth="9" strokeLinecap="round" />
-      {/* spoon, tucked behind the pot */}
-      <ellipse cx="430" cy="300" rx="28" ry="40" transform="rotate(28 430 300)" />
-      <rect x="442" y="330" width="16" height="110" rx="8" transform="rotate(28 450 385)" />
-      {/* Cream halo: the same silhouette painted once in the background colour and
-          stroked wide, so the pot separates from the book behind it without any
-          outline appearing between the pot's own parts. */}
-      <g fill="#efe7d7" stroke="#efe7d7" strokeWidth="24" strokeLinejoin="round">
-        <path d="M368 268h46c18 0 32 14 32 32s-14 32-32 32h-46" fill="none" strokeWidth="42" />
-        <path d="M118 230h250c12 0 22 10 22 22v118c0 28-22 50-50 50H146c-28 0-50-22-50-50V252c0-12 10-22 22-22z" />
-        <path d="M108 230h270v18H108z" />
-        <ellipse cx="243" cy="214" rx="118" ry="22" />
-        <rect x="230" y="176" width="26" height="28" rx="8" />
-        <circle cx="243" cy="168" r="14" />
-      </g>
-      {/* the pot itself */}
-      <path d="M368 268h46c18 0 32 14 32 32s-14 32-32 32h-46" fill="none" stroke="#3a2618" strokeWidth="18" />
-      <path d="M118 230h250c12 0 22 10 22 22v118c0 28-22 50-50 50H146c-28 0-50-22-50-50V252c0-12 10-22 22-22z" />
-      <path d="M108 230h270v18H108z" />
-      <ellipse cx="243" cy="214" rx="118" ry="22" />
-      <rect x="230" y="176" width="26" height="28" rx="8" />
-      <circle cx="243" cy="168" r="14" />
-      {/* steam last, so the halo cannot eat into it */}
-      <path d="M190 150c0-22 18-28 18-48" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
-      <path d="M230 140c0-26 20-32 20-54" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
-      <path d="M270 150c0-22 16-28 16-46" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function Seal() {
-  const spikes = 22;
-  const points = Array.from({ length: spikes * 2 }, (_, i) => {
-    const r = i % 2 === 0 ? 96 : 84;
-    const a = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
-    return `${(100 + r * Math.cos(a)).toFixed(1)},${(100 + r * Math.sin(a)).toFixed(1)}`;
-  }).join(" ");
-
-  return (
-    <div className="absolute -bottom-2 left-0 sm:-left-4 w-[96px] h-[96px] sm:w-[112px] sm:h-[112px]">
-      <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full animate-spin-slow" aria-hidden="true">
-        <polygon points={points} fill="#8b3a1f" />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center leading-none text-center">
-        <span className="text-surface-100 text-[12px] sm:text-[14px] font-extrabold">מהמטבח</span>
-        <span className="text-surface-100 text-[12px] sm:text-[14px] font-extrabold">אליכם</span>
-      </div>
     </div>
   );
 }
@@ -625,8 +602,8 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
     <nav
       className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
-        background: onDark ? "#3a2618" : "#efe7d7",
-        borderInlineStart: `1px solid ${onDark ? "rgba(247,241,228,0.15)" : "rgba(58,38,24,0.12)"}`,
+        background: "#0c1814",
+        borderInlineStart: "1px solid rgba(232,235,231,0.12)",
       }}
       aria-label="ניווט בין חלקי הדף">
       {sections.map((s, i) => {
@@ -660,7 +637,7 @@ function FilterRow({ label, opts, active, onSelect }: { label: string; opts: { v
                 ? "bg-cinnamon-500 border-cinnamon-500 text-surface-100"
                 : "bg-transparent border-surface-500 text-bark-300 hover:border-bark-500 hover:text-bark-500",
             )}
-            style={{ borderRadius: 2 }}>{o.l}</button>
+            style={{ borderRadius: 999 }}>{o.l}</button>
         ))}
       </div>
     </div>

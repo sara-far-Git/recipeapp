@@ -3,15 +3,7 @@
 import { useState, useEffect } from "react";
 import { Download, Share, Plus, X } from "lucide-react";
 import { usePWA } from "@/lib/usePWA";
-
-const BookMark = ({ className = "" }: { className?: string }) => (
-  <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" className={className}>
-  <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-  <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-  <path d="M30 15v34" />
-  <path d="M14 20h12M14 26h12M36 20h12M36 26h12" />
-  </svg>
-);
+import Logo from "@/components/brand/Logo";
 
 export default function InstallBanner() {
   const { canInstall, install, isIOS } = usePWA();
@@ -48,16 +40,16 @@ export default function InstallBanner() {
   <X className="w-5 h-5" />
   </button>
   <div className="text-center mb-6">
-  <BookMark className="w-10 h-10 mx-auto text-cinnamon-500 mb-3" />
+  <Logo size={64} className="mx-auto mb-3" />
   <h3 className="section-title text-bark-500">
   הוסיפו למסך הבית
   </h3>
-  <p className="text-sm text-bark-300 mt-1">רק ב-Safari — 3 שלבים פשוטים</p>
+  <p className="text-sm text-bark-300 mt-1">רק ב-Safari — שלושה שלבים</p>
   </div>
   <div className="space-y-4">
-  <Step n={1} icon={<Share className="w-4 h-4 text-blue-500" />} text='לחצי על כפתור השיתוף בתחתית Safari' />
-  <Step n={2} icon={<Plus className="w-4 h-4 text-bark-400" />} text='גללי ובחרי "הוספה למסך הבית"' />
-  <Step n={3} text='לחצי "הוספה" — האפליקציה תופיע במסך הבית' />
+  <Step n={1} icon={<Share className="w-4 h-4 text-blue-500" />} text="לחצו על כפתור השיתוף בתחתית Safari" />
+  <Step n={2} icon={<Plus className="w-4 h-4 text-bark-400" />} text={'גללו ובחרו "הוספה למסך הבית"'} />
+  <Step n={3} text={'לחצו "הוספה" — הספר יופיע במסך הבית'} />
   </div>
   </div>
   </div>
@@ -65,13 +57,10 @@ export default function InstallBanner() {
 
   <div className="fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
   <div className="card-surface p-3 flex items-center gap-3">
-  <div className="w-10 h-10  flex items-center justify-center flex-shrink-0"
-            style={{ background: "#8b3a1f" }}>
-            <BookMark className="w-6 h-6 text-surface-200" />
-  </div>
+  <Logo size={40} className="flex-shrink-0" />
   <div className="flex-1 min-w-0">
-  <p className="text-sm font-semibold text-bark-500">הוסיפי למסך הבית</p>
-  <p className="text-xs text-bark-300">גישה מהירה, ללא דפדפן</p>
+  <p className="text-sm font-semibold text-bark-500">הוסיפו למסך הבית</p>
+  <p className="text-xs text-bark-300">גישה מהירה, בלי דפדפן</p>
   </div>
   <button
   onClick={handleInstall}

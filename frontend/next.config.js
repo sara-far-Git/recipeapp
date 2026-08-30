@@ -35,7 +35,12 @@ const nextConfig = {
       },
     ];
   },
-  // Enable compression
+  async rewrites() {
+    return [
+      { source: "/icon-192", destination: "/icon-192.png" },
+      { source: "/icon-512", destination: "/icon-512.png" },
+    ];
+  },
   compress: true,
 };
 

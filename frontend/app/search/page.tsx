@@ -123,7 +123,7 @@ function SearchPageContent() {
           האוסף
         </span>
         <h1 className="display-lg text-bark-500">
-          {initialQ ? `«${initialQ}»` : "חיפוש מתכונים"}
+          {initialQ ? `«${initialQ}»` : "כל המתכונים"}
         </h1>
       </div>
 
@@ -253,14 +253,14 @@ function SearchPageContent() {
           </button>
 
           {aiSuggestions && aiSuggestions.length > 0 && (
-            <div className="mt-6 pt-5" style={{ borderTop: "1px solid #d9c79a" }}>
+            <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(232,235,231,0.12)" }}>
               <p className="eyebrow mb-4">
                 <Sparkles className="w-3.5 h-3.5" />
                 הצעות
               </p>
               <div className="space-y-3">
                 {aiSuggestions.map((s: any, i: number) => (
-                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid #d9c79a" }}>
+                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid rgba(232,235,231,0.12)" }}>
                     <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
                     <p className="text-sm text-bark-300 mb-2">{s.description}</p>
                     <div className="flex gap-2 text-xs text-bark-300">
@@ -377,7 +377,7 @@ function EmptyState({ title, action = true }: { title: string; action?: boolean 
   return (
     <div className="card-surface p-8 sm:p-10 text-center animate-fade-up">
       <p className="section-title text-bark-500 mb-2">{title}</p>
-      <p className="text-bark-300 text-sm mb-6">אפשר לנסות מילה אחרת, או לעבור לקטגוריה</p>
+      <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, או עברו לקטגוריה</p>
       {action && (
         <Link href="/#categories" className="btn-outline inline-flex">
           לכל הקטגוריות

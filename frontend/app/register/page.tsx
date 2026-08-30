@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { Eye, EyeOff, Plus } from "lucide-react";
+import Logo from "@/components/brand/Logo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -34,22 +35,16 @@ export default function RegisterPage() {
   <div className="min-h-[85vh] flex items-center justify-center px-4">
   <div className="w-full max-w-md">
   <div className="text-center mb-10 animate-fade-up">
-          <svg viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 mx-auto mb-6 animate-float">
-  <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
-  <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
-  <path d="M30 15v34" />
-  <path d="M14 20h12M14 26h12M14 32h10" />
-  <path d="M36 20h12M36 26h12M36 32h10" />
-  </svg>
+          <Logo size={96} priority className="mx-auto mb-6 animate-float" />
           <span className="eyebrow mb-4">
             <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
-            הצטרפו אלינו
+            בחינם
           </span>
           <h1 className="display-lg text-bark-500">
-            פותחים פה לספר משלכם
+            פותחים ספר משלכם
           </h1>
           <p className="text-bark-200 mt-3 text-[17px]">
-            הרשמה בחינם, מתכון חדש בכל שבוע
+            שומרים מתכונים וחוזרים אליהם מכל מכשיר
           </p>
   </div>
 
