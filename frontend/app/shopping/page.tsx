@@ -76,7 +76,7 @@ export default function ShoppingListPage() {
   <p className="text-bark-400 mb-2 font-semibold" style={{ fontFamily: "'Heebo', sans-serif" }}>
   התחברי כדי לנהל רשימת קניות
   </p>
-  <p className="text-bark-300 text-sm mb-6" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-bark-300 text-sm mb-6" style={{ fontFamily: "'Assistant', sans-serif" }}>
   שמרי את כל המצרכים במקום אחד
   </p>
   <button onClick={() => router.push("/login")}
@@ -106,7 +106,7 @@ export default function ShoppingListPage() {
   <div className="flex items-center justify-between mb-8 animate-fade-up">
   <div>
   <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-2"
-  style={{ color: "#5a3e2a", letterSpacing: "0.28em", fontFamily: "'Heebo', sans-serif" }}>
+  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
   <span className="inline-block w-8 h-px bg-smoke-200" />
   ניהול קניות
   <span className="inline-block w-8 h-px bg-smoke-200" />
@@ -130,7 +130,7 @@ export default function ShoppingListPage() {
   <p className="text-bark-400 font-semibold mb-2" style={{ fontFamily: "'Heebo', sans-serif" }}>
   אין רשימות קניות עדיין
   </p>
-  <p className="text-bark-300 text-sm" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-bark-300 text-sm" style={{ fontFamily: "'Assistant', sans-serif" }}>
   צרי רשימה או הוסיפי מצרכים מדף מתכון
   </p>
   </div>
@@ -267,7 +267,7 @@ export default function ShoppingListPage() {
 
   {totalCount === 0 && (
   <div className="text-center py-10">
-  <p className="text-bark-200 text-sm" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-bark-200 text-sm" style={{ fontFamily: "'Assistant', sans-serif" }}>
   הרשימה ריקה — הוסיפי פריט למעלה
   </p>
   </div>

@@ -380,7 +380,7 @@ export default function RecipeDetailPage() {
   {/* Meta eyebrow */}
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
   <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   {!hideAuthor && <>{recipe.author.full_name || recipe.author.username}</>}
   {!hideAuthor && totalTime > 0 && <span className="text-bark-100 font-normal">·</span>}
   {totalTime > 0 && <>{totalTime} דק׳</>}
@@ -396,7 +396,7 @@ export default function RecipeDetailPage() {
   </h1>
   {recipe.description && (
   <p className="text-bark-300 max-w-xl mx-auto text-base leading-relaxed"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   {recipe.description}
   </p>
   )}
@@ -408,12 +408,12 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Action row: author + like/save/share */}
-  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid #e8dcc4", animationDelay: "100ms" }}>
+  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid #d9c79a", animationDelay: "100ms" }}>
   {hideAuthor ? <div /> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
   <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
-  style={{ background: "#8b3a1f" }}>
+                  style={{ background: "#8b3a1f" }}>
   {recipe.author.username[0].toUpperCase()}
   </div>
   <div>
@@ -574,7 +574,7 @@ export default function RecipeDetailPage() {
   ))}
   {comments.length === 0 && (
   <p className="text-center text-bark-200 py-8 text-sm"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   אין תגובות עדיין — היי הראשונה!
   </p>
   )}

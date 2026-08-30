@@ -34,8 +34,8 @@ export default function InstallPage() {
   return (
   <div className="max-w-lg mx-auto py-8 px-2">
   <div className="text-center mb-10 animate-fade-up">
-  <div className="w-20 h-20  mx-auto mb-5 flex items-center justify-center shadow-warm-md" style={{ background: "#8b3a1f" }}>
-  <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+          <div className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style={{ background: "#8b3a1f" }}>
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none" stroke="#efe7d7" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
   <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
   <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
   <path d="M30 15v34" />
@@ -90,7 +90,7 @@ export default function InstallPage() {
   <div className="card-surface p-5">
   <div className="flex items-center gap-3 mb-4">
   <div className="w-10 h-10  bg-surface-200 flex items-center justify-center">
-  <svg width="22" height="22" viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
   <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
   <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
   </svg>

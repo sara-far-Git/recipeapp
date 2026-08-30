@@ -102,7 +102,7 @@ function ProfilePageContent() {
   if (!profile) {
   return (
   <p className="text-center text-bark-300 py-20"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   משתמש לא נמצא
   </p>
   );
@@ -134,7 +134,7 @@ function ProfilePageContent() {
   ) : (
   <div className="w-16 h-16 rounded-full bg-cinnamon-50 border border-cinnamon-200 flex items-center justify-center">
   <span className="text-2xl font-bold text-cinnamon-500"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   {username[0].toUpperCase()}
   </span>
   </div>
@@ -181,7 +181,7 @@ function ProfilePageContent() {
   ) : (
   <div className="w-24 h-24 rounded-full bg-cinnamon-500 flex items-center justify-center">
   <span className="text-4xl font-bold text-white"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   {username[0].toUpperCase()}
   </span>
   </div>
@@ -214,7 +214,7 @@ function ProfilePageContent() {
 
   {profile.bio && (
   <p className="text-bark-300 text-sm mb-3 leading-relaxed"
-  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  style={{ fontFamily: "'Assistant', sans-serif" }}>
   {profile.bio}
   </p>
   )}
@@ -282,7 +282,7 @@ function ProfilePageContent() {
   <div className="w-16 h-16 mx-auto mb-4 card-surface flex items-center justify-center ">
   <BookOpen className="w-8 h-8 text-bark-100" />
   </div>
-  <p className="text-bark-300 text-base" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-bark-300 text-base" style={{ fontFamily: "'Assistant', sans-serif" }}>
   {activeTab === "saved" ? "אין מתכונים שמורים עדיין" : "אין מתכונים עדיין"}
   </p>
   </div>

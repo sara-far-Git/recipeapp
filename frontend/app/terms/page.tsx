@@ -3,19 +3,17 @@ export default function TermsPage() {
   <div className="max-w-2xl mx-auto py-10">
   {/* Header */}
   <div className="text-center mb-12">
-  <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-4"
-  style={{ color: "#5a3e2a", letterSpacing: "0.28em", fontFamily: "'Heebo', sans-serif" }}>
-  <span className="inline-block w-10 h-px bg-smoke-200" />
-  תנאים משפטיים
-  <span className="inline-block w-10 h-px bg-smoke-200" />
-  </div>
-  <h1 className="text-bark-500 mb-3"
-  style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, letterSpacing: "-0.025em" }}>
-  תנאי שימוש
-  </h1>
-  <p className="text-cinnamon-500" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: 16 }}>
-  Effective May 2026
-  </p>
+        <span className="eyebrow mb-4">
+          <span className="eyebrow-rule" />
+          תנאים משפטיים
+          <span className="eyebrow-rule" />
+        </span>
+        <h1 className="display-lg text-bark-500 font-extrabold mb-3">
+          תנאי שימוש
+        </h1>
+        <p className="text-bark-100 text-[15px] font-semibold">
+          בתוקף ממאי 2026
+        </p>
   </div>
 
   {/* Sections */}
@@ -38,9 +36,7 @@ export default function TermsPage() {
   </div>
 
   <div className="text-center mt-12 pt-6 border-t border-surface-300">
-  <p className="text-bark-200 text-xs" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
-  עדכון אחרון: מאי 2026
-  </p>
+        <p className="text-bark-100 text-xs">עדכון אחרון: מאי 2026</p>
   </div>
   </div>
   );

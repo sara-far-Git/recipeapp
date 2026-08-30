@@ -14,7 +14,7 @@ export async function GET() {
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  background: "linear-gradient(145deg, #f5efe2, #e8dcc4)",
+          background: "linear-gradient(145deg, #efe7d7, #e8dcc4)",
   gap: 28,
   }}
   >
@@ -70,14 +70,12 @@ export async function GET() {
 
   {/* App name */}
   <div style={{
-  fontSize: 52,
-  fontWeight: 700,
-  color: "#3a2618",
-  fontFamily: "Georgia, serif",
-  letterSpacing: 4,
-  textTransform: "uppercase",
-  }}>
-  Recipes Book
+          fontSize: 54,
+          fontWeight: 800,
+          color: "#3a2618",
+          letterSpacing: -2,
+        }}>
+          ספר המתכונים
   </div>
   </div>
   ),

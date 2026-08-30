@@ -13,7 +13,7 @@ export async function GET() {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  background: "linear-gradient(145deg, #f5efe2, #e8dcc4)",
+          background: "linear-gradient(145deg, #efe7d7, #e8dcc4)",
   }}
   >
   {/* Open book */}

@@ -66,8 +66,8 @@ export default function InstallBanner() {
   <div className="fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
   <div className="card-surface p-3 flex items-center gap-3">
   <div className="w-10 h-10  flex items-center justify-center flex-shrink-0"
-  style={{ background: "#8b3a1f" }}>
-  <BookMark className="w-6 h-6 text-white" />
+            style={{ background: "#8b3a1f" }}>
+            <BookMark className="w-6 h-6 text-surface-200" />
   </div>
   <div className="flex-1 min-w-0">
   <p className="text-sm font-semibold text-bark-500">הוסיפי למסך הבית</p>

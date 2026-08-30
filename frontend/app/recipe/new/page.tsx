@@ -182,7 +182,7 @@ export default function NewRecipePage() {
   {/* Page header */}
   <div className="text-center mb-10 animate-fade-up">
   <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-4"
-  style={{ color: "#5a3e2a", letterSpacing: "0.28em", fontFamily: "'Heebo', sans-serif" }}>
+  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
   <span className="inline-block w-10 h-px bg-smoke-200" />
   מתכון חדש
   <span className="inline-block w-10 h-px bg-smoke-200" />
@@ -191,7 +191,7 @@ export default function NewRecipePage() {
   style={{ fontFamily: "'Heebo', sans-serif", fontSize: "clamp(1.8rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-0.025em" }}>
   שתפי מתכון עם הקהילה
   </h1>
-  <p className="text-bark-300 text-base" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-bark-300 text-base" style={{ fontFamily: "'Assistant', sans-serif" }}>
   כל מתכון הוא סיפור — ספרי אותו
   </p>
   </div>
@@ -205,7 +205,7 @@ export default function NewRecipePage() {
   <Sparkles className="w-4 h-4 text-cinnamon-500" />
   השף הדיגיטלי
   </h3>
-  <p className="text-sm text-bark-300" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-sm text-bark-300" style={{ fontFamily: "'Assistant', sans-serif" }}>
   צלמי מתכון מספר ונמלא אוטומטית
   </p>
   </div>
@@ -239,7 +239,7 @@ export default function NewRecipePage() {
   <Link2 className="w-4 h-4 text-cinnamon-500" />
   ייבוא מקישור
   </h3>
-  <p className="text-sm text-bark-300" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+  <p className="text-sm text-bark-300" style={{ fontFamily: "'Assistant', sans-serif" }}>
   הדביקי URL מבלוג מתכונים ונייבא אוטומטית
   </p>
   </div>

@@ -148,7 +148,7 @@ export default function EditRecipePage() {
   {/* Page header */}
   <div className="text-center mb-10 animate-fade-up">
   <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase mb-4"
-  style={{ color: "#5a3e2a", letterSpacing: "0.28em", fontFamily: "'Heebo', sans-serif" }}>
+  style={{ color: "#8b3a1f", letterSpacing: "0.12em" }}>
   <span className="inline-block w-10 h-px bg-smoke-200" />
   עריכת מתכון
   <span className="inline-block w-10 h-px bg-smoke-200" />

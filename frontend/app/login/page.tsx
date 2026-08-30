@@ -32,29 +32,28 @@ export default function LoginPage() {
   <div className="min-h-[85vh] flex items-center justify-center px-4">
   <div className="w-full max-w-md">
   <div className="text-center mb-10 animate-fade-up">
-  <svg viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 mx-auto mb-6 animate-float">
+          <svg viewBox="0 0 60 60" fill="none" stroke="#8b3a1f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 mx-auto mb-6 animate-float">
   <path d="M8 14c0-1 1-2 2-2h18c2 0 4 1 5 3v34c-2-2-3-2-5-2H10c-1 0-2-1-2-2V14z" />
   <path d="M52 14c0-1-1-2-2-2H32c-2 0-4 1-5 3v34c2-2 3-2 5-2h18c1 0 2-1 2-2V14z" />
   <path d="M30 15v34" />
   <path d="M14 20h12M14 26h12M14 32h10" />
   <path d="M36 20h12M36 26h12M36 32h10" />
   </svg>
-  <div className="inline-flex items-center gap-3 text-xs font-bold uppercase mb-3" style={{ color: "#5a3e2a", letterSpacing: "0.28em" }}>
-  <span className="inline-block w-10 h-px" style={{ background: "#b8a385" }} />
-  ברוכים הבאים
-  <span className="inline-block w-10 h-px" style={{ background: "#b8a385" }} />
-  </div>
-  <h1 className="text-3xl font-bold text-bark-500" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: "-0.02em" }}>
-  ספר המתכונים שלי
-  </h1>
-  <p className="text-bark-300 mt-3" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: 17 }}>
-  התחברו כדי לשתף ולגלות מתכונים
-  </p>
+          <span className="eyebrow mb-4">
+            <span className="eyebrow-rule" />
+            ברוכים הבאים
+            <span className="eyebrow-rule" />
+          </span>
+          <h1 className="display-md text-bark-500 font-extrabold">
+            ספר המתכונים שלי
+          </h1>
+          <p className="text-bark-200 mt-3 text-[17px]">
+            התחברו כדי לשתף ולגלות מתכונים
+          </p>
   </div>
 
-  <form onSubmit={handleSubmit} className="card-surface relative p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
-  <span aria-hidden className="absolute inset-[10px] border border-[rgba(184,145,106,0.45)] pointer-events-none " />
-  {error && (
+        <form onSubmit={handleSubmit} className="card-surface relative p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
+          {error && (
   <div className="p-3.5  bg-red-50 border border-red-200 text-red-700 text-sm font-medium animate-scale-in">{error}</div>
   )}
   <Input id="email" label="אימייל" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required dir="ltr" />
@@ -67,7 +66,7 @@ export default function LoginPage() {
   <Button type="submit" loading={loading} className="w-full" size="lg">התחברות</Button>
   <div className="flex items-center gap-3 text-bark-200 text-xs">
   <span className="flex-1 h-px bg-surface-400" />
-  <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>או</span>
+            <span className="font-bold">או</span>
   <span className="flex-1 h-px bg-surface-400" />
   </div>
   <GoogleSignInButton onSuccess={() => router.push("/")} onError={(msg) => setError(msg)} />
