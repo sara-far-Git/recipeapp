@@ -77,12 +77,8 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro-video') && window.scrollY < 48) {
+              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro-v3') && window.scrollY < 48) {
                 document.documentElement.classList.add('logo-intro');
-                setTimeout(function() {
-                  document.documentElement.classList.remove('logo-intro');
-                  document.documentElement.style.overflow = '';
-                }, 12000);
               }
               window.__pwaPrompt = null;
               window.addEventListener('beforeinstallprompt', function(e) {

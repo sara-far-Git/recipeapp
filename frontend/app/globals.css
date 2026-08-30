@@ -18,6 +18,7 @@
     /* `clip` (not `hidden`) so full-bleed sections can't cause a sideways
        scrollbar while `position: sticky` keeps working inside. */
     overflow-x: clip;
+    overflow-y: auto;
   }
 
   body {
@@ -588,7 +589,9 @@
     align-items: center;
     justify-content: center;
     background: #0c1814;
-    transition: opacity 0.4s ease;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
+    mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
+    transition: opacity 0.35s linear;
   }
   .logo-intro-mark {
     will-change: opacity;

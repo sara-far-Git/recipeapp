@@ -2,18 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-video";
+const KEY = "logo-intro-v3";
 
 function unlock() {
   const html = document.documentElement;
   html.classList.remove("logo-intro");
-  html.style.overflow = "";
+  html.style.removeProperty("overflow");
+  document.body.style.removeProperty("overflow");
 }
 
 export default function LogoIntro() {
   const [gone, setGone] = useState(false);
-  const [fade, setFade] = useState(false);
-  const done = useRef(false);
+  const [hole, setHole] = useState(0);
+  const phase = useRef<"video" | "reveal" | "done">("video");
+  const raf = useRef(0);
+  const startReveal = useRef(() => {});
+  const videoEnded = useRef(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -26,39 +30,41 @@ export default function LogoIntro() {
 
     html.classList.add("logo-intro");
 
-    const finish = () => {
-      if (done.current) return;
-      done.current = true;
+    const complete = () => {
+      if (phase.current === "done") return;
+      phase.current = "done";
+      if (raf.current) cancelAnimationFrame(raf.current);
       sessionStorage.setItem(KEY, "1");
-      setFade(true);
-      window.setTimeout(() => {
-        unlock();
-        setGone(true);
-      }, 420);
+      unlock();
+      setGone(true);
     };
 
-    let canSkip = false;
-    const arm = window.setTimeout(() => {
-      canSkip = true;
-    }, 800);
-    const onSkip = (e: Event) => {
-      if (!canSkip) return;
-      if (e instanceof KeyboardEvent && e.key !== "Escape" && e.key !== "Enter" && e.key !== " ") return;
-      finish();
+    startReveal.current = () => {
+      if (phase.current !== "video") return;
+      phase.current = "reveal";
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / 1100);
+        const eased = 1 - (1 - t) ** 3;
+        setHole(eased * 150);
+        if (t < 1) raf.current = requestAnimationFrame(tick);
+        else complete();
+      };
+      raf.current = requestAnimationFrame(tick);
     };
 
-    const failsafe = window.setTimeout(finish, 10000);
-    window.addEventListener("wheel", onSkip, { passive: true });
-    window.addEventListener("touchstart", onSkip, { passive: true });
-    window.addEventListener("keydown", onSkip);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") startReveal.current();
+    };
+    window.addEventListener("keydown", onKey);
+    const stuck = window.setTimeout(() => startReveal.current(), 8000);
+    if (videoEnded.current) startReveal.current();
 
     return () => {
-      window.clearTimeout(failsafe);
-      window.clearTimeout(arm);
-      window.removeEventListener("wheel", onSkip);
-      window.removeEventListener("touchstart", onSkip);
-      window.removeEventListener("keydown", onSkip);
-      if (!done.current) unlock();
+      window.removeEventListener("keydown", onKey);
+      window.clearTimeout(stuck);
+      if (raf.current) cancelAnimationFrame(raf.current);
+      if (phase.current !== "done") unlock();
     };
   }, []);
 
@@ -69,11 +75,14 @@ export default function LogoIntro() {
       className="logo-intro-veil"
       aria-hidden="true"
       style={{
-        opacity: fade ? 0 : 1,
-        pointerEvents: fade ? "none" : "auto",
+        ["--hole" as string]: `${hole}%`,
+        opacity: hole > 132 ? 0 : 1,
       }}
     >
-      <div className="logo-intro-mark">
+      <div
+        className="logo-intro-mark"
+        style={{ opacity: 1 - Math.min(1, hole / 90) }}
+      >
         <video
           className="logo-intro-video"
           src="/logo-intro.mp4"
@@ -82,14 +91,8 @@ export default function LogoIntro() {
           preload="auto"
           autoPlay
           onEnded={() => {
-            if (done.current) return;
-            done.current = true;
-            sessionStorage.setItem(KEY, "1");
-            setFade(true);
-            window.setTimeout(() => {
-              unlock();
-              setGone(true);
-            }, 420);
+            videoEnded.current = true;
+            startReveal.current();
           }}
           onError={() => {
             unlock();
