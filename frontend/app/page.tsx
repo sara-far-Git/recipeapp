@@ -89,7 +89,7 @@ export default function FeedPage() {
                     <span className="gold-rule mt-2 hidden sm:block" />
                     <h1 className="display-hero" style={{ color: "#e8ebe7" }}>
                       {user ? (
-                        <>שלום,<br /><span style={{ color: "#e86b24" }}>{user.full_name || user.username}</span></>
+                        <>מה תרצו<br /><span style={{ color: "#e86b24" }}>לבשל היום?</span></>
                       ) : (
                         <>המתכונים<br />שנשארים</>
                       )}
