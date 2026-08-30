@@ -2,21 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v10";
-
-const LETTERS = [
-  "/logo-letters/glyph_r01.png",
-  "/logo-letters/glyph_r02.png",
-  "/logo-letters/glyph_r03.png",
-  "/logo-letters/glyph_r04.png",
-  "/logo-letters/glyph_r05.png",
-  "/logo-letters/glyph_r06.png",
-  "/logo-letters/incoming_S.png",
-  "/logo-letters/incoming_P.png",
-  "/logo-letters/incoming_A.png",
-  "/logo-letters/incoming_C.png",
-  "/logo-letters/incoming_E.png",
-];
+const KEY = "logo-intro-v11";
 
 function unlock() {
   const html = document.documentElement;
@@ -25,10 +11,16 @@ function unlock() {
   document.body.style.removeProperty("overflow");
 }
 
+function introSrc() {
+  const ua = navigator.userAgent;
+  const apple = /iPhone|iPad|iPod/i.test(ua) || (/Safari/i.test(ua) && !/Chrome|CriOS|Edg|Android/i.test(ua));
+  return apple ? "/logo-intro.mp4" : "/logo-intro.webm";
+}
+
 export default function LogoIntro() {
   const [gone, setGone] = useState(false);
   const [hole, setHole] = useState(0);
-  const [on, setOn] = useState(false);
+  const [src, setSrc] = useState("");
   const phase = useRef<"play" | "reveal" | "done">("play");
   const p = useRef(0);
   const detach = useRef(() => {});
@@ -43,10 +35,7 @@ export default function LogoIntro() {
     }
 
     html.classList.add("logo-intro");
-    LETTERS.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
+    setSrc(introSrc());
 
     const complete = () => {
       if (phase.current === "done") return;
@@ -63,10 +52,9 @@ export default function LogoIntro() {
       if (p.current >= 0.995) complete();
     };
 
-    const start = window.setTimeout(() => setOn(true), 50);
     const ready = window.setTimeout(() => {
       if (phase.current === "play") phase.current = "reveal";
-    }, 50 + LETTERS.length * 140 + 700);
+    }, 8000);
 
     const onWheel = (e: WheelEvent) => {
       if (phase.current === "done") return;
@@ -112,7 +100,6 @@ export default function LogoIntro() {
     };
 
     return () => {
-      window.clearTimeout(start);
       window.clearTimeout(ready);
       detach.current();
       if (phase.current !== "done") unlock();
@@ -131,20 +118,23 @@ export default function LogoIntro() {
         pointerEvents: "none",
       }}
     >
-      <div
-        className="logo-assemble"
-        style={{ opacity: 1 - Math.min(1, hole / 90) }}
-      >
-        {LETTERS.map((src, i) => (
-          <img
-            key={src}
-            className={on ? "logo-letter is-in" : "logo-letter"}
-            src={src}
-            alt=""
-            style={{ transitionDelay: on ? `${i * 140}ms` : "0ms" }}
-          />
-        ))}
-      </div>
+      {src ? (
+        <video
+          className="logo-intro-video"
+          src={src}
+          muted
+          playsInline
+          preload="auto"
+          autoPlay
+          style={{ opacity: 1 - Math.min(1, hole / 90) }}
+          onEnded={() => {
+            if (phase.current === "play") phase.current = "reveal";
+          }}
+          onError={() => {
+            if (phase.current === "play") phase.current = "reveal";
+          }}
+        />
+      ) : null}
     </div>
   );
 }
