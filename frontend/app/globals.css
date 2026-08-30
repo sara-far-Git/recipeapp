@@ -52,6 +52,9 @@
     width: 100vw;
   }
   .bleed-inner {
+    /* `width` is load-bearing: this is a flex item, and an auto inline margin
+       cancels the cross-axis stretch, collapsing it to its content width. */
+    width: 100%;
     max-width: 96rem;
     margin-inline: auto;
     padding-inline: 1.25rem;
@@ -103,11 +106,17 @@
      than the screen opts out so it can be read at any offset. */
   @media (min-width: 1024px) {
     html.home-snap {
-      scroll-snap-type: y proximity;
+      scroll-snap-type: y mandatory;
       scroll-padding-top: 4rem;
     }
     html.home-snap .stack-panel { scroll-snap-align: start; }
+    /* The footer is past the last panel, and a mandatory container always rests
+       on a snap point — without this it would be unreachable. */
+    html.home-snap footer { scroll-snap-align: start; }
+    /* Once a panel outgrows the screen there is reading to do between the snap
+       points, so stop insisting on them. */
     html.home-snap .stack-panel.is-tall { scroll-snap-align: none; }
+    html.home-snap:has(.stack-panel.is-tall) { scroll-snap-type: y proximity; }
   }
   @media (prefers-reduced-motion: reduce) {
     html.home-snap { scroll-snap-type: none; }
