@@ -166,6 +166,7 @@ function SearchPageContent() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="חיפוש מתכון"
             placeholder="חפשו מתכון לפי שם או תיאור..."
             className="input-dark pr-8 pl-12"
             style={{ fontSize: 22, paddingBottom: 12 }}

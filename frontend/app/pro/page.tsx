@@ -81,7 +81,7 @@ export default function ProPage() {
           <div className="relative">
             <div className="flex items-start justify-between mb-5">
               <div>
-                <p className="eyebrow mb-2" style={{ color: "#c47a52" }}>Pro</p>
+                <p className="eyebrow mb-2" style={{ color: "#e5a47e" }}>Pro</p>
                 <p className="display-md text-surface-50">
                   ₪?<span className="text-sm font-normal" style={{ color: "#d4c8b6" }}> / לחודש</span>
                 </p>
@@ -127,11 +127,13 @@ export default function ProPage() {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                aria-label="השם שלכם"
                 placeholder="השם שלכם"
                 className="input-dark"
               />
               <input
                 type="email"
+                aria-label="כתובת אימייל"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="כתובת אימייל *"

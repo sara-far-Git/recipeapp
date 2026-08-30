@@ -44,6 +44,7 @@ export default function RecipeDetailPage() {
   const [newComment, setNewComment] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [missing, setMissing] = useState(false);
 
   const [shoppingModalOpen, setShoppingModalOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<Set<number>>(new Set());
@@ -65,7 +66,7 @@ export default function RecipeDetailPage() {
   setUserRating(data.user_rating ?? null);
   const { data: commentData } = await recipesApi.getComments(Number(params.id));
   setComments(commentData);
-  } catch { router.push("/"); }
+  } catch { setMissing(true); }
   finally { setLoading(false); }
   };
   load();
@@ -180,7 +181,20 @@ export default function RecipeDetailPage() {
   </div>
   );
   }
-  if (!recipe) return null;
+  if (missing || !recipe) {
+  return (
+  <div className="max-w-lg mx-auto text-center py-24">
+  <h1 className="display-lg text-bark-500 mb-4">המתכון לא נמצא</h1>
+  <p className="text-bark-300 text-[15px] mb-9">
+  יכול להיות שהוא נמחק, או שהקישור לא מדויק.
+  </p>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+  <Link href="/search" className="btn-block">לכל המתכונים</Link>
+  <Link href="/" className="font-bold text-bark-300 hover:text-cinnamon-500">חזרה לדף הבית</Link>
+  </div>
+  </div>
+  );
+  }
 
   const hideAuthor = HIDDEN_AUTHORS.has(recipe.author?.full_name);
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
@@ -317,7 +331,7 @@ export default function RecipeDetailPage() {
   <div className="relative w-full sm:max-w-md bg-surface-50  border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
   <div className="flex items-center justify-between p-5 border-b border-surface-300">
   <h3 className="section-title text-bark-500">בחרו מצרכים לקנייה</h3>
-  <button onClick={() => setShoppingModalOpen(false)} className="p-1.5  hover:bg-surface-200 text-bark-200 transition-colors">
+  <button onClick={() => setShoppingModalOpen(false)} aria-label="סגירת החלון" className="p-1.5  hover:bg-surface-200 text-bark-200 transition-colors">
   <X className="w-5 h-5" />
   </button>
   </div>
@@ -423,14 +437,14 @@ export default function RecipeDetailPage() {
   )}
 
   <div className="flex items-center gap-1">
-  <button onClick={toggleLike} className="p-2.5  hover:bg-surface-200 transition-colors group">
+  <button onClick={toggleLike} aria-label={liked ? "ביטול לייק" : "אהבתי"} aria-pressed={liked} className="p-2.5  hover:bg-surface-200 transition-colors group">
   <Heart className={cn("w-5 h-5 transition-all", liked ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
   </button>
   <span className="text-sm text-bark-300 min-w-[1.5rem]">{likesCount}</span>
-  <button onClick={toggleSave} className="p-2.5  hover:bg-surface-200 transition-colors group">
+  <button onClick={toggleSave} aria-label={saved ? "הסרה מהשמורים" : "שמירת המתכון"} aria-pressed={saved} className="p-2.5  hover:bg-surface-200 transition-colors group">
   <Bookmark className={cn("w-5 h-5 transition-all", saved ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
   </button>
-  <button onClick={handleShare} className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-bark-400">
+  <button onClick={handleShare} aria-label="שיתוף המתכון" className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-bark-400">
   <Share2 className="w-5 h-5" />
   </button>
   {user?.id === recipe.author.id && (
@@ -439,7 +453,7 @@ export default function RecipeDetailPage() {
   className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-cinnamon-500">
   <Pencil className="w-5 h-5" />
   </Link>
-  <button onClick={handleDelete} disabled={deleting}
+  <button onClick={handleDelete} disabled={deleting} aria-label="מחיקת המתכון"
   className="p-2.5  hover:bg-red-50 transition-colors text-bark-200 hover:text-red-500">
   <Trash2 className="w-5 h-5" />
   </button>
@@ -492,11 +506,11 @@ export default function RecipeDetailPage() {
   מצרכים
   </h2>
   <div className="flex items-center gap-2 card-surface px-3 py-1.5">
-  <button onClick={() => handleServingsChange(-1)} className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
+  <button onClick={() => handleServingsChange(-1)} aria-label="פחות סועדים" className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
   <Minus className="w-4 h-4" />
   </button>
   <span className="text-sm font-semibold text-bark-500 min-w-[5rem] text-center">{currentServings} סועדים</span>
-  <button onClick={() => handleServingsChange(1)} className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
+  <button onClick={() => handleServingsChange(1)} aria-label="עוד סועדים" className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
   <Plus className="w-4 h-4" />
   </button>
   </div>
@@ -560,7 +574,7 @@ export default function RecipeDetailPage() {
   <div className="flex items-center gap-2">
   <span className="text-xs text-bark-200">{new Date(comment.created_at).toLocaleDateString("he-IL")}</span>
   {user && (
-  <button onClick={() => recipesApi.reportComment(recipe.id, comment.id)}
+  <button onClick={() => recipesApi.reportComment(recipe.id, comment.id)} aria-label="דיווח על התגובה"
   className="p-1 text-bark-200 hover:text-red-400 transition-colors">
   <Flag className="w-3.5 h-3.5" />
   </button>

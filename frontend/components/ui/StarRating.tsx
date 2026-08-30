@@ -28,7 +28,12 @@ export default function StarRating({ rating, count, interactive = false, userRat
   onMouseEnter={() => interactive && setHovered(star)}
   onMouseLeave={() => interactive && setHovered(0)}
   disabled={!interactive}
-  className={cn("transition-all duration-200", interactive && "hover:scale-125 cursor-pointer", !interactive && "cursor-default")}>
+  aria-label={interactive ? `דירוג ${star} מתוך 5` : undefined}
+  aria-hidden={!interactive}
+  tabIndex={interactive ? undefined : -1}
+  className={cn("transition-all duration-200 flex items-center justify-center",
+  interactive && "min-w-[24px] min-h-[24px] hover:scale-125 cursor-pointer",
+  !interactive && "cursor-default")}>
   <Star className={cn(iconSize, "transition-colors duration-200",
   star <= Math.round(displayRating) ? "fill-cinnamon-400 text-cinnamon-500" : "text-smoke-200")} />
   </button>

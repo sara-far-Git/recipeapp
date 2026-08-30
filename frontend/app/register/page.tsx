@@ -62,7 +62,9 @@ export default function RegisterPage() {
   <Input id="email" label="אימייל" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required dir="ltr" />
   <div className="relative">
   <Input id="password" label="סיסמה" type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required dir="ltr" minLength={6} />
-  <button type="button" onClick={() => setShowPass(!showPass)} className="absolute left-3 top-[42px] text-bark-200 hover:text-cinnamon-500 transition-colors">
+  <button type="button" onClick={() => setShowPass(!showPass)}
+  aria-label={showPass ? "הסתרת הסיסמה" : "הצגת הסיסמה"}
+  className="absolute left-3 top-[42px] text-bark-200 hover:text-cinnamon-500 transition-colors">
   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
   </button>
   </div>
