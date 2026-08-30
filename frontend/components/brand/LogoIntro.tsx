@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v3";
+const KEY = "logo-intro-v4";
 
 function unlock() {
   const html = document.documentElement;
@@ -15,10 +15,8 @@ export default function LogoIntro() {
   const [gone, setGone] = useState(false);
   const [hole, setHole] = useState(0);
   const phase = useRef<"video" | "reveal" | "done">("video");
-  const raf = useRef(0);
-  const startReveal = useRef(() => {});
+  const p = useRef(0);
   const finish = useRef(() => {});
-  const videoEnded = useRef(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -31,51 +29,63 @@ export default function LogoIntro() {
 
     html.classList.add("logo-intro");
 
-    const blockScroll = (e: Event) => {
-      e.preventDefault();
-    };
-    window.addEventListener("wheel", blockScroll, { passive: false });
-    window.addEventListener("touchmove", blockScroll, { passive: false });
-
     const complete = () => {
       if (phase.current === "done") return;
       phase.current = "done";
-      if (raf.current) cancelAnimationFrame(raf.current);
       sessionStorage.setItem(KEY, "1");
-      window.removeEventListener("wheel", blockScroll);
-      window.removeEventListener("touchmove", blockScroll);
       unlock();
       setGone(true);
     };
     finish.current = complete;
 
-    startReveal.current = () => {
-      if (phase.current !== "video") return;
-      phase.current = "reveal";
-      const start = performance.now();
-      const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / 1100);
-        const eased = 1 - (1 - t) ** 3;
-        setHole(eased * 150);
-        if (t < 1) raf.current = requestAnimationFrame(tick);
-        else complete();
-      };
-      raf.current = requestAnimationFrame(tick);
+    const apply = (next: number) => {
+      p.current = Math.min(1, Math.max(0, next));
+      setHole(p.current * 150);
+      if (p.current >= 0.995) complete();
     };
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") startReveal.current();
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (phase.current !== "reveal") return;
+      apply(p.current + e.deltaY / (window.innerHeight * 0.85));
     };
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      if (phase.current !== "reveal") return;
+      const y = e.touches[0].clientY;
+      apply(p.current + (touchY - y) / (window.innerHeight * 0.7));
+      touchY = y;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        complete();
+        return;
+      }
+      if (phase.current !== "reveal") return;
+      if (e.key === "ArrowDown" || e.key === " " || e.key === "PageDown") {
+        e.preventDefault();
+        apply(p.current + 0.16);
+      }
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("keydown", onKey);
-    const stuck = window.setTimeout(() => startReveal.current(), 8000);
-    if (videoEnded.current) startReveal.current();
+    const armReveal = window.setTimeout(() => {
+      if (phase.current === "video") phase.current = "reveal";
+    }, 10000);
 
     return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("keydown", onKey);
-      window.removeEventListener("wheel", blockScroll);
-      window.removeEventListener("touchmove", blockScroll);
-      window.clearTimeout(stuck);
-      if (raf.current) cancelAnimationFrame(raf.current);
+      window.clearTimeout(armReveal);
       if (phase.current !== "done") unlock();
     };
   }, []);
@@ -103,10 +113,11 @@ export default function LogoIntro() {
           preload="auto"
           autoPlay
           onEnded={() => {
-            videoEnded.current = true;
-            startReveal.current();
+            phase.current = "reveal";
           }}
-          onError={() => finish.current()}
+          onError={() => {
+            phase.current = "reveal";
+          }}
         />
       </div>
     </div>
