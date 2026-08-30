@@ -60,9 +60,9 @@ export default function Footer() {
               אוסף מתכונים ביתיים, נאסף באהבה
             </p>
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
-              <Link href="/pro" className="text-cinnamon-500 hover:text-cinnamon-600">גרסת פרו</Link>
-              <Link href="/privacy" className="text-bark-300 hover:text-cinnamon-500">מדיניות פרטיות</Link>
-              <Link href="/terms" className="text-bark-300 hover:text-cinnamon-500">תנאי שימוש</Link>
+              <Link href="/pro" className="text-cinnamon-500 hover:text-cinnamon-600 inline-flex items-center min-h-[24px]">גרסת פרו</Link>
+              <Link href="/privacy" className="text-bark-300 hover:text-cinnamon-500 inline-flex items-center min-h-[24px]">מדיניות פרטיות</Link>
+              <Link href="/terms" className="text-bark-300 hover:text-cinnamon-500 inline-flex items-center min-h-[24px]">תנאי שימוש</Link>
             </nav>
 
             {canInstall ? (

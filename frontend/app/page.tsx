@@ -165,7 +165,7 @@ export default function FeedPage() {
             </Reveal>
 
             <div className="flex items-center gap-3">
-              <Link href="/search" className="text-sm font-bold text-bark-300 hover:text-cinnamon-500">
+              <Link href="/search" className="text-sm font-bold text-bark-300 hover:text-cinnamon-500 inline-flex items-center min-h-[24px]">
                 לכל המתכונים
               </Link>
               <button onClick={() => setShowFilters(!showFilters)}

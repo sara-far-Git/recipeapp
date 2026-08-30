@@ -506,11 +506,11 @@ export default function RecipeDetailPage() {
   מצרכים
   </h2>
   <div className="flex items-center gap-2 card-surface px-3 py-1.5">
-  <button onClick={() => handleServingsChange(-1)} aria-label="פחות סועדים" className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
+  <button onClick={() => handleServingsChange(-1)} aria-label="פחות סועדים" className="p-0.5 min-w-[24px] min-h-[24px] flex items-center justify-center hover:text-cinnamon-500 text-bark-200 transition-colors">
   <Minus className="w-4 h-4" />
   </button>
   <span className="text-sm font-semibold text-bark-500 min-w-[5rem] text-center">{currentServings} סועדים</span>
-  <button onClick={() => handleServingsChange(1)} aria-label="עוד סועדים" className="p-0.5 hover:text-cinnamon-500 text-bark-200 transition-colors">
+  <button onClick={() => handleServingsChange(1)} aria-label="עוד סועדים" className="p-0.5 min-w-[24px] min-h-[24px] flex items-center justify-center hover:text-cinnamon-500 text-bark-200 transition-colors">
   <Plus className="w-4 h-4" />
   </button>
   </div>
