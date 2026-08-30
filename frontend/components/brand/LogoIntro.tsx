@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v8";
+const KEY = "logo-intro-v9";
 
 const FRAMES = [
+  "/logo-letters/recipe_01.png",
+  "/logo-letters/recipe_02.png",
+  "/logo-letters/recipe_03.png",
+  "/logo-letters/recipe_04.png",
+  "/logo-letters/recipe_05.png",
   "/logo-letters/01_RECIPE.png",
   "/logo-letters/02_RECIPE_S.png",
   "/logo-letters/03_RECIPE_SP.png",
@@ -67,7 +72,7 @@ export default function LogoIntro() {
         return;
       }
       setFrame(i);
-    }, 220);
+    }, 180);
 
     const onWheel = (e: WheelEvent) => {
       if (phase.current === "done") return;
