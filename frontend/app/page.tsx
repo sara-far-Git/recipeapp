@@ -296,25 +296,36 @@ export default function FeedPage() {
         </CinematicSection>
       )}
 
-      <CinematicSection id="why" tone="cream" layer={5}>
+      <CinematicSection id="why" tone="cream" layer={5} className="panel-why">
         <div className="bleed-inner py-12 sm:py-16">
-          <Reveal>
-            <h2 className="display-lg text-bark-500">למה כאן</h2>
-            <div className="flex items-center gap-3 mt-5 mb-10">
-              <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-bark-300 text-lg">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
-            </div>
-          </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+          <div className="why-head">
+            <Reveal>
+              <h2 className="display-lg text-bark-500">למה כאן</h2>
+              <div className="flex items-center gap-3 mt-5">
+                <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+                <p className="text-bark-300 text-lg max-w-md">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <Image
+                src="/logo.png"
+                alt="RECIPE SPACE"
+                width={280}
+                height={207}
+                className="why-logo"
+              />
+            </Reveal>
+          </div>
+          <div className="why-grid">
             {REASONS.map((r, i) => (
-              <Reveal key={r.t} delay={(i % 3) * 80}>
-                <div>
-                  <span className="tabular text-xs font-bold text-cinnamon-500">
+              <Reveal key={r.t} delay={(i % 3) * 70}>
+                <article className="why-card">
+                  <span className="tabular text-xs font-extrabold text-cinnamon-500">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-bark-500 text-lg font-extrabold mt-2 mb-2">{r.t}</h3>
+                  <h3 className="text-bark-500 text-lg font-extrabold mt-3 mb-2">{r.t}</h3>
                   <p className="text-bark-300 text-[14px] leading-relaxed">{r.d}</p>
-                </div>
+                </article>
               </Reveal>
             ))}
           </div>

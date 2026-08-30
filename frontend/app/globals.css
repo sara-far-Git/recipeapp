@@ -258,6 +258,50 @@
   .panel-bark .slab-b { top: 0; height: 100%; left: 0; width: 8px; background: #e86b24; }
   .panel-bark .slab-c { bottom: 8%; left: 12%; width: 36%; height: 14%; background: #163028; }
 
+  .panel-why .slab-b {
+    top: 0;
+    height: 100%;
+    width: 6px;
+    background: #e86b24;
+  }
+  .panel-why .slab-a { width: 12%; }
+  .panel-why .slab-c { width: 20%; height: 8%; background: #163028; }
+  .why-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+    margin-bottom: 2.25rem;
+  }
+  .why-logo {
+    width: min(13.5rem, 42vw);
+    height: auto;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  .why-card {
+    height: 100%;
+    padding: 1.25rem 1.3rem 1.4rem;
+    background: rgba(232, 235, 231, 0.05);
+    border: 1px solid rgba(232, 235, 231, 0.12);
+    border-radius: 1.25rem;
+  }
+  .why-card:hover {
+    border-color: rgba(232, 107, 36, 0.4);
+    background: rgba(232, 235, 231, 0.08);
+  }
+  @media (min-width: 640px) {
+    .why-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (min-width: 1024px) {
+    .why-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .why-logo { width: 15rem; }
+  }
+
   /* The section rail is pinned to the same edge, and a slab behind it turns its
      numbers into dark-on-dark. Start the edge slabs where the rail ends. */
   @media (min-width: 1024px) {
