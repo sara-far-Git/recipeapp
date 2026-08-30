@@ -33,6 +33,11 @@
 
   input, textarea, select { color-scheme: light; }
 
+  html.home-stack-scroll {
+    scroll-behavior: auto;
+    overscroll-behavior-y: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {

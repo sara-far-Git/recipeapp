@@ -43,6 +43,8 @@ export default function FeedPage() {
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
 
+  useSmoothStackScroll();
+
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
   const loadRecipes = useCallback(async (skip = 0, diff = difficulty, kosh = kosher, time = maxTime) => {
@@ -375,6 +377,75 @@ export default function FeedPage() {
       <JoinBar user={user} />
     </div>
   );
+}
+
+/** Eases wheel/trackpad scrolling so each stacked panel glides over the last. */
+function useSmoothStackScroll() {
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.add("home-stack-scroll");
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => html.classList.remove("home-stack-scroll");
+    }
+
+    let current = window.scrollY;
+    let target = window.scrollY;
+    let raf = 0;
+
+    const maxScroll = () => Math.max(0, html.scrollHeight - window.innerHeight);
+
+    const nestedAllows = (start: EventTarget | null, deltaY: number) => {
+      let node = start instanceof HTMLElement ? start : null;
+      while (node && node !== document.body) {
+        const { overflowY } = getComputedStyle(node);
+        if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight + 2) {
+          const top = node.scrollTop <= 0;
+          const bottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+          if ((deltaY < 0 && !top) || (deltaY > 0 && !bottom)) return true;
+        }
+        node = node.parentElement;
+      }
+      return false;
+    };
+
+    const tick = () => {
+      current += (target - current) * 0.12;
+      if (Math.abs(target - current) < 0.35) {
+        current = target;
+        raf = 0;
+      } else {
+        raf = requestAnimationFrame(tick);
+      }
+      window.scrollTo(0, current);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (nestedAllows(e.target, e.deltaY)) return;
+      e.preventDefault();
+      target = Math.max(0, Math.min(maxScroll(), target + e.deltaY));
+      if (!raf) {
+        current = window.scrollY;
+        raf = requestAnimationFrame(tick);
+      }
+    };
+
+    const onScroll = () => {
+      if (!raf) {
+        current = window.scrollY;
+        target = window.scrollY;
+      }
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      html.classList.remove("home-stack-scroll");
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 }
 
 function CinematicSection({
