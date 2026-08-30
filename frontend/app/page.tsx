@@ -517,26 +517,36 @@ function Reveal({
 function KitchenCollage() {
   return (
     <svg viewBox="0 0 520 480" className="w-full h-auto animate-float" fill="#3a2618" aria-hidden="true">
-      {/* pot */}
+      {/* open book — furthest back, so the pot reads as standing in front of it */}
+      <path d="M40 86c38-18 78-10 110 8v150c-36-22-78-28-110-8V86z" />
+      <path d="M480 86c-38-18-78-10-110 8v150c36-22 78-28 110-8V86z" />
+      <path d="M150 96c0 40-8 70-8 118" fill="none" stroke="#efe7d7" strokeWidth="9" strokeLinecap="round" />
+      <path d="M370 96c0 40 8 70 8 118" fill="none" stroke="#efe7d7" strokeWidth="9" strokeLinecap="round" />
+      {/* spoon, tucked behind the pot */}
+      <ellipse cx="430" cy="300" rx="28" ry="40" transform="rotate(28 430 300)" />
+      <rect x="442" y="330" width="16" height="110" rx="8" transform="rotate(28 450 385)" />
+      {/* Cream halo: the same silhouette painted once in the background colour and
+          stroked wide, so the pot separates from the book behind it without any
+          outline appearing between the pot's own parts. */}
+      <g fill="#efe7d7" stroke="#efe7d7" strokeWidth="24" strokeLinejoin="round">
+        <path d="M368 268h46c18 0 32 14 32 32s-14 32-32 32h-46" fill="none" strokeWidth="42" />
+        <path d="M118 230h250c12 0 22 10 22 22v118c0 28-22 50-50 50H146c-28 0-50-22-50-50V252c0-12 10-22 22-22z" />
+        <path d="M108 230h270v18H108z" />
+        <ellipse cx="243" cy="214" rx="118" ry="22" />
+        <rect x="230" y="176" width="26" height="28" rx="8" />
+        <circle cx="243" cy="168" r="14" />
+      </g>
+      {/* the pot itself */}
+      <path d="M368 268h46c18 0 32 14 32 32s-14 32-32 32h-46" fill="none" stroke="#3a2618" strokeWidth="18" />
       <path d="M118 230h250c12 0 22 10 22 22v118c0 28-22 50-50 50H146c-28 0-50-22-50-50V252c0-12 10-22 22-22z" />
       <path d="M108 230h270v18H108z" />
-      <path d="M368 268h46c18 0 32 14 32 32s-14 32-32 32h-46" fill="none" stroke="#3a2618" strokeWidth="18" />
-      {/* lid */}
       <ellipse cx="243" cy="214" rx="118" ry="22" />
       <rect x="230" y="176" width="26" height="28" rx="8" />
       <circle cx="243" cy="168" r="14" />
-      {/* steam */}
+      {/* steam last, so the halo cannot eat into it */}
       <path d="M190 150c0-22 18-28 18-48" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
       <path d="M230 140c0-26 20-32 20-54" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
       <path d="M270 150c0-22 16-28 16-46" fill="none" stroke="#3a2618" strokeWidth="10" strokeLinecap="round" />
-      {/* open book */}
-      <path d="M40 86c38-18 78-10 110 8v150c-36-22-78-28-110-8V86z" />
-      <path d="M480 86c-38-18-78-10-110 8v150c36-22 78-28 110-8V86z" />
-      <path d="M150 96c0 40-8 70-8 118" fill="none" stroke="#efe7d7" strokeWidth="4" />
-      <path d="M370 96c0 40 8 70 8 118" fill="none" stroke="#efe7d7" strokeWidth="4" />
-      {/* spoon */}
-      <ellipse cx="430" cy="300" rx="28" ry="40" transform="rotate(28 430 300)" />
-      <rect x="442" y="330" width="16" height="110" rx="8" transform="rotate(28 450 385)" />
     </svg>
   );
 }
@@ -550,7 +560,7 @@ function Seal() {
   }).join(" ");
 
   return (
-    <div className="absolute bottom-4 left-2 sm:left-6 w-[96px] h-[96px] sm:w-[112px] sm:h-[112px]">
+    <div className="absolute -bottom-2 left-0 sm:-left-4 w-[96px] h-[96px] sm:w-[112px] sm:h-[112px]">
       <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full animate-spin-slow" aria-hidden="true">
         <polygon points={points} fill="#8b3a1f" />
       </svg>
@@ -591,7 +601,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
     <nav
       className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
-        background: onDark ? "rgba(58,38,24,0.55)" : "rgba(239,231,215,0.72)",
+        background: onDark ? "#3a2618" : "#efe7d7",
         borderInlineStart: `1px solid ${onDark ? "rgba(247,241,228,0.15)" : "rgba(58,38,24,0.12)"}`,
       }}
       aria-label="ניווט בין חלקי הדף">

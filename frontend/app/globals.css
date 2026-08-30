@@ -158,6 +158,13 @@
   .panel-bark .slab-b { top: 0; height: 100%; left: 0; width: 8px; background: #8b3a1f; }
   .panel-bark .slab-c { bottom: 8%; left: 12%; width: 36%; height: 14%; background: #4a3024; }
 
+  /* The section rail is pinned to the same edge, and a slab behind it turns its
+     numbers into dark-on-dark. Start the edge slabs where the rail ends. */
+  @media (min-width: 1024px) {
+    .panel-cream .slab-b,
+    .panel-bark .slab-b { left: 3.5rem; }
+  }
+
   .reveal {
     opacity: 1;
     animation: reveal-in 0.65s cubic-bezier(0.16, 1, 0.3, 1);
