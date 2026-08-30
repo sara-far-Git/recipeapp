@@ -258,50 +258,6 @@
   .panel-bark .slab-b { top: 0; height: 100%; left: 0; width: 8px; background: #e86b24; }
   .panel-bark .slab-c { bottom: 8%; left: 12%; width: 36%; height: 14%; background: #163028; }
 
-  .panel-why .slab-b {
-    top: 0;
-    height: 100%;
-    width: 6px;
-    background: #e86b24;
-  }
-  .panel-why .slab-a { width: 12%; }
-  .panel-why .slab-c { width: 20%; height: 8%; background: #163028; }
-  .why-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem 2.5rem;
-    margin-bottom: 2.25rem;
-  }
-  .why-logo {
-    width: min(13.5rem, 42vw);
-    height: auto;
-  }
-  .why-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
-  }
-  .why-card {
-    height: 100%;
-    padding: 1.25rem 1.3rem 1.4rem;
-    background: rgba(232, 235, 231, 0.05);
-    border: 1px solid rgba(232, 235, 231, 0.12);
-    border-radius: 1.25rem;
-  }
-  .why-card:hover {
-    border-color: rgba(232, 107, 36, 0.4);
-    background: rgba(232, 235, 231, 0.08);
-  }
-  @media (min-width: 640px) {
-    .why-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (min-width: 1024px) {
-    .why-grid { grid-template-columns: 1fr 1fr 1fr; }
-    .why-logo { width: 15rem; }
-  }
-
   /* The section rail is pinned to the same edge, and a slab behind it turns its
      numbers into dark-on-dark. Start the edge slabs where the rail ends. */
   @media (min-width: 1024px) {
@@ -341,38 +297,38 @@
     font-family: var(--font-heebo), sans-serif;
     font-size: clamp(3.2rem, 9vw, 7.2rem);
     font-weight: 900;
-    line-height: 0.86;
-    letter-spacing: -0.055em;
+    line-height: 1.12;
+    letter-spacing: 0.04em;
   }
   .display-lg {
     font-family: var(--font-heebo), sans-serif;
     font-size: clamp(2.4rem, 6vw, 5rem);
     font-weight: 900;
-    line-height: 0.88;
-    letter-spacing: -0.05em;
+    line-height: 1.14;
+    letter-spacing: 0.035em;
   }
   .display-md {
     font-family: var(--font-heebo), sans-serif;
     font-size: clamp(1.6rem, 3.4vw, 2.5rem);
     font-weight: 800;
-    line-height: 1.02;
-    letter-spacing: -0.04em;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
   }
 
   .section-title {
     font-family: var(--font-heebo), sans-serif;
     font-size: clamp(1.25rem, 2.4vw, 1.75rem);
     font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.12;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
   }
 
   .card-title {
     font-family: var(--font-heebo), sans-serif;
     font-size: 21px;
     font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.12;
+    letter-spacing: 0.015em;
+    line-height: 1.25;
   }
 
   /* Small label, used above every section title */
@@ -549,6 +505,119 @@
   .badge-medium  { background: rgba(232, 107, 36, 0.16); color: #e86b24; border: 1px solid rgba(232, 107, 36, 0.35); }
   .badge-hard    { background: rgba(196, 92, 56, 0.18); color: #e8a090; border: 1px solid rgba(196, 92, 56, 0.4); }
   .badge-neutral { background: rgba(232, 235, 231, 0.08); color: #c5cbc6; border: 1px solid rgba(232, 235, 231, 0.14); }
+
+  /* ─── Logo menu — wipe from the mark, like a reel ─────────*/
+  .logo-trigger {
+    position: relative;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .logo-trigger.is-open {
+    animation: logo-spin 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes logo-spin {
+    from { transform: rotate(-8deg) scale(0.92); }
+    to { transform: none; }
+  }
+  .logo-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+  }
+  .logo-menu.is-open { pointer-events: auto; }
+  .logo-menu-bg,
+  .logo-menu-slab {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  .logo-menu-bg {
+    background: #0c1814;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo-menu-slab {
+    background: #e86b24;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo-menu.is-open .logo-menu-slab { transform: scaleX(1); }
+  .logo-menu.is-open .logo-menu-bg {
+    transform: scaleX(1);
+    transition-delay: 0.12s;
+  }
+  .logo-menu-copy {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 1.5rem 3rem;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo-menu.is-open .logo-menu-copy {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.32s;
+  }
+  .logo-menu-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding-block: 0.55rem;
+    color: #e8ebe7;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(232, 235, 231, 0.1);
+  }
+  .logo-menu-link .num {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #e86b24;
+    letter-spacing: 0.08em;
+    min-width: 2rem;
+  }
+  .logo-menu-link .lbl {
+    font-family: var(--font-heebo), sans-serif;
+    font-size: clamp(2.4rem, 8vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+  }
+  .logo-menu-link:hover { color: #e86b24; }
+  .logo-menu-link.is-active .lbl { color: #e86b24; }
+  .logo-menu-extras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin-top: 2.25rem;
+  }
+  .logo-menu-extra {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #c5cbc6;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .logo-menu-extra:hover,
+  .logo-menu-extra.is-active { color: #e86b24; }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-trigger.is-open { animation: none; }
+    .logo-menu-bg,
+    .logo-menu-slab,
+    .logo-menu-copy { transition: none; }
+  }
 
 }
 

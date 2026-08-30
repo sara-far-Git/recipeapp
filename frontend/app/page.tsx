@@ -296,36 +296,38 @@ export default function FeedPage() {
         </CinematicSection>
       )}
 
-      <CinematicSection id="why" tone="cream" layer={5} className="panel-why">
+      <CinematicSection id="why" tone="cream" layer={5}>
         <div className="bleed-inner py-12 sm:py-16">
-          <div className="why-head">
-            <Reveal>
-              <h2 className="display-lg text-bark-500">למה כאן</h2>
-              <div className="flex items-center gap-3 mt-5">
-                <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-                <p className="text-bark-300 text-lg max-w-md">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
-              </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <Image
-                src="/logo.png"
-                alt="RECIPE SPACE"
-                width={280}
-                height={207}
-                className="why-logo"
-              />
-            </Reveal>
-          </div>
-          <div className="why-grid">
+          <Reveal>
+            <h2 className="display-md text-bark-500">למה כאן</h2>
+            <div className="flex items-center gap-3 mt-4 mb-8">
+              <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+              <p className="text-bark-300 text-[15px]">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
+            </div>
+          </Reveal>
+          <div style={{ borderTop: "1px solid rgba(232,235,231,0.14)" }}>
             {REASONS.map((r, i) => (
-              <Reveal key={r.t} delay={(i % 3) * 70}>
-                <article className="why-card">
-                  <span className="tabular text-xs font-extrabold text-cinnamon-500">
+              <Reveal key={r.t} delay={(i % 3) * 60}>
+                <div
+                  className="row-wipe w-full text-right py-4 sm:py-5 flex items-start sm:items-center gap-5 sm:gap-8"
+                  style={{ borderBottom: "1px solid rgba(232,235,231,0.14)" }}
+                >
+                  <span className="tabular text-sm w-8 text-cinnamon-500 font-extrabold pt-1 sm:pt-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-bark-500 text-lg font-extrabold mt-3 mb-2">{r.t}</h3>
-                  <p className="text-bark-300 text-[14px] leading-relaxed">{r.d}</p>
-                </article>
+                  <span className="text-base sm:text-lg font-extrabold text-bark-500">
+                    {r.t}
+                  </span>
+                  <span className="hidden sm:block flex-1 text-[14px] text-bark-300 leading-relaxed">
+                    {r.d}
+                  </span>
+                  <span className="plus-badge mr-auto text-bark-500 hidden sm:inline-flex">
+                    <Plus className="w-4 h-4" strokeWidth={2.4} />
+                  </span>
+                </div>
+                <p className="sm:hidden text-[14px] text-bark-300 leading-relaxed pb-4 pr-14">
+                  {r.d}
+                </p>
               </Reveal>
             ))}
           </div>

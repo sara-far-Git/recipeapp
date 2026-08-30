@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
-import { Search, Plus, User, LogOut, ShoppingCart } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Logo from "@/components/brand/Logo";
 
-const NAV_ALWAYS = [
+const NAV_PAGES = [
   { href: "/", label: "בית" },
   { href: "/search", label: "מתכונים" },
   { href: "/#categories", label: "קטגוריות" },
@@ -20,6 +19,7 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let raf = 0;
@@ -31,135 +31,120 @@ export default function Header() {
     return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
   }, []);
 
-  const navLinks = NAV_ALWAYS;
+  useEffect(() => { setOpen(false); }, [pathname, searchParams]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.documentElement.style.overflow = prev;
+    };
+  }, [open]);
+
+  const isActive = (href: string) => {
+    const [pathPart, queryPart] = href.split("?");
+    const basePath = pathPart.split("#")[0];
+    if (href === "/") return pathname === "/";
+    if (!pathname.startsWith(basePath) || basePath === "/") return false;
+    if (queryPart) {
+      const lp = new URLSearchParams(queryPart);
+      if (lp.has("tab")) return searchParams.get("tab") === lp.get("tab");
+    }
+    if (basePath.startsWith("/profile/")) return searchParams.get("tab") !== "saved";
+    return true;
+  };
+
+  const extras = [
+    { href: "/search", label: "חיפוש" },
+    { href: user ? "/recipe/new" : "/login", label: "מתכון חדש" },
+    { href: user ? "/shopping" : "/login", label: "קניות" },
+    { href: user ? `/profile/${user.username}` : "/login", label: "פרופיל" },
+  ];
 
   return (
-    <header
-      className="sticky top-0 z-50"
-      style={{
-        background: scrolled ? "rgba(12, 24, 20, 0.72)" : "rgba(12, 24, 20, 0.45)",
-        backdropFilter: "blur(18px)",
-        WebkitBackdropFilter: "blur(18px)",
-        borderBottom: `1px solid ${scrolled ? "rgba(232,235,231,0.12)" : "rgba(232,235,231,0.06)"}`,
-        transition: "border-color 0.3s ease, background 0.3s ease",
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-
-        {/* Brand — RTL right side (first in DOM) */}
-        <Link href="/" className="flex items-center flex-shrink-0" aria-label="ספר המתכונים — דף הבית">
-          <Logo size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
-        </Link>
-
-        {/* Center nav — desktop only */}
-        <nav className="hidden sm:flex items-center gap-1">
-          {navLinks.map((link) => {
-            const [pathPart, queryPart] = link.href.split("?");
-            const basePath = pathPart.split("#")[0];
-            const isActive = (() => {
-              if (link.href === "/") return pathname === "/";
-              if (!pathname.startsWith(basePath) || basePath === "/") return false;
-              if (queryPart) {
-                const lp = new URLSearchParams(queryPart);
-                if (lp.has("tab")) return searchParams.get("tab") === lp.get("tab");
-              }
-              if (basePath.startsWith("/profile/")) return searchParams.get("tab") !== "saved";
-              return true;
-            })();
-            return (
-              <NavTab key={link.href} href={link.href} active={isActive}>
-                {link.label}
-              </NavTab>
-            );
-          })}
-        </nav>
-
-        {/* Actions — RTL left side (last in DOM) */}
-        <div className="flex items-center gap-1">
-          <NavIcon href="/search" active={pathname === "/search"} label="חיפוש">
-            <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
-          </NavIcon>
-          <NavIcon
-            href={user ? "/recipe/new" : "/login"}
-            active={pathname === "/recipe/new"}
-            label="מתכון חדש">
-            <Plus className="w-[18px] h-[18px]" strokeWidth={1.8} />
-          </NavIcon>
-          <NavIcon
-            href={user ? "/shopping" : "/login"}
-            active={pathname === "/shopping"}
-            label="קניות">
-            <ShoppingCart className="w-[18px] h-[18px]" strokeWidth={1.8} />
-          </NavIcon>
-          <NavIcon
-            href={user ? `/profile/${user.username}` : "/login"}
-            active={pathname.startsWith("/profile")}
-            label="פרופיל"
-            className="hidden sm:flex">
-            <User className="w-[18px] h-[18px]" strokeWidth={1.8} />
-          </NavIcon>
-          {user ? (
-            <>
-              <div className="w-px h-5 mx-2 flex-shrink-0 bg-cream-100/20" />
-              <button
-                onClick={() => { logout(); router.push("/"); }}
-                className="w-9 h-9 flex items-center justify-center rounded-full text-cream-200 hover:text-cinnamon-300 hover:bg-cream-100/10 transition-all duration-300"
-                aria-label="יציאה">
-                <LogOut className="w-[18px] h-[18px]" strokeWidth={1.8} />
-              </button>
-            </>
-          ) : (
-            <Link href="/login" className="mr-2 btn-cream h-10 px-6 text-sm" style={{ minHeight: 40 }}>
-              התחברות
-            </Link>
-          )}
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function NavTab({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "group relative px-4 py-2 text-sm font-bold transition-colors duration-200",
-        active ? "text-cinnamon-300" : "text-cream-200 hover:text-cream-100",
-      )}>
-      {children}
-      <span
-        className="absolute bottom-1 right-4 left-4 h-[1.5px] bg-current origin-right"
+    <>
+      <header
+        className="sticky top-0 z-[80]"
         style={{
-          transform: active ? "scaleX(1)" : "scaleX(0)",
-          transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
+          background: open || scrolled ? "rgba(12, 24, 20, 0.88)" : "rgba(12, 24, 20, 0.45)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          borderBottom: `1px solid ${open || scrolled ? "rgba(232,235,231,0.12)" : "rgba(232,235,231,0.06)"}`,
+          transition: "border-color 0.3s ease, background 0.3s ease",
         }}
-      />
-      {!active && (
-        <span className="absolute bottom-1 right-4 left-4 h-[1.5px] bg-current origin-right scale-x-0 group-hover:scale-x-100"
-          style={{ transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
-      )}
-    </Link>
-  );
-}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center">
+          <button
+            type="button"
+            className={cn("logo-trigger", open && "is-open")}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            aria-label={open ? "סגירת התפריט" : "פתיחת התפריט"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <Logo size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
+          </button>
+        </div>
+      </header>
 
-function NavIcon({
-  href, active, label, children, className,
-}: {
-  href: string; active: boolean; label?: string; children: React.ReactNode; className?: string;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-label={label}
-      className={cn(
-        "relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300",
-        active
-          ? "text-cinnamon-300 bg-cream-100/10"
-          : "text-cream-200 hover:text-cinnamon-300 hover:bg-cream-100/10",
-        className,
-      )}>
-      {children}
-    </Link>
+      <div
+        id="site-menu"
+        className={cn("logo-menu", open && "is-open")}
+        aria-hidden={!open}
+      >
+        <div className="logo-menu-slab" aria-hidden="true" />
+        <div className="logo-menu-bg" aria-hidden="true" />
+        <nav className="logo-menu-copy max-w-6xl mx-auto w-full" aria-label="תפריט האתר">
+          {NAV_PAGES.map((link, i) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              tabIndex={open ? 0 : -1}
+              onClick={() => setOpen(false)}
+              className={cn("logo-menu-link", isActive(link.href) && "is-active")}
+            >
+              <span className="num">{String(i + 1).padStart(2, "0")}</span>
+              <span className="lbl">{link.label}</span>
+            </Link>
+          ))}
+          <div className="logo-menu-extras">
+            {extras.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                tabIndex={open ? 0 : -1}
+                onClick={() => setOpen(false)}
+                className={cn("logo-menu-extra", isActive(link.href) && "is-active")}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {user ? (
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                className="logo-menu-extra"
+                onClick={() => { setOpen(false); logout(); router.push("/"); }}
+              >
+                יציאה
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                tabIndex={open ? 0 : -1}
+                onClick={() => setOpen(false)}
+                className="logo-menu-extra"
+              >
+                התחברות
+              </Link>
+            )}
+          </div>
+        </nav>
+      </div>
+    </>
   );
 }
