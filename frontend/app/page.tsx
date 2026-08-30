@@ -143,9 +143,9 @@ export default function FeedPage() {
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
-                  <div className="relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[58%] max-w-[10.5rem]"
+                  <div className="relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[72%] max-w-[15rem]"
                     style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
-                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 11rem" />
+                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
                   </div>
                   <p className="tabular text-xs font-bold mb-1" style={{ color: "#e86b24" }}>
                     {String(i + 1).padStart(2, "0")}
@@ -401,17 +401,14 @@ function CinematicSection({
     const inner = copy?.firstElementChild as HTMLElement | null;
     if (!inner) return;
 
-    const MIN_SCALE = 0.84;
     const measure = () => {
       const available = window.innerHeight - 64;
       const padding = parseFloat(getComputedStyle(copy!).paddingBottom) || 0;
-      // Undo the current scale to read the copy's natural height.
       const natural = inner.getBoundingClientRect().height / (scaleRef.current || 1) + padding;
-      const fit = natural > available ? available / natural : 1;
-      const next = fit >= MIN_SCALE ? fit : 1;
+      const next = natural > available ? Math.max(0.68, available / natural) : 1;
       scaleRef.current = next;
       setScale(next);
-      setTall(fit < MIN_SCALE);
+      setTall(false);
     };
     measure();
     // The webfont lands after the first measurement and reflows the copy.
