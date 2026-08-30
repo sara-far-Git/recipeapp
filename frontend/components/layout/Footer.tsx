@@ -68,12 +68,12 @@ export default function Footer() {
             {canInstall ? (
               <button onClick={handleInstall} className="btn-block">
                 <Download className="w-4 h-4 ml-2" />
-                {isIOS ? "הוסיפו למסך הבית" : "התקינו כאפליקציה"}
+                {isIOS ? "הוסיפו למסך הבית" : "פתח במחשב"}
               </button>
             ) : (
               <Link href="/install" className="btn-block">
                 <Download className="w-4 h-4 ml-2" />
-                הורידו כאפליקציה
+                פתח במחשב
               </Link>
             )}
 
