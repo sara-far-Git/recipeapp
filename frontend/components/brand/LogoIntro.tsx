@@ -17,6 +17,7 @@ export default function LogoIntro() {
   const phase = useRef<"video" | "reveal" | "done">("video");
   const raf = useRef(0);
   const startReveal = useRef(() => {});
+  const finish = useRef(() => {});
   const videoEnded = useRef(false);
 
   useEffect(() => {
@@ -30,14 +31,23 @@ export default function LogoIntro() {
 
     html.classList.add("logo-intro");
 
+    const blockScroll = (e: Event) => {
+      e.preventDefault();
+    };
+    window.addEventListener("wheel", blockScroll, { passive: false });
+    window.addEventListener("touchmove", blockScroll, { passive: false });
+
     const complete = () => {
       if (phase.current === "done") return;
       phase.current = "done";
       if (raf.current) cancelAnimationFrame(raf.current);
       sessionStorage.setItem(KEY, "1");
+      window.removeEventListener("wheel", blockScroll);
+      window.removeEventListener("touchmove", blockScroll);
       unlock();
       setGone(true);
     };
+    finish.current = complete;
 
     startReveal.current = () => {
       if (phase.current !== "video") return;
@@ -62,6 +72,8 @@ export default function LogoIntro() {
 
     return () => {
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", blockScroll);
+      window.removeEventListener("touchmove", blockScroll);
       window.clearTimeout(stuck);
       if (raf.current) cancelAnimationFrame(raf.current);
       if (phase.current !== "done") unlock();
@@ -94,10 +106,7 @@ export default function LogoIntro() {
             videoEnded.current = true;
             startReveal.current();
           }}
-          onError={() => {
-            unlock();
-            setGone(true);
-          }}
+          onError={() => finish.current()}
         />
       </div>
     </div>

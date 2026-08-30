@@ -167,13 +167,25 @@
     min-height: calc(100svh - 4rem);
     display: flex;
     flex-direction: column;
-    overflow: visible;
+    overflow: hidden;
     border-top: 1px solid rgba(232, 235, 231, 0.14);
+    box-shadow: 0 -28px 70px rgba(0, 0, 0, 0.5);
   }
   .stack-panel.is-first {
     border-top: 0;
+    box-shadow: none;
   }
-
+  .stack-panel:not(.is-tall):not(:last-child) {
+    position: sticky;
+    top: 4rem;
+  }
+  .stack-panel:not(.is-tall) {
+    max-height: calc(100svh - 4rem);
+  }
+  .stack-panel.is-tall {
+    overflow: visible;
+    max-height: none;
+  }
   .panel-copy {
     position: relative;
     z-index: 10;
@@ -183,6 +195,7 @@
     justify-content: center;
     padding-bottom: 5.5rem;
     transform-origin: center center;
+    transform: scale(var(--panel-scale, 1));
   }
   .stack-panel.is-first .panel-copy {
     padding-bottom: 0;
@@ -603,10 +616,6 @@
     height: auto;
     object-fit: contain;
     background: transparent;
-  }
-  html.logo-intro,
-  html.logo-intro body {
-    overflow: hidden;
   }
   html.logo-intro header,
   html.logo-intro footer,

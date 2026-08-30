@@ -36,6 +36,11 @@ export default function FeedPage() {
   const [maxTime, setMaxTime] = useState(0);
 
 
+  useEffect(() => {
+    document.documentElement.style.removeProperty("overflow");
+    document.body.style.removeProperty("overflow");
+  }, []);
+
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
   const loadRecipes = useCallback(async (diff = difficulty, kosh = kosher, time = maxTime) => {
@@ -398,13 +403,6 @@ function CinematicSection({
 
     const MIN_SCALE = 0.84;
     const measure = () => {
-      // The stack, and so the scaling, is a large-screen affair.
-      if (window.innerWidth < 1024) {
-        scaleRef.current = 1;
-        setScale(1);
-        setTall(false);
-        return;
-      }
       const available = window.innerHeight - 64;
       const padding = parseFloat(getComputedStyle(copy!).paddingBottom) || 0;
       // Undo the current scale to read the copy's natural height.
