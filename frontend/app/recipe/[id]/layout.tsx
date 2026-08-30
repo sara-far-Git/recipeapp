@@ -1,0 +1,108 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { SITE_URL, apiGetResult } from "@/lib/site";
+
+type Props = { params: { id: string } };
+
+type Ingredient = { amount?: number | null; unit?: string | null; name: string };
+type Instruction = { step: number; text: string };
+type Recipe = {
+  id: number;
+  title: string;
+  description?: string | null;
+  image_url?: string | null;
+  prep_time_minutes?: number | null;
+  cook_time_minutes?: number | null;
+  servings?: number | null;
+  category?: string | null;
+  ingredients?: Ingredient[];
+  instructions?: Instruction[];
+  author?: { full_name?: string | null; username?: string } | null;
+  average_rating?: number | null;
+  ratings_count?: number | null;
+  created_at?: string;
+};
+
+const getRecipe = (id: string) => apiGetResult<Recipe>(`/recipes/${encodeURIComponent(id)}`);
+
+const iso = (min?: number | null) => (min && min > 0 ? `PT${min}M` : undefined);
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { data: recipe } = await getRecipe(params.id);
+  if (!recipe) return { title: "המתכון לא נמצא", robots: { index: false, follow: true } };
+
+  const description =
+    recipe.description?.trim() ||
+    `מתכון ל${recipe.title}${recipe.category ? ` · ${recipe.category}` : ""}, בספר המתכונים.`;
+  const url = `${SITE_URL}/recipe/${recipe.id}`;
+  const image = recipe.image_url || `${SITE_URL}/icon-512`;
+
+  return {
+    title: recipe.title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: recipe.title,
+      description,
+      url,
+      images: [{ url: image, alt: recipe.title }],
+    },
+    twitter: { card: "summary_large_image", title: recipe.title, description, images: [image] },
+  };
+}
+
+/** The page itself renders in the browser, so without this the recipe is
+ *  invisible to anything that does not run scripts. */
+function RecipeJsonLd({ recipe }: { recipe: Recipe }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: recipe.title,
+    description: recipe.description || undefined,
+    image: recipe.image_url || undefined,
+    author: recipe.author?.full_name
+      ? { "@type": "Person", name: recipe.author.full_name }
+      : undefined,
+    datePublished: recipe.created_at,
+    recipeCategory: recipe.category || undefined,
+    recipeYield: recipe.servings ? `${recipe.servings} מנות` : undefined,
+    prepTime: iso(recipe.prep_time_minutes),
+    cookTime: iso(recipe.cook_time_minutes),
+    totalTime: iso((recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0)),
+    recipeIngredient: (recipe.ingredients || []).map((i) =>
+      [i.amount ?? "", i.unit ?? "", i.name].filter(Boolean).join(" ").trim(),
+    ),
+    recipeInstructions: (recipe.instructions || [])
+      .slice()
+      .sort((a, b) => a.step - b.step)
+      .map((i) => ({ "@type": "HowToStep", text: i.text })),
+    aggregateRating:
+      recipe.ratings_count && recipe.average_rating
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: recipe.average_rating,
+            ratingCount: recipe.ratings_count,
+          }
+        : undefined,
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+export default async function RecipeLayout({ children, params }: Props & { children: React.ReactNode }) {
+  const { data: recipe, status } = await getRecipe(params.id);
+  // Only a definite answer from the API is a 404 — a cold or unreachable
+  // backend must not turn every recipe into a missing page.
+  if (status === 404) notFound();
+  return (
+    <>
+      {recipe && <RecipeJsonLd recipe={recipe} />}
+      {children}
+    </>
+  );
+}
