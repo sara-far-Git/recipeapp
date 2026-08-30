@@ -24,12 +24,17 @@ export default function LogoIntro() {
     html.style.overflow = "hidden";
 
     let finished = false;
+    const absorb = (e: WheelEvent) => {
+      e.preventDefault();
+    };
     const finish = () => {
       if (finished) return;
       finished = true;
       sessionStorage.setItem(KEY, "1");
       html.style.overflow = prevOverflow;
       html.classList.remove("logo-intro");
+      window.addEventListener("wheel", absorb, { passive: false });
+      window.setTimeout(() => window.removeEventListener("wheel", absorb), 480);
       setGone(true);
     };
 

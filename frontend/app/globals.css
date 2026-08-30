@@ -166,62 +166,11 @@
     min-height: calc(100svh - 4rem);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    /* The rounded top edge and the shadow are what make the stacking legible:
-       each panel reads as a sheet sliding over the one before it. */
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: 0 -32px 80px rgba(0, 0, 0, 0.58);
+    overflow: visible;
     border-top: 1px solid rgba(232, 235, 231, 0.14);
   }
   .stack-panel.is-first {
-    border-radius: 0;
-    box-shadow: none;
     border-top: 0;
-  }
-
-  /* The stacking itself is a large-screen affair. Below that the panels are
-     plain sections: a pinned panel taller than the screen hides everything
-     under the fold, and on a phone most of them are.
-     `.is-tall` is set from JS on any panel whose content outgrows the viewport,
-     and the last panel stays in the flow — nothing slides over it, and sticky
-     would clamp it to the stack's bottom edge and cut its CTA off. */
-  @media (min-width: 1024px) {
-    .stack-panel:not(.is-tall):not(:last-child) {
-      position: sticky;
-      top: 4rem;
-    }
-    /* Copy that runs a little past the screen is scaled from JS. `transform`
-       leaves the layout box at its full height, so the panel is capped too —
-       the scaled copy then fits inside it exactly, centred. */
-    .stack-panel:not(.is-tall) {
-      max-height: calc(100svh - 4rem);
-    }
-    .panel-copy {
-      transform: scale(var(--panel-scale, 1));
-    }
-  }
-  /* Smooth scrolling done natively: the browser eases the tail end of a scroll
-     onto the next panel and stays interruptible, instead of us taking over the
-     wheel. `proximity` only pulls when you're already close, and a panel taller
-     than the screen opts out so it can be read at any offset. */
-  @media (min-width: 1024px) {
-    html.home-snap {
-      scroll-snap-type: y mandatory;
-      scroll-padding-top: 4rem;
-    }
-    html.home-snap .stack-panel { scroll-snap-align: start; }
-    /* The footer is past the last panel, and a mandatory container always rests
-       on a snap point — without this it would be unreachable. */
-    html.home-snap footer { scroll-snap-align: start; }
-    /* Once a panel outgrows the screen there is reading to do between the snap
-       points, so stop insisting on them. */
-    html.home-snap .stack-panel.is-tall { scroll-snap-align: none; }
-    html.home-snap:has(.stack-panel.is-tall) { scroll-snap-type: y proximity; }
-    html.home-snap.logo-intro { scroll-snap-type: none; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html.home-snap { scroll-snap-type: none; }
   }
 
   .panel-copy {

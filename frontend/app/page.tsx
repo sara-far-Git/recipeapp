@@ -35,12 +35,6 @@ export default function FeedPage() {
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
 
-  /* Scoped to this page: the snap points only make sense over the panel stack. */
-  useEffect(() => {
-    const html = document.documentElement;
-    html.classList.add("home-snap");
-    return () => html.classList.remove("home-snap");
-  }, []);
 
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
