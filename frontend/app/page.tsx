@@ -88,11 +88,7 @@ export default function FeedPage() {
                   <div className="flex items-start gap-4">
                     <span className="gold-rule mt-2 hidden sm:block" />
                     <h1 className="display-hero" style={{ color: "#e8ebe7" }}>
-                      {user ? (
-                        <>מה תרצו<br /><span style={{ color: "#e86b24" }}>לבשל היום?</span></>
-                      ) : (
-                        <>המתכונים<br />שנשארים</>
-                      )}
+                      מה תרצו<br /><span style={{ color: "#e86b24" }}>לבשל היום?</span>
                     </h1>
                   </div>
                 </Reveal>
