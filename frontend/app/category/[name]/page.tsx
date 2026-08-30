@@ -66,13 +66,13 @@ export default function CategoryPage() {
           </div>
 
           <p className="eyebrow mb-4">עוד באוסף</p>
-          <div style={{ borderTop: "1px solid rgba(42,31,26,0.12)" }}>
+          <div style={{ borderTop: "1px solid rgba(31,42,38,0.12)" }}>
             {others.map((cat, i) => (
               <Link
                 key={cat.name}
                 href={`/category/${encodeURIComponent(cat.name)}`}
                 className="group w-full text-right py-4 flex items-center gap-5 sm:gap-8 hover:bg-surface-100/70 transition-colors"
-                style={{ borderBottom: "1px solid rgba(42,31,26,0.12)" }}
+                style={{ borderBottom: "1px solid rgba(31,42,38,0.12)" }}
               >
                 <span className="tabular text-sm w-8 text-bark-200">
                   {String(i + 1).padStart(2, "0")}

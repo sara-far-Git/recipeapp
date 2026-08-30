@@ -39,7 +39,7 @@ export default function Footer() {
         </div>
       )}
 
-      <footer className="pb-24 sm:pb-20" style={{ background: "#f3ebe3", borderTop: "1px solid rgba(42,31,26,0.12)" }}>
+      <footer className="pb-24 sm:pb-20" style={{ background: "#FAF8F3", borderTop: "1px solid rgba(31,42,38,0.12)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-6 text-center">
             <Link href="/" className="inline-flex" aria-label="ספר המתכונים — דף הבית">

@@ -87,16 +87,16 @@ export default function FeedPage() {
                   <p className="eyebrow mb-4">ספר אחד לבית</p>
                   <div className="flex items-start gap-4">
                     <span className="gold-rule mt-2 hidden sm:block" />
-                    <h1 className="display-hero" style={{ color: "#2a1f1a" }}>
-                      מה תרצו<br /><span style={{ color: "#6b4226" }}>לבשל היום?</span>
+                    <h1 className="display-hero" style={{ color: "#1F2A26" }}>
+                      מה תרצו<br /><span style={{ color: "#D97757" }}>לבשל היום?</span>
                     </h1>
                   </div>
                 </Reveal>
                 <Reveal delay={120}>
-                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-sm leading-snug" style={{ color: "#6b5a4e" }}>
+                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-sm leading-snug" style={{ color: "#66736D" }}>
                     {user ? "מה על השולחן הערב?" : "שומרים מה שעובד, מוצאים כשצריך, וקונים בדיוק מה שחסר."}
                   </p>
-                  <div className="flex flex-wrap items-center gap-5 mt-6 text-sm font-bold" style={{ color: "#5c4c42" }}>
+                  <div className="flex flex-wrap items-center gap-5 mt-6 text-sm font-bold" style={{ color: "#66736D" }}>
                     <span className="inline-flex items-center gap-2"><Users className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> קהילה מבשלת</span>
                     <span className="inline-flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> רשימת קניות</span>
                   </div>
@@ -126,12 +126,12 @@ export default function FeedPage() {
       <CinematicSection id="categories" tone="bark" layer={2}>
         <div className="bleed-inner pt-1 pb-6 sm:pb-8">
           <Reveal>
-            <h2 className="display-lg" style={{ color: "#2a1f1a" }}>מה מבשלים<br />היום?</h2>
+            <h2 className="display-lg" style={{ color: "#1F2A26" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
             <div className="flex items-center gap-3 mt-3 mb-5">
-              <span className="plus-badge" style={{ color: "#2a1f1a" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-lg" style={{ color: "#6b5a4e" }}>בחרו סוג מנה — ותגיעו ישר למתכונים</p>
+              <span className="plus-badge" style={{ color: "#1F2A26" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+              <p className="text-lg" style={{ color: "#66736D" }}>בחרו סוג מנה — ותגיעו ישר למתכונים</p>
             </div>
           </Reveal>
 
@@ -143,7 +143,7 @@ export default function FeedPage() {
                     style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
                     <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
                   </div>
-                  <p className="tabular text-xs font-bold mb-1" style={{ color: "#6b4226" }}>
+                  <p className="tabular text-xs font-bold mb-1" style={{ color: "#D97757" }}>
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <h3 className="text-lg sm:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
@@ -211,10 +211,10 @@ export default function FeedPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="card-surface overflow-hidden">
-                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#e4d6c8" }} />
+                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#E9EFEA" }} />
                     <div className="p-4 space-y-3">
-                      <div className="h-3 w-16" style={{ background: "#e4d6c8" }} />
-                      <div className="h-5 w-3/4" style={{ background: "#e4d6c8" }} />
+                      <div className="h-3 w-16" style={{ background: "#E9EFEA" }} />
+                      <div className="h-5 w-3/4" style={{ background: "#E9EFEA" }} />
                     </div>
                   </div>
                 ))}
@@ -267,7 +267,7 @@ export default function FeedPage() {
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
-                      style={{ background: "#6b4226", color: "#f3ebe3", borderRadius: 999 }}>
+                      style={{ background: "#D97757", color: "#FAF8F3", borderRadius: 999 }}>
                       {new Date().toLocaleDateString("he-IL", { weekday: "long" })}
                     </span>
                   </Link>
@@ -275,11 +275,11 @@ export default function FeedPage() {
 
                 <Reveal delay={140}>
                   <p className="eyebrow mb-4">המתכון של השבוע</p>
-                  <h2 className="display-lg" style={{ color: "#2a1f1a" }}>
+                  <h2 className="display-lg" style={{ color: "#1F2A26" }}>
                     {editorPick.title}
                   </h2>
                   {editorPick.description && (
-                    <p className="mt-5 text-base leading-relaxed line-clamp-4" style={{ color: "#6b5a4e" }}>
+                    <p className="mt-5 text-base leading-relaxed line-clamp-4" style={{ color: "#66736D" }}>
                       {editorPick.description}
                     </p>
                   )}
@@ -302,12 +302,12 @@ export default function FeedPage() {
               <p className="text-bark-300 text-[15px]">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
             </div>
           </Reveal>
-          <div style={{ borderTop: "1px solid rgba(42,31,26,0.14)" }}>
+          <div style={{ borderTop: "1px solid rgba(31,42,38,0.14)" }}>
             {REASONS.map((r, i) => (
               <Reveal key={r.t} delay={(i % 3) * 60}>
                 <div
                   className="row-wipe w-full text-right py-4 sm:py-5 flex items-start sm:items-center gap-5 sm:gap-8"
-                  style={{ borderBottom: "1px solid rgba(42,31,26,0.14)" }}
+                  style={{ borderBottom: "1px solid rgba(31,42,38,0.14)" }}
                 >
                   <span className="tabular text-sm w-8 text-cinnamon-500 font-extrabold pt-1 sm:pt-0">
                     {String(i + 1).padStart(2, "0")}
@@ -337,10 +337,10 @@ export default function FeedPage() {
         <div className="bleed-inner py-12 sm:py-16">
           <div className="relative overflow-hidden min-h-[22rem] flex items-center justify-center text-center">
             <ParallaxPhoto src="/food/mezze.png" alt="" />
-            <div className="absolute inset-0" style={{ background: "rgba(42,31,26,0.45)" }} />
+            <div className="absolute inset-0" style={{ background: "rgba(31,42,38,0.45)" }} />
             <div className="relative z-10 px-6 py-14 max-w-xl">
               <Reveal>
-                <h2 className="display-hero" style={{ color: "#f3ebe3" }}>
+                <h2 className="display-hero" style={{ color: "#FAF8F3" }}>
                   יש מתכון
                   <br />
                   ששווה לשמור?
@@ -353,7 +353,7 @@ export default function FeedPage() {
                     {user ? "כותבים מתכון" : "פותחים חשבון"}
                   </Link>
                   {!user && (
-                    <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#f3ebe3" }}>
+                    <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#FAF8F3" }}>
                       כבר רשומים? כניסה
                     </Link>
                   )}
@@ -495,8 +495,8 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
 
   return (
     <div className="hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
-      style={{ background: "rgba(243, 235, 227, 0.88)", borderTop: "1px solid rgba(42,31,26,0.12)", backdropFilter: "blur(16px)" }}>
-      <p className="font-extrabold text-lg" style={{ color: "#2a1f1a" }}>המתכונים ורשימת הקניות — באותו מקום</p>
+      style={{ background: "rgba(250, 248, 243, 0.88)", borderTop: "1px solid rgba(31,42,38,0.12)", backdropFilter: "blur(16px)" }}>
+      <p className="font-extrabold text-lg" style={{ color: "#1F2A26" }}>המתכונים ורשימת הקניות — באותו מקום</p>
       <div className="flex items-center gap-4">
         <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
           {user ? "מתכון חדש" : "פותחים חשבון"}
@@ -602,8 +602,8 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
     <nav
       className="section-rail hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
-        background: "#f3ebe3",
-        borderInlineStart: "1px solid rgba(42,31,26,0.12)",
+        background: "#FAF8F3",
+        borderInlineStart: "1px solid rgba(31,42,38,0.12)",
       }}
       aria-label="ניווט בין חלקי הדף">
       {sections.map((s, i) => {
