@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { Loader2, ChefHat, SlidersHorizontal, X, Plus } from "lucide-react";
+import { ChefHat, SlidersHorizontal, X, Plus } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -36,8 +36,6 @@ export default function FeedPage() {
   const router = useRouter();
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [difficulty, setDifficulty] = useState("");
   const [kosher, setKosher] = useState("");
@@ -47,21 +45,16 @@ export default function FeedPage() {
 
   const filtersActive = Boolean(difficulty || kosher || maxTime > 0);
 
-  const loadRecipes = useCallback(async (skip = 0, diff = difficulty, kosh = kosher, time = maxTime) => {
+  const loadRecipes = useCallback(async (diff = difficulty, kosh = kosher, time = maxTime) => {
     try {
-      let data: any[];
-      if (diff || kosh || time) {
-        const res = await searchApi.search({ difficulty: diff || undefined, kosher_type: kosh || undefined, max_prep_time: time || undefined, skip, limit: 20 });
-        data = res.data;
-      } else {
-        const res = await recipesApi.list(skip);
-        data = res.data;
-      }
-      if (skip === 0) setRecipes(data); else setRecipes((p) => [...p, ...data]);
+      const res = (diff || kosh || time)
+        ? await searchApi.search({ difficulty: diff || undefined, kosher_type: kosh || undefined, max_prep_time: time || undefined, skip: 0, limit: 4 })
+        : await recipesApi.list(0, 4);
+      setRecipes(res.data);
     } catch {} finally { setLoading(false); }
   }, [difficulty, kosher, maxTime]);
 
-  useEffect(() => { setLoading(true); loadRecipes(0, difficulty, kosher, maxTime); }, [difficulty, kosher, maxTime]);
+  useEffect(() => { setLoading(true); loadRecipes(difficulty, kosher, maxTime); }, [difficulty, kosher, maxTime, loadRecipes]);
 
   const clearFilters = () => { setDifficulty(""); setKosher(""); setMaxTime(0); };
 
@@ -210,8 +203,16 @@ export default function FeedPage() {
 
           <div className="mt-8">
             {loading ? (
-              <div className="flex justify-center py-16">
-                <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="card-surface overflow-hidden">
+                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#e8dcc4" }} />
+                    <div className="p-4 space-y-3">
+                      <div className="h-3 w-16" style={{ background: "#e8dcc4" }} />
+                      <div className="h-5 w-3/4" style={{ background: "#e8dcc4" }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
@@ -236,7 +237,7 @@ export default function FeedPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {gridRecipes.map((recipe, i) => (
                   <Reveal key={recipe.id} delay={(i % 3) * 90}>
-                    <RecipeCard recipe={recipe} compact />
+                    <RecipeCard recipe={recipe} />
                   </Reveal>
                 ))}
               </div>
@@ -463,48 +464,24 @@ function CinematicSection({
   }, [isFirst, id]);
 
   return (
-    <>
-      {!isFirst && (
-        <div
-          className={cn("panel-lead", tone === "bark" ? "panel-bark" : "panel-cream")}
-          aria-hidden="true"
-        />
+    <section
+      ref={ref}
+      id={id}
+      className={cn(
+        "stack-panel",
+        isFirst && "is-first",
+        tone === "bark" ? "panel-bark" : "panel-cream",
+        inView && "in-view",
+        className,
       )}
-      <section
-        ref={ref}
-        id={id}
-        className={cn(
-          "stack-panel",
-          isFirst && "is-first",
-          tone === "bark" ? "panel-bark" : "panel-cream",
-          inView && "in-view",
-          className,
-        )}
-        style={{ ["--stack-z" as string]: layer }}>
-        <div className="cinematic-slabs" aria-hidden="true">
-          <span className="slab slab-a" />
-          <span className="slab slab-b slab-left slab-delay-1" />
-          <span className="slab slab-c slab-left slab-delay-2" />
-        </div>
-        <div className="panel-copy">{children}</div>
-      </section>
-    </>
-  );
-}
-
-function Reveal({
-  children, delay = 0, className,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn("reveal", className)}
-      style={{ animationDelay: `${delay}ms` }}>
-      {children}
-    </div>
+      style={{ ["--stack-z" as string]: layer }}>
+      <div className="cinematic-slabs" aria-hidden="true">
+        <span className="slab slab-a" />
+        <span className="slab slab-b slab-left slab-delay-1" />
+        <span className="slab slab-c slab-left slab-delay-2" />
+      </div>
+      <div className="panel-copy">{children}</div>
+    </section>
   );
 }
 
@@ -534,6 +511,22 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
           <X className="w-5 h-5" />
         </button>
       </div>
+    </div>
+  );
+}
+
+function Reveal({
+  children, delay = 0, className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn("reveal", className)}
+      style={{ animationDelay: `${delay}ms` }}>
+      {children}
     </div>
   );
 }

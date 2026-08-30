@@ -58,7 +58,9 @@ const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>)
 };
 
 export const useAuth = create<AuthState>((set) => ({
-  user: null,
+  user: typeof window !== "undefined"
+    ? (() => { try { return JSON.parse(localStorage.getItem("user") || "null"); } catch { return null; } })()
+    : null,
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   isLoading: true,
 

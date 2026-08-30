@@ -102,12 +102,6 @@
     overflow: hidden;
     box-shadow: 0 -28px 80px rgba(58, 38, 24, 0.28);
   }
-  /* Empty color band that rises first — not sticky, so the next
-     panel can be a full screen of actual copy. */
-  .panel-lead {
-    height: 42vh;
-    box-shadow: 0 -28px 80px rgba(58, 38, 24, 0.28);
-  }
   .panel-copy {
     position: relative;
     z-index: 10;
@@ -124,7 +118,6 @@
   .panel-cream { background: #efe7d7; color: #3a2618; }
   .panel-bark  { background: #3a2618; color: #f7f1e4; }
 
-  /* Cinematic color slabs — wipe in like film frames */
   .cinematic-slabs { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
   .slab {
     position: absolute;
@@ -136,7 +129,6 @@
   .in-view .slab-left { transform-origin: left; }
   .in-view .slab-delay-1 { transition-delay: 0.12s; }
   .in-view .slab-delay-2 { transition-delay: 0.28s; }
-  .in-view .slab-delay-3 { transition-delay: 0.42s; }
 
   .panel-cream .slab-a { top: 0; bottom: 0; right: 0; width: 22%; background: #e8dcc4; }
   .panel-cream .slab-b { top: 12%; height: 38%; left: 0; width: 9%; background: #3a2618; }

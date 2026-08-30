@@ -11,16 +11,13 @@ import { useRouter } from "next/navigation";
 
 interface RecipeCardProps {
   recipe: any;
-  compact?: boolean;
 }
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
 
-// ── Line-art food icons — cycle by recipe id ──────────────────
 function CardIcon({ index }: { index: number }) {
   const icons = [
-    // Bowl
     <svg key="bowl" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 30c0 12 8 22 20 22s20-10 20-22" />
       <path d="M8 30h48" />
@@ -28,7 +25,6 @@ function CardIcon({ index }: { index: number }) {
       <path d="M28 18c0-4 2-6 4-6s4 2 4 6" />
       <path d="M32 12v4" />
     </svg>,
-    // Covered plate / dome
     <svg key="dome" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 36c0-10 8-18 18-18s18 8 18 18" />
       <path d="M8 36h48" />
@@ -37,13 +33,11 @@ function CardIcon({ index }: { index: number }) {
       <path d="M20 42h24" />
       <path d="M16 46h32" />
     </svg>,
-    // Bread loaf
     <svg key="bread" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M16 32c0-10 4-16 16-16s16 6 16 16v14c0 2-2 4-4 4H20c-2 0-4-2-4-4V32z" />
       <path d="M12 32c0-10 8-16 20-16s20 6 20 16" />
       <path d="M24 32c0-4 2-6 8-6s8 2 8 6" />
     </svg>,
-    // Teacup
     <svg key="cup" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 26h36l-4 20c0 2-2 4-4 4H22c-2 0-4-2-4-4l-4-20z" />
       <path d="M50 30h6c4 0 6 2 6 6s-2 6-6 6h-6" />
@@ -51,14 +45,12 @@ function CardIcon({ index }: { index: number }) {
       <path d="M28 18c0-4 2-6 4-8" />
       <path d="M36 16c0-4 2-6 4-8" />
     </svg>,
-    // Cake slice
     <svg key="cake" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 30l12-16 12 16" />
       <path d="M12 30h40v22c0 2-2 4-4 4H16c-2 0-4-2-4-4V30z" />
       <path d="M24 30v26M40 30v26" />
       <path d="M20 38h8M36 38h8" />
     </svg>,
-    // Leaf / herb
     <svg key="leaf" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <path d="M32 54V24" />
       <path d="M32 24c0-12 10-18 18-18-2 10-8 18-18 18z" />
@@ -69,7 +61,7 @@ function CardIcon({ index }: { index: number }) {
   return icons[index % icons.length];
 }
 
-function RecipeCard({ recipe, compact = false }: RecipeCardProps) {
+function RecipeCard({ recipe }: RecipeCardProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [liked, setLiked] = useState(recipe.is_liked);
@@ -87,16 +79,12 @@ function RecipeCard({ recipe, compact = false }: RecipeCardProps) {
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const diffLabel = difficultyLabels[recipe.difficulty] || "";
   const kosherLabel = recipe.kosher_type ? kosherLabels[recipe.kosher_type] : null;
-
   const tags = [diffLabel, kosherLabel].filter(Boolean) as string[];
 
   return (
     <Link href={`/recipe/${recipe.id}`} className="group block h-full">
       <article className="card-surface card-surface-hover h-full flex flex-col overflow-hidden">
-
-        {/* ── Image / placeholder ─────────────────── */}
-        <div className={cn("relative overflow-hidden", compact && "flex-1 min-h-0")}
-          style={compact ? undefined : { aspectRatio: "4/3" }}>
+        <div className="relative overflow-hidden shrink-0" style={{ aspectRatio: "4/3" }}>
           {recipe.image_url ? (
             <Image
               src={recipe.image_url}
@@ -107,9 +95,11 @@ function RecipeCard({ recipe, compact = false }: RecipeCardProps) {
             />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center"
-              style={{ background: "#e8dcc4" }}>
-              <div className="w-16 h-16 text-wood transition-transform duration-500 group-hover:scale-110">
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                background: "linear-gradient(160deg, #f7f1e4 0%, #e8dcc4 55%, #d9c79a 100%)",
+              }}>
+              <div className="w-20 h-20 text-bark-500/70 transition-transform duration-500 group-hover:scale-110">
                 <CardIcon index={recipe.id} />
               </div>
             </div>
@@ -124,28 +114,26 @@ function RecipeCard({ recipe, compact = false }: RecipeCardProps) {
           )}
         </div>
 
-        {/* ── Content ─────────────────────────────── */}
-        <div className={cn("flex flex-col", compact ? "px-4 pt-3 pb-3" : "px-5 pt-5 pb-4 flex-1")}>
+        <div className="px-5 pt-4 pb-4 flex flex-col flex-1">
           {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-3">
+            <div className="flex flex-wrap gap-1.5 mb-2.5">
               {tags.map((t) => (
                 <span key={t} className="badge badge-neutral">{t}</span>
               ))}
             </div>
           )}
 
-          <h3 className={cn("card-title line-clamp-2 text-bark-500 transition-colors duration-300 group-hover:text-cinnamon-500", compact && "text-[18px]")}>
+          <h3 className="card-title line-clamp-2 text-bark-500 transition-colors duration-300 group-hover:text-cinnamon-500">
             {recipe.title}
           </h3>
 
-          {!compact && recipe.description && (
-            <p className="line-clamp-2 mt-2.5 text-bark-200 text-[14px] leading-relaxed">
+          {recipe.description && (
+            <p className="line-clamp-2 mt-2 text-bark-200 text-[14px] leading-relaxed">
               {recipe.description}
             </p>
           )}
 
-          {/* Footer */}
-          <div className={cn("flex items-center justify-between gap-4 border-t border-surface-400", compact ? "mt-3 pt-3" : "mt-5 pt-4")}>
+          <div className="flex items-center justify-between gap-4 mt-auto pt-4 border-t border-surface-400">
             <span className="flex items-center gap-1.5 text-[13px] font-semibold text-bark-200">
               <Users className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
               {recipe.servings || "—"} מנות

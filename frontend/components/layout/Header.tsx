@@ -89,22 +89,27 @@ export default function Header() {
           <NavIcon href="/search" active={pathname === "/search"} label="חיפוש">
             <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
           </NavIcon>
-
+          <NavIcon
+            href={user ? "/recipe/new" : "/login"}
+            active={pathname === "/recipe/new"}
+            label="מתכון חדש">
+            <Plus className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </NavIcon>
+          <NavIcon
+            href={user ? "/shopping" : "/login"}
+            active={pathname === "/shopping"}
+            label="קניות">
+            <ShoppingCart className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </NavIcon>
+          <NavIcon
+            href={user ? `/profile/${user.username}` : "/login"}
+            active={pathname.startsWith("/profile")}
+            label="פרופיל"
+            className="hidden sm:flex">
+            <User className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </NavIcon>
           {user ? (
             <>
-              <NavIcon href="/recipe/new" active={pathname === "/recipe/new"} label="מתכון חדש">
-                <Plus className="w-[18px] h-[18px]" strokeWidth={1.8} />
-              </NavIcon>
-              <NavIcon href="/shopping" active={pathname === "/shopping"} label="קניות">
-                <ShoppingCart className="w-[18px] h-[18px]" strokeWidth={1.8} />
-              </NavIcon>
-              <NavIcon
-                href={`/profile/${user.username}`}
-                active={pathname.startsWith("/profile")}
-                label="פרופיל"
-                className="hidden sm:flex">
-                <User className="w-[18px] h-[18px]" strokeWidth={1.8} />
-              </NavIcon>
               <div className="w-px h-5 mx-2 flex-shrink-0 bg-surface-400" />
               <button
                 onClick={() => { logout(); router.push("/"); }}
