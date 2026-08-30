@@ -247,9 +247,13 @@ export default function FeedPage() {
 
       {editorPick && (
         <CinematicSection id="weekly" tone="bark" layer={4}>
-          <div className="bleed-inner grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center py-16">
+          <div className="bleed-inner grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center py-10">
             <Reveal>
-              <Link href={`/recipe/${editorPick.id}`} className="relative block group overflow-hidden" style={{ aspectRatio: "4/5" }}>
+              {/* Portrait ratio, but capped: at 1920 the column is ~780 wide, which
+                  would make this 975px tall on its own and push the panel off
+                  the screen and out of the stack. */}
+              <Link href={`/recipe/${editorPick.id}`} className="relative block group overflow-hidden"
+                style={{ aspectRatio: "4/5", maxHeight: "calc(100svh - 18rem)" }}>
                 <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
                   style={{
                     background: editorPick.image_url
