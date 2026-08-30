@@ -85,7 +85,15 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 -28px 80px rgba(58, 38, 24, 0.28);
+    /* The rounded top edge and the shadow are what make the stacking legible:
+       each panel reads as a sheet sliding over the one before it. */
+    border-top-left-radius: 1.75rem;
+    border-top-right-radius: 1.75rem;
+    box-shadow: 0 -20px 50px rgba(58, 38, 24, 0.38);
+  }
+  .stack-panel.is-first {
+    border-radius: 0;
+    box-shadow: none;
   }
 
   /* The stacking itself is a large-screen affair. Below that the panels are
@@ -98,6 +106,15 @@
     .stack-panel:not(.is-tall):not(:last-child) {
       position: sticky;
       top: 4rem;
+    }
+    /* Copy that runs a little past the screen is scaled from JS. `transform`
+       leaves the layout box at its full height, so the panel is capped too —
+       the scaled copy then fits inside it exactly, centred. */
+    .stack-panel:not(.is-tall) {
+      max-height: calc(100svh - 4rem);
+    }
+    .panel-copy {
+      transform: scale(var(--panel-scale, 1));
     }
   }
   /* Smooth scrolling done natively: the browser eases the tail end of a scroll
@@ -130,6 +147,7 @@
     flex-direction: column;
     justify-content: center;
     padding-bottom: 5.5rem;
+    transform-origin: center center;
   }
   .stack-panel.is-first .panel-copy {
     padding-bottom: 0;

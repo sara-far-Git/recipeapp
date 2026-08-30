@@ -375,23 +375,47 @@ function CinematicSection({
   className?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
+  const scaleRef = useRef(1);
   const isFirst = layer === 1;
   const [inView, setInView] = useState(isFirst);
   const [tall, setTall] = useState(false);
+  const [scale, setScale] = useState(1);
 
-  /* A pinned panel can only ever show one screenful, so a panel whose content
-     outgrows the viewport drops out of the stack and scrolls normally. */
+  /* A pinned panel can only ever show one screenful. Copy that overruns the
+     screen by a little is scaled down to fit — barely noticeable, and it keeps
+     the panel in the stack. Only copy that would have to shrink past
+     MIN_SCALE leaves the stack and scrolls normally instead. */
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const copy = el.querySelector<HTMLElement>(".panel-copy");
+    const inner = copy?.firstElementChild as HTMLElement | null;
+    if (!inner) return;
+
+    const MIN_SCALE = 0.84;
     const measure = () => {
-      setTall(el.getBoundingClientRect().height > window.innerHeight - 64 + 4);
+      // The stack, and so the scaling, is a large-screen affair.
+      if (window.innerWidth < 1024) {
+        scaleRef.current = 1;
+        setScale(1);
+        setTall(false);
+        return;
+      }
+      const available = window.innerHeight - 64;
+      const padding = parseFloat(getComputedStyle(copy!).paddingBottom) || 0;
+      // Undo the current scale to read the copy's natural height.
+      const natural = inner.getBoundingClientRect().height / (scaleRef.current || 1) + padding;
+      const fit = natural > available ? available / natural : 1;
+      const next = fit >= MIN_SCALE ? fit : 1;
+      scaleRef.current = next;
+      setScale(next);
+      setTall(fit < MIN_SCALE);
     };
     measure();
     // The webfont lands after the first measurement and reflows the copy.
     document.fonts?.ready.then(measure).catch(() => {});
     const ro = new ResizeObserver(measure);
-    ro.observe(el);
+    ro.observe(inner);
     window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
@@ -432,7 +456,7 @@ function CinematicSection({
         inView && "in-view",
         className,
       )}
-      style={{ ["--stack-z" as string]: layer }}>
+      style={{ ["--stack-z" as string]: layer, ["--panel-scale" as string]: scale }}>
       <div className="cinematic-slabs" aria-hidden="true">
         <span className="slab slab-a" />
         <span className="slab slab-b slab-left slab-delay-1" />
