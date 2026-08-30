@@ -55,7 +55,7 @@ export default function InstallBanner() {
   </div>
   )}
 
-  <div className="fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
+  <div className="install-banner fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
   <div className="card-surface p-3 flex items-center gap-3">
   <Logo size={40} className="flex-shrink-0" />
   <div className="flex-1 min-w-0">

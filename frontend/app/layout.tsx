@@ -77,6 +77,9 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro') && window.scrollY < 48) {
+                document.documentElement.classList.add('logo-intro');
+              }
               window.__pwaPrompt = null;
               window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();

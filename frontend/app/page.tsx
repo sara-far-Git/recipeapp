@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
+import LogoIntro from "@/components/brand/LogoIntro";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
@@ -74,6 +75,7 @@ export default function FeedPage() {
 
   return (
     <div>
+      <LogoIntro />
       <SectionRail sections={sections} />
 
       <div className="full-bleed stack-root">
@@ -127,24 +129,24 @@ export default function FeedPage() {
       <StackSentinel name="after-hero" />
 
       <CinematicSection id="categories" tone="bark" layer={2}>
-        <div className="bleed-inner py-8 sm:py-10">
+        <div className="bleed-inner py-6 sm:py-8">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#e8ebe7" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
-            <div className="flex items-center gap-3 mt-4 mb-6">
+            <div className="flex items-center gap-3 mt-3 mb-5">
               <span className="plus-badge" style={{ color: "#e8ebe7" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
               <p className="text-lg" style={{ color: "#b4bbb4" }}>בחרו סוג מנה — ותגיעו ישר למתכונים</p>
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
-                  <div className="relative aspect-square rounded-full overflow-hidden mb-4 mx-auto w-[78%]"
+                  <div className="relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[58%] max-w-[10.5rem]"
                     style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
-                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18vw" />
+                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 11rem" />
                   </div>
                   <p className="tabular text-xs font-bold mb-1" style={{ color: "#e86b24" }}>
                     {String(i + 1).padStart(2, "0")}
@@ -338,7 +340,7 @@ export default function FeedPage() {
 
       <CinematicSection id="join" tone="bark" layer={6}>
         <div className="bleed-inner py-12 sm:py-16">
-          <div className="relative overflow-hidden rounded-[2rem] min-h-[22rem] flex items-center justify-center text-center">
+          <div className="relative overflow-hidden min-h-[22rem] flex items-center justify-center text-center">
             <ParallaxPhoto src="/food/mezze.png" alt="" />
             <div className="absolute inset-0" style={{ background: "rgba(12,24,20,0.62)" }} />
             <div className="relative z-10 px-6 py-14 max-w-xl">
@@ -613,7 +615,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
 
   return (
     <nav
-      className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
+      className="section-rail hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
         background: "#0c1814",
         borderInlineStart: "1px solid rgba(232,235,231,0.12)",

@@ -99,6 +99,9 @@ export default function Header() {
         <div className="logo-menu-slab" aria-hidden="true" />
         <div className="logo-menu-bg" aria-hidden="true" />
         <nav className="logo-menu-copy max-w-6xl mx-auto w-full" aria-label="תפריט האתר">
+          <div className="logo-menu-brand">
+            <Logo size={420} className="w-[min(78vw,26rem)] h-auto" />
+          </div>
           {NAV_PAGES.map((link, i) => (
             <Link
               key={link.href}

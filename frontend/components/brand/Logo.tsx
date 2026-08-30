@@ -5,14 +5,16 @@ export default function Logo({
   className,
   size = 48,
   priority = false,
+  solid = false,
 }: {
   className?: string;
   size?: number;
   priority?: boolean;
+  solid?: boolean;
 }) {
   return (
     <Image
-      src="/logo.png"
+      src={solid ? "/logo-solid.png" : "/logo.png"}
       alt="ספר המתכונים"
       width={size}
       height={size}
