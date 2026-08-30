@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
@@ -10,6 +10,17 @@ from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, Kosher
 from app.schemas.recipe import RecipeListItem
 
 router = APIRouter(prefix="/search", tags=["search"])
+
+HEBREW_LETTERS = set("אבגדהוזחטיכךלמםנןסעפףצץקרשת")
+
+
+def _variants(word: str) -> list[str]:
+    """Hebrew inflects on the last letter far more than English does, so a word
+    of four letters or more is also matched without it — otherwise a search for
+    "עוגה" misses "עוגת גבינה"."""
+    if len(word) >= 4 and word[-1] in HEBREW_LETTERS:
+        return [word, word[:-1]]
+    return [word]
 
 
 @router.get("", response_model=list[RecipeListItem])
@@ -27,10 +38,15 @@ def search_recipes(
     query = db.query(Recipe).filter(Recipe.is_published == True)
 
     if q:
-        pattern = f"%{q}%"
-        query = query.filter(
-            (Recipe.title.ilike(pattern)) | (Recipe.description.ilike(pattern))
-        )
+        # Every word has to appear somewhere; each one may appear in either
+        # field, in its written or its stemmed form.
+        for word in q.split():
+            clauses = []
+            for variant in _variants(word):
+                pattern = f"%{variant}%"
+                clauses.append(Recipe.title.ilike(pattern))
+                clauses.append(Recipe.description.ilike(pattern))
+            query = query.filter(or_(*clauses))
 
     if difficulty:
         query = query.filter(Recipe.difficulty == difficulty)
