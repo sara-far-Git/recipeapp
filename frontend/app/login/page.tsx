@@ -33,7 +33,7 @@ export default function LoginPage() {
   <div className="min-h-[85vh] flex items-center justify-center px-4">
   <div className="w-full max-w-md">
   <div className="text-center mb-10 animate-fade-up">
-          <Logo size={96} priority className="mx-auto mb-6 animate-float" />
+          <Logo solid size={96} priority className="mx-auto mb-6 animate-float" />
           <span className="eyebrow mb-4">
             <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
             כניסה

@@ -70,10 +70,10 @@ export default function Header() {
       <header
         className="sticky top-0 z-[80]"
         style={{
-          background: open || scrolled ? "rgba(12, 24, 20, 0.88)" : "rgba(12, 24, 20, 0.45)",
+          background: open || scrolled ? "rgba(243, 235, 227, 0.88)" : "rgba(243, 235, 227, 0.45)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          borderBottom: `1px solid ${open || scrolled ? "rgba(232,235,231,0.12)" : "rgba(232,235,231,0.06)"}`,
+          borderBottom: `1px solid ${open || scrolled ? "rgba(42,31,26,0.12)" : "rgba(42,31,26,0.06)"}`,
           transition: "border-color 0.3s ease, background 0.3s ease",
         }}
       >
@@ -86,7 +86,7 @@ export default function Header() {
             aria-label={open ? "סגירת התפריט" : "פתיחת התפריט"}
             onClick={() => setOpen((v) => !v)}
           >
-            <Logo size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
+            <Logo solid size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
           </button>
         </div>
       </header>

@@ -26,7 +26,7 @@ export default function Footer() {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center mb-7">
-              <Logo size={72} className="mx-auto mb-4" />
+              <Logo solid size={72} className="mx-auto mb-4" />
               <h3 className="display-md text-bark-500">הוסיפו למסך הבית</h3>
               <p className="text-sm text-bark-200 mt-2">רק ב-Safari — 3 שלבים</p>
             </div>
@@ -39,11 +39,11 @@ export default function Footer() {
         </div>
       )}
 
-      <footer className="pb-24 sm:pb-20" style={{ background: "#0c1814", borderTop: "1px solid rgba(232,235,231,0.12)" }}>
+      <footer className="pb-24 sm:pb-20" style={{ background: "#f3ebe3", borderTop: "1px solid rgba(42,31,26,0.12)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-6 text-center">
             <Link href="/" className="inline-flex" aria-label="ספר המתכונים — דף הבית">
-              <Logo size={72} />
+              <Logo solid size={72} />
             </Link>
             <p className="text-cream-200 text-[15px] max-w-md">
               המתכונים של הבית, במקום אחד

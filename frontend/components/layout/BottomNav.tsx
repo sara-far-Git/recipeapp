@@ -24,10 +24,10 @@ export default function BottomNav() {
   <nav
   className="bottom-nav fixed bottom-0 inset-x-0 z-50 sm:hidden"
       style={{
-        background: "rgba(12,24,20,0.88)",
+        background: "rgba(243,235,227,0.88)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
-        borderTop: "1px solid rgba(232,235,231,0.12)",
+        borderTop: "1px solid rgba(42,31,26,0.12)",
       }}>
   <div className="flex items-center justify-around h-16 px-2">
   {items.map((item) => {
@@ -53,7 +53,7 @@ export default function BottomNav() {
                     width: 52,
                     height: 52,
                     borderRadius: 999,
-                    background: "#e86b24",
+                    background: "#6b4226",
                     boxShadow: "0 8px 20px -6px rgba(0,0,0,0.45)",
                   }}>
                   <item.icon className="w-5 h-5 text-forest-300 stroke-[2.5]" />

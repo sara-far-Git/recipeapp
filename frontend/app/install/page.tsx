@@ -37,7 +37,7 @@ export default function InstallPage() {
   return (
     <div className="max-w-lg mx-auto py-8">
       <div className="text-center mb-10 animate-fade-up">
-        <Logo size={88} priority className="mx-auto mb-5" />
+        <Logo solid size={88} priority className="mx-auto mb-5" />
         <span className="eyebrow mb-3 justify-center">
           <span className="plus-badge text-cinnamon-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />

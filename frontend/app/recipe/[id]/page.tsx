@@ -207,15 +207,15 @@ export default function RecipeDetailPage() {
   const setTimer = (mins: number) => { setTimerRemaining(mins * 60); setTimerTotal(mins * 60); setTimerRunning(false); };
 
   return (
-  <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#0a1612" }}>
+  <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#e4d6c8" }}>
   <div className="max-w-2xl mx-auto px-4 py-6 pb-12">
 
   {/* Header */}
   <div className="flex items-center justify-between mb-6">
-  <h1 className="section-title flex-1 ml-4" style={{ color: "#e8ebe7" }}>{recipe.title}</h1>
+  <h1 className="section-title flex-1 ml-4" style={{ color: "#2a1f1a" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2 text-sm flex-shrink-0"
-  style={{ background: "#163028", color: "#e8ebe7", border: "1px solid #e86b24", borderRadius: 999 }}>
+  style={{ background: "#ebe0d4", color: "#2a1f1a", border: "1px solid #6b4226", borderRadius: 999 }}>
   יציאה ממצב הכנה
   </button>
   </div>
@@ -376,14 +376,14 @@ export default function RecipeDetailPage() {
   </Link>
 
   {/* Hero image */}
-  <div className="relative  overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#13241e" }}>
+  <div className="relative  overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#ebe0d4" }}>
   {recipe.image_url ? (
   <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
   ) : (
-  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#13241e" }}>
+  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#ebe0d4" }}>
   <span className="eyebrow">{recipe.category || "מתכון"}</span>
   <p className="card-title text-bark-500 text-center line-clamp-2">{recipe.title}</p>
-  <span className="block h-px w-10" style={{ background: "#e86b24" }} />
+  <span className="block h-px w-10" style={{ background: "#6b4226" }} />
   </div>
   )}
   {recipe.kosher_type && (
@@ -421,12 +421,12 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Action row: author + like/save/share */}
-  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid rgba(232,235,231,0.12)", animationDelay: "100ms" }}>
+  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid rgba(42,31,26,0.12)", animationDelay: "100ms" }}>
   {hideAuthor ? <div /> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
   <div className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm"
-                  style={{ background: "#0f1f1a", borderRadius: 999 }}>
+                  style={{ background: "#e8ddd2", borderRadius: 999 }}>
   {recipe.author.username[0].toUpperCase()}
   </div>
   <div>

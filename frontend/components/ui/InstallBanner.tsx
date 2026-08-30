@@ -40,7 +40,7 @@ export default function InstallBanner() {
   <X className="w-5 h-5" />
   </button>
   <div className="text-center mb-6">
-  <Logo size={64} className="mx-auto mb-3" />
+  <Logo solid size={64} className="mx-auto mb-3" />
   <h3 className="section-title text-bark-500">
   הוסיפו למסך הבית
   </h3>
@@ -57,7 +57,7 @@ export default function InstallBanner() {
 
   <div className="install-banner fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
   <div className="card-surface p-3 flex items-center gap-3">
-  <Logo size={40} className="flex-shrink-0" />
+  <Logo solid size={40} className="flex-shrink-0" />
   <div className="flex-1 min-w-0">
   <p className="text-sm font-semibold text-bark-500">הוסיפו למסך הבית</p>
   <p className="text-xs text-bark-300">גישה מהירה, בלי דפדפן</p>
