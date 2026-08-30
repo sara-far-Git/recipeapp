@@ -1,106 +1,101 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
-import Logo from "@/components/brand/Logo";
+import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro";
+const KEY = "logo-intro-video";
+
+function unlock() {
+  const html = document.documentElement;
+  html.classList.remove("logo-intro");
+  html.style.overflow = "";
+}
 
 export default function LogoIntro() {
-  const [p, setP] = useState(0);
   const [gone, setGone] = useState(false);
-  const pRef = useRef(0);
+  const [fade, setFade] = useState(false);
+  const done = useRef(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const html = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced || window.scrollY > 48 || sessionStorage.getItem(KEY) === "1") {
-      html.classList.remove("logo-intro");
+      unlock();
       setGone(true);
       return;
     }
 
     html.classList.add("logo-intro");
-    const prevOverflow = html.style.overflow;
-    html.style.overflow = "hidden";
 
-    let finished = false;
-    const absorb = (e: WheelEvent) => {
-      e.preventDefault();
-    };
     const finish = () => {
-      if (finished) return;
-      finished = true;
+      if (done.current) return;
+      done.current = true;
       sessionStorage.setItem(KEY, "1");
-      html.style.overflow = prevOverflow;
-      html.classList.remove("logo-intro");
-      window.addEventListener("wheel", absorb, { passive: false });
-      window.setTimeout(() => window.removeEventListener("wheel", absorb), 480);
-      setGone(true);
+      setFade(true);
+      window.setTimeout(() => {
+        unlock();
+        setGone(true);
+      }, 420);
     };
 
-    const apply = (next: number) => {
-      pRef.current = Math.min(1, Math.max(0, next));
-      setP(pRef.current);
-      if (pRef.current >= 0.995) finish();
+    let canSkip = false;
+    const arm = window.setTimeout(() => {
+      canSkip = true;
+    }, 800);
+    const onSkip = (e: Event) => {
+      if (!canSkip) return;
+      if (e instanceof KeyboardEvent && e.key !== "Escape" && e.key !== "Enter" && e.key !== " ") return;
+      finish();
     };
 
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      apply(pRef.current + e.deltaY / (window.innerHeight * 0.85));
-    };
-    let touchY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchY = e.touches[0].clientY;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const y = e.touches[0].clientY;
-      apply(pRef.current + (touchY - y) / (window.innerHeight * 0.7));
-      touchY = y;
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === " " || e.key === "PageDown") {
-        e.preventDefault();
-        apply(pRef.current + 0.18);
-      }
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("keydown", onKey);
+    const failsafe = window.setTimeout(finish, 10000);
+    window.addEventListener("wheel", onSkip, { passive: true });
+    window.addEventListener("touchstart", onSkip, { passive: true });
+    window.addEventListener("keydown", onSkip);
 
     return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("keydown", onKey);
-      html.style.overflow = prevOverflow;
-      html.classList.remove("logo-intro");
+      window.clearTimeout(failsafe);
+      window.clearTimeout(arm);
+      window.removeEventListener("wheel", onSkip);
+      window.removeEventListener("touchstart", onSkip);
+      window.removeEventListener("keydown", onSkip);
+      if (!done.current) unlock();
     };
   }, []);
 
   if (gone) return null;
-
-  const hole = Math.max(0, (p - 0.06) / 0.94) * 145;
 
   return (
     <div
       className="logo-intro-veil"
       aria-hidden="true"
       style={{
-        ["--hole" as string]: `${hole}%`,
-        opacity: p > 0.96 ? 0 : 1,
+        opacity: fade ? 0 : 1,
+        pointerEvents: fade ? "none" : "auto",
       }}
     >
-      <div
-        className="logo-intro-mark"
-        style={{
-          opacity: 1 - Math.min(1, p * 1.2),
-          transform: `scale(${1 + p * 5.2})`,
-        }}
-      >
-        <Logo size={480} priority className="w-[min(78vw,26rem)] h-auto" />
+      <div className="logo-intro-mark">
+        <video
+          className="logo-intro-video"
+          src="/logo-intro.mp4"
+          muted
+          playsInline
+          preload="auto"
+          autoPlay
+          onEnded={() => {
+            if (done.current) return;
+            done.current = true;
+            sessionStorage.setItem(KEY, "1");
+            setFade(true);
+            window.setTimeout(() => {
+              unlock();
+              setGone(true);
+            }, 420);
+          }}
+          onError={() => {
+            unlock();
+            setGone(true);
+          }}
+        />
       </div>
     </div>
   );

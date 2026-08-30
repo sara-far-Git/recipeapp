@@ -588,12 +588,18 @@
     align-items: center;
     justify-content: center;
     background: #0c1814;
-    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
-    mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
-    transition: opacity 0.25s linear;
+    transition: opacity 0.4s ease;
   }
   .logo-intro-mark {
-    will-change: transform, opacity;
+    will-change: opacity;
+  }
+  .logo-intro-video {
+    display: block;
+    width: min(92vw, 48rem);
+    max-height: 78vh;
+    height: auto;
+    object-fit: contain;
+    background: transparent;
   }
   html.logo-intro,
   html.logo-intro body {
