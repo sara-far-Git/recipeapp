@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v7";
+const KEY = "logo-intro-v8";
 
-const LAYERS = [
-  { src: "/logo-letters/01_RECIPE.png", delay: 80 },
-  { src: "/logo-letters/incoming_S.png", delay: 520 },
-  { src: "/logo-letters/incoming_P.png", delay: 680 },
-  { src: "/logo-letters/incoming_A.png", delay: 840 },
-  { src: "/logo-letters/incoming_C.png", delay: 1000 },
-  { src: "/logo-letters/incoming_E.png", delay: 1160 },
+const FRAMES = [
+  "/logo-letters/01_RECIPE.png",
+  "/logo-letters/02_RECIPE_S.png",
+  "/logo-letters/03_RECIPE_SP.png",
+  "/logo-letters/04_RECIPE_SPA.png",
+  "/logo-letters/05_RECIPE_SPAC.png",
+  "/logo-letters/06_RECIPE_SPACE.png",
 ];
 
 function unlock() {
@@ -23,7 +23,7 @@ function unlock() {
 export default function LogoIntro() {
   const [gone, setGone] = useState(false);
   const [hole, setHole] = useState(0);
-  const [on, setOn] = useState(false);
+  const [frame, setFrame] = useState(0);
   const phase = useRef<"play" | "reveal" | "done">("play");
   const p = useRef(0);
   const detach = useRef(() => {});
@@ -38,9 +38,9 @@ export default function LogoIntro() {
     }
 
     html.classList.add("logo-intro");
-    LAYERS.forEach((layer) => {
+    FRAMES.forEach((src) => {
       const img = new window.Image();
-      img.src = layer.src;
+      img.src = src;
     });
 
     const complete = () => {
@@ -58,11 +58,16 @@ export default function LogoIntro() {
       if (p.current >= 0.995) complete();
     };
 
-    const start = window.setTimeout(() => setOn(true), 40);
-    const lastDelay = LAYERS[LAYERS.length - 1].delay + 750;
-    const ready = window.setTimeout(() => {
-      if (phase.current === "play") phase.current = "reveal";
-    }, lastDelay);
+    let i = 0;
+    const tick = window.setInterval(() => {
+      i += 1;
+      if (i >= FRAMES.length) {
+        window.clearInterval(tick);
+        phase.current = "reveal";
+        return;
+      }
+      setFrame(i);
+    }, 220);
 
     const onWheel = (e: WheelEvent) => {
       if (phase.current === "done") return;
@@ -108,8 +113,7 @@ export default function LogoIntro() {
     };
 
     return () => {
-      window.clearTimeout(start);
-      window.clearTimeout(ready);
+      window.clearInterval(tick);
       detach.current();
       if (phase.current !== "done") unlock();
     };
@@ -127,20 +131,12 @@ export default function LogoIntro() {
         pointerEvents: "none",
       }}
     >
-      <div
-        className="logo-assemble"
+      <img
+        className="logo-intro-frame"
+        src={FRAMES[frame]}
+        alt=""
         style={{ opacity: 1 - Math.min(1, hole / 90) }}
-      >
-        {LAYERS.map((layer) => (
-          <img
-            key={layer.src}
-            className={on ? "logo-layer is-in" : "logo-layer"}
-            src={layer.src}
-            alt=""
-            style={{ transitionDelay: on ? `${layer.delay}ms` : "0ms" }}
-          />
-        ))}
-      </div>
+      />
     </div>
   );
 }
