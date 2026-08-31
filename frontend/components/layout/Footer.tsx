@@ -46,7 +46,7 @@ export default function Footer() {
               <Logo solid size={72} />
             </Link>
             <p className="text-cream-200 text-[15px] max-w-md">
-              המתכונים של הבית, במקום אחד
+              ספר המתכונים — המקום שבו המתכונים של הבית נשמרים, נמצאים, וחוזרים לשולחן.
             </p>
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
               <Link href="/pro" className="text-cinnamon-300 hover:text-cinnamon-200 inline-flex items-center min-h-[24px]">גרסת פרו</Link>

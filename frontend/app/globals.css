@@ -51,6 +51,15 @@
 
   input, textarea, select { color-scheme: light; }
 
+  *, *::before, *::after {
+    border-radius: 0 !important;
+  }
+
+  :where(a, button, input, textarea, select):focus-visible {
+    outline: 3px solid rgba(217, 119, 87, 0.42);
+    outline-offset: 3px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {
@@ -117,6 +126,57 @@
     border-radius: inherit;
     box-shadow: inset 0 0 40px rgba(58, 44, 36, 0.25);
     pointer-events: none;
+  }
+  .hero-search {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: rgba(255, 252, 248, 0.82);
+    border: 1px solid rgba(31, 42, 38, 0.14);
+    border-radius: 999px;
+    padding: 0.35rem 0.5rem 0.35rem 1rem;
+    box-shadow: 0 18px 42px rgba(31, 42, 38, 0.10);
+  }
+  .hero-search input {
+    min-width: 0;
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: #1F2A26;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .hero-search input::placeholder {
+    color: #8A9690;
+  }
+  .hero-search button {
+    min-height: 44px;
+    border-radius: 999px;
+    background: #2F6B5D;
+    color: #FAF8F3;
+    padding-inline: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 800;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .hero-search button:hover { background: #27594E; }
+  .hero-search button:active { transform: scale(0.97); }
+  @media (max-width: 420px) {
+    .hero-search {
+      border-radius: 1.2rem;
+      align-items: stretch;
+      flex-wrap: wrap;
+      padding: 0.7rem;
+    }
+    .hero-search input {
+      flex-basis: calc(100% - 2.25rem);
+      min-height: 38px;
+    }
+    .hero-search button {
+      width: 100%;
+    }
   }
   .cat-tile {
     background: rgba(255, 252, 248, 0.55);
@@ -262,31 +322,31 @@
 
   .display-hero {
     font-family: var(--font-heebo), sans-serif;
-    font-size: clamp(3.2rem, 9vw, 7.2rem);
+    font-size: 3.2rem;
     font-weight: 900;
     line-height: 1.12;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
   }
   .display-lg {
     font-family: var(--font-heebo), sans-serif;
-    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-size: 2.35rem;
     font-weight: 900;
     line-height: 1.14;
-    letter-spacing: 0.035em;
+    letter-spacing: 0;
   }
   .display-md {
     font-family: var(--font-heebo), sans-serif;
-    font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+    font-size: 1.65rem;
     font-weight: 800;
     line-height: 1.2;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
   }
 
   .section-title {
     font-family: var(--font-heebo), sans-serif;
-    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-size: 1.25rem;
     font-weight: 800;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     line-height: 1.25;
   }
 
@@ -294,15 +354,34 @@
     font-family: var(--font-heebo), sans-serif;
     font-size: 21px;
     font-weight: 800;
-    letter-spacing: 0.015em;
+    letter-spacing: 0;
     line-height: 1.25;
+  }
+
+  @media (min-width: 640px) {
+    .display-hero { font-size: 4.8rem; }
+    .display-lg { font-size: 3.4rem; }
+    .display-md { font-size: 2.1rem; }
+    .section-title { font-size: 1.5rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .display-hero { font-size: 6.4rem; }
+    .display-lg { font-size: 4.45rem; }
+    .display-md { font-size: 2.5rem; }
+    .section-title { font-size: 1.75rem; }
+  }
+
+  @media (min-width: 1280px) {
+    .display-hero { font-size: 7.2rem; }
+    .display-lg { font-size: 5rem; }
   }
 
   /* Small label, used above every section title */
   .eyebrow {
     font-size: 12px;
     font-weight: 800;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     color: #D97757;
     display: inline-flex;
     align-items: center;
@@ -364,7 +443,7 @@
     align-items: center;
     justify-content: center;
     padding-inline: 1.75rem;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     text-transform: none;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
   }
@@ -403,12 +482,48 @@
     font-size: 15px;
   }
 
+  .recipe-action-strip {
+    position: sticky;
+    top: 4.75rem;
+    z-index: 35;
+    background: rgba(250, 248, 243, 0.9);
+    border: 1px solid rgba(31, 42, 38, 0.12);
+    padding: 0.5rem;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 16px 36px rgba(31, 42, 38, 0.08);
+  }
+  .recipe-jump-nav {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+  }
+  .recipe-jump-nav a {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding-inline: 1rem;
+    border: 1px solid rgba(31, 42, 38, 0.12);
+    border-radius: 999px;
+    color: #3D4A45;
+    font-size: 0.85rem;
+    font-weight: 800;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .recipe-jump-nav a:hover {
+    background: #E9EFEA;
+    border-color: rgba(47, 107, 93, 0.28);
+    color: #1E4D45;
+  }
+
   /* ─── Form fields — hairline underline ────────────────────*/
   .input-label {
     font-family: var(--font-heebo), sans-serif;
     font-weight: 700;
     font-size: 13px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     color: #D97757;
     display: block;
     margin-bottom: 2px;
@@ -465,7 +580,7 @@
   .badge {
     @apply px-2.5 py-1 text-[11px] font-bold;
     border-radius: 999px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     text-transform: none;
   }
   .badge-easy    { background: rgba(74, 140, 90, 0.14); color: #3d6b48; border: 1px solid rgba(74, 140, 90, 0.35); }
@@ -483,6 +598,65 @@
     border: 0;
     padding: 0;
     cursor: pointer;
+  }
+  .site-header-link {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0.95rem;
+    border-radius: 999px;
+    color: #3D4A45;
+    font-size: 0.9rem;
+    font-weight: 800;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .site-header-link:hover,
+  .site-header-link.is-active {
+    background: rgba(47, 107, 93, 0.10);
+    color: #1E4D45;
+  }
+  .site-header-action,
+  .site-header-icon-action {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .site-header-action {
+    padding-inline: 1rem;
+    border: 1px solid rgba(31, 42, 38, 0.12);
+  }
+  .site-header-action-soft {
+    background: rgba(255, 252, 248, 0.72);
+    color: #3D4A45;
+  }
+  .site-header-action-soft:hover {
+    background: #E9EFEA;
+    color: #1E4D45;
+  }
+  .site-header-action-primary {
+    background: #2F6B5D;
+    border-color: #2F6B5D;
+    color: #FAF8F3;
+  }
+  .site-header-action-primary:hover {
+    background: #27594E;
+    border-color: #27594E;
+  }
+  .site-header-icon-action {
+    width: 42px;
+    border: 1px solid rgba(31, 42, 38, 0.12);
+    background: rgba(255, 252, 248, 0.72);
+    color: #3D4A45;
+  }
+  .site-header-action:active,
+  .site-header-icon-action:active {
+    transform: scale(0.97);
   }
   .logo-trigger.is-open {
     animation: logo-spin 0.7s cubic-bezier(0.16, 1, 0.3, 1);
@@ -550,15 +724,21 @@
     font-size: 0.85rem;
     font-weight: 800;
     color: #D97757;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     min-width: 2rem;
   }
   .logo-menu-link .lbl {
     font-family: var(--font-heebo), sans-serif;
-    font-size: clamp(2.4rem, 8vw, 5.5rem);
+    font-size: 2.4rem;
     font-weight: 900;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     line-height: 1.15;
+  }
+  @media (min-width: 640px) {
+    .logo-menu-link .lbl { font-size: 3.6rem; }
+  }
+  @media (min-width: 1024px) {
+    .logo-menu-link .lbl { font-size: 5.5rem; }
   }
   .logo-menu-link:hover { color: #D97757; }
   .logo-menu-link.is-active .lbl { color: #D97757; }
@@ -575,7 +755,7 @@
     color: #E9EFEA;
     font-size: 1rem;
     font-weight: 800;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     cursor: pointer;
   }
   .logo-menu-extra:hover,
@@ -628,7 +808,7 @@
     font-family: var(--font-heebo), sans-serif;
     font-size: 0.78rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     color: #F4EEDF;
     opacity: 0;
     transition: opacity 0.45s ease;

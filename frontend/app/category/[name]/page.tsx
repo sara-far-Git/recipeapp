@@ -79,7 +79,7 @@ export default function CategoryPage() {
                 </span>
                 <span
                   className="text-xl sm:text-2xl font-extrabold text-bark-500 group-hover:text-cinnamon-500 transition-colors"
-                  style={{ letterSpacing: "-0.03em" }}
+                  style={{ letterSpacing: 0 }}
                 >
                   {cat.name}
                 </span>

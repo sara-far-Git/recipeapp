@@ -199,6 +199,7 @@ export default function RecipeDetailPage() {
   const hideAuthor = HIDDEN_AUTHORS.has(recipe.author?.full_name);
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const currentServings = Math.round(recipe.servings * servingMultiplier);
+  const statsColumns = totalTime > 0 ? "grid-cols-3" : "grid-cols-2";
 
   // ── Cooking mode — intentionally dark for kitchen readability ──────────────
   if (cookingMode) {
@@ -247,7 +248,7 @@ export default function RecipeDetailPage() {
   )}
   <div className="flex gap-2 justify-center">
   <button onClick={() => setTimerRunning((r) => !r)} disabled={timerRemaining === 0}
-  className="px-6 py-2 text-sm font-semibold bg-amber-700 text-white hover:bg-amber-600 transition-all disabled:opacity-40">
+  className="px-6 py-2 text-sm font-semibold bg-amber-700 text-amber-50 hover:bg-amber-600 transition-all disabled:opacity-40">
   {timerRunning ? "עצירה" : "התחל"}
   </button>
   <button onClick={() => { setTimerRemaining(timerTotal); setTimerRunning(false); }} disabled={timerTotal === 0}
@@ -277,7 +278,7 @@ export default function RecipeDetailPage() {
   checkedIngredients.has(i) && "opacity-40")}>
   <div className={cn("w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition-all",
   checkedIngredients.has(i) ? "bg-amber-600 border-amber-600" : "border-amber-700/60")}>
-  {checkedIngredients.has(i) && <Check className="w-3 h-3 text-white" />}
+  {checkedIngredients.has(i) && <Check className="w-3 h-3 text-amber-50" />}
   </div>
   <span className={cn("font-semibold text-amber-400 min-w-[5rem] text-sm", checkedIngredients.has(i) && "line-through")} dir="ltr">
   {ing.amount} {ing.unit || ""}
@@ -298,7 +299,7 @@ export default function RecipeDetailPage() {
   completedSteps.has(inst.step) ? "border-amber-600/40 bg-amber-800/20" : "border-amber-900/40 bg-amber-950/40 hover:border-amber-800/40")}>
   <div className="flex items-start gap-3">
   <span className={cn("flex-shrink-0 w-8 h-8 flex items-center justify-center text-sm font-bold",
-  completedSteps.has(inst.step) ? "bg-amber-600 text-white" : "bg-amber-900/60 text-amber-400")}>
+  completedSteps.has(inst.step) ? "bg-amber-600 text-amber-50" : "bg-amber-900/60 text-amber-400")}>
   {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
   </span>
   <p className={cn("flex-1 leading-relaxed text-sm", completedSteps.has(inst.step) ? "line-through text-amber-700" : "text-amber-100")}>
@@ -319,7 +320,7 @@ export default function RecipeDetailPage() {
   <div className="max-w-3xl mx-auto">
   {/* Toast */}
   {toast && (
-  <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3  bg-bark-500 text-white text-sm shadow-warm-lg animate-fade-up whitespace-nowrap">
+  <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3  bg-bark-500 text-cream-50 text-sm shadow-warm-lg animate-fade-up whitespace-nowrap">
   {toast}
   </div>
   )}
@@ -351,7 +352,7 @@ export default function RecipeDetailPage() {
   selectedIngredients.has(i) ? "bg-cinnamon-50 border border-cinnamon-200" : "bg-surface-100 border border-transparent opacity-60")}>
   <div className={cn("w-5 h-5  border-2 flex items-center justify-center flex-shrink-0",
   selectedIngredients.has(i) ? "bg-cinnamon-500 border-cinnamon-500" : "border-surface-400")}>
-  {selectedIngredients.has(i) && <Check className="w-3 h-3 text-white" />}
+  {selectedIngredients.has(i) && <Check className="w-3 h-3 text-cream-50" />}
   </div>
   <span className="flex-1 text-sm text-bark-500">{ing.name}</span>
   <span className="text-sm text-bark-300 font-medium" dir="ltr">{ing.amount || ""} {ing.unit || ""}</span>
@@ -362,7 +363,7 @@ export default function RecipeDetailPage() {
   <button onClick={handleShoppingConfirm} disabled={selectedIngredients.size === 0 || shoppingLoading}
   className="w-full py-3.5  btn-fire font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
   {shoppingLoading
-  ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+  ? <div className="w-5 h-5 border-2 border-cream-50/30 border-t-cream-50 rounded-full animate-spin" />
   : <><ShoppingCart className="w-4 h-4" />הוסיפו {selectedIngredients.size} מצרכים</>}
   </button>
   </div>
@@ -425,7 +426,7 @@ export default function RecipeDetailPage() {
   {hideAuthor ? <div /> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-  <div className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm"
+  <div className="w-9 h-9 flex items-center justify-center text-cream-50 font-bold text-sm"
                   style={{ background: "#e8ddd2", borderRadius: 999 }}>
   {recipe.author.username[0].toUpperCase()}
   </div>
@@ -450,6 +451,7 @@ export default function RecipeDetailPage() {
   {user?.id === recipe.author.id && (
   <>
   <Link href={`/recipe/${recipe.id}/edit`}
+  aria-label="עריכת המתכון"
   className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-cinnamon-500">
   <Pencil className="w-5 h-5" />
   </Link>
@@ -463,7 +465,7 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Stats strip — non-interactive, visually distinct from buttons */}
-  <div className="grid grid-cols-3 gap-3 mb-8 animate-fade-up" style={{ animationDelay: "120ms" }}>
+  <div className={cn("grid gap-3 mb-8 animate-fade-up", statsColumns)} style={{ animationDelay: "120ms" }}>
   {totalTime > 0 && (
   <div className="p-4 text-center" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
   <Clock className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
@@ -484,7 +486,7 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* CTA buttons — clearly interactive (btn-fire / btn-outline) */}
-  <div className="grid grid-cols-3 gap-3 mb-10 animate-fade-up" style={{ animationDelay: "140ms" }}>
+  <div className="recipe-action-strip grid grid-cols-3 gap-2 sm:gap-3 mb-6 animate-fade-up" style={{ animationDelay: "140ms" }}>
   <button onClick={() => setCookingMode(true)}
   className="flex flex-col items-center gap-2 py-4 btn-fire font-semibold text-sm w-full">
   <CookingPot className="w-5 h-5" /> מצב הכנה
@@ -499,8 +501,14 @@ export default function RecipeDetailPage() {
   </button>
   </div>
 
+  <nav className="recipe-jump-nav mb-10 animate-fade-up" style={{ animationDelay: "150ms" }} aria-label="ניווט בתוך המתכון">
+    <a href="#ingredients">מצרכים</a>
+    <a href="#instructions">אופן ההכנה</a>
+    <a href="#comments">תגובות</a>
+  </nav>
+
   {/* Ingredients */}
-  <section className="mb-10 animate-fade-up" style={{ animationDelay: "160ms" }}>
+  <section id="ingredients" className="mb-10 scroll-mt-28 animate-fade-up" style={{ animationDelay: "160ms" }}>
   <div className="flex items-center justify-between mb-4">
   <h2 className="section-title text-bark-500">
   מצרכים
@@ -529,7 +537,7 @@ export default function RecipeDetailPage() {
   </section>
 
   {/* Instructions */}
-  <section className="mb-10 animate-fade-up" style={{ animationDelay: "180ms" }}>
+  <section id="instructions" className="mb-10 scroll-mt-28 animate-fade-up" style={{ animationDelay: "180ms" }}>
   <h2 className="section-title text-bark-500 mb-5">
   אופן ההכנה
   </h2>
@@ -546,7 +554,7 @@ export default function RecipeDetailPage() {
   </section>
 
   {/* Comments */}
-  <section className="animate-fade-up" style={{ animationDelay: "200ms" }}>
+  <section id="comments" className="scroll-mt-28 animate-fade-up" style={{ animationDelay: "200ms" }}>
   <h2 className="section-title text-bark-500 mb-5 flex items-center gap-2">
   <MessageCircle className="w-5 h-5 text-cinnamon-500" />
   תגובות ({comments.length})
@@ -561,6 +569,14 @@ export default function RecipeDetailPage() {
   <Send className="w-4 h-4" />
   </button>
   </form>
+  )}
+  {!user && (
+    <div className="card-surface p-4 mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <p className="text-sm text-bark-300">התחברו כדי לדרג, לשמור ולהוסיף תגובה.</p>
+      <Link href="/login" className="btn-outline min-h-[40px] px-4 text-sm">
+        התחברות
+      </Link>
+    </div>
   )}
 
   <div className="space-y-3">

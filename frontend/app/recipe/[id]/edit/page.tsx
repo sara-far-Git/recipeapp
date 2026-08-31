@@ -162,7 +162,7 @@ export default function EditRecipePage() {
   <div className={cn(
   "w-10 h-10 flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
-  step === s ? "bg-cinnamon-500 text-white" :
+  step === s ? "bg-cinnamon-500 text-cream-50" :
   "bg-surface-200 text-bark-200"
   )}>
   {step > s ? <Check className="w-4 h-4" /> : s}
@@ -238,7 +238,7 @@ export default function EditRecipePage() {
   className={cn(
   "flex-1 py-4  text-sm font-semibold transition-all duration-300 border",
   difficulty === opt.value
-  ? "btn-fire border-transparent text-white"
+  ? "btn-fire border-transparent text-cream-50"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
   )}>
   {opt.label}
@@ -262,7 +262,7 @@ export default function EditRecipePage() {
   className={cn(
   "py-4 text-sm font-semibold transition-all border",
   category === cat
-  ? "btn-fire border-transparent text-white"
+  ? "btn-fire border-transparent text-cream-50"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
   )}>
   {cat}

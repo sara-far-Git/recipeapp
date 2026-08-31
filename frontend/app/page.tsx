@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { ChefHat, SlidersHorizontal, X, Plus, Users, ShoppingCart } from "lucide-react";
+import { ChefHat, SlidersHorizontal, X, Plus, Users, ShoppingCart, Search, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
@@ -17,12 +17,12 @@ const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשר�
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
 
 const REASONS = [
-  { t: "הכל במקום אחד",   d: "מתכונים מסודרים לפי סוג, קושי וזמן. בלי לחפש במחברות ובצילומים." },
-  { t: "סינון שחותך",      d: "כשרות, רמה וזמן — נשאר בדיוק מה שמתאים להיום." },
-  { t: "רשימת קניות",      d: "בוחרים מתכונים, והרשימה נבנית לבד. יוצאים לקנות עם מה שחסר." },
-  { t: "מה שבאמת עובד",    d: "לייקים, דירוגים ותגובות מהמטבחים של אחרים — לא רק תמונה יפה." },
-  { t: "שמירה לכל מכשיר",  d: "סימניה אחת, וחוזרים לאותו מתכון מהטלפון או מהמחשב." },
-  { t: "מול המסך",         d: "מבשלים מהמחשב, ידיים על הסיר, בלי להלכלך דף." },
+  { t: "כל המתכונים במקום אחד", d: "בלי צילומי מסך, פתקים והודעות שנעלמות בדיוק כשצריך אותן." },
+  { t: "חיפוש שמגיע מהר", d: "שם, קטגוריה, זמן, רמת קושי או מצרך — ומוצאים מה מתאים להיום." },
+  { t: "רשימת קניות מתוך מתכון", d: "בוחרים מה חסר, מוסיפים לרשימה, ויוצאים לקנות מסודר." },
+  { t: "מצב הכנה נוח", d: "המצרכים והשלבים נשארים ברורים בזמן הבישול, גם על מסך קטן." },
+  { t: "הספר הולך איתכם", d: "שומרים מתכון פעם אחת וחוזרים אליו מהטלפון או מהמחשב." },
+  { t: "קהילה שמבשלת באמת", d: "דירוגים, תגובות ורעיונות מאנשים שניסו, תיקנו וחזרו להכין." },
 ];
 
 export default function FeedPage() {
@@ -34,6 +34,7 @@ export default function FeedPage() {
   const [difficulty, setDifficulty] = useState("");
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
+  const [heroQuery, setHeroQuery] = useState("");
 
 
   useEffect(() => {
@@ -60,6 +61,12 @@ export default function FeedPage() {
     router.push(`/category/${encodeURIComponent(name)}`);
   };
 
+  const submitHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = heroQuery.trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
+
   const editorPick = filtersActive ? null : recipes[0];
   const gridRecipes = (filtersActive ? recipes : recipes.slice(1)).slice(0, 3);
 
@@ -68,7 +75,7 @@ export default function FeedPage() {
     { id: "categories", label: "קטגוריות", dark: true },
     { id: "recipes", label: "האוסף", dark: true },
     ...(editorPick ? [{ id: "weekly", label: "השבוע", dark: true }] : []),
-    { id: "why", label: "למה כאן", dark: true },
+    { id: "why", label: "למה לשמור", dark: true },
     { id: "join", label: "הצטרפות", dark: true },
   ];
 
@@ -88,14 +95,28 @@ export default function FeedPage() {
                   <div className="flex items-start gap-4">
                     <span className="gold-rule mt-2 hidden sm:block" />
                     <h1 className="display-hero" style={{ color: "#1F2A26" }}>
-                      מה תרצו<br /><span style={{ color: "#D97757" }}>לבשל היום?</span>
+                      {user ? (
+                        <>מה מתבשל<br /><span style={{ color: "#D97757" }}>אצלכם היום?</span></>
+                      ) : (
+                        <>המתכונים<br /><span style={{ color: "#D97757" }}>שנשארים</span></>
+                      )}
                     </h1>
                   </div>
                 </Reveal>
                 <Reveal delay={120}>
-                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-sm leading-snug" style={{ color: "#66736D" }}>
-                    {user ? "מה על השולחן הערב?" : "שומרים מה שעובד, מוצאים כשצריך, וקונים בדיוק מה שחסר."}
+                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-md leading-snug" style={{ color: "#66736D" }}>
+                    {user ? "חפשו רעיון, שמרו מתכון או בנו רשימת קניות מהירה." : "שמרו את המתכונים של הבית, מצאו אותם בדיוק כשצריך, והפכו כל מתכון לרשימת קניות מסודרת."}
                   </p>
+                  <form onSubmit={submitHeroSearch} className="hero-search mt-6 max-w-md">
+                    <Search className="w-5 h-5 text-bark-200 shrink-0" strokeWidth={2.1} />
+                    <input
+                      value={heroQuery}
+                      onChange={(e) => setHeroQuery(e.target.value)}
+                      placeholder="חפשו עוף, עוגה, סלט..."
+                      aria-label="חיפוש מתכון"
+                    />
+                    <button type="submit">חיפוש</button>
+                  </form>
                   <div className="flex flex-wrap items-center gap-5 mt-6 text-sm font-bold" style={{ color: "#66736D" }}>
                     <span className="inline-flex items-center gap-2"><Users className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> קהילה מבשלת</span>
                     <span className="inline-flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> רשימת קניות</span>
@@ -104,16 +125,20 @@ export default function FeedPage() {
                 <Reveal delay={220}>
                   <div className="flex flex-wrap items-center gap-4 mt-8">
                     <Link href={user ? "/recipe/new" : "/register"} className="btn-cream inline-flex">
-                      {user ? "מתכון חדש" : "פותחים חשבון"}
+                      {user ? "שמירת מתכון" : "פותחים ספר מתכונים"}
                     </Link>
                     <Link href="/search" className="btn-outline">לכל המתכונים</Link>
+                    <Link href="/pro" className="btn-outline inline-flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" strokeWidth={2.1} />
+                      Pro
+                    </Link>
                   </div>
                 </Reveal>
               </div>
 
               <Reveal delay={80} className="order-1 lg:order-2 relative flex justify-center lg:justify-end">
                 <div className="food-orb">
-                  <Image src="/food/hero.png" alt="קערת ירקות קלויים" fill className="object-cover" sizes="(max-width: 1024px) 90vw, 36rem" priority />
+                  <Image src="/food/hero-v2.png" alt="קערת ירקות קלויים" fill className="object-cover" sizes="(max-width: 1024px) 90vw, 36rem" priority />
                 </div>
               </Reveal>
             </div>
@@ -131,7 +156,7 @@ export default function FeedPage() {
           <Reveal delay={100}>
             <div className="flex items-center gap-3 mt-3 mb-5">
               <span className="plus-badge" style={{ color: "#1F2A26" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-lg" style={{ color: "#66736D" }}>בחרו סוג מנה — ותגיעו ישר למתכונים</p>
+              <p className="text-lg" style={{ color: "#66736D" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
             </div>
           </Reveal>
 
@@ -162,10 +187,10 @@ export default function FeedPage() {
           <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
               <div>
-                <h2 className="display-lg text-bark-500">מהאוסף</h2>
+                <h2 className="display-lg text-bark-500">מתכונים מהאוסף</h2>
                 <div className="flex items-center gap-3 mt-4">
                   <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-                  <p className="text-bark-300 text-lg">שלושה ששווה לפתוח עכשיו</p>
+                  <p className="text-bark-300 text-lg">רעיונות טובים לפתוח, לשמור או לשלוח לרשימת הקניות</p>
                 </div>
               </div>
             </Reveal>
@@ -258,12 +283,12 @@ export default function FeedPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 py-10 sm:px-10">
                 <Reveal>
                   <Link href={`/recipe/${editorPick.id}`} className="relative block group mx-auto md:mx-0" style={{ width: "min(100%, 22rem)" }}>
-                    <div className="relative aspect-square rounded-full overflow-hidden border border-white/10"
+                    <div className="relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
                       style={{ boxShadow: "0 28px 70px rgba(0,0,0,0.45)" }}>
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="22rem" />
                       ) : (
-                        <Image src="/food/dessert.png" alt="" fill className="object-cover" sizes="22rem" />
+                        <Image src="/food/dessert-v2.png" alt="" fill className="object-cover" sizes="22rem" />
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
@@ -296,10 +321,10 @@ export default function FeedPage() {
       <CinematicSection id="why" tone="cream" layer={5}>
         <div className="bleed-inner py-12 sm:py-16">
           <Reveal>
-            <h2 className="display-md text-bark-500">למה כאן</h2>
+            <h2 className="display-md text-bark-500">למה לשמור כאן?</h2>
             <div className="flex items-center gap-3 mt-4 mb-8">
               <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-bark-300 text-[15px]">הכלים שמשתמשים בהם באמת, לא רק פעם אחת</p>
+              <p className="text-bark-300 text-[15px]">כי מתכון טוב לא צריך ללכת לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.</p>
             </div>
           </Reveal>
           <div style={{ borderTop: "1px solid rgba(31,42,38,0.14)" }}>
@@ -336,7 +361,7 @@ export default function FeedPage() {
       <CinematicSection id="join" tone="bark" layer={6}>
         <div className="bleed-inner py-12 sm:py-16">
           <div className="relative overflow-hidden min-h-[22rem] flex items-center justify-center text-center">
-            <ParallaxPhoto src="/food/mezze.png" alt="" />
+            <ParallaxPhoto src="/food/mezze-v2.png" alt="" />
             <div className="absolute inset-0" style={{ background: "rgba(31,42,38,0.45)" }} />
             <div className="relative z-10 px-6 py-14 max-w-xl">
               <Reveal>
@@ -347,10 +372,10 @@ export default function FeedPage() {
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <p className="text-xl mt-5" style={{ color: "#e4d8cc" }}>כותבים פעם אחת — והוא נשאר, עם רשימת קניות מוכנה.</p>
+                <p className="text-xl mt-5" style={{ color: "#F4EEDF" }}>כותבים פעם אחת — והוא נשאר מסודר, ברור ומוכן לבישול הבא.</p>
                 <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
                   <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
-                    {user ? "כותבים מתכון" : "פותחים חשבון"}
+                    {user ? "שומרים מתכון" : "פותחים ספר מתכונים"}
                   </Link>
                   {!user && (
                     <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#FAF8F3" }}>
@@ -496,10 +521,10 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
   return (
     <div className="hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
       style={{ background: "rgba(250, 248, 243, 0.88)", borderTop: "1px solid rgba(31,42,38,0.12)", backdropFilter: "blur(16px)" }}>
-      <p className="font-extrabold text-lg" style={{ color: "#1F2A26" }}>המתכונים ורשימת הקניות — באותו מקום</p>
+      <p className="font-extrabold text-lg" style={{ color: "#1F2A26" }}>המתכונים של הבית ורשימת הקניות — באותו מקום</p>
       <div className="flex items-center gap-4">
         <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
-          {user ? "מתכון חדש" : "פותחים חשבון"}
+          {user ? "שמירת מתכון" : "פותחים ספר"}
         </Link>
         <button onClick={() => setHidden(true)} className="text-cream-200 hover:text-cream-100" aria-label="סגירה">
           <X className="w-5 h-5" />

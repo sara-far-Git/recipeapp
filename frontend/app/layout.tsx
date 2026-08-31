@@ -88,7 +88,28 @@ export default function RootLayout({
               });
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+                  if (isLocal) {
+                    Promise.all([
+                      navigator.serviceWorker.getRegistrations().then(function(regs) {
+                        regs.forEach(function(reg) { reg.unregister(); });
+                      }),
+                      window.caches
+                        ? caches.keys().then(function(keys) {
+                            return Promise.all(keys.map(function(key) { return caches.delete(key); }));
+                          })
+                        : Promise.resolve()
+                    ]).then(function() {
+                      if (navigator.serviceWorker.controller && !sessionStorage.getItem('sw-dev-cleaned-v1')) {
+                        sessionStorage.setItem('sw-dev-cleaned-v1', '1');
+                        location.reload();
+                      }
+                    }).catch(function() {});
+                    return;
+                  }
+                  if (location.protocol === 'https:') {
+                    navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  }
                 });
               }
             `,

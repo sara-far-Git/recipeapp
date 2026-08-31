@@ -29,6 +29,8 @@ const TIME_FILTERS = [
   { value: 30, label: "עד 30 דק׳" },
   { value: 60, label: "עד שעה" },
 ];
+const QUICK_SEARCHES = ["עוף", "פסטה", "עוגת שוקולד", "סלט", "אורז", "מרק"];
+const QUICK_INGREDIENTS = ["ביצים", "גבינה", "תפוח אדמה", "טונה", "עגבניות", "קמח"];
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
@@ -85,14 +87,28 @@ function SearchPageContent() {
   }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch]);
 
   const hasActiveFilters = Boolean(difficulty || kosherType || maxPrepTime > 0);
+  const activeFilterCount = [activeCategory, difficulty, kosherType, maxPrepTime > 0].filter(Boolean).length;
   const clearFilters = () => {
     setDifficulty("");
     setKosherType("");
     setMaxPrepTime(0);
   };
-  const addIngredientTag = () => {
-    const t = ingredientInput.trim();
-    if (t && !ingredientTags.includes(t)) setIngredientTags([...ingredientTags, t]);
+  const clearAll = () => {
+    setQuery("");
+    setActiveCategory("");
+    clearFilters();
+    setResults([]);
+    setSearched(false);
+  };
+  const runQuickSearch = (q: string) => {
+    setIngredientMode(false);
+    setQuery(q);
+    setActiveCategory("");
+    doSearch(q, difficulty, kosherType, maxPrepTime, "");
+  };
+  const addIngredientTag = (raw = ingredientInput) => {
+    const t = raw.trim();
+    if (t) setIngredientTags((prev) => (prev.includes(t) ? prev : [...prev, t]));
     setIngredientInput("");
   };
   const removeIngredientTag = (tag: string) => setIngredientTags(ingredientTags.filter((t) => t !== tag));
@@ -125,6 +141,9 @@ function SearchPageContent() {
         <h1 className="display-lg text-bark-500">
           {initialQ ? `«${initialQ}»` : "כל המתכונים"}
         </h1>
+        <p className="text-bark-300 text-sm sm:text-base mt-3 max-w-xl">
+          חפשו לפי שם מתכון, מצרך, קטגוריה או מה שיש בבית.
+        </p>
       </div>
 
       <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
@@ -138,7 +157,7 @@ function SearchPageContent() {
           className={cn(
             "px-4 py-2.5 text-sm font-semibold transition-all border",
             !ingredientMode
-              ? "btn-fire border-transparent text-white"
+              ? "btn-fire border-transparent text-cream-50"
               : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
@@ -151,7 +170,7 @@ function SearchPageContent() {
           className={cn(
             "px-4 py-2.5 text-sm font-semibold transition-all border",
             ingredientMode
-              ? "btn-fire border-transparent text-white"
+              ? "btn-fire border-transparent text-cream-50"
               : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
           )}
         >
@@ -168,10 +187,24 @@ function SearchPageContent() {
             onChange={(e) => setQuery(e.target.value)}
             aria-label="חיפוש מתכון"
             placeholder="חפשו מתכון לפי שם או תיאור..."
-            className="input-dark pr-8 pl-12"
+            className={cn("input-dark pr-8", query ? "pl-24" : "pl-12")}
             style={{ fontSize: 22, paddingBottom: 12 }}
             autoFocus={!initialQ}
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setResults([]);
+                setSearched(false);
+              }}
+              className="absolute left-10 top-1/2 -translate-y-1/2 p-2 text-bark-200 hover:text-cinnamon-500 transition-colors"
+              aria-label="ניקוי החיפוש"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setShowFilters(!showFilters)}
@@ -196,7 +229,7 @@ function SearchPageContent() {
               className={cn(
                 "px-3.5 py-1.5 text-xs font-bold border transition-colors",
                 activeCategory === cat.name
-                  ? "btn-fire border-transparent text-white"
+                  ? "btn-fire border-transparent text-cream-50"
                   : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
               )}
             >
@@ -206,9 +239,52 @@ function SearchPageContent() {
         </div>
       )}
 
+      {!ingredientMode && !query && !activeCategory && (
+        <div className="flex flex-wrap items-center gap-2 mb-7 animate-fade-up" style={{ animationDelay: "140ms" }}>
+          <span className="text-xs font-bold text-bark-200">חיפושים מהירים</span>
+          {QUICK_SEARCHES.map((q) => (
+            <button
+              key={q}
+              type="button"
+              onClick={() => runQuickSearch(q)}
+              className="px-3 py-1.5 text-xs font-bold border border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-colors"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {!ingredientMode && (activeFilterCount > 0 || query) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 animate-fade-up">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-bark-300">
+            {query && <span className="badge badge-neutral">חיפוש: {query}</span>}
+            {activeCategory && <span className="badge badge-neutral">{activeCategory}</span>}
+            {difficulty && <span className="badge badge-neutral">{DIFFICULTY_FILTERS.find((f) => f.value === difficulty)?.label}</span>}
+            {kosherType && <span className="badge badge-neutral">{KOSHER_FILTERS.find((f) => f.value === kosherType)?.label}</span>}
+            {maxPrepTime > 0 && <span className="badge badge-neutral">עד {maxPrepTime} דק׳</span>}
+          </div>
+          <button type="button" onClick={clearAll} className="text-xs font-bold text-cinnamon-500 hover:text-cinnamon-600">
+            איפוס חיפוש
+          </button>
+        </div>
+      )}
+
       {ingredientMode && (
         <div className="card-surface p-6 mb-6 animate-fade-up">
-          <p className="text-sm text-bark-300 mb-4">הקלידו מצרכים שיש בבית — נמצא מה אפשר להכין</p>
+          <p className="text-sm text-bark-300 mb-4">כתבו מה יש בבית, ונמצא מתכונים שמתאימים למצרכים שלכם.</p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {QUICK_INGREDIENTS.map((ingredient) => (
+              <button
+                key={ingredient}
+                type="button"
+                onClick={() => addIngredientTag(ingredient)}
+                className="px-3 py-1.5 text-xs font-bold border border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-colors"
+              >
+                {ingredient}
+              </button>
+            ))}
+          </div>
           <form
             className="flex items-end gap-2 mb-3"
             onSubmit={(e) => {
@@ -330,9 +406,9 @@ function SearchPageContent() {
           </div>
         </div>
       ) : searched ? (
-        <EmptyState title="לא נמצאו מתכונים" />
+        <EmptyState title="לא נמצאו מתכונים" onReset={clearAll} />
       ) : (
-        <EmptyState title="הקלידו לפחות 2 תווים, או בחרו קטגוריה" action={false} />
+        <EmptyState title="בחרו קטגוריה או חיפוש מהיר" action={false} />
       )}
     </div>
   );
@@ -361,7 +437,7 @@ function FilterRow({
             className={cn(
               "px-3.5 py-1.5 text-xs font-bold border transition-colors",
               value === f.value
-                ? "btn-fire border-transparent text-white"
+                ? "btn-fire border-transparent text-cream-50"
                 : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
             )}
           >
@@ -373,12 +449,24 @@ function FilterRow({
   );
 }
 
-function EmptyState({ title, action = true }: { title: string; action?: boolean }) {
+function EmptyState({
+  title,
+  action = true,
+  onReset,
+}: {
+  title: string;
+  action?: boolean;
+  onReset?: () => void;
+}) {
   return (
     <div className="card-surface p-8 sm:p-10 text-center animate-fade-up">
       <p className="section-title text-bark-500 mb-2">{title}</p>
-      <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, או עברו לקטגוריה</p>
-      {action && (
+      <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.</p>
+      {onReset ? (
+        <button type="button" onClick={onReset} className="btn-outline inline-flex">
+          איפוס חיפוש
+        </button>
+      ) : action && (
         <Link href="/#categories" className="btn-outline inline-flex">
           לכל הקטגוריות
         </Link>

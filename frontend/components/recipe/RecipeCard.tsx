@@ -84,8 +84,8 @@ function RecipeCard({ recipe }: RecipeCardProps) {
   const isDraft = recipe.is_published === false;
 
   return (
-    <Link href={`/recipe/${recipe.id}`} className="group block h-full">
-      <article className="card-surface card-surface-hover h-full flex flex-col overflow-hidden">
+    <article className="group card-surface card-surface-hover h-full flex flex-col overflow-hidden">
+      <Link href={`/recipe/${recipe.id}`} className="flex flex-col flex-1 min-h-0">
         <div className="relative overflow-hidden shrink-0" style={{ aspectRatio: "4/3" }}>
           {hasImage ? (
             <Image
@@ -153,12 +153,17 @@ function RecipeCard({ recipe }: RecipeCardProps) {
             </p>
           )}
 
-          <div className="flex items-center justify-between gap-4 mt-auto pt-4 border-t border-surface-400">
+        </div>
+      </Link>
+
+      <div className="px-5 pb-4">
+          <div className="flex items-center justify-between gap-4 pt-4 border-t border-surface-400">
             <span className="flex items-center gap-1.5 text-[13px] font-semibold text-bark-200">
               <Users className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
               {recipe.servings || "—"} מנות
             </span>
             <button
+              type="button"
               onClick={handleLike}
               aria-label={liked ? "בטלו לייק" : "אהבתי"}
               className={cn("flex items-center gap-1.5 text-[13px] font-semibold transition-colors duration-300 min-h-[24px] px-1 -mx-1",
@@ -167,9 +172,8 @@ function RecipeCard({ recipe }: RecipeCardProps) {
               {likesCount}
             </button>
           </div>
-        </div>
-      </article>
-    </Link>
+      </div>
+    </article>
   );
 }
 

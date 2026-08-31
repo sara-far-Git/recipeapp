@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -30,6 +31,12 @@ const KOSHER_OPTIONS = [
 ];
 
 const CATEGORY_OPTIONS = CATEGORIES.map((c) => c.name);
+
+const AI_PLAN_LIMITS = [
+  { label: "Free", value: "3 סריקות בחודש" },
+  { label: "Pro", value: "30 סריקות בחודש" },
+  { label: "חבילה", value: "20 סריקות ב־₪9.90" },
+];
 
 
 export default function NewRecipePage() {
@@ -69,6 +76,10 @@ export default function NewRecipePage() {
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([{ amount: 0, unit: "", name: "" }]);
   const [instructions, setInstructions] = useState<Instruction[]>([{ step: 1, text: "" }]);
+  const hasBasicDetails = title.trim().length > 0 && Boolean(category);
+  const hasIngredients = ingredients.some((i) => i.name.trim());
+  const hasInstructions = instructions.some((i) => i.text.trim());
+  const canPublish = hasBasicDetails && hasIngredients && hasInstructions;
 
   useEffect(() => {
   if (!user && !useAuth.getState().isLoading) router.push("/login");
@@ -238,6 +249,7 @@ export default function NewRecipePage() {
   };
 
   const handleSubmit = async () => {
+  if (!canPublish) return;
   setSubmitting(true);
   try {
   const { data } = await recipesApi.create({
@@ -279,13 +291,13 @@ export default function NewRecipePage() {
   <div className="mb-10 animate-fade-up">
   <span className="eyebrow mb-3">
   <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
-  מתכון חדש
+  שמירת מתכון
   </span>
   <h1 className="display-lg text-bark-500 mb-3">
-  שתפו מתכון
+  שומרים מתכון
   </h1>
   <p className="text-bark-300 text-base">
-  כל מתכון הוא סיפור — ספרו אותו
+  שמרו אותו פעם אחת, ברור ומסודר, כדי שיהיה קל לחזור אליו.
   </p>
   </div>
 
@@ -298,7 +310,7 @@ export default function NewRecipePage() {
   השף הדיגיטלי
   </h3>
   <p className="text-sm text-bark-300">
-  צלמו מתכון מספר ונמלא אוטומטית
+  צלמו מתכון מספר, מחברת או דף ישן
   </p>
   </div>
   <button onClick={() => scanInputRef.current?.click()} disabled={scanning || recording || transcribing}
@@ -330,8 +342,8 @@ export default function NewRecipePage() {
         </h3>
         <p className="text-sm text-bark-300">
           {recording
-            ? "ספרו את המתכון בקול — שם, מצרכים ושלבי הכנה"
-            : "הקליטו בקול ונתמלל ונמלא את השדות"}
+            ? "אמרו שם, מצרכים ושלבי הכנה"
+            : "הקליטו בקול ונמלא את השדות"}
         </p>
         {recording && (
           <p className="text-sm font-bold text-cinnamon-500 mt-2 tabular-nums">
@@ -364,7 +376,7 @@ export default function NewRecipePage() {
   </div>
 
   {/* Import from URL card */}
-  <div className="card-surface p-5 mb-8 animate-fade-up" style={{ animationDelay: "75ms" }}>
+  <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "75ms" }}>
   {!importOpen ? (
   <div className="flex items-center justify-between gap-4">
   <div>
@@ -373,7 +385,7 @@ export default function NewRecipePage() {
   ייבוא מקישור
   </h3>
   <p className="text-sm text-bark-300">
-  הדביקו URL מבלוג מתכונים ונייבא אוטומטית
+  הדביקו קישור מבלוג מתכונים
   </p>
   </div>
   <button onClick={() => setImportOpen(true)}
@@ -405,24 +417,54 @@ export default function NewRecipePage() {
   )}
   </div>
 
+  <div className="card-surface p-4 mb-8 animate-fade-up" style={{ animationDelay: "90ms" }}>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="grid grid-cols-3 gap-2 flex-1">
+        {AI_PLAN_LIMITS.map((plan) => (
+          <div key={plan.label} className="bg-surface-50/60 border border-surface-400 px-3 py-2 text-center">
+            <p className="text-[11px] font-extrabold text-cinnamon-500">{plan.label}</p>
+            <p className="text-xs sm:text-sm font-bold text-bark-500 leading-tight">{plan.value}</p>
+          </div>
+        ))}
+      </div>
+      <Link href="/pro" className="btn-outline text-sm px-5">
+        פרטי Pro
+      </Link>
+    </div>
+  </div>
+
   {/* Step indicators */}
   <div className="flex items-center gap-3 mb-8 animate-fade-up" style={{ animationDelay: "100ms" }}>
   {[1, 2, 3].map((s) => (
-  <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1">
+  <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1" aria-current={step === s ? "step" : undefined}>
   <div className={cn(
   "w-10 h-10 flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
-  step === s ? "bg-cinnamon-500 text-white" :
+  step === s ? "bg-cinnamon-500 text-cream-50" :
   "bg-surface-200 text-bark-200"
   )}>
   {step > s ? <Check className="w-4 h-4" /> : s}
   </div>
+
   <span className={cn("text-sm font-semibold hidden sm:inline", step === s ? "text-bark-500" : "text-bark-200")}>
   {s === 1 ? "פרטים" : s === 2 ? "מצרכים" : "הכנה"}
   </span>
   {s < 3 && <div className={cn("flex-1 h-px", step > s ? "bg-cinnamon-300" : "bg-surface-400")} />}
   </button>
   ))}
+  </div>
+
+  <div className="card-surface p-4 mb-8 animate-fade-up" style={{ animationDelay: "120ms" }}>
+    <p className="text-sm font-bold text-bark-500 mb-1">
+      {step === 1 ? "פרטי המתכון" : step === 2 ? "מצרכים" : "אופן ההכנה"}
+    </p>
+    <p className="text-sm text-bark-300 leading-relaxed">
+      {step === 1
+        ? "שם וקטגוריה מספיקים כדי להמשיך. את שאר הפרטים אפשר להשלים בהמשך."
+        : step === 2
+          ? "הוסיפו לפחות מצרך אחד. כמות ויחידה יכולות להישאר ריקות כשלא צריך."
+          : "כתבו את השלבים לפי הסדר. מספיק שלב אחד כדי לשמור את המתכון."}
+    </p>
   </div>
 
   {/* Step 1 */}
@@ -438,7 +480,7 @@ export default function NewRecipePage() {
   <div className="field-row">
   <label className="input-label">תיאור קצר</label>
   <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-  placeholder="תיאור קצר של המתכון..." rows={3}
+  placeholder="מה מיוחד במתכון, למתי הוא מתאים, או ממי הוא הגיע..." rows={3}
   className="input-dark resize-none" />
   </div>
 
@@ -449,6 +491,7 @@ export default function NewRecipePage() {
   <div className="relative  overflow-hidden aspect-video" style={{ background: "#F4EEDF" }}>
   <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
   <button onClick={() => setImageUrl("")}
+  aria-label="הסרת תמונת המתכון"
   className="absolute top-3 left-3 p-2 bg-surface-50/80 backdrop-blur-sm  hover:bg-surface-50 transition-colors">
   <Trash2 className="w-4 h-4 text-red-500" />
   </button>
@@ -491,7 +534,7 @@ export default function NewRecipePage() {
   className={cn(
   "flex-1 py-4 text-sm font-semibold transition-all duration-300 border",
   difficulty === opt.value
-  ? "btn-fire border-transparent text-white"
+  ? "btn-fire border-transparent text-cream-50"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
   )}>
   {opt.label}
@@ -509,13 +552,13 @@ export default function NewRecipePage() {
 
   <div>
   <label className="input-label mb-3">קטגוריה <span className="text-red-500">*</span></label>
-  <div className="grid grid-cols-3 gap-2">
+  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
   {CATEGORY_OPTIONS.map((cat) => (
   <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
   className={cn(
   "py-4 text-sm font-semibold transition-all border",
   category === cat
-  ? "btn-fire border-transparent text-white"
+  ? "btn-fire border-transparent text-cream-50"
   : "bg-surface-50 text-bark-300 border-surface-400 hover:border-cinnamon-300 hover:text-cinnamon-500"
   )}>
   {cat}
@@ -524,10 +567,15 @@ export default function NewRecipePage() {
   </div>
   </div>
 
-  <button onClick={() => setStep(2)} disabled={!title.trim() || !category}
+  <button onClick={() => setStep(2)} disabled={!hasBasicDetails}
   className="w-full btn-block text-sm flex items-center justify-center gap-2 disabled:opacity-40">
   הבא — מצרכים <ArrowLeft className="w-4 h-4" />
   </button>
+  {!hasBasicDetails && (
+    <p className="text-xs text-bark-200 text-center">
+      צריך שם מתכון וקטגוריה כדי להמשיך.
+    </p>
+  )}
   </div>
   )}
 
@@ -537,21 +585,25 @@ export default function NewRecipePage() {
   <h2 className="section-title text-bark-500">
   רשימת מצרכים
   </h2>
+  <p className="text-sm text-bark-300 leading-relaxed">
+    התחילו מהמצרכים החשובים. תמיד אפשר לערוך כמויות אחר כך.
+  </p>
 
   {ingredients.map((ing, i) => (
   <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
   <GripVertical className="w-4 h-4 text-bark-200 mt-2.5 flex-shrink-0" />
-  <div className="flex-1 grid grid-cols-[1fr_1fr_2fr] gap-2">
-  <input type="number" placeholder="כמות" value={ing.amount || ""}
+  <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_1fr_2fr] gap-2">
+  <input type="number" placeholder="כמות" aria-label={`כמות למצרך ${i + 1}`} value={ing.amount || ""}
   onChange={(e) => updateIngredient(i, "amount", Number(e.target.value))}
   className="input-dark" min={0} step="any" />
-  <input placeholder="יחידה" value={ing.unit}
+  <input placeholder="יחידה" aria-label={`יחידה למצרך ${i + 1}`} value={ing.unit}
   onChange={(e) => updateIngredient(i, "unit", e.target.value)} className="input-dark" />
-  <input placeholder="שם המצרך" value={ing.name}
+  <input placeholder="שם המצרך" aria-label={`שם מצרך ${i + 1}`} value={ing.name}
   onChange={(e) => updateIngredient(i, "name", e.target.value)} className="input-dark" />
   </div>
   {ingredients.length > 1 && (
   <button onClick={() => removeIngredient(i)}
+  aria-label={`מחיקת מצרך ${i + 1}`}
   className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50  transition-colors mt-0.5">
   <Trash2 className="w-4 h-4" />
   </button>
@@ -583,6 +635,9 @@ export default function NewRecipePage() {
   <h2 className="section-title text-bark-500">
   שלבי הכנה
   </h2>
+  <p className="text-sm text-bark-300 leading-relaxed">
+    כתבו כל פעולה בשלב נפרד. בזמן הבישול יהיה קל לסמן מה כבר נעשה.
+  </p>
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
@@ -590,10 +645,12 @@ export default function NewRecipePage() {
   {inst.step}
   </span>
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}
+  aria-label={`שלב הכנה ${inst.step}`}
   placeholder={`שלב ${inst.step}...`} rows={2}
   className="input-dark flex-1 resize-none" />
   {instructions.length > 1 && (
   <button onClick={() => removeInstruction(i)}
+  aria-label={`מחיקת שלב ${inst.step}`}
   className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50  transition-colors">
   <Trash2 className="w-4 h-4" />
   </button>
@@ -611,12 +668,17 @@ export default function NewRecipePage() {
   className="flex-1 py-3  btn-outline font-semibold text-sm flex items-center justify-center gap-2">
   <ArrowRight className="w-4 h-4" /> חזרה
   </button>
-  <button onClick={handleSubmit} disabled={submitting || !title.trim()}
+  <button onClick={handleSubmit} disabled={submitting || !canPublish}
   className="flex-1 py-3  btn-fire font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-40">
   {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
   פרסום מתכון
   </button>
   </div>
+  {!canPublish && (
+    <p className="text-xs text-bark-200 text-center">
+      לפני פרסום צריך שם, קטגוריה, מצרך אחד ושלב הכנה אחד.
+    </p>
+  )}
   </div>
   )}
   </div>

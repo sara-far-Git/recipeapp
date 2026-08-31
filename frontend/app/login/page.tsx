@@ -42,7 +42,7 @@ export default function LoginPage() {
             חוזרים לספר
           </h1>
           <p className="text-bark-200 mt-3 text-[17px]">
-            המתכונים ורשימת הקניות מחכים בפנים
+            המתכונים של הבית ורשימת הקניות מחכים בפנים
           </p>
   </div>
 

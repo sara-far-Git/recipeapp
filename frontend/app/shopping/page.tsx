@@ -85,6 +85,7 @@ export default function ShoppingListPage() {
   };
 
   const deleteList = async (id: number) => {
+    if (!confirm("למחוק את רשימת הקניות?")) return;
     await shoppingApi.delete(id);
     setLists((prev) => prev.filter((l) => l.id !== id));
     if (activeList?.id === id) setActiveList(null);
@@ -148,7 +149,10 @@ export default function ShoppingListPage() {
             <ShoppingCart className="w-10 h-10 text-bark-200" />
           </div>
           <p className="section-title text-bark-500 mb-2">אין רשימות קניות עדיין</p>
-          <p className="text-bark-300 text-sm">צרו רשימה או הוסיפו מצרכים מדף מתכון</p>
+          <p className="text-bark-300 text-sm mb-6">צרו רשימה או הוסיפו מצרכים מדף מתכון</p>
+          <button type="button" onClick={createList} className="btn-block">
+            רשימה ראשונה
+          </button>
         </div>
       ) : (
         <>
@@ -161,7 +165,7 @@ export default function ShoppingListPage() {
                   className={cn(
                     "px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all border",
                     activeList?.id === list.id
-                      ? "btn-fire border-transparent text-white"
+                      ? "btn-fire border-transparent text-cream-50"
                       : "bg-surface-50 border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500"
                   )}
                 >

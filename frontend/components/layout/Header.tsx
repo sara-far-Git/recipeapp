@@ -6,11 +6,13 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Logo from "@/components/brand/Logo";
+import { LogIn, Menu, Plus, Search, ShoppingCart, Sparkles, User } from "lucide-react";
 
 const NAV_PAGES = [
   { href: "/", label: "בית" },
   { href: "/search", label: "מתכונים" },
   { href: "/#categories", label: "קטגוריות" },
+  { href: "/pro", label: "Pro" },
 ];
 
 export default function Header() {
@@ -60,10 +62,13 @@ export default function Header() {
 
   const extras = [
     { href: "/search", label: "חיפוש" },
-    { href: user ? "/recipe/new" : "/login", label: "מתכון חדש" },
+    { href: user ? "/recipe/new" : "/login", label: "שמירת מתכון" },
     { href: user ? "/shopping" : "/login", label: "קניות" },
+    { href: "/pro", label: "Pro" },
     { href: user ? `/profile/${user.username}` : "/login", label: "פרופיל" },
   ];
+  const ctaHref = user ? "/recipe/new" : "/register";
+  const ctaLabel = user ? "שמירת מתכון" : "הרשמה";
 
   return (
     <>
@@ -77,17 +82,78 @@ export default function Header() {
           transition: "border-color 0.3s ease, background 0.3s ease",
         }}
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center">
-          <button
-            type="button"
-            className={cn("logo-trigger", open && "is-open")}
-            aria-expanded={open}
-            aria-controls="site-menu"
-            aria-label={open ? "סגירת התפריט" : "פתיחת התפריט"}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <Logo solid size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px]" />
-          </button>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              className={cn("logo-trigger gap-2", open && "is-open")}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              aria-label={open ? "סגירת התפריט" : "פתיחת התפריט"}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <Logo solid size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px] shrink-0" />
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-sm font-extrabold text-bark-500">
+                <Menu className="w-4 h-4" strokeWidth={2.2} />
+                תפריט
+              </span>
+            </button>
+
+            <nav className="hidden lg:flex items-center gap-1" aria-label="ניווט ראשי">
+              {NAV_PAGES.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn("site-header-link", active && "is-active")}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            <Link href="/search" className="site-header-action site-header-action-soft">
+              <Search className="w-4 h-4" strokeWidth={2.1} />
+              חיפוש
+            </Link>
+            {user && (
+              <Link href="/shopping" className="site-header-action site-header-action-soft">
+                <ShoppingCart className="w-4 h-4" strokeWidth={2.1} />
+                קניות
+              </Link>
+            )}
+            <Link href="/pro" className="site-header-action site-header-action-soft">
+              <Sparkles className="w-4 h-4" strokeWidth={2.1} />
+              Pro
+            </Link>
+            <Link href={ctaHref} className="site-header-action site-header-action-primary">
+              <Plus className="w-4 h-4" strokeWidth={2.4} />
+              {ctaLabel}
+            </Link>
+            {user ? (
+              <Link
+                href={`/profile/${user.username}`}
+                className="site-header-icon-action"
+                aria-label="פרופיל"
+              >
+                <User className="w-4 h-4" strokeWidth={2.1} />
+              </Link>
+            ) : (
+              <Link href="/login" className="site-header-action site-header-action-soft">
+                <LogIn className="w-4 h-4" strokeWidth={2.1} />
+                כניסה
+              </Link>
+            )}
+          </div>
+
+          <Link href="/search" className="md:hidden site-header-icon-action" aria-label="חיפוש">
+            <Search className="w-5 h-5" strokeWidth={2.2} />
+          </Link>
         </div>
       </header>
 

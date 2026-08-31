@@ -129,6 +129,7 @@ function ProfilePageContent() {
               <h3 className="section-title text-bark-500">עריכת פרופיל</h3>
               <button
                 onClick={() => setEditOpen(false)}
+                aria-label="סגירת עריכת הפרופיל"
                 className="p-1.5 hover:bg-surface-200 transition-colors text-bark-200"
               >
                 <X className="w-5 h-5" />
@@ -149,9 +150,9 @@ function ProfilePageContent() {
                   )}
                   <label className="absolute -bottom-1 -left-1 w-7 h-7 bg-cinnamon-500 flex items-center justify-center cursor-pointer hover:bg-cinnamon-600 transition-colors">
                     {avatarUploading ? (
-                      <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-cream-50 animate-spin" />
                     ) : (
-                      <Camera className="w-3.5 h-3.5 text-white" />
+                      <Camera className="w-3.5 h-3.5 text-cream-50" />
                     )}
                     <input
                       type="file"
@@ -203,7 +204,7 @@ function ProfilePageContent() {
           {profile.avatar_url ? (
             <img
               src={profile.avatar_url}
-              alt={profile.username}
+              alt={`תמונת הפרופיל של ${profile.full_name || profile.username}`}
               className="w-16 h-16 sm:w-20 sm:h-20 object-cover shrink-0"
               style={{ border: "1px solid rgba(31,42,38,0.12)" }}
             />
@@ -243,7 +244,7 @@ function ProfilePageContent() {
               </button>
               <Link href="/recipe/new" className="btn-block h-12 min-h-0 px-4 text-sm">
                 <Plus className="w-4 h-4 ml-1.5" />
-                מתכון חדש
+                שמירת מתכון
               </Link>
             </>
           )}
@@ -298,10 +299,22 @@ function ProfilePageContent() {
           <p className="section-title text-bark-500 mb-2">
             {activeTab === "saved" ? "אין מתכונים שמורים עדיין" : "אין מתכונים עדיין"}
           </p>
+          <p className="text-sm text-bark-300">
+            {activeTab === "saved"
+              ? "כשתשמרו מתכונים, הם יחכו לכם כאן."
+              : isOwn
+                ? "הספר שלכם מוכן למתכון הראשון."
+                : "כאן יופיעו מתכונים כשהם יתפרסמו."}
+          </p>
           {isOwn && activeTab === "recipes" && (
             <Link href="/recipe/new" className="btn-block mt-5 inline-flex">
               <Plus className="w-4 h-4 ml-1.5" />
               כתיבת מתכון
+            </Link>
+          )}
+          {isOwn && activeTab === "saved" && (
+            <Link href="/search" className="btn-outline mt-5 inline-flex">
+              לכל המתכונים
             </Link>
           )}
         </div>
@@ -317,7 +330,7 @@ function Stat({ n, label, icon: Icon }: { n: number; label: string; icon: typeof
         <Icon className="w-3.5 h-3.5 text-cinnamon-500" strokeWidth={1.8} />
         {label}
       </p>
-      <p className="text-2xl font-extrabold text-bark-500 leading-none" style={{ letterSpacing: "-0.04em" }}>
+      <p className="text-2xl font-extrabold text-bark-500 leading-none" style={{ letterSpacing: 0 }}>
         {n}
       </p>
     </div>

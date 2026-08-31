@@ -3,22 +3,29 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { Home, Search, Plus, Bookmark, User } from "lucide-react";
+import { BookOpen, Home, Search, Plus, Bookmark, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
   const { user } = useAuth();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  if (!user) return null;
 
-  const items = [
-  { href: "/", icon: Home, label: "ראשי" },
-  { href: "/search", icon: Search, label: "חיפוש" },
-  { href: "/recipe/new", icon: Plus, label: "חדש", special: true },
-  { href: `/profile/${user.username}?tab=saved`, icon: Bookmark, label: "שמורים" },
-  { href: `/profile/${user.username}`, icon: User, label: "פרופיל" },
-  ];
+  const items = user
+    ? [
+      { href: "/", icon: Home, label: "ראשי" },
+      { href: "/search", icon: Search, label: "חיפוש" },
+      { href: "/recipe/new", icon: Plus, label: "שמירה", special: true },
+      { href: `/profile/${user.username}?tab=saved`, icon: Bookmark, label: "שמורים" },
+      { href: `/profile/${user.username}`, icon: User, label: "פרופיל" },
+    ]
+    : [
+      { href: "/", icon: Home, label: "ראשי" },
+      { href: "/search", icon: Search, label: "חיפוש" },
+      { href: "/register", icon: Plus, label: "הרשמה", special: true },
+      { href: "/#categories", icon: BookOpen, label: "קטגוריות" },
+      { href: "/login", icon: LogIn, label: "כניסה" },
+    ];
 
   return (
   <nav
@@ -46,7 +53,7 @@ export default function BottomNav() {
 
   if (item.special) {
   return (
-  <Link key={item.href} href={item.href} className="flex flex-col items-center -mt-5">
+  <Link key={item.href} href={item.href} className="flex flex-col items-center -mt-5" aria-label={item.label}>
   <div
   className="flex items-center justify-center transition-transform duration-200 active:scale-90"
                   style={{
