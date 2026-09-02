@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
-import LogoIntro from "@/components/brand/LogoIntro";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
@@ -81,7 +80,6 @@ export default function FeedPage() {
 
   return (
     <div>
-      <LogoIntro />
       <SectionRail sections={sections} />
 
       <div className="full-bleed stack-root">

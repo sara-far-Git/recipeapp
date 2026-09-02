@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isProduction = process.env.NODE_ENV === "production";
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -19,11 +21,16 @@ const nextConfig = {
           },
         ],
       },
-      // Long-term cache for static assets
+      // Long-term cache for production assets. In dev, avoid stale chunks after UI edits.
       {
         source: "/_next/static/(.*)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          {
+            key: "Cache-Control",
+            value: isProduction
+              ? "public, max-age=31536000, immutable"
+              : "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
         ],
       },
       // Cache icons and manifest

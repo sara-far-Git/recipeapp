@@ -21,6 +21,22 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
+      - key: OPENAI_RECIPE_MODEL
+        value: gpt-4o-mini
+      - key: AI_PREFILTER_ENABLED
+        value: "false"
+      - key: GEMMA_BASE_URL
+        sync: false
+      - key: GEMMA_API_KEY
+        sync: false
+      - key: GEMMA_MODEL
+        value: recipe-gemma
+      - key: GEMMA_WARM_WINDOW_SECONDS
+        value: "50"
+      - key: GEMMA_WARM_REQUEST_TIMEOUT_SECONDS
+        value: "15"
+      - key: GEMMA_ASSUME_WARM
+        value: "false"
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: SENTRY_DSN

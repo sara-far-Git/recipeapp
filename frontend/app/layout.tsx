@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Heebo } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { SITE_URL } from "@/lib/site";
@@ -8,15 +7,6 @@ import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
 import InstallBanner from "@/components/ui/InstallBanner";
-
-// One heavy geometric sans — the closest Hebrew match to the logo’s
-// blocky, tightly packed RECIPE SPACE lettering.
-const heebo = Heebo({
-  subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-  variable: "--font-heebo",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -63,22 +53,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="he" dir="rtl" className={heebo.variable}>
+    <html lang="he" dir="rtl">
       <body className="min-h-screen">
-        <AuthProvider>
-          <Suspense fallback={null}><Header /></Suspense>
-          <main className="page-shell pb-24 sm:pb-8">
-            {children}
-          </main>
-          <Footer />
-          <Suspense fallback={null}><BottomNav /></Suspense>
-          <InstallBanner />
-        </AuthProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (location.pathname === '/' && !sessionStorage.getItem('logo-intro-v12') && window.scrollY < 48) {
-                document.documentElement.classList.add('logo-intro');
+              if (location.hostname === '127.0.0.1') {
+                var localPort = location.port ? ':' + location.port : '';
+                location.replace('http://localhost' + localPort + location.pathname + location.search + location.hash);
               }
               window.__pwaPrompt = null;
               window.addEventListener('beforeinstallprompt', function(e) {
@@ -100,8 +82,8 @@ export default function RootLayout({
                           })
                         : Promise.resolve()
                     ]).then(function() {
-                      if (navigator.serviceWorker.controller && !sessionStorage.getItem('sw-dev-cleaned-v1')) {
-                        sessionStorage.setItem('sw-dev-cleaned-v1', '1');
+                      if (navigator.serviceWorker.controller && !sessionStorage.getItem('sw-dev-cleaned-v2')) {
+                        sessionStorage.setItem('sw-dev-cleaned-v2', '1');
                         location.reload();
                       }
                     }).catch(function() {});
@@ -115,6 +97,15 @@ export default function RootLayout({
             `,
           }}
         />
+        <AuthProvider>
+          <Suspense fallback={null}><Header /></Suspense>
+          <main className="page-shell pb-24 sm:pb-8">
+            {children}
+          </main>
+          <Footer />
+          <Suspense fallback={null}><BottomNav /></Suspense>
+          <InstallBanner />
+        </AuthProvider>
       </body>
     </html>
   );

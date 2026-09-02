@@ -14,6 +14,7 @@
     --btn-hover: #27594E;
     --muted: #66736D;
     --logo: #1E4D45;
+    --font-brand: "Recipe Brand", "Almoni Neue", "Almoni", "almoni-dl", "Ploni", "Atlas Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Arial Hebrew", Arial, sans-serif;
   }
 
   html {
@@ -27,7 +28,7 @@
 
   body {
     @apply antialiased;
-    font-family: var(--font-heebo), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-brand);
     background-color: var(--forest);
     background-image:
       radial-gradient(ellipse 80% 50% at 10% -8%, rgba(47, 107, 93, 0.08), transparent 50%),
@@ -321,21 +322,21 @@
   .row-wipe:hover::before { transform: scaleX(1); }
 
   .display-hero {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 3.2rem;
     font-weight: 900;
     line-height: 1.12;
     letter-spacing: 0;
   }
   .display-lg {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 2.35rem;
     font-weight: 900;
     line-height: 1.14;
     letter-spacing: 0;
   }
   .display-md {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 1.65rem;
     font-weight: 800;
     line-height: 1.2;
@@ -343,7 +344,7 @@
   }
 
   .section-title {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: 0;
@@ -351,7 +352,7 @@
   }
 
   .card-title {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 21px;
     font-weight: 800;
     letter-spacing: 0;
@@ -520,7 +521,7 @@
 
   /* ─── Form fields — hairline underline ────────────────────*/
   .input-label {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-weight: 700;
     font-size: 13px;
     letter-spacing: 0;
@@ -543,7 +544,7 @@
     border-radius: 0;
     padding: 12px 0;
     color: #1F2A26;
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 16px;
     transition: border-color 0.2s ease;
     outline: none;
@@ -551,7 +552,7 @@
   }
   .input-dark::placeholder {
     color: #9a8a7c;
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-style: normal;
   }
   .input-dark:hover { border-bottom-color: #2F6B5D; }
@@ -728,7 +729,7 @@
     min-width: 2rem;
   }
   .logo-menu-link .lbl {
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 2.4rem;
     font-weight: 900;
     letter-spacing: 0;
@@ -779,10 +780,12 @@
     position: fixed;
     inset: 0;
     z-index: 75;
-    display: flex;
+    display: none !important;
     align-items: center;
     justify-content: center;
     background: #1E4D45;
+    visibility: hidden;
+    pointer-events: none !important;
     -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
     mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole, 0%), #000 calc(var(--hole, 0%) + 0.8px));
     transition: opacity 0.35s linear;
@@ -805,7 +808,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.35rem;
-    font-family: var(--font-heebo), sans-serif;
+    font-family: var(--font-brand);
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0;
@@ -835,8 +838,8 @@
   html.logo-intro .section-rail,
   html.logo-intro .bottom-nav,
   html.logo-intro .install-banner {
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: auto;
   }
   @media (prefers-reduced-motion: reduce) {
     .logo-intro-veil { mask-image: none; -webkit-mask-image: none; }

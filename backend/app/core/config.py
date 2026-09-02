@@ -18,6 +18,23 @@ class Settings(BaseSettings):
 
     # AI
     OPENAI_API_KEY: Optional[str] = None
+    OPENAI_RECIPE_MODEL: str = "gpt-4o-mini"
+
+    # Optional low-cost recipe prefilter. GEMMA_BASE_URL should point to an
+    # OpenAI-compatible endpoint, such as Ollama or Runpod vLLM.
+    AI_PREFILTER_ENABLED: bool = False
+    GEMMA_BASE_URL: Optional[str] = None
+    GEMMA_API_KEY: Optional[str] = None
+    GEMMA_MODEL: str = "gemma3:4b"
+    AI_PREFILTER_CONFIDENCE_THRESHOLD: float = 0.85
+    AI_PREFILTER_MAX_INPUT_CHARS: int = 16000
+    AI_PREFILTER_MAX_FALLBACK_CHARS: int = 5000
+    # A serverless worker can report healthy while it is still cold. Only use
+    # it immediately after a real completion, within its idle timeout.
+    GEMMA_WARM_WINDOW_SECONDS: float = 50.0
+    GEMMA_WARM_REQUEST_TIMEOUT_SECONDS: float = 15.0
+    # For a local, always-running model only. Keep false for scale-to-zero.
+    GEMMA_ASSUME_WARM: bool = False
 
     # Storage
     AWS_ACCESS_KEY_ID: Optional[str] = None

@@ -28,6 +28,7 @@ from app.core.limiter import limiter
 from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.recipe import ScanResponse
+from app.services.recipe_ai_router import extract_recipe_with_cost_gate
 
 router = APIRouter(prefix="/import", tags=["import"])
 
@@ -231,7 +232,7 @@ Keep the original language (Hebrew if Hebrew). If a value is unknown, use null.
 """
 
 
-def _extract_with_ai(page_text: str) -> dict:
+def _extract_with_openai(page_text: str) -> dict:
     if not settings.OPENAI_API_KEY:
         raise HTTPException(
             status_code=503,
@@ -241,7 +242,7 @@ def _extract_with_ai(page_text: str) -> dict:
         from openai import OpenAI
         client = OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # cheaper for plain text
+            model=settings.OPENAI_RECIPE_MODEL,
             messages=[
                 {"role": "system", "content": AI_PROMPT},
                 {"role": "user", "content": page_text[:14000]},
@@ -257,6 +258,10 @@ def _extract_with_ai(page_text: str) -> dict:
         raise HTTPException(status_code=502, detail="AI returned invalid JSON")
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {e}")
+
+
+def _extract_with_ai(page_text: str) -> dict:
+    return extract_recipe_with_cost_gate(page_text, _extract_with_openai)
 
 
 # ---------------------------------------------------------------------------
