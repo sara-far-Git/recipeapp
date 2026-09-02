@@ -24,7 +24,7 @@ services:
       - key: OPENAI_RECIPE_MODEL
         value: gpt-4o-mini
       - key: AI_PREFILTER_ENABLED
-        value: "false"
+        value: "true"
       - key: GEMMA_BASE_URL
         sync: false
       - key: GEMMA_API_KEY
