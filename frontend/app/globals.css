@@ -571,18 +571,20 @@
 
   .writing-card__dividers {
     z-index: 1;
-    left: 9%;
-    top: 0;
-    width: 74%;
+    left: 12%;
+    top: -4%;
+    width: 68%;
   }
 
   /* the card in front, and the frame the ink is positioned against */
+  /* Raised clear of the box's side walls, so the card visibly stands out of
+     it rather than sitting level with the rim. */
   .writing-card__front {
     position: absolute;
     z-index: 2;
-    left: 3%;
-    top: 6%;
-    width: 88%;
+    left: 6%;
+    top: 2%;
+    width: 80%;
   }
   .writing-card__paper { position: relative; }
   .writing-card.is-writing .writing-card__front {
@@ -636,7 +638,7 @@
     z-index: 4;
     left: 0;
     bottom: 0;
-    filter: drop-shadow(0 22px 30px rgba(6, 24, 18, 0.5));
+    filter: drop-shadow(0 20px 28px rgba(6, 24, 18, 0.45));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1109,6 +1111,26 @@
     background: rgba(7, 29, 22, 0.34);
     border-color: rgba(250, 248, 243, 0.18);
   }
+  /* The panel paints its own text light because it sits on green. The recipe
+     card is cream paper, so those rules must stop at its edge — otherwise the
+     title goes near-white on cream and the card body turns grey. */
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-500 { color: #1E4D45 !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-400 { color: #275E50 !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-300 { color: #2F6B5D !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-200 { color: #66736D !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .border-surface-400 {
+    border-color: var(--card-rule) !important;
+  }
+  .home-page .home-panel-recipes .recipe-card-shell .card-surface {
+    background: var(--card-stock);
+    border-color: var(--card-rule);
+  }
+  .home-page .home-panel-recipes .recipe-card-shell .badge-neutral {
+    background: #F4EEDF;
+    color: #275E50;
+    border-color: var(--card-rule);
+  }
+
   .home-page .glass-stage {
     background: rgba(250, 248, 243, 0.055);
     border-color: rgba(250, 248, 243, 0.16);

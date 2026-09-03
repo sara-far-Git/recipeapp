@@ -93,12 +93,13 @@ export default function WritingCard() {
         </span>
       </div>
 
+      {/* only the front wall, so the cards really are behind it */}
       <Image
-        src="/marks/box.png"
+        src="/marks/box-front.png"
         alt=""
         aria-hidden="true"
-        width={1291}
-        height={1006}
+        width={1171}
+        height={1233}
         priority
         className="writing-card__box"
       />
