@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
+import WritingCard from "@/components/home/WritingCard";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
@@ -141,6 +142,7 @@ export default function FeedPage() {
               </Link>
             </div>
           </Reveal>
+          <WritingCard recipes={recipes} />
         </div>
       </CinematicSection>
 

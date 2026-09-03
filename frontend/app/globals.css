@@ -497,6 +497,182 @@
     will-change: transform;
   }
   html:has(.home-page) { scroll-snap-type: none; }
+  /* ─── Hero: the card that writes itself ───────────────────
+     A card rises from the box, the tab slides up, the rules draw left to
+     right, and the writing lands on them in turn. Everything is keyframes off
+     a key change in React, so a cycle costs no per-frame JS. Large screens
+     only — below that the composer owns the panel. */
+  /* Every child is absolutely placed, so the box has no intrinsic width —
+     the grid track sets it and the card fills that track. */
+  .writing-card {
+    position: relative;
+    display: none;
+    width: 100%;
+    aspect-ratio: 1 / 1.02;
+  }
+  @media (min-width: 1100px) {
+    .writing-card { display: block; }
+  }
+
+  .writing-card__box {
+    position: absolute;
+    inset-inline: 4%;
+    bottom: 0;
+    height: 38%;
+    border-radius: 0.5rem 0.5rem 1.15rem 1.15rem;
+    background: linear-gradient(#F6F1E6, #EFE7D6);
+    box-shadow: 0 22px 48px -20px rgba(6, 24, 18, 0.75);
+  }
+  /* the gold rim the box carries */
+  .writing-card__box::before {
+    content: "";
+    position: absolute;
+    inset: 7px 7px auto;
+    height: 1px;
+    background: rgba(193, 154, 82, 0.85);
+  }
+
+  .writing-card__behind {
+    position: absolute;
+    inset-inline: 12%;
+    bottom: 26%;
+    height: 52%;
+    border-radius: 0.7rem;
+    background: #F2ECDD;
+    box-shadow: 0 -6px 18px -10px rgba(6, 24, 18, 0.5);
+  }
+  .writing-card__behind--1 { transform: translate(2%, -4%) rotate(1.4deg); }
+  .writing-card__behind--2 { transform: translate(-3%, -8%) rotate(-2.2deg); opacity: 0.75; }
+
+  .writing-card__sheet {
+    position: absolute;
+    inset-inline: 6%;
+    bottom: 22%;
+    padding: 1.5rem 1.35rem 1.15rem;
+    border-radius: 0.85rem;
+    background: #FAF8F3;
+    box-shadow: 0 26px 50px -24px rgba(6, 24, 18, 0.85);
+    animation: wc-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes wc-draw {
+    from { transform: translateY(14%) scale(0.97); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .writing-card__tab {
+    position: absolute;
+    top: -1.35rem;
+    inset-inline-start: 1.4rem;
+    height: 1.9rem;
+    padding: 0 0.85rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.45rem 0.45rem 0 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    animation: wc-tab 620ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
+  }
+  @keyframes wc-tab {
+    from { transform: translateY(0.9rem); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .writing-card__eyebrow {
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: #275E50;
+    animation: wc-fade 520ms ease-out 340ms both;
+  }
+  .writing-card__flourish {
+    display: block;
+    width: 3.5rem;
+    height: 1px;
+    margin: 0.55rem auto 1.25rem;
+    background: #D97757;
+    transform-origin: center;
+    animation: wc-flourish 520ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
+  }
+  @keyframes wc-flourish {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .writing-card__line {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .writing-card__label {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #66736D;
+  }
+  /* the rule, drawn in from the start edge */
+  .writing-card__rule {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(39, 94, 80, 0.28);
+    transform-origin: right;
+    animation: wc-rule 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes wc-rule {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  /* the writing, landing after its own rule */
+  .writing-card__written {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    color: #1E4D45;
+    animation: wc-write 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes wc-write {
+    from { clip-path: inset(0 0 0 100%); opacity: 0.4; }
+    to   { clip-path: inset(0 0 0 0); opacity: 1; }
+  }
+  .writing-card__line--title .writing-card__written { font-size: 1.05rem; }
+  .writing-card__line--serves .writing-card__written { font-size: 0.9rem; color: #275E50; }
+  .writing-card__line--title  .writing-card__rule    { animation-delay: 520ms; }
+  .writing-card__line--title  .writing-card__written { animation-delay: 880ms; }
+  .writing-card__line--serves .writing-card__rule    { animation-delay: 700ms; }
+  .writing-card__line--serves .writing-card__written { animation-delay: 1180ms; }
+
+  .writing-card__leaf {
+    position: absolute;
+    inset-block-start: 1.2rem;
+    inset-inline-end: 1.1rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    background: no-repeat center / contain
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232F6B5D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'%3E%3Cpath d='M32 56V26'/%3E%3Cpath d='M32 26c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 34c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3C/svg%3E");
+    animation: wc-fade 620ms ease-out 900ms both;
+  }
+
+  @keyframes wc-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .writing-card__sheet, .writing-card__tab, .writing-card__eyebrow,
+    .writing-card__flourish, .writing-card__rule, .writing-card__written,
+    .writing-card__leaf { animation: none; }
+    .writing-card__written { clip-path: none; opacity: 1; }
+  }
+
   .assistant-home {
     min-height: calc(100svh - 4rem);
     display: flex;
@@ -507,6 +683,15 @@
     width: min(100%, 52rem);
     margin-inline: auto;
     text-align: center;
+  }
+  @media (min-width: 1100px) {
+    .assistant-home {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(18rem, 24vw, 23rem);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 4.5rem);
+    }
+    .assistant-welcome { margin-inline: 0; }
   }
   .assistant-kicker {
     width: min(100%, 38rem);
