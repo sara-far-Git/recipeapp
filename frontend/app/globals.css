@@ -570,28 +570,34 @@
 
   .writing-card__dividers {
     z-index: 1;
-    left: 12%;
-    top: -4%;
-    width: 68%;
+    left: 13%;
+    top: -3%;
+    width: 66%;
+    transform: rotate(2.5deg);
+    transform-origin: 50% 90%;
   }
 
   /* the card in front, and the frame the ink is positioned against */
   /* Raised clear of the box's side walls, so the card visibly stands out of
-     it rather than sitting level with the rim. */
+     it rather than sitting level with the rim. The render leans about 7.5deg
+     back; this brings it most of the way upright, and because the ink lives in
+     this same frame it turns with the card and stays on the rule. */
   .writing-card__front {
     position: absolute;
     z-index: 2;
-    left: 6%;
-    top: 2%;
+    left: 7%;
+    top: 3%;
     width: 80%;
+    transform: rotate(5deg);
+    transform-origin: 50% 88%;
   }
   .writing-card__paper { position: relative; }
   .writing-card.is-writing .writing-card__front {
     animation: wc-rise 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   @keyframes wc-rise {
-    from { transform: translateY(9%); opacity: 0; }
-    to   { transform: none; opacity: 1; }
+    from { transform: rotate(5deg) translateY(9%); opacity: 0; }
+    to   { transform: rotate(5deg); opacity: 1; }
   }
 
   /* The rules in the render run at -7.5deg from 35% to 75% across the card,
@@ -661,7 +667,7 @@
        itself to one edge and the card to the other, with dead space between. */
     .assistant-home {
       display: grid;
-      grid-template-columns: minmax(0, 46rem) clamp(17rem, 21vw, 21rem);
+      grid-template-columns: minmax(0, 44rem) clamp(19rem, 24vw, 24rem);
       justify-content: center;
       align-items: center;
       gap: clamp(1.75rem, 3.5vw, 3.25rem);

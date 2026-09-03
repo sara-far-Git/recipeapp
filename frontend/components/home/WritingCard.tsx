@@ -10,7 +10,7 @@
  * the card rises and writes, and each further pass brings the next name.
  */
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Sample = { title: string; serves: string };
 
@@ -31,38 +31,23 @@ const STEP_MS = 3800;
 export default function WritingCard() {
   const [i, setI] = useState(0);
   const [writing, setWriting] = useState(false);
-  const timer = useRef<number | null>(null);
 
-  const stop = () => {
-    if (timer.current !== null) {
-      window.clearInterval(timer.current);
-      timer.current = null;
-    }
-  };
-
-  const start = () => {
+  /* Runs on its own. Reduced-motion keeps the first card and never cycles. */
+  useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setWriting(true);
-    setI((n) => (n + 1) % CARDS.length);
-    stop();
-    timer.current = window.setInterval(
+    const t = window.setInterval(
       () => setI((n) => (n + 1) % CARDS.length),
       STEP_MS,
     );
-  };
-
-  useEffect(() => stop, []);
+    return () => window.clearInterval(t);
+  }, []);
 
   const card = CARDS[i];
 
   return (
     <div
       className={`writing-card${writing ? " is-writing" : ""}`}
-      onMouseEnter={start}
-      onMouseLeave={stop}
-      onFocus={start}
-      onBlur={stop}
-      tabIndex={0}
       role="img"
       aria-label="קופסת מתכונים עם כרטיסים">
       <Image
