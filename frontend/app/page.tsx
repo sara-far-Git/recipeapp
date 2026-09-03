@@ -433,7 +433,7 @@ function CinematicSection({
     if (window.location.hash === `#${id}`) mark();
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) mark();
-    }, { threshold: 0.08 });
+    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
     io.observe(el);
     const onHash = () => { if (window.location.hash === `#${id}`) mark(); };
     window.addEventListener("hashchange", onHash);

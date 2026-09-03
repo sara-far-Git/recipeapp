@@ -440,7 +440,7 @@ export default function NewRecipePage() {
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1" aria-current={step === s ? "step" : undefined}>
   <div className={cn(
-  "w-10 h-10 flex items-center justify-center text-sm font-bold transition-all duration-300 flex-shrink-0",
+  "recipe-stepper-num transition-all duration-300",
   step > s ? "bg-cinnamon-50 text-cinnamon-500" :
   step === s ? "bg-cinnamon-500 text-cream-50" :
   "bg-surface-200 text-bark-200"
@@ -643,7 +643,7 @@ export default function NewRecipePage() {
 
   {instructions.map((inst, i) => (
   <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <span className="flex-shrink-0 w-10 h-10 bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold mt-0.5">
+  <span className="recipe-stepper-num bg-cinnamon-50 text-cinnamon-500 mt-0.5">
   {inst.step}
   </span>
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}
