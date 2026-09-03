@@ -221,10 +221,10 @@ export default function RecipeDetailPage() {
 
   {/* Header */}
   <div className="flex items-center justify-between mb-6">
-  <h1 className="section-title flex-1 ml-4" style={{ color: "#1F2A26" }}>{recipe.title}</h1>
+  <h1 className="section-title flex-1 ml-4" style={{ color: "#275E50" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2 text-sm flex-shrink-0"
-  style={{ background: "#F4EEDF", color: "#1F2A26", border: "1px solid #D97757", borderRadius: 999 }}>
+  style={{ background: "#F4EEDF", color: "#275E50", border: "1px solid #D97757", borderRadius: 999 }}>
   יציאה ממצב הכנה
   </button>
   </div>
@@ -431,7 +431,7 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Action row: author + like/save/share */}
-  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid rgba(31,42,38,0.12)", animationDelay: "100ms" }}>
+  <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid rgba(39,94,80,0.12)", animationDelay: "100ms" }}>
   {hideAuthor ? <div /> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
@@ -536,8 +536,7 @@ export default function RecipeDetailPage() {
   {scaledIngredients.map((ing: any, i: number) => (
   <div key={i} className="recipe-ingredient-row px-5 py-3">
   <span className="ingredient-amount" dir="ltr">
-  <span className="ingredient-amount-value">{ing.amount}</span>
-  {ing.unit && <span className="ingredient-amount-unit">{ing.unit}</span>}
+  {ing.amount}{ing.unit ? ` ${ing.unit}` : ""}
   </span>
   <span className="text-bark-400 text-sm">{ing.name}</span>
   </div>
@@ -552,11 +551,11 @@ export default function RecipeDetailPage() {
   </h2>
   <ol className="space-y-4">
   {recipe.instructions.map((inst: any) => (
-  <li key={inst.step} className="flex items-start gap-4 card-surface p-5">
-  <span className="flex-shrink-0 w-9 h-9 bg-cinnamon-50 text-cinnamon-500 flex items-center justify-center text-sm font-bold border border-cinnamon-200 mt-0.5">
+  <li key={inst.step} className="recipe-instruction-row card-surface">
+  <span className="recipe-step-number" aria-label={`שלב ${inst.step}`}>
   {inst.step}
   </span>
-  <p className="text-bark-400 leading-relaxed flex-1" style={{ lineHeight: 1.7 }}>{inst.text}</p>
+  <p className="recipe-instruction-copy text-bark-400 leading-relaxed" style={{ lineHeight: 1.7 }}>{inst.text}</p>
   </li>
   ))}
   </ol>

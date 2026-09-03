@@ -20,7 +20,7 @@ module.exports = {
           50:  "#FAF8F3",
           100: "#F4EEDF",
           200: "#66736D",
-          300: "#1F2A26",
+          300: "#275E50",
         },
         surface: {
           DEFAULT: "#F4EEDF",
@@ -37,7 +37,7 @@ module.exports = {
           200: "#66736D",
           300: "#66736D",
           400: "#3D4A45",
-          500: "#1F2A26",
+          500: "#275E50",
           600: "#1E4D45",
           700: "#1E4D45",
         },
@@ -46,7 +46,7 @@ module.exports = {
           200: "#66736D",
           300: "#66736D",
           400: "#3D4A45",
-          500: "#1F2A26",
+          500: "#275E50",
           600: "#1E4D45",
         },
         cinnamon: {
@@ -61,7 +61,7 @@ module.exports = {
         },
       },
       boxShadow: {
-        "warm-lg": "0 16px 40px rgba(31, 42, 38, 0.10), 0 4px 12px rgba(31, 42, 38, 0.06)",
+        "warm-lg": "0 16px 40px rgba(39, 94, 80, 0.10), 0 4px 12px rgba(39, 94, 80, 0.06)",
       },
       fontFamily: {
         sans: ["var(--font-heebo)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],

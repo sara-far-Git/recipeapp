@@ -134,6 +134,7 @@ export default function ShoppingListPage() {
     <PageFrame tone="terracotta" className="shopping-experience">
     <div className="max-w-2xl mx-auto relative z-10">
       <header className="experience-hero experience-hero--shopping flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-7 animate-fade-up">
+        <span className="shopping-hero-accent" aria-hidden="true" />
         <div>
           <span className="eyebrow mb-3">
             <span className="plus-badge text-bark-500">
