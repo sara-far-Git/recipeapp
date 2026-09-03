@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
+import RecipeIcon from "@/components/ui/RecipeIcon";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
 import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
@@ -230,12 +231,13 @@ function SearchPageContent() {
               type="button"
               onClick={() => setActiveCategory(activeCategory === cat.name ? "" : cat.name)}
               className={cn(
-                "search-choice px-3.5 py-1.5 text-xs font-bold transition-colors",
+                "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
                 activeCategory === cat.name
                   ? "is-selected"
                   : ""
               )}
             >
+              <span className="w-4 h-4 shrink-0"><RecipeIcon category={cat.name} animated={false} /></span>
               {cat.name}
             </button>
           ))}
@@ -407,7 +409,7 @@ function SearchPageContent() {
           </div>
         </div>
       ) : searched ? (
-        <EmptyState title="לא נמצאו מתכונים" onReset={clearAll} />
+        <EmptyState title="לא נמצאו מתכונים" onReset={clearAll} icon={activeCategory} />
       ) : (
         <EmptyState title="בחרו קטגוריה או חיפוש מהיר" action={false} />
       )}
@@ -455,13 +457,17 @@ function EmptyState({
   title,
   action = true,
   onReset,
+  icon,
 }: {
   title: string;
   action?: boolean;
   onReset?: () => void;
+  /** Category whose box to show; anything else shows the recipe book. */
+  icon?: string | null;
 }) {
   return (
-    <div className="card-surface p-8 sm:p-10 text-center animate-fade-up">
+    <div className="card-surface p-8 sm:p-10 text-center animate-fade-up group">
+      <div className="w-16 h-16 mx-auto mb-4 text-bark-200"><RecipeIcon category={icon} /></div>
       <p className="section-title text-bark-500 mb-2">{title}</p>
       <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.</p>
       {onReset ? (
