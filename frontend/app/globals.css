@@ -2245,6 +2245,61 @@
   }
 }
 
+  /* ─── Recipe card — a card out of the box ─────────────────
+     The same object as the icon: a single-weight line, the corner scale, a
+     terracotta strap over the top edge, and two fainter cards behind it that
+     lift in a stagger on hover. Colour is the panel's — `currentColor` on the
+     shell — so it reads on cream and on green alike. */
+  .recipe-card-shell {
+    position: relative;
+    isolation: isolate;
+    height: 100%;
+    color: rgba(39, 94, 80, 0.55);
+  }
+  .recipe-card-shell::before,
+  .recipe-card-shell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1.5px solid currentColor;
+    border-radius: var(--r-md);
+    background: transparent;
+    transform: translateY(-5px) scale(0.965);
+    opacity: 0.55;
+    transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .recipe-card-shell::after {
+    transform: translateY(-10px) scale(0.93);
+    opacity: 0.3;
+    transition-delay: 60ms;
+  }
+  .recipe-card-shell:hover::before { transform: translateY(-8px) scale(0.965); }
+  .recipe-card-shell:hover::after  { transform: translateY(-15px) scale(0.93); }
+  .recipe-card-shell > .recipe-card {
+    border: 1.5px solid currentColor;
+    box-shadow: none;
+  }
+  .recipe-card-shell:hover > .recipe-card { transform: none; }
+  /* the strap that closes the box, hanging over the lip */
+  .recipe-card-strap {
+    position: absolute;
+    top: -1.5px;
+    left: 50%;
+    z-index: 3;
+    width: 26px;
+    height: 11px;
+    transform: translateX(-50%);
+    border-radius: 0 0 var(--r-sm) var(--r-sm);
+    background: var(--icon-accent, #D97757);
+    pointer-events: none;
+  }
+  .home-page .home-panel-recipes .recipe-card-shell,
+  .panel-bark .recipe-card-shell { color: rgba(250, 248, 243, 0.5); }
+  @media (prefers-reduced-motion: reduce) {
+    .recipe-card-shell::before, .recipe-card-shell::after { transition: none; }
+  }
+
   /* ─── Recipe icon — the cards lift out of the box ─────────
      Idle: still. On hover of the surrounding .group, or once when the icon
      first scrolls into view, the three cards rise in a stagger and the sprig
