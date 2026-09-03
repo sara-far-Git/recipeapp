@@ -6,7 +6,8 @@ import Link from "next/link";
 import { searchApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { Loader2, Plus } from "lucide-react";
+import RecipeLoading from "@/components/ui/RecipeLoading";
+import { Plus } from "lucide-react";
 import { CATEGORIES, getCategory } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 
@@ -50,9 +51,7 @@ export default function CategoryPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-cinnamon-500" />
-        </div>
+        <RecipeLoading label="מוצאת מתכונים מתאימים" />
       ) : recipes.length === 0 ? (
         <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
           <div className="card-surface p-8 sm:p-10 mb-12">

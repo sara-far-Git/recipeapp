@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
+import RecipeLoading from "@/components/ui/RecipeLoading";
 import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
@@ -391,9 +392,7 @@ function SearchPageContent() {
           <EmptyState title="לא נמצאו מתכונים מהמצרכים האלה" />
         ) : null
       ) : loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
-        </div>
+        <RecipeLoading label="מוצאת לך רעיונות" />
       ) : results.length > 0 ? (
         <div>
           <p className="text-sm text-bark-200 mb-5">{results.length} מתכונים</p>
@@ -479,9 +478,7 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-cinnamon-500" />
-        </div>
+        <RecipeLoading label="מכינה את החיפוש" compact />
       }
     >
       <SearchPageContent />

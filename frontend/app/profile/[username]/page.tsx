@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usersApi, uploadApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
+import RecipeLoading from "@/components/ui/RecipeLoading";
 import { Loader2, Pencil, X, Camera, BookOpen, Heart, Users, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -106,9 +107,7 @@ function ProfilePageContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-cinnamon-500" />
-      </div>
+      <RecipeLoading label="פותחת את ספר המתכונים" />
     );
   }
 
@@ -251,6 +250,7 @@ function ProfilePageContent() {
           {currentUser && !isOwn && (
             <button
               onClick={handleFollow}
+              aria-pressed={isFollowing}
               className={cn("h-12 min-h-0 px-6 text-sm", isFollowing ? "btn-outline" : "btn-block")}
             >
               {isFollowing ? "עוקב/ת" : "מעקב"}
@@ -372,9 +372,7 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-cinnamon-500" />
-        </div>
+        <RecipeLoading label="מכינה את הפרופיל" compact />
       }
     >
       <ProfilePageContent />

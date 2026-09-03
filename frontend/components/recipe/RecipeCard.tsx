@@ -96,9 +96,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
-            <div
-              className="absolute inset-0 p-4"
-              style={{ background: "#F4EEDF" }}>
+            <div className="recipe-card-fallback absolute inset-0 p-4">
               <div
                 className="h-full flex flex-col justify-between p-4"
                 style={{ border: "1px solid rgba(31,42,38,0.14)" }}>
@@ -117,15 +115,13 @@ function RecipeCard({ recipe }: RecipeCardProps) {
           )}
 
           {isDraft && (
-            <span className="absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold"
-              style={{ background: "#FAF8F3", color: "#1F2A26", borderRadius: 999 }}>
+            <span className="recipe-card-draft absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold">
               טיוטה
             </span>
           )}
 
           {totalTime > 0 && (
-            <span className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold"
-              style={{ background: "rgba(250,248,243,0.82)", color: "#1F2A26", borderRadius: 999 }}>
+            <span className="recipe-card-time absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold">
               <Clock className="w-3 h-3" strokeWidth={2} />
               {totalTime} דק׳
             </span>

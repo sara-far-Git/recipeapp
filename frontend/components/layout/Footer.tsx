@@ -49,7 +49,6 @@ export default function Footer() {
               ספר המתכונים — המקום שבו המתכונים של הבית נשמרים, נמצאים, וחוזרים לשולחן.
             </p>
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
-              <Link href="/pro" className="text-cinnamon-300 hover:text-cinnamon-200 inline-flex items-center min-h-[24px]">גרסת פרו</Link>
               <Link href="/privacy" className="text-cream-200 hover:text-cinnamon-300 inline-flex items-center min-h-[24px]">מדיניות פרטיות</Link>
               <Link href="/terms" className="text-cream-200 hover:text-cinnamon-300 inline-flex items-center min-h-[24px]">תנאי שימוש</Link>
             </nav>

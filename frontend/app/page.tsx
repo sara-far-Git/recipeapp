@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import { ChefHat, SlidersHorizontal, X, Plus, Users, ShoppingCart, Search, Sparkles } from "lucide-react";
+import RecipeLoading from "@/components/ui/RecipeLoading";
+import { ArrowUp, ChefHat, LoaderCircle, SlidersHorizontal, X, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import { CATEGORIES } from "@/lib/categories";
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
+const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
 const REASONS = [
   { t: "כל המתכונים במקום אחד", d: "בלי צילומי מסך, פתקים והודעות שנעלמות בדיוק כשצריך אותן." },
@@ -34,6 +36,10 @@ export default function FeedPage() {
   const [kosher, setKosher] = useState("");
   const [maxTime, setMaxTime] = useState(0);
   const [heroQuery, setHeroQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeQuickStart, setActiveQuickStart] = useState<string | null>(null);
+  const [composerAttention, setComposerAttention] = useState(false);
+  const composerRef = useRef<HTMLInputElement>(null);
 
 
   useEffect(() => {
@@ -63,98 +69,87 @@ export default function FeedPage() {
   const submitHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = heroQuery.trim();
-    router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+    if (!q) {
+      setComposerAttention(true);
+      window.setTimeout(() => setComposerAttention(false), 480);
+      composerRef.current?.focus();
+      return;
+    }
+    setIsSearching(true);
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
+
+  const startWithPrompt = (prompt: string) => {
+    setHeroQuery(prompt);
+    setActiveQuickStart(prompt);
+    window.setTimeout(() => setActiveQuickStart(null), 720);
+    requestAnimationFrame(() => composerRef.current?.focus());
   };
 
   const editorPick = filtersActive ? null : recipes[0];
   const gridRecipes = (filtersActive ? recipes : recipes.slice(1)).slice(0, 3);
 
-  const sections = [
-    { id: "hero", label: "פתיחה", dark: true },
-    { id: "categories", label: "קטגוריות", dark: true },
-    { id: "recipes", label: "האוסף", dark: true },
-    ...(editorPick ? [{ id: "weekly", label: "השבוע", dark: true }] : []),
-    { id: "why", label: "למה לשמור", dark: true },
-    { id: "join", label: "הצטרפות", dark: true },
-  ];
-
   return (
-    <div>
-      <SectionRail sections={sections} />
-
+    <div className="home-page">
       <div className="full-bleed stack-root">
-      <CinematicSection id="hero" tone="bark" layer={1}>
-        <div className="bleed-inner py-8 sm:py-10">
-          <div className="glass-stage overflow-visible">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-2 items-center px-6 py-10 sm:px-10 lg:pl-14 lg:pr-8">
-              <div className="order-2 lg:order-1">
-                <Reveal>
-                  <p className="eyebrow mb-4">ספר אחד לבית</p>
-                  <div className="flex items-start gap-4">
-                    <span className="gold-rule mt-2 hidden sm:block" />
-                    <h1 className="display-hero" style={{ color: "#1F2A26" }}>
-                      {user ? (
-                        <>מה מתבשל<br /><span style={{ color: "#D97757" }}>אצלכם היום?</span></>
-                      ) : (
-                        <>המתכונים<br /><span style={{ color: "#D97757" }}>שנשארים</span></>
-                      )}
-                    </h1>
-                  </div>
-                </Reveal>
-                <Reveal delay={120}>
-                  <p className="mt-5 text-lg sm:text-xl font-medium max-w-md leading-snug" style={{ color: "#66736D" }}>
-                    {user ? "חפשו רעיון, שמרו מתכון או בנו רשימת קניות מהירה." : "שמרו את המתכונים של הבית, מצאו אותם בדיוק כשצריך, והפכו כל מתכון לרשימת קניות מסודרת."}
-                  </p>
-                  <form onSubmit={submitHeroSearch} className="hero-search mt-6 max-w-md">
-                    <Search className="w-5 h-5 text-bark-200 shrink-0" strokeWidth={2.1} />
-                    <input
-                      value={heroQuery}
-                      onChange={(e) => setHeroQuery(e.target.value)}
-                      placeholder="חפשו עוף, עוגה, סלט..."
-                      aria-label="חיפוש מתכון"
-                    />
-                    <button type="submit">חיפוש</button>
-                  </form>
-                  <div className="flex flex-wrap items-center gap-5 mt-6 text-sm font-bold" style={{ color: "#66736D" }}>
-                    <span className="inline-flex items-center gap-2"><Users className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> קהילה מבשלת</span>
-                    <span className="inline-flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-cinnamon-300" strokeWidth={1.8} /> רשימת קניות</span>
-                  </div>
-                </Reveal>
-                <Reveal delay={220}>
-                  <div className="flex flex-wrap items-center gap-4 mt-8">
-                    <Link href={user ? "/recipe/new" : "/register"} className="btn-cream inline-flex">
-                      {user ? "שמירת מתכון" : "פותחים ספר מתכונים"}
-                    </Link>
-                    <Link href="/search" className="btn-outline">לכל המתכונים</Link>
-                    <Link href="/pro" className="btn-outline inline-flex items-center gap-2">
-                      <Sparkles className="w-4 h-4" strokeWidth={2.1} />
-                      Pro
-                    </Link>
-                  </div>
-                </Reveal>
-              </div>
-
-              <Reveal delay={80} className="order-1 lg:order-2 relative flex justify-center lg:justify-end">
-                <div className="food-orb">
-                  <Image src="/food/hero-v2.png" alt="קערת ירקות קלויים" fill className="object-cover" sizes="(max-width: 1024px) 90vw, 36rem" priority />
-                </div>
-              </Reveal>
+      <CinematicSection id="hero" tone="bark" layer={1} className="home-panel-hero">
+        <div className="bleed-inner assistant-home">
+          <Reveal className="assistant-welcome">
+            <div className="assistant-kicker">
+              <p className="eyebrow">RECIPE SPACE</p>
+              <span aria-hidden="true">01</span>
             </div>
-          </div>
+            <h1 className="display-hero assistant-title" style={{ color: "#FAF8F3" }}>
+              {user ? <>מה בא לך<br />לבשל היום?</> : <>מה נכין<br />היום?</>}
+            </h1>
+            <p className="assistant-prompt">ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.</p>
+            <form onSubmit={submitHeroSearch} className={cn("assistant-composer", composerAttention && "is-attention", isSearching && "is-searching")}>
+              <Search className="w-5 h-5 shrink-0" strokeWidth={2.1} aria-hidden="true" />
+              <input
+                ref={composerRef}
+                value={heroQuery}
+                onChange={(e) => setHeroQuery(e.target.value)}
+                placeholder="יש לי עוף, אורז ועגבניות..."
+                aria-label="מה בא לך להכין"
+              />
+              <button type="submit" disabled={isSearching} aria-label="חיפוש מתכון" title="חיפוש מתכון">
+                {isSearching ? <LoaderCircle className="w-5 h-5 animate-spin" strokeWidth={2.4} /> : <ArrowUp className="w-5 h-5" strokeWidth={2.4} />}
+              </button>
+            </form>
+            <div className={cn("assistant-thinking", isSearching && "is-visible")} role="status" aria-live="polite">
+              <span className="assistant-thinking-dots" aria-hidden="true"><i /><i /><i /></span>
+              מחפשת באוסף שלך
+            </div>
+            <div className="assistant-suggestions" aria-label="רעיונות להתחלה">
+              {QUICK_STARTS.map((prompt) => (
+                <button key={prompt} type="button" className={cn("assistant-chip", activeQuickStart === prompt && "is-selected")} onClick={() => startWithPrompt(prompt)}>
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            <div className="assistant-actions">
+              <Link href={user ? "/recipe/new" : "/register"}>
+                <Plus className="w-4 h-4" strokeWidth={2.2} />
+                {user ? "הוספת מתכון" : "פתיחת ספר מתכונים"}
+              </Link>
+              <Link href="/search">
+                <Search className="w-4 h-4" strokeWidth={2.2} />
+                חיפוש באוסף
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </CinematicSection>
 
-      <StackSentinel name="after-hero" />
-
-      <CinematicSection id="categories" tone="bark" layer={2}>
+      <CinematicSection id="categories" tone="bark" layer={2} className="home-panel-categories">
         <div className="bleed-inner pt-1 pb-6 sm:pb-8">
           <Reveal>
-            <h2 className="display-lg" style={{ color: "#1F2A26" }}>מה מבשלים<br />היום?</h2>
+            <h2 className="display-lg" style={{ color: "#FAF8F3" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
             <div className="flex items-center gap-3 mt-3 mb-5">
-              <span className="plus-badge" style={{ color: "#1F2A26" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-lg" style={{ color: "#66736D" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
+              <span className="plus-badge" style={{ color: "#FAF8F3" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+              <p className="text-lg" style={{ color: "#D5E4D7" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
             </div>
           </Reveal>
 
@@ -162,7 +157,7 @@ export default function FeedPage() {
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
-                  <div className="relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[72%] max-w-[15rem]"
+                  <div className="category-photo relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[72%] max-w-[15rem]"
                     style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
                     <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
                   </div>
@@ -180,7 +175,7 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
-      <CinematicSection id="recipes" tone="cream" layer={3}>
+      <CinematicSection id="recipes" tone="cream" layer={3} className="home-panel-recipes">
         <div className="bleed-inner py-8 sm:py-10">
           <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
@@ -231,17 +226,7 @@ export default function FeedPage() {
 
           <div className="mt-8">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="card-surface overflow-hidden">
-                    <div className="animate-pulse" style={{ aspectRatio: "4/3", background: "#E9EFEA" }} />
-                    <div className="p-4 space-y-3">
-                      <div className="h-3 w-16" style={{ background: "#E9EFEA" }} />
-                      <div className="h-5 w-3/4" style={{ background: "#E9EFEA" }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <RecipeLoading label="מחפשת מה טוב להכין" />
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
                 <ChefHat className="w-12 h-12 mx-auto text-bark-200 mb-6" strokeWidth={1.2} />
@@ -275,18 +260,18 @@ export default function FeedPage() {
       </CinematicSection>
 
       {editorPick && (
-        <CinematicSection id="weekly" tone="bark" layer={4}>
+        <CinematicSection id="weekly" tone="bark" layer={4} className="home-panel-weekly">
           <div className="bleed-inner py-10">
             <div className="glass-stage overflow-visible">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 py-10 sm:px-10">
                 <Reveal>
                   <Link href={`/recipe/${editorPick.id}`} className="relative block group mx-auto md:mx-0" style={{ width: "min(100%, 22rem)" }}>
-                    <div className="relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
+                    <div className="weekly-photo relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
                       style={{ boxShadow: "0 28px 70px rgba(0,0,0,0.45)" }}>
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="22rem" />
                       ) : (
-                        <Image src="/food/dessert-v2.png" alt="" fill className="object-cover" sizes="22rem" />
+                        <Image src="/food/dessert-home-v3.png" alt="" fill className="object-cover" sizes="22rem" />
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
@@ -298,11 +283,11 @@ export default function FeedPage() {
 
                 <Reveal delay={140}>
                   <p className="eyebrow mb-4">המתכון של השבוע</p>
-                  <h2 className="display-lg" style={{ color: "#1F2A26" }}>
+                  <h2 className="display-lg" style={{ color: "#FAF8F3" }}>
                     {editorPick.title}
                   </h2>
                   {editorPick.description && (
-                    <p className="mt-5 text-base leading-relaxed line-clamp-4" style={{ color: "#66736D" }}>
+                    <p className="mt-5 text-base leading-relaxed line-clamp-4" style={{ color: "#D5E4D7" }}>
                       {editorPick.description}
                     </p>
                   )}
@@ -316,7 +301,7 @@ export default function FeedPage() {
         </CinematicSection>
       )}
 
-      <CinematicSection id="why" tone="cream" layer={5}>
+      <CinematicSection id="why" tone="cream" layer={5} className="home-panel-why">
         <div className="bleed-inner py-12 sm:py-16">
           <Reveal>
             <h2 className="display-md text-bark-500">למה לשמור כאן?</h2>
@@ -354,29 +339,26 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
-      <StackSentinel name="before-last" />
-
-      <CinematicSection id="join" tone="bark" layer={6}>
+      <CinematicSection id="join" tone="bark" layer={6} className="home-panel-join">
         <div className="bleed-inner py-12 sm:py-16">
-          <div className="relative overflow-hidden min-h-[22rem] flex items-center justify-center text-center">
-            <ParallaxPhoto src="/food/mezze-v2.png" alt="" />
-            <div className="absolute inset-0" style={{ background: "rgba(31,42,38,0.45)" }} />
+          <div className="home-join-callout min-h-[22rem] flex items-center justify-center text-center">
             <div className="relative z-10 px-6 py-14 max-w-xl">
+              <p className="eyebrow mb-5">הספר שלך</p>
               <Reveal>
-                <h2 className="display-hero" style={{ color: "#FAF8F3" }}>
+                <h2 className="display-hero" style={{ color: "#102B22" }}>
                   יש מתכון
                   <br />
                   ששווה לשמור?
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <p className="text-xl mt-5" style={{ color: "#F4EEDF" }}>כותבים פעם אחת — והוא נשאר מסודר, ברור ומוכן לבישול הבא.</p>
+                <p className="text-xl mt-5" style={{ color: "#18382D" }}>כותבים פעם אחת — והוא נשאר מסודר, ברור ומוכן לבישול הבא.</p>
                 <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-                  <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
+                  <Link href={user ? "/recipe/new" : "/register"} className="home-join-primary">
                     {user ? "שומרים מתכון" : "פותחים ספר מתכונים"}
                   </Link>
                   {!user && (
-                    <Link href="/login" className="font-bold hover:text-cinnamon-200" style={{ color: "#FAF8F3" }}>
+                    <Link href="/login" className="font-medium hover:text-forest-500" style={{ color: "#102B22" }}>
                       כבר רשומים? כניסה
                     </Link>
                   )}
@@ -388,7 +370,6 @@ export default function FeedPage() {
       </CinematicSection>
       </div>
 
-      <JoinBar user={user} />
     </div>
   );
 }
@@ -517,14 +498,14 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
   if (hidden || atCta) return null;
 
   return (
-    <div className="hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
-      style={{ background: "rgba(250, 248, 243, 0.88)", borderTop: "1px solid rgba(31,42,38,0.12)", backdropFilter: "blur(16px)" }}>
-      <p className="font-extrabold text-lg" style={{ color: "#1F2A26" }}>המתכונים של הבית ורשימת הקניות — באותו מקום</p>
+    <div className="home-join-bar hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
+      style={{ background: "rgba(12, 24, 20, 0.94)", borderTop: "1px solid rgba(250,248,243,0.18)", backdropFilter: "blur(16px)" }}>
+      <p className="font-extrabold text-lg" style={{ color: "#FAF8F3" }}>המתכונים של הבית ורשימת הקניות — באותו מקום</p>
       <div className="flex items-center gap-4">
         <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
           {user ? "שמירת מתכון" : "פותחים ספר"}
         </Link>
-        <button onClick={() => setHidden(true)} className="text-cream-200 hover:text-cream-100" aria-label="סגירה">
+        <button onClick={() => setHidden(true)} className="text-forest-100 hover:text-cinnamon-200" aria-label="סגירה">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -537,47 +518,6 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
  *  observer never reports a zero-area target as intersecting. */
 function StackSentinel({ name }: { name: string }) {
   return <div data-sentinel={name} aria-hidden="true" style={{ height: 1 }} />;
-}
-
-function ParallaxPhoto({ src, alt }: { src: string; alt: string }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const layerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    const layer = layerRef.current;
-    if (!wrap || !layer) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const rect = wrap.getBoundingClientRect();
-      const view = window.innerHeight || 1;
-      const shift = ((rect.top + rect.height / 2 - view / 2) / view) * -64;
-      layer.style.transform = `translate3d(0, ${shift}px, 0) scale(1.2)`;
-    };
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <div ref={wrapRef} className="absolute inset-0 overflow-hidden">
-      <div ref={layerRef} className="absolute inset-[-14%]" style={{ willChange: "transform" }}>
-        <Image src={src} alt={alt} fill className="object-cover" sizes="100vw" />
-      </div>
-    </div>
-  );
 }
 
 function Reveal({
@@ -625,8 +565,8 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
     <nav
       className="section-rail hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
-        background: "#FAF8F3",
-        borderInlineStart: "1px solid rgba(31,42,38,0.12)",
+        background: "#0C1814",
+        borderInlineStart: "1px solid rgba(250,248,243,0.18)",
       }}
       aria-label="ניווט בין חלקי הדף">
       {sections.map((s, i) => {
@@ -638,7 +578,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
             <span className={cn("tabular text-[12px] font-extrabold transition-colors",
               isActive
                 ? onDark ? "text-cinnamon-200" : "text-cinnamon-500"
-                : onDark ? "text-smoke-200" : "text-bark-200")}>
+                : onDark ? "text-forest-100/70" : "text-bark-200")}>
               {String(i + 1).padStart(2, "0")}
             </span>
           </a>

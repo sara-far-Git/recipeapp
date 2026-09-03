@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
 import InstallBanner from "@/components/ui/InstallBanner";
+import NavigationFeedback from "@/components/ui/NavigationFeedback";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -98,6 +99,7 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
+          <Suspense fallback={null}><NavigationFeedback /></Suspense>
           <Suspense fallback={null}><Header /></Suspense>
           <main className="page-shell pb-24 sm:pb-8">
             {children}

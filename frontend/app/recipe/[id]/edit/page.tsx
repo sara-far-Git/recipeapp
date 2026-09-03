@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { recipesApi, uploadApi } from "@/lib/api";
+import RecipeLoading from "@/components/ui/RecipeLoading";
 import {
   Upload, Plus, Trash2, GripVertical, ArrowLeft, ArrowRight,
   Check, Loader2,
@@ -84,9 +85,7 @@ export default function EditRecipePage() {
 
   if (loading) {
   return (
-  <div className="flex items-center justify-center min-h-[60vh]">
-  <div className="w-8 h-8 animate-spin rounded-full border-4 border-surface-400 border-t-cinnamon-500" />
-  </div>
+  <RecipeLoading label="מוציאה את המתכון לעבודה" />
   );
   }
 

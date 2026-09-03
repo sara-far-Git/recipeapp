@@ -7,6 +7,7 @@ import Link from "next/link";
 import { recipesApi, shoppingApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
+import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
 import {
   Heart, Bookmark, Clock, Users, ChefHat,
@@ -109,12 +110,14 @@ export default function RecipeDetailPage() {
   if (!user) { router.push("/login"); return; }
   const { data } = await recipesApi.toggleLike(recipe.id);
   setLiked(data.liked); setLikesCount(data.likes_count);
+  showToast(data.liked ? "נוסף ללב" : "הוסר מהלב");
   };
 
   const toggleSave = async () => {
   if (!user) { router.push("/login"); return; }
   const { data } = await recipesApi.toggleSave(recipe.id);
   setSaved(data.saved);
+  showToast(data.saved ? "המתכון נשמר" : "המתכון הוסר מהשמורים");
   };
 
   const handleRate = async (score: number) => {
@@ -122,6 +125,7 @@ export default function RecipeDetailPage() {
   try {
   const { data } = await recipesApi.rate(recipe.id, score);
   setUserRating(score); setAvgRating(data.average_rating); setRatingsCount(data.ratings_count);
+  showToast("הדירוג נשמר");
   } catch {}
   };
 
@@ -170,15 +174,14 @@ export default function RecipeDetailPage() {
   try {
   const { data } = await recipesApi.addComment(recipe.id, newComment.trim());
   setComments((prev) => [data, ...prev]); setNewComment("");
+  showToast("התגובה נוספה");
   } catch {}
   setSendingComment(false);
   };
 
   if (loading) {
   return (
-  <div className="flex items-center justify-center min-h-[60vh]">
-  <div className="w-8 h-8 animate-spin rounded-full border-4 border-surface-400 border-t-cinnamon-500" />
-  </div>
+  <RecipeLoading label="פותחת את המתכון" />
   );
   }
   if (missing || !recipe) {
@@ -320,7 +323,7 @@ export default function RecipeDetailPage() {
   <div className="max-w-3xl mx-auto">
   {/* Toast */}
   {toast && (
-  <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3  bg-bark-500 text-cream-50 text-sm shadow-warm-lg animate-fade-up whitespace-nowrap">
+  <div className="recipe-toast fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-bark-500 text-cream-50 text-sm shadow-warm-lg whitespace-nowrap">
   {toast}
   </div>
   )}

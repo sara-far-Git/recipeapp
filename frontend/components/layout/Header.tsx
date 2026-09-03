@@ -6,13 +6,12 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Logo from "@/components/brand/Logo";
-import { LogIn, Menu, Plus, Search, ShoppingCart, Sparkles, User } from "lucide-react";
+import { LogIn, Menu, Plus, Search, ShoppingCart, User } from "lucide-react";
 
 const NAV_PAGES = [
   { href: "/", label: "בית" },
   { href: "/search", label: "מתכונים" },
   { href: "/#categories", label: "קטגוריות" },
-  { href: "/pro", label: "Pro" },
 ];
 
 export default function Header() {
@@ -22,6 +21,7 @@ export default function Header() {
   const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const isHome = pathname === "/";
 
   useEffect(() => {
     let raf = 0;
@@ -64,7 +64,6 @@ export default function Header() {
     { href: "/search", label: "חיפוש" },
     { href: user ? "/recipe/new" : "/login", label: "שמירת מתכון" },
     { href: user ? "/shopping" : "/login", label: "קניות" },
-    { href: "/pro", label: "Pro" },
     { href: user ? `/profile/${user.username}` : "/login", label: "פרופיל" },
   ];
   const ctaHref = user ? "/recipe/new" : "/register";
@@ -73,12 +72,14 @@ export default function Header() {
   return (
     <>
       <header
-        className="sticky top-0 z-[80]"
+        className={cn("sticky top-0 z-[80]", isHome && "home-header")}
         style={{
-          background: open || scrolled ? "rgba(250, 248, 243, 0.88)" : "rgba(250, 248, 243, 0.45)",
+          background: isHome
+            ? "rgba(12, 24, 20, 0.94)"
+            : open || scrolled ? "rgba(250, 248, 243, 0.88)" : "rgba(250, 248, 243, 0.45)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          borderBottom: `1px solid ${open || scrolled ? "rgba(31,42,38,0.12)" : "rgba(31,42,38,0.06)"}`,
+          borderBottom: `1px solid ${isHome ? "rgba(250,248,243,0.18)" : open || scrolled ? "rgba(31,42,38,0.12)" : "rgba(31,42,38,0.06)"}`,
           transition: "border-color 0.3s ease, background 0.3s ease",
         }}
       >
@@ -127,10 +128,6 @@ export default function Header() {
                 קניות
               </Link>
             )}
-            <Link href="/pro" className="site-header-action site-header-action-soft">
-              <Sparkles className="w-4 h-4" strokeWidth={2.1} />
-              Pro
-            </Link>
             <Link href={ctaHref} className="site-header-action site-header-action-primary">
               <Plus className="w-4 h-4" strokeWidth={2.4} />
               {ctaLabel}
