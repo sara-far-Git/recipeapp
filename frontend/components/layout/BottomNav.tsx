@@ -31,10 +31,10 @@ export default function BottomNav() {
   <nav
   className="bottom-nav fixed bottom-0 inset-x-0 z-50 sm:hidden"
       style={{
-        background: "rgba(250,248,243,0.88)",
+        background: "rgba(11,42,32,0.96)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
-        borderTop: "1px solid rgba(31,42,38,0.12)",
+        borderTop: "1px solid rgba(250,248,243,0.18)",
       }}>
   <div className="flex items-center justify-around h-16 px-2">
   {items.map((item) => {
@@ -75,7 +75,7 @@ export default function BottomNav() {
   href={item.href}
   className={cn(
                 "relative flex flex-col items-center gap-1 px-3 py-1.5 transition-all duration-300",
-                active ? "text-cinnamon-300" : "text-cream-200",
+                active ? "text-cinnamon-300" : "text-forest-100",
               )}>
   <item.icon
   className={cn("w-5 h-5 transition-all duration-300", active && "stroke-[2.5]")}

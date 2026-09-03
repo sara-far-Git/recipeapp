@@ -6,7 +6,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Logo from "@/components/brand/Logo";
-import { LogIn, Menu, Plus, Search, ShoppingCart, User } from "lucide-react";
+import { LogIn, Plus, Search, ShoppingCart, User } from "lucide-react";
 
 const NAV_PAGES = [
   { href: "/", label: "בית" },
@@ -91,10 +91,6 @@ export default function Header() {
               onClick={() => setOpen((v) => !v)}
             >
               <Logo transparent size={52} priority className="h-11 w-auto sm:h-[52px] shrink-0" />
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-sm font-extrabold text-bark-500">
-                <Menu className="w-4 h-4" strokeWidth={2.2} />
-                תפריט
-              </span>
             </button>
 
             <nav className="hidden lg:flex items-center gap-1" aria-label="ניווט ראשי">
