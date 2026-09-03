@@ -99,7 +99,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
             <div className="recipe-card-fallback absolute inset-0 p-4">
               <div
                 className="h-full flex flex-col justify-between p-4"
-                style={{ border: "1px solid rgba(31,42,38,0.14)" }}>
+                style={{ border: "1px solid rgba(39,94,80,0.14)" }}>
                 <div className="flex items-start justify-between gap-3">
                   <span className="eyebrow text-[11px]">{recipe.category || "מתכון"}</span>
                   <div className="w-9 h-9 text-bark-500/50">

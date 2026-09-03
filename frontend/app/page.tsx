@@ -310,12 +310,12 @@ export default function FeedPage() {
               <p className="text-bark-300 text-[15px]">כי מתכון טוב לא צריך ללכת לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.</p>
             </div>
           </Reveal>
-          <div style={{ borderTop: "1px solid rgba(31,42,38,0.14)" }}>
+          <div style={{ borderTop: "1px solid rgba(39,94,80,0.14)" }}>
             {REASONS.map((r, i) => (
               <Reveal key={r.t} delay={(i % 3) * 60}>
                 <div
                   className="row-wipe w-full text-right py-4 sm:py-5 flex items-start sm:items-center gap-5 sm:gap-8"
-                  style={{ borderBottom: "1px solid rgba(31,42,38,0.14)" }}
+                  style={{ borderBottom: "1px solid rgba(39,94,80,0.14)" }}
                 >
                   <span className="home-index home-index--reason tabular text-cinnamon-500 pt-1 sm:pt-0">
                     {String(i + 1).padStart(2, "0")}

@@ -332,14 +332,14 @@ function SearchPageContent() {
           </button>
 
           {aiSuggestions && aiSuggestions.length > 0 && (
-            <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(31,42,38,0.12)" }}>
+            <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(39,94,80,0.12)" }}>
               <p className="eyebrow mb-4">
                 <Sparkles className="w-3.5 h-3.5" />
                 הצעות
               </p>
               <div className="space-y-3">
                 {aiSuggestions.map((s: any, i: number) => (
-                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid rgba(31,42,38,0.12)" }}>
+                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid rgba(39,94,80,0.12)" }}>
                     <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
                     <p className="text-sm text-bark-300 mb-2">{s.description}</p>
                     <div className="flex gap-2 text-xs text-bark-300">

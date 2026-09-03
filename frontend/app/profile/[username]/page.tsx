@@ -268,7 +268,7 @@ function ProfilePageContent() {
 
       <div
         className="profile-stats flex items-end gap-8 mb-8 pb-4 animate-fade-up"
-        style={{ borderBottom: "1px solid rgba(31,42,38,0.12)", animationDelay: "60ms" }}
+        style={{ borderBottom: "1px solid rgba(39,94,80,0.12)", animationDelay: "60ms" }}
       >
         <Stat n={recipeCount} label="מתכונים" icon={BookOpen} />
         <Stat n={profile.followers_count} label="עוקבים" icon={Users} />
