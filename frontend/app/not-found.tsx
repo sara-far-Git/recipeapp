@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import SiteIcon from "@/components/ui/SiteIcon";
 
 export const metadata: Metadata = {
   title: "הדף לא נמצא",
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <div className="max-w-lg mx-auto text-center py-24">
-      <div className="w-20 h-20 mx-auto mb-6 text-bark-200"><SiteIcon name="missing" /></div>
       <h1 className="display-lg text-bark-500 mb-4">הדף לא נמצא</h1>
       <p className="text-bark-300 text-[15px] mb-9">
         הקישור אולי השתנה, או שהדף כבר לא קיים.

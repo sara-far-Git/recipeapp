@@ -10,14 +10,10 @@ import Button from "@/components/ui/Button";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
 import PageFrame from "@/components/ui/PageFrame";
-import {
-  Heart, Bookmark, Clock, Users, Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send,
-  ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer,
-} from "lucide-react";
+import { Heart, Bookmark, Clock, Users, Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send, ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer, ChefHat } from "lucide-react";
 
 const HIDDEN_AUTHORS = new Set(["שרי פרקש", "רבקי פרקש"]);
 import { cn } from "@/lib/utils";
-import SiteIcon, { DIFFICULTY_ICON } from "@/components/ui/SiteIcon";
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
@@ -191,7 +187,6 @@ export default function RecipeDetailPage() {
   return (
   <PageFrame tone="sage" className="recipe-experience">
   <div className="max-w-lg mx-auto text-center py-24">
-  <div className="w-20 h-20 mx-auto mb-6 text-bark-200"><SiteIcon name="missing" /></div>
   <h1 className="display-lg text-bark-500 mb-4">המתכון לא נמצא</h1>
   <p className="text-bark-300 text-[15px] mb-9">
   יכול להיות שהוא נמחק, או שהקישור לא מדויק.
@@ -478,18 +473,18 @@ export default function RecipeDetailPage() {
   <div className={cn("grid gap-3 mb-8 animate-fade-up", statsColumns)} style={{ animationDelay: "120ms" }}>
   {totalTime > 0 && (
   <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
-  <div className="w-8 h-8 mx-auto mb-1 text-bark-500"><SiteIcon name="time" /></div>
+  <Clock className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{totalTime} דק׳</div>
   <div className="text-xs text-bark-200">זמן כולל</div>
   </div>
   )}
   <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
-  <div className="w-8 h-8 mx-auto mb-1 text-bark-500"><SiteIcon name="servings" /></div>
+  <Users className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{recipe.servings}</div>
   <div className="text-xs text-bark-200">סועדים</div>
   </div>
   <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
-  <div className="w-8 h-8 mx-auto mb-1 text-bark-500"><SiteIcon name={DIFFICULTY_ICON[recipe.difficulty] || "medium"} /></div>
+  <ChefHat className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{difficultyLabels[recipe.difficulty] || "בינוני"}</div>
   <div className="text-xs text-bark-200">רמת קושי</div>
   </div>

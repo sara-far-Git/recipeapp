@@ -6,9 +6,8 @@ import { shoppingApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
-import { Trash2, Plus, Check, Loader2 } from "lucide-react";
+import { Trash2, Plus, Check, Loader2, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SiteIcon from "@/components/ui/SiteIcon";
 
 export default function ShoppingListPage() {
   const router = useRouter();
@@ -99,7 +98,7 @@ export default function ShoppingListPage() {
       <PageFrame tone="terracotta" className="shopping-experience">
       <div className="max-w-xl mx-auto text-center py-20 animate-fade-up">
         <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
-          <div className="w-12 h-12 text-bark-200"><SiteIcon name="shopping" /></div>
+          <ShoppingCart className="w-10 h-10 text-bark-200" />
         </div>
         <p className="section-title text-bark-500 mb-2">
           התחברו כדי לנהל רשימת קניות
@@ -152,7 +151,7 @@ export default function ShoppingListPage() {
       {lists.length === 0 ? (
         <div className="text-center py-20 animate-fade-up">
           <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
-            <div className="w-12 h-12 text-bark-200"><SiteIcon name="shopping" /></div>
+            <ShoppingCart className="w-10 h-10 text-bark-200" />
           </div>
           <p className="section-title text-bark-500 mb-2">אין רשימות קניות עדיין</p>
           <p className="text-bark-300 text-sm mb-6">צרו רשימה או הוסיפו מצרכים מדף מתכון</p>

@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Clock, Users } from "lucide-react";
+import { Heart, Clock, Users, Leaf, ChefHat } from "lucide-react";
 import { cn } from "@/lib/utils";
-import RecipeIcon from "@/components/ui/RecipeIcon";
 import { CATEGORIES } from "@/lib/categories";
 
 const CATEGORY_ORDER: readonly string[] = CATEGORIES.map((c) => c.name);
@@ -52,7 +51,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
     </span>
     <article className="recipe-card card-surface card-surface-hover h-full flex flex-col overflow-hidden">
       <span className="recipe-card-leaf" aria-hidden="true">
-        <RecipeIcon category={recipe.category} animated={false} compact />
+        <Leaf className="w-full h-full" strokeWidth={1.5} />
       </span>
       <Link href={`/recipe/${recipe.id}`} className="flex flex-col flex-1 min-h-0">
         <div className="relative overflow-hidden shrink-0 mx-[9px] mt-[9px] rounded-[calc(var(--r-md)-7px)]" style={{ aspectRatio: "4/3" }}>
@@ -72,7 +71,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
                 <div className="flex items-start justify-between gap-3">
                   <span className="eyebrow text-[11px]">{recipe.category || "מתכון"}</span>
                   <div className="w-9 h-9 text-bark-500/50">
-                    <RecipeIcon category={recipe.category} />
+                    <ChefHat className="w-full h-full" strokeWidth={1.2} />
                   </div>
                 </div>
                 <h3 className="card-title text-bark-500 line-clamp-3 group-hover:text-cinnamon-500 transition-colors">

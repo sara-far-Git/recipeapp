@@ -10,7 +10,6 @@ import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
 import { Loader2, Pencil, X, Camera, BookOpen, Heart, Users, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SiteIcon from "@/components/ui/SiteIcon";
 
 function ProfilePageContent() {
   const params = useParams();
@@ -302,7 +301,7 @@ function ProfilePageContent() {
       ) : (
         <div className="text-center py-16 animate-fade-up">
           <div className="w-16 h-16 mx-auto mb-4 card-surface flex items-center justify-center">
-            <div className="w-10 h-10 text-bark-200"><SiteIcon name="new" /></div>
+            <BookOpen className="w-8 h-8 text-bark-200" />
           </div>
           <p className="section-title text-bark-500 mb-2">
             {activeTab === "saved" ? "אין מתכונים שמורים עדיין" : "אין מתכונים עדיין"}

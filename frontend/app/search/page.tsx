@@ -5,10 +5,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
-import RecipeIcon from "@/components/ui/RecipeIcon";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
-import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -237,7 +236,6 @@ function SearchPageContent() {
                   : ""
               )}
             >
-              <span className="w-4 h-4 shrink-0"><RecipeIcon category={cat.name} animated={false} compact /></span>
               {cat.name}
             </button>
           ))}
@@ -467,7 +465,7 @@ function EmptyState({
 }) {
   return (
     <div className="card-surface p-8 sm:p-10 text-center animate-fade-up group">
-      <div className="w-16 h-16 mx-auto mb-4 text-bark-200"><RecipeIcon category={icon} /></div>
+      <BookOpen className="w-12 h-12 mx-auto mb-4 text-bark-200" strokeWidth={1.2} />
       <p className="section-title text-bark-500 mb-2">{title}</p>
       <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.</p>
       {onReset ? (

@@ -3,17 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { Search, Plus, User, LogIn } from "lucide-react";
-import RecipeIcon from "@/components/ui/RecipeIcon";
-import SiteIcon from "@/components/ui/SiteIcon";
-
-/* The family's own marks, in the shape the tab list expects. */
-const NavBook = ({ className }: { className?: string }) => (
-  <span className={className}><RecipeIcon animated={false} compact /></span>
-);
-const NavSaved = ({ className }: { className?: string }) => (
-  <span className={className}><SiteIcon name="saved" /></span>
-);
+import { BookOpen, Home, Search, Plus, Bookmark, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
@@ -23,17 +13,17 @@ export default function BottomNav() {
 
   const items = user
     ? [
-      { href: "/", icon: NavBook, label: "ראשי" },
+      { href: "/", icon: Home, label: "ראשי" },
       { href: "/search", icon: Search, label: "חיפוש" },
       { href: "/recipe/new", icon: Plus, label: "שמירה", special: true },
-      { href: `/profile/${user.username}?tab=saved`, icon: NavSaved, label: "שמורים" },
+      { href: `/profile/${user.username}?tab=saved`, icon: Bookmark, label: "שמורים" },
       { href: `/profile/${user.username}`, icon: User, label: "פרופיל" },
     ]
     : [
-      { href: "/", icon: NavBook, label: "ראשי" },
+      { href: "/", icon: Home, label: "ראשי" },
       { href: "/search", icon: Search, label: "חיפוש" },
       { href: "/register", icon: Plus, label: "הרשמה", special: true },
-      { href: "/#categories", icon: NavBook, label: "קטגוריות" },
+      { href: "/#categories", icon: BookOpen, label: "קטגוריות" },
       { href: "/login", icon: LogIn, label: "כניסה" },
     ];
 
