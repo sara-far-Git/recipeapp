@@ -144,29 +144,29 @@ export default function FeedPage() {
       </CinematicSection>
 
       <CinematicSection id="categories" tone="bark" index={1} enter="right" className="home-panel-categories">
-        <div className="bleed-inner pt-1 pb-6 sm:pb-8">
+        <div className="bleed-inner pt-1 pb-3 sm:pb-8">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#FAF8F3" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
-            <div className="flex items-center gap-3 mt-3 mb-5">
+            <div className="flex items-center gap-3 mt-2 sm:mt-3 mb-3 sm:mb-5">
               <span className="plus-badge" style={{ color: "#FAF8F3" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
-              <p className="text-lg" style={{ color: "#D5E4D7" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
+              <p className="text-sm sm:text-lg" style={{ color: "#D5E4D7" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
-                  <div className="category-photo relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[72%] max-w-[15rem]"
+                  <div className="category-photo relative aspect-square rounded-full overflow-hidden mb-1.5 sm:mb-3 mx-auto w-[52%] sm:w-[64%] lg:w-[72%] max-w-[5.25rem] sm:max-w-[11rem] lg:max-w-[15rem]"
                     style={{ boxShadow: "0 16px 36px rgba(12,40,31,0.35)" }}>
-                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
+                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 640px) 22vw, (max-width: 1024px) 28vw, 18rem" />
                   </div>
                   <p className="home-index home-index--category tabular" style={{ color: "#D97757" }}>
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
+                  <h3 className="text-[0.92rem] sm:text-lg lg:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
                     {cat.name}
                   </h3>
                   <p className="hidden sm:block text-[13px] text-smoke-200 mt-1 leading-snug">{cat.desc}</p>
@@ -385,6 +385,11 @@ const ENTER_FROM = {
 
 type EnterDir = keyof typeof ENTER_FROM;
 
+function stackSpan(stack: Element) {
+  const raw = Number(getComputedStyle(stack).getPropertyValue("--stack-span"));
+  return Number.isFinite(raw) && raw > 0 ? raw : 1.9;
+}
+
 function HomeStack({ count, children }: { count: number; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -401,7 +406,7 @@ function HomeStack({ count, children }: { count: number; children: React.ReactNo
       if (!el) return;
       const index = Number(el.dataset.stackIndex);
       if (!Number.isFinite(index)) return;
-      window.scrollTo({ top: index * stage.clientHeight });
+      window.scrollTo({ top: index * stage.clientHeight * stackSpan(stack) });
     };
 
     jumpHash();
@@ -488,7 +493,7 @@ function CinematicSection({
       const headerBottom = document.querySelector("header")?.getBoundingClientRect().bottom ?? 64;
       const stageH = stage.clientHeight || Math.max(1, window.innerHeight - headerBottom);
       const scrolled = Math.max(0, headerBottom - stack.getBoundingClientRect().top);
-      let p = scrolled / stageH - (index - 1);
+      let p = scrolled / (stageH * stackSpan(stack)) - (index - 1);
       p = Math.min(1, Math.max(0, p));
       if (reduce.matches) p = p >= 0.45 ? 1 : 0;
       el.style.transform = `translate3d(${fromX * (1 - p)}%, ${fromY * (1 - p)}%, 0)`;
