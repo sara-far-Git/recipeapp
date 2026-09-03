@@ -1,7 +1,7 @@
 /** Absolute origins. The browser talks to the API through the rewrite in
  *  vercel.json, but metadata and sitemaps are built on the server, where a
  *  relative path has nothing to resolve against. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://recipeapp-kohl.vercel.app").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.recipespace.co.il").replace(/\/$/, "");
 
 export const API_ORIGIN = (
   process.env.API_ORIGIN ||
