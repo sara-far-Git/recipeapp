@@ -1146,7 +1146,7 @@
       font-size: 1.7rem;
       line-height: 1.05;
     }
-    .home-page .home-panel-categories .bleed-inner { padding-block: 0.2rem 4.75rem; }
+    .home-page .home-panel-categories .bleed-inner { padding-block: 2rem 4.25rem; }
     .home-page .home-panel-categories .cat-tile {
       padding: 0.45rem 0.4rem 0.5rem !important;
     }

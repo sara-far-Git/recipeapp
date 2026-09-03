@@ -143,7 +143,7 @@ export default function FeedPage() {
       </CinematicSection>
 
       <CinematicSection id="categories" tone="bark" index={1} enter="right" className="home-panel-categories">
-        <div className="bleed-inner pt-1 pb-3 sm:pb-8">
+        <div className="bleed-inner pt-10 pb-6 sm:pt-14 sm:pb-10">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#FAF8F3" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
@@ -177,7 +177,7 @@ export default function FeedPage() {
       </CinematicSection>
 
       <CinematicSection id="recipes" tone="cream" index={2} enter="left" className="home-panel-recipes">
-        <div className="bleed-inner py-8 sm:py-10">
+        <div className="bleed-inner py-10 sm:py-14">
           <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
               <div>
