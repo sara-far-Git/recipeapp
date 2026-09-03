@@ -15,7 +15,11 @@ import { cn } from "@/lib/utils";
 export default function CategoryPage() {
   const params = useParams();
   const { user } = useAuth();
-  const name = decodeURIComponent(params.name as string);
+  // The param arrives decoded on some paths and encoded on others.
+  const raw = params.name as string;
+  const name = CATEGORIES.some((c) => c.name === raw)
+    ? raw
+    : (() => { try { return decodeURIComponent(raw); } catch { return raw; } })();
   const meta = getCategory(name);
   const others = CATEGORIES.filter((c) => c.name !== name);
 
