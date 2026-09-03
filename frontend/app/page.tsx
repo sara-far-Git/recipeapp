@@ -263,17 +263,17 @@ export default function FeedPage() {
 
       {editorPick && (
         <CinematicSection id="weekly" tone="bark" index={3} enter="bottom" className="home-panel-weekly">
-          <div className="bleed-inner py-10">
-            <div className="glass-stage overflow-visible">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 py-10 sm:px-10">
+          <div className="bleed-inner weekly-spread">
+            <div className="glass-stage">
+              <div className="weekly-spread-grid">
                 <Reveal>
-                  <Link href={`/recipe/${editorPick.id}`} className="relative block group mx-auto md:mx-0" style={{ width: "min(100%, 22rem)" }}>
+                  <Link href={`/recipe/${editorPick.id}`} className="weekly-photo-frame relative block group">
                     <div className="weekly-photo relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
                       style={{ boxShadow: "0 28px 70px rgba(12,40,31,0.45)" }}>
                       {editorPick.image_url ? (
-                        <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="22rem" />
+                        <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 70vw, 34rem" />
                       ) : (
-                        <Image src="/food/dessert-home-v3.png" alt="" fill className="object-cover" sizes="22rem" />
+                        <Image src="/food/dessert-home-v3.png" alt="" fill className="object-cover" sizes="(max-width: 768px) 70vw, 34rem" />
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"

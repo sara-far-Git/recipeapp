@@ -1034,6 +1034,56 @@
     background: rgba(11, 42, 32, 0.10);
     border-color: rgba(11, 42, 32, 0.22);
     box-shadow: none;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .home-page .home-panel-weekly .weekly-spread {
+    height: 100%;
+    max-width: none;
+    display: flex;
+    padding-block: 0.75rem;
+    padding-inline: clamp(0.7rem, 2vw, 1.5rem);
+  }
+  .home-page .home-panel-weekly .weekly-spread-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    width: 100%;
+    padding: 1.25rem 1.1rem;
+  }
+  .home-page .home-panel-weekly .weekly-photo-frame {
+    width: min(100%, 18rem);
+    margin-inline: auto;
+  }
+  @media (min-width: 768px) {
+    .home-page .home-panel-weekly .weekly-spread-grid {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 3rem;
+      padding: 1.5rem 2.5rem;
+    }
+    .home-page .home-panel-weekly .weekly-photo-frame {
+      width: min(100%, 28rem);
+      margin-inline: 0;
+    }
+  }
+  @media (min-width: 1024px) {
+    .home-page .home-panel-weekly .weekly-spread-grid {
+      gap: 4.5rem;
+      padding: 1.75rem 4rem;
+    }
+    .home-page .home-panel-weekly .weekly-photo-frame {
+      width: min(100%, 34rem);
+    }
+  }
+  @media (max-height: 760px) {
+    .home-page .home-panel-weekly .weekly-spread {
+      padding-block: 0.45rem;
+    }
+    .home-page .home-panel-weekly .weekly-spread-grid { padding-block: 0.85rem; }
+    .home-page .home-panel-weekly .weekly-photo-frame { width: min(100%, 16rem); }
   }
   .home-page .home-panel-weekly .weekly-photo { box-shadow: none !important; }
   .home-page .home-panel-weekly .eyebrow,
