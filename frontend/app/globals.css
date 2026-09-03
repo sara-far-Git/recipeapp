@@ -551,7 +551,6 @@
     display: none;
     width: 100%;
     aspect-ratio: 1 / 1.16;
-    margin-inline-end: clamp(0.5rem, 3vw, 3rem);
   }
   .writing-card:focus-visible {
     outline: 3px solid rgba(217, 119, 87, 0.5);
@@ -658,11 +657,14 @@
     text-align: center;
   }
   @media (min-width: 1100px) {
+    /* The pair is centred as one group. Left to a 1fr column the copy pinned
+       itself to one edge and the card to the other, with dead space between. */
     .assistant-home {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) clamp(18rem, 24vw, 23rem);
+      grid-template-columns: minmax(0, 46rem) clamp(17rem, 21vw, 21rem);
+      justify-content: center;
       align-items: center;
-      gap: clamp(2rem, 5vw, 4.5rem);
+      gap: clamp(1.75rem, 3.5vw, 3.25rem);
     }
     .assistant-welcome { margin-inline: 0; }
   }
