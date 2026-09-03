@@ -509,31 +509,43 @@
   .assistant-kicker .eyebrow { margin: 0; color: #D5E4D7; }
   .assistant-kicker span {
     color: #D97757;
-    font-size: 1.45rem;
-    font-weight: 800;
-    line-height: 1;
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 0.8;
   }
   .home-index {
-    display: inline-block;
-    min-width: 2.5rem;
-    font-size: 1.3rem;
-    font-weight: 900;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 4vw, 4.5rem);
+    font-weight: 700;
+    line-height: 0.72;
     letter-spacing: 0;
   }
+  .home-index--category {
+    display: grid;
+    place-items: center;
+    min-height: clamp(4rem, 7vw, 5.75rem);
+    margin-block: 0.3rem 0.9rem;
+    font-size: clamp(4.4rem, 8vw, 7.25rem);
+  }
   .home-index--reason {
-    flex: 0 0 3rem;
-    font-size: 1.45rem;
+    flex: 0 0 4.25rem;
+    justify-content: center;
+    min-height: 3.75rem;
   }
   .section-rail-link {
     display: grid;
     place-items: center;
-    width: 2.9rem;
-    min-height: 3rem;
+    width: 3.75rem;
+    min-height: 3.75rem;
   }
   .section-rail-index {
-    font-size: 1.35rem;
-    line-height: 1;
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 0.72;
   }
   .assistant-title {
     max-width: 8ch;
@@ -1456,16 +1468,15 @@
     overflow: hidden;
     min-height: clamp(10rem, 19vw, 14rem);
     padding: clamp(1.35rem, 4vw, 3rem);
-    border: 1px solid rgba(250, 248, 243, 0.24);
-    border-right: 0.35rem solid #D97757;
+    border: 0;
     background: #15382D;
     color: #FAF8F3;
   }
-  .experience-hero--shopping { background: #275E50; border-right-color: #DAB691; }
-  .experience-hero--category { background: #B75E46; border-right-color: #15382D; }
-  .experience-hero--profile { background: #275E50; border-right-color: #D97757; }
+  .experience-hero--shopping { background: #275E50; }
+  .experience-hero--category { background: #B75E46; }
+  .experience-hero--profile { background: #275E50; }
   .experience-hero--editor { background: #15382D; }
-  .experience-page--plum .experience-hero--editor { background: #523C35; border-right-color: #D97757; }
+  .experience-page--plum .experience-hero--editor { background: #523C35; }
   .experience-hero .eyebrow,
   .experience-hero .text-bark-500,
   .experience-hero .text-bark-400,
@@ -1576,10 +1587,31 @@
   .shopping-board [role="checkbox"] > span { border-color: #B7CDBB; }
 
   .profile-stats {
-    padding: 1rem 1.25rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 0 !important;
     background: rgba(39, 94, 80, 0.12);
-    border-bottom-color: rgba(21, 56, 45, 0.26) !important;
-    border-right: 0.25rem solid #B75E46;
+    border: 0 !important;
+  }
+  .profile-stat {
+    min-width: 0;
+    padding: 1rem 1.25rem 1.1rem;
+  }
+  .profile-stat + .profile-stat {
+    border-inline-start: 1px solid rgba(21, 56, 45, 0.2);
+  }
+  .profile-stat-number {
+    color: #275E50;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 4.5vw, 4rem);
+    font-weight: 700;
+    line-height: 0.75;
+  }
+  .profile-avatar {
+    clip-path: circle(50%);
+    background: #5B7D6C;
   }
   .profile-tabs { border-bottom: 1px solid rgba(21, 56, 45, 0.24); }
   .profile-experience .recipe-card-fallback { background: #D4B794; }
@@ -1623,6 +1655,38 @@
     box-shadow: 0 1rem 0 rgba(21, 56, 45, 0.12);
   }
   .recipe-detail-page .recipe-jump-nav a { background: rgba(21, 56, 45, 0.08); }
+  .recipe-ingredient-row {
+    display: grid;
+    grid-template-columns: minmax(4.75rem, 5.8rem) minmax(0, 1fr);
+    align-items: center;
+    column-gap: 1rem;
+    min-height: 5.5rem;
+  }
+  .ingredient-amount {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.35rem 0.55rem;
+    background: rgba(39, 94, 80, 0.1);
+    color: #275E50;
+    white-space: nowrap;
+  }
+  .ingredient-amount-value {
+    font-family: var(--font-display);
+    font-size: clamp(2.7rem, 5vw, 4.25rem);
+    font-weight: 700;
+    line-height: 0.7;
+    letter-spacing: 0;
+  }
+  .ingredient-amount-unit {
+    align-self: flex-end;
+    padding-bottom: 0.12rem;
+    font-size: 0.73rem;
+    font-weight: 700;
+    line-height: 1;
+  }
   .recipe-detail-page section > h2::after {
     content: "";
     display: block;
@@ -1656,6 +1720,13 @@
     .experience-page { padding: 0.75rem 0.75rem 2.25rem; }
     .experience-page::before { height: 9rem; width: 52vw; }
     .experience-hero { min-height: 0; padding: 1.35rem; }
+    .recipe-ingredient-row {
+      grid-template-columns: 4.1rem minmax(0, 1fr);
+      column-gap: 0.8rem;
+      min-height: 4.8rem;
+    }
+    .ingredient-amount { padding-inline: 0.35rem; }
+    .profile-stat { padding: 0.85rem 0.7rem 0.95rem; }
     .shopping-board { box-shadow: 0 0.8rem 0 rgba(21, 56, 45, 0.18) !important; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1865,9 +1936,6 @@
   }
   .logo-intro-veil.is-leaving { opacity: 0; }
   .logo-intro-mark {
-    animation: logo-intro-mark-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .logo-intro-mark {
     position: relative;
     width: min(98vw, 64rem);
     max-height: 88vh;
@@ -1885,27 +1953,11 @@
     transition: opacity 180ms ease;
     mix-blend-mode: screen;
   }
-  .logo-intro-wordmark {
-    position: absolute;
-    inset: 0;
+  .logo-intro-poster {
     z-index: 1;
-    display: grid;
-    place-items: center;
-    margin: 0;
-    color: #FAF8F3;
-    font-family: Arial Black, Impact, sans-serif;
-    font-size: clamp(3.2rem, 12vw, 9.5rem);
-    font-weight: 900;
-    line-height: 0.76;
-    letter-spacing: 0;
-    text-align: center;
-    transition: opacity 180ms ease;
+    padding: clamp(2.5rem, 11vw, 8rem);
   }
   .logo-intro-video { z-index: 2; }
-  @keyframes logo-intro-mark-in {
-    from { opacity: 0; transform: scale(0.94); }
-    to { opacity: 1; transform: scale(1); }
-  }
   .logo-intro-cue {
     position: absolute;
     bottom: max(1.6rem, calc(env(safe-area-inset-bottom) + 0.9rem));
@@ -1949,10 +2001,6 @@
     opacity: 0;
     pointer-events: none;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .logo-intro-mark { animation: none; }
-  }
-
 }
 
 @layer utilities {

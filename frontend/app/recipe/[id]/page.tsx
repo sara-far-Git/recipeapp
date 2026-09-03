@@ -534,10 +534,10 @@ export default function RecipeDetailPage() {
   </div>
   <div className="card-surface divide-y divide-surface-300">
   {scaledIngredients.map((ing: any, i: number) => (
-  <div key={i} className="flex items-center gap-3 px-5 py-3.5">
-  <span className="w-2 h-2 rounded-full bg-cinnamon-500 flex-shrink-0" />
-  <span className="font-semibold text-cinnamon-500 min-w-[5rem] text-sm">
-  {ing.amount} {ing.unit || ""}
+  <div key={i} className="recipe-ingredient-row px-5 py-3">
+  <span className="ingredient-amount" dir="ltr">
+  <span className="ingredient-amount-value">{ing.amount}</span>
+  {ing.unit && <span className="ingredient-amount-unit">{ing.unit}</span>}
   </span>
   <span className="text-bark-400 text-sm">{ing.name}</span>
   </div>

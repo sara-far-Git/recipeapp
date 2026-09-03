@@ -212,13 +212,12 @@ function ProfilePageContent() {
             <img
               src={profile.avatar_url}
               alt={`תמונת הפרופיל של ${profile.full_name || profile.username}`}
-              className="w-16 h-16 sm:w-20 sm:h-20 object-cover shrink-0"
-              style={{ border: "1px solid rgba(31,42,38,0.12)" }}
+              className="profile-avatar w-16 h-16 sm:w-20 sm:h-20 object-cover shrink-0"
             />
           ) : (
             <div
-              className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center"
-              style={{ background: "#3a2618" }}
+              className="profile-avatar w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center"
+              style={{ background: "#5B7D6C" }}
             >
               <span className="text-3xl font-extrabold text-surface-50">
                 {(profile.full_name || username)[0].toUpperCase()}
@@ -334,12 +333,12 @@ function ProfilePageContent() {
 
 function Stat({ n, label, icon: Icon }: { n: number; label: string; icon: typeof BookOpen }) {
   return (
-    <div>
+    <div className="profile-stat">
       <p className="flex items-center gap-1.5 text-[13px] text-bark-200 mb-0.5">
         <Icon className="w-3.5 h-3.5 text-cinnamon-500" strokeWidth={1.8} />
         {label}
       </p>
-      <p className="text-2xl font-extrabold text-bark-500 leading-none" style={{ letterSpacing: 0 }}>
+      <p className="profile-stat-number" style={{ letterSpacing: 0 }}>
         {n}
       </p>
     </div>

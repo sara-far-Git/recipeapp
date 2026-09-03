@@ -8,6 +8,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
 import InstallBanner from "@/components/ui/InstallBanner";
 import NavigationFeedback from "@/components/ui/NavigationFeedback";
+import LogoIntro from "@/components/brand/LogoIntro";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -19,6 +20,10 @@ export const metadata: Metadata = {
   description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
   applicationName: "ספר המתכונים",
   manifest: "/manifest.json",
+  icons: {
+    icon: [{ url: "/icon-512.png?v=2", type: "image/png", sizes: "512x512" }],
+    apple: [{ url: "/icon-192.png?v=2", type: "image/png", sizes: "192x192" }],
+  },
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
@@ -27,13 +32,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: "ספר המתכונים — המתכונים שנשארים",
     description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
-    images: [{ url: "/icon-512", width: 512, height: 512, alt: "ספר המתכונים" }],
+    images: [{ url: "/icon-512.png?v=2", width: 512, height: 512, alt: "ספר המתכונים" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ספר המתכונים",
     description: "שומרים מתכונים של הבית, ובונים רשימת קניות מהם.",
-    images: ["/icon-512"],
+    images: ["/icon-512.png?v=2"],
   },
   appleWebApp: {
     capable: true,
@@ -99,6 +104,7 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
+          <LogoIntro />
           <Suspense fallback={null}><NavigationFeedback /></Suspense>
           <Suspense fallback={null}><Header /></Suspense>
           <main className="page-shell pb-24 sm:pb-8">

@@ -161,7 +161,7 @@ export default function FeedPage() {
                     style={{ boxShadow: "0 16px 36px rgba(12,40,31,0.35)" }}>
                     <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
                   </div>
-                  <p className="home-index tabular mb-2" style={{ color: "#D97757" }}>
+                  <p className="home-index home-index--category tabular" style={{ color: "#D97757" }}>
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <h3 className="text-lg sm:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">

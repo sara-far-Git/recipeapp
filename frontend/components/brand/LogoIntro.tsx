@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v14";
+const KEY = "logo-intro-v15";
 const EXIT_DURATION_MS = 420;
 const MAX_INTRO_DURATION_MS = 4600;
 
@@ -30,7 +30,8 @@ export default function LogoIntro() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const localPreview = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    if (localPreview || reduced || window.scrollY > 48 || sessionStorage.getItem(KEY) === "1") {
+    const forcePreview = new URLSearchParams(window.location.search).has("intro");
+    if ((!forcePreview && localPreview) || reduced || window.scrollY > 48 || (!forcePreview && sessionStorage.getItem(KEY) === "1")) {
       unlock();
       setGone(true);
       return;
@@ -73,9 +74,12 @@ export default function LogoIntro() {
       aria-hidden="true"
     >
       <div className="logo-intro-mark">
-        <p className="logo-intro-wordmark" style={{ opacity: videoReady ? 0 : 1 }}>
-          RECIPE<br />SPACE
-        </p>
+        <img
+          className="logo-intro-poster"
+          src="/logo-transparent.png"
+          alt=""
+          style={{ opacity: videoReady ? 0 : 1 }}
+        />
         <video
           className="logo-intro-video"
           src={src || "/logo-intro.webm"}
