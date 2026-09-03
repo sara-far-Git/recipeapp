@@ -65,3 +65,7 @@ Thumbs.db
 .env.*
 !.env.example
 secrets/
+
+# Local tooling, not part of the app
+.claude/
+.tmp-pil/
