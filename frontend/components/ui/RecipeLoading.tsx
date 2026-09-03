@@ -27,12 +27,11 @@ export default function RecipeLoading({
       aria-live="polite"
       aria-busy="true"
     >
-      <span className="recipe-loader-pot" aria-hidden="true">
-        <span className="recipe-loader-steam"><i /><i /><i /></span>
-        <span className="recipe-loader-lid" />
-        <span className="recipe-loader-pan">
-          <span className="recipe-loader-pops"><i /><i /><i /></span>
-        </span>
+      {/* the site's own mark, working: a card lifts out of the box and drops
+          back, over and over, while the writing on it flickers past */}
+      <span className="recipe-loader-box" aria-hidden="true">
+        <span className="recipe-loader-card"><i /><i /></span>
+        <span className="recipe-loader-front" />
       </span>
       <div className="recipe-loader-copy">
         <p>{label}</p>
