@@ -889,25 +889,28 @@
   .home-join-primary:active { transform: translateY(1px); }
 
   .home-header .text-bark-500,
-  .home-header .site-header-link { color: #FAF8F3; }
+  .home-header .site-header-link { color: #D5E4D7; }
   .home-header .site-header-link:hover,
   .home-header .site-header-link.is-active {
-    background: rgba(250, 248, 243, 0.12);
+    background: transparent;
     color: #FAF8F3;
   }
-  .home-header .site-header-action-soft,
-  .home-header .site-header-icon-action {
-    background: rgba(250, 248, 243, 0.12);
-    border-color: rgba(250, 248, 243, 0.22);
+  .home-header .site-header-link.is-active { border-color: #D97757; }
+  .home-header .site-header-utility,
+  .home-header .site-header-login,
+  .home-header .site-header-profile {
+    background: transparent;
+    border-color: transparent;
+    color: #D5E4D7;
+  }
+  .home-header .site-header-utility:hover,
+  .home-header .site-header-login:hover,
+  .home-header .site-header-profile:hover {
+    background: rgba(250, 248, 243, 0.08);
     color: #FAF8F3;
   }
-  .home-header .site-header-action-soft:hover,
-  .home-header .site-header-icon-action:hover {
-    background: rgba(250, 248, 243, 0.20);
-    color: #FAF8F3;
-  }
-  .home-header .site-header-action-primary,
-  .home-header .site-header-action-primary:hover {
+  .home-header .site-header-cta,
+  .home-header .site-header-cta:hover {
     background: #D97757;
     border-color: #D97757;
     color: #FAF8F3;
@@ -1302,62 +1305,64 @@
     cursor: pointer;
   }
   .site-header-link {
-    min-height: 40px;
+    min-height: 64px;
     display: inline-flex;
     align-items: center;
-    padding-inline: 0.95rem;
-    border-radius: 999px;
+    padding-inline: 0.75rem;
+    border-bottom: 2px solid transparent;
     color: #3D4A45;
     font-size: 0.9rem;
-    font-weight: 800;
-    transition: background 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    transition: border-color 0.2s ease, color 0.2s ease;
   }
   .site-header-link:hover,
   .site-header-link.is-active {
-    background: rgba(47, 107, 93, 0.10);
+    background: transparent;
     color: #1E4D45;
   }
-  .site-header-action,
-  .site-header-icon-action {
+  .site-header-utility,
+  .site-header-login,
+  .site-header-cta,
+  .site-header-profile {
     min-height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
-    border-radius: 999px;
     font-size: 0.88rem;
-    font-weight: 800;
+    font-weight: 500;
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
   }
-  .site-header-action {
-    padding-inline: 1rem;
-    border: 1px solid rgba(31, 42, 38, 0.12);
+  .site-header-utility,
+  .site-header-login {
+    padding-inline: 0.45rem;
   }
-  .site-header-action-soft {
-    background: rgba(255, 252, 248, 0.72);
-    color: #3D4A45;
-  }
-  .site-header-action-soft:hover {
-    background: #E9EFEA;
+  .site-header-utility:hover,
+  .site-header-login:hover {
+    background: rgba(47, 107, 93, 0.10);
     color: #1E4D45;
   }
-  .site-header-action-primary {
+  .site-header-cta {
+    padding-inline: 1rem;
     background: #2F6B5D;
-    border-color: #2F6B5D;
+    border: 1px solid #2F6B5D;
     color: #FAF8F3;
   }
-  .site-header-action-primary:hover {
+  .site-header-cta:hover {
     background: #27594E;
     border-color: #27594E;
+    color: #FAF8F3;
   }
-  .site-header-icon-action {
+  .site-header-profile {
     width: 42px;
-    border: 1px solid rgba(31, 42, 38, 0.12);
-    background: rgba(255, 252, 248, 0.72);
+    border: 1px solid transparent;
+    background: transparent;
     color: #3D4A45;
   }
-  .site-header-action:active,
-  .site-header-icon-action:active {
+  .site-header-utility:active,
+  .site-header-login:active,
+  .site-header-cta:active,
+  .site-header-profile:active {
     transform: scale(0.97);
   }
   .logo-trigger.is-open {

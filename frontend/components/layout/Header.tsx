@@ -21,7 +21,6 @@ export default function Header() {
   const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const isHome = pathname === "/";
 
   useEffect(() => {
     let raf = 0;
@@ -72,14 +71,12 @@ export default function Header() {
   return (
     <>
       <header
-        className={cn("sticky top-0 z-[80]", isHome && "home-header")}
+        className="sticky top-0 z-[80] home-header"
         style={{
-          background: isHome
-            ? "rgba(12, 24, 20, 0.94)"
-            : open || scrolled ? "rgba(250, 248, 243, 0.88)" : "rgba(250, 248, 243, 0.45)",
+          background: open || scrolled ? "rgba(11, 42, 32, 0.98)" : "rgba(11, 42, 32, 0.94)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          borderBottom: `1px solid ${isHome ? "rgba(250,248,243,0.18)" : open || scrolled ? "rgba(31,42,38,0.12)" : "rgba(31,42,38,0.06)"}`,
+          borderBottom: "1px solid rgba(250,248,243,0.18)",
           transition: "border-color 0.3s ease, background 0.3s ease",
         }}
       >
@@ -93,7 +90,7 @@ export default function Header() {
               aria-label={open ? "סגירת התפריט" : "פתיחת התפריט"}
               onClick={() => setOpen((v) => !v)}
             >
-              <Logo solid size={52} priority className="h-11 w-11 sm:h-[52px] sm:w-[52px] shrink-0" />
+              <Logo transparent size={52} priority className="h-11 w-auto sm:h-[52px] shrink-0" />
               <span className="hidden sm:inline-flex items-center gap-1.5 text-sm font-extrabold text-bark-500">
                 <Menu className="w-4 h-4" strokeWidth={2.2} />
                 תפריט
@@ -117,38 +114,39 @@ export default function Header() {
             </nav>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0">
-            <Link href="/search" className="site-header-action site-header-action-soft">
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            <Link href="/search" className="site-header-utility" title="חיפוש">
               <Search className="w-4 h-4" strokeWidth={2.1} />
               חיפוש
             </Link>
             {user && (
-              <Link href="/shopping" className="site-header-action site-header-action-soft">
+              <Link href="/shopping" className="site-header-utility" title="רשימת קניות">
                 <ShoppingCart className="w-4 h-4" strokeWidth={2.1} />
                 קניות
               </Link>
             )}
-            <Link href={ctaHref} className="site-header-action site-header-action-primary">
+            <Link href={ctaHref} className="site-header-cta">
               <Plus className="w-4 h-4" strokeWidth={2.4} />
               {ctaLabel}
             </Link>
             {user ? (
               <Link
                 href={`/profile/${user.username}`}
-                className="site-header-icon-action"
+                className="site-header-profile"
                 aria-label="פרופיל"
+                title="פרופיל"
               >
                 <User className="w-4 h-4" strokeWidth={2.1} />
               </Link>
             ) : (
-              <Link href="/login" className="site-header-action site-header-action-soft">
+              <Link href="/login" className="site-header-login">
                 <LogIn className="w-4 h-4" strokeWidth={2.1} />
                 כניסה
               </Link>
             )}
           </div>
 
-          <Link href="/search" className="md:hidden site-header-icon-action" aria-label="חיפוש">
+          <Link href="/search" className="md:hidden site-header-profile" aria-label="חיפוש" title="חיפוש">
             <Search className="w-5 h-5" strokeWidth={2.2} />
           </Link>
         </div>
@@ -163,7 +161,7 @@ export default function Header() {
         <div className="logo-menu-bg" aria-hidden="true" />
         <nav className="logo-menu-copy max-w-6xl mx-auto w-full" aria-label="תפריט האתר">
           <div className="logo-menu-brand">
-            <Logo size={420} className="w-[min(78vw,26rem)] h-auto" />
+            <Logo transparent size={420} className="w-[min(78vw,26rem)] h-auto" />
           </div>
           {NAV_PAGES.map((link, i) => (
             <Link
