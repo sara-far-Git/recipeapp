@@ -530,6 +530,236 @@
     color: #12352A;
   }
 
+  /* ─── Hero: the recipe box ────────────────────────────────
+     Built to the reference: two tabbed cards standing behind, a cream card
+     leaning out in front with RECIPE over a leaf flourish and dotted rules,
+     and the ceramic box drawn over their feet. Still until the pointer
+     arrives — then the front card writes itself, one recipe per pass. */
+  .writing-card {
+    position: relative;
+    display: none;
+    width: 100%;
+    aspect-ratio: 1 / 1.04;
+    margin-inline-end: clamp(0.5rem, 3vw, 3rem);
+  }
+  .writing-card:focus-visible { outline: 3px solid rgba(217, 119, 87, 0.5); outline-offset: 8px; border-radius: 1rem; }
+  @media (min-width: 1100px) { .writing-card { display: block; } }
+
+  .writing-card__filed {
+    position: absolute;
+    inset-inline: 11%;
+    top: 6%;
+    height: 62%;
+    border-radius: 0.65rem;
+    box-shadow: 0 10px 26px -16px rgba(6, 24, 18, 0.7);
+  }
+  .writing-card__filed-tab {
+    position: absolute;
+    top: -1.15rem;
+    inset-inline-start: 1.2rem;
+    height: 1.5rem;
+    padding: 0 0.7rem 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.4rem 0.4rem 0 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+  .writing-card__filed--back {
+    background: #1E4D45;
+    transform: translate(-4%, -3%) rotate(-2.6deg);
+  }
+  .writing-card__filed--back .writing-card__filed-tab { background: #1E4D45; color: #E9EFEA; }
+  .writing-card__filed--mid {
+    background: #9FB6A4;
+    transform: translate(-1%, 2%) rotate(-1deg);
+  }
+  .writing-card__filed--mid .writing-card__filed-tab { background: #9FB6A4; color: #1E4D45; }
+
+  .writing-card__sheet {
+    position: absolute;
+    z-index: 2;
+    inset-inline: 2%;
+    top: 14%;
+    bottom: 18%;
+    padding: 1.35rem 1.25rem 1.2rem;
+    border-radius: 0.8rem;
+    background: linear-gradient(#FCFAF6, #F6F1E6);
+    box-shadow: 0 16px 34px -18px rgba(6, 24, 18, 0.7);
+    transform: rotate(1.6deg);
+    transform-origin: 50% 90%;
+  }
+  .writing-card.is-writing .writing-card__sheet {
+    animation: wc-draw 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes wc-draw {
+    from { transform: rotate(1.6deg) translateY(16%); opacity: 0; }
+    to   { transform: rotate(1.6deg); opacity: 1; }
+  }
+
+  .writing-card__tab {
+    position: absolute;
+    top: -1.2rem;
+    inset-inline-start: 1.3rem;
+    height: 1.65rem;
+    padding: 0 0.8rem 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.42rem 0.42rem 0 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .writing-card.is-writing .writing-card__tab {
+    animation: wc-tab 560ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
+  }
+  @keyframes wc-tab {
+    from { transform: translateY(0.8rem); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .writing-card__eyebrow {
+    margin: 0;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-indent: 0.26em;
+    color: #275E50;
+  }
+  .writing-card__flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin: 0.5rem auto 1.1rem;
+  }
+  .writing-card__flourish i { width: 1.5rem; height: 1px; background: #D97757; }
+  .writing-card__flourish b {
+    width: 0.9rem;
+    height: 0.9rem;
+    background: no-repeat center / contain
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232F6B5D' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 58V30'/%3E%3Cpath d='M32 30c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 38c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3C/svg%3E");
+  }
+  .writing-card.is-writing .writing-card__eyebrow { animation: wc-fade 480ms ease-out 300ms both; }
+  .writing-card.is-writing .writing-card__flourish { animation: wc-fade 480ms ease-out 380ms both; }
+
+  .writing-card__line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px dotted rgba(39, 94, 80, 0.4);
+  }
+  .writing-card__line--last { margin-bottom: 0; }
+  .writing-card__label {
+    flex-shrink: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: #66736D;
+  }
+  .writing-card__written {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #275E50;
+  }
+  .writing-card__written--title { font-size: 1rem; color: #1E4D45; }
+  .writing-card.is-writing .writing-card__written {
+    animation: wc-write 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .writing-card.is-writing .writing-card__written--title { animation-delay: 520ms; }
+  .writing-card.is-writing .writing-card__line--last .writing-card__written { animation-delay: 860ms; }
+  @keyframes wc-write {
+    from { clip-path: inset(0 0 0 100%); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  .writing-card__leaf {
+    position: absolute;
+    inset-block-start: 34%;
+    inset-inline-end: 0.9rem;
+    width: 34%;
+    height: 46%;
+    background: no-repeat center / contain
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='%238FA894' opacity='0.55'%3E%3Cpath d='M31 60h2V26h-2z'/%3E%3Cpath d='M33 30c0-14 12-22 22-22-2 13-10 22-22 22z'/%3E%3Cpath d='M31 38c0-12-12-19-21-17 2 10 10 17 21 17z'/%3E%3Cpath d='M33 44c0-10 8-16 16-16-2 8-7 14-16 16z'/%3E%3C/svg%3E");
+  }
+  .writing-card.is-writing .writing-card__leaf { animation: wc-fade 560ms ease-out 820ms both; }
+
+  .writing-card__box {
+    position: absolute;
+    z-index: 3;
+    inset-inline: 0;
+    bottom: 0;
+    height: 30%;
+    border-radius: 0.5rem 0.5rem 1.3rem 1.3rem;
+    background: linear-gradient(#F7F2E8 0%, #F0E8D8 55%, #E6DAC3 100%);
+    box-shadow: 0 26px 52px -22px rgba(6, 24, 18, 0.85),
+                inset 0 2px 0 rgba(255, 255, 255, 0.7);
+  }
+  .writing-card__box::before {
+    content: "";
+    position: absolute;
+    inset: 6px 12px auto;
+    height: 1.5px;
+    border-radius: 2px;
+    background: #D97757;
+    opacity: 0.85;
+  }
+  .writing-card__box::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 16%;
+    height: 46%;
+    background: no-repeat center / contain
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%238FA894' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 56V30'/%3E%3Cpath d='M32 30c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 38c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3Ccircle cx='45' cy='24' r='2.4' fill='%23D97757' stroke='none'/%3E%3C/svg%3E");
+  }
+
+  @keyframes wc-fade { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .writing-card .writing-card__sheet,
+    .writing-card .writing-card__tab,
+    .writing-card .writing-card__eyebrow,
+    .writing-card .writing-card__flourish,
+    .writing-card .writing-card__written,
+    .writing-card .writing-card__leaf { animation: none; clip-path: none; opacity: 1; }
+  }
+
+  /* ─── Footer — the page closes in the same forest it opens in ─
+     It used to sit on near-white, which read as a bright slab under a warm
+     page. Same green as the header, so the site is bookended. */
+  .site-footer {
+    background: #0B2A20;
+    border-top: 1px solid rgba(250, 248, 243, 0.10);
+    color: #D5E4D7;
+  }
+  .site-footer__blurb { color: #B7CDBB; }
+  .site-footer__link {
+    color: #D5E4D7;
+    transition: color 0.2s ease;
+  }
+  .site-footer__link:hover { color: #E4A184; }
+  .site-footer__fine { color: rgba(213, 228, 215, 0.6); }
+  /* the cream button reads as the light thing on a dark ground */
+  .site-footer .btn-cream {
+    background: #FAF8F3;
+    border-color: #FAF8F3;
+    color: #12352A;
+  }
+  .site-footer .btn-cream:hover {
+    background: #E4A184;
+    border-color: #E4A184;
+    color: #12352A;
+  }
+
   /* ─── Hero: the card that writes itself ───────────────────
      A card rises from the box, the tab slides up, the rules draw left to
      right, and the writing lands on them in turn. Everything is keyframes off

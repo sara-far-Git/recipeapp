@@ -99,10 +99,6 @@ export default function FeedPage() {
       <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
-            <div className="assistant-kicker">
-              <p className="eyebrow">RECIPE SPACE</p>
-              <span aria-hidden="true">01</span>
-            </div>
             <h1 className="display-hero assistant-title" style={{ color: "#FAF8F3" }}>
               {user ? <>מה בא לך<br />לבשל היום?</> : <>מה נכין<br />היום?</>}
             </h1>

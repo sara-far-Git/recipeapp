@@ -1,18 +1,15 @@
 "use client";
 
 /**
- * The hero's moving mark: an index card that writes itself.
+ * The hero's mark: the recipe box from the reference, built in CSS.
  *
- * A card rises out of the box, its tab slides up with the category, the ruled
- * lines draw left to right, and the recipe's name and facts land on them one
- * after another — the site's own object doing the thing the site is for. Then
- * it settles back and the next recipe starts.
- *
- * Real recipes when the page has them, three stand-ins before they arrive.
- * The whole cycle is CSS keyframes driven off a React index, so nothing
- * animates per frame in JS; reduced-motion holds the first card still.
+ * Two tabbed cards stand behind — one forest, one sage — and a cream card
+ * leans out in front, tilted, with RECIPE set above a leaf flourish and the
+ * TITLE and SERVES lines ruled in dots. It rests still until the pointer
+ * arrives; then the card writes itself, and every pass after that brings the
+ * next recipe. Real recipes when the page has them, stand-ins before.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Sample = { title: string; category: string; serves: number; minutes: number };
 
@@ -22,22 +19,17 @@ const FALLBACK: Sample[] = [
   { title: "לחם כפרי בסיר", category: "מאפים", serves: 8, minutes: 80 },
 ];
 
-/** Tab tone per category — the same six the recipe cards use. */
-const TONE: Record<string, string> = {
-  ראשונות: "#1E4D45",
-  עיקריות: "#2F6B5D",
-  מאפים: "#E9EFEA",
-  קינוחים: "#D97757",
-  סלטים: "#F4EEDF",
-  משקאות: "#C19A52",
-};
-const INK: Record<string, string> = {
-  מאפים: "#1E4D45",
-  סלטים: "#275E50",
-  משקאות: "#23331F",
+/** Tab tone per category — the six the recipe cards already use. */
+const TONE: Record<string, { bg: string; fg: string }> = {
+  ראשונות: { bg: "#1E4D45", fg: "#FAF8F3" },
+  עיקריות: { bg: "#2F6B5D", fg: "#FAF8F3" },
+  מאפים: { bg: "#E9EFEA", fg: "#1E4D45" },
+  קינוחים: { bg: "#D97757", fg: "#FAF8F3" },
+  סלטים: { bg: "#F4EEDF", fg: "#275E50" },
+  משקאות: { bg: "#C19A52", fg: "#23331F" },
 };
 
-const STEP_MS = 4200;
+const STEP_MS = 3800;
 
 export default function WritingCard({ recipes }: { recipes?: any[] }) {
   const cards: Sample[] =
@@ -51,53 +43,85 @@ export default function WritingCard({ recipes }: { recipes?: any[] }) {
       : FALLBACK;
 
   const [i, setI] = useState(0);
+  const [writing, setWriting] = useState(false);
+  const timer = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (cards.length < 2) return;
+  const stop = () => {
+    if (timer.current !== null) {
+      window.clearInterval(timer.current);
+      timer.current = null;
+    }
+  };
+
+  /** Nothing moves until the pointer arrives. */
+  const start = () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setInterval(() => setI((n) => (n + 1) % cards.length), STEP_MS);
-    return () => window.clearInterval(t);
-  }, [cards.length]);
+    setWriting(true);
+    setI((n) => (n + 1) % cards.length);
+    stop();
+    if (cards.length > 1) {
+      timer.current = window.setInterval(
+        () => setI((n) => (n + 1) % cards.length),
+        STEP_MS,
+      );
+    }
+  };
+
+  useEffect(() => stop, []);
 
   const card = cards[i];
-  const tone = TONE[card.category] ?? "#2F6B5D";
-  const ink = INK[card.category] ?? "#FAF8F3";
+  const tone = TONE[card.category] ?? { bg: "#2F6B5D", fg: "#FAF8F3" };
 
   return (
-    <div className="writing-card" aria-hidden="true">
-      {/* the box the card is drawn from */}
-      <span className="writing-card__box" />
+    <div
+      className={`writing-card${writing ? " is-writing" : ""}`}
+      onMouseEnter={start}
+      onMouseLeave={stop}
+      onFocus={start}
+      onBlur={stop}
+      tabIndex={0}
+      role="img"
+      aria-label={`כרטיס מתכון: ${card.title}`}>
+      {/* the two cards standing behind, showing only their tabs */}
+      <span className="writing-card__filed writing-card__filed--back">
+        <span className="writing-card__filed-tab">DESSERTS</span>
+      </span>
+      <span className="writing-card__filed writing-card__filed--mid">
+        <span className="writing-card__filed-tab">MAINS</span>
+      </span>
 
-      {/* two cards still in the box */}
-      <span className="writing-card__behind writing-card__behind--2" />
-      <span className="writing-card__behind writing-card__behind--1" />
-
-      {/* the card being written — keyed so every cycle replays the animation */}
+      {/* the card in front, leaning out — keyed so each pass replays */}
       <article className="writing-card__sheet" key={i}>
-        <span className="writing-card__tab" style={{ background: tone, color: ink }}>
+        <span
+          className="writing-card__tab"
+          style={{ background: tone.bg, color: tone.fg }}>
           {card.category}
         </span>
 
         <p className="writing-card__eyebrow">RECIPE</p>
-        <span className="writing-card__flourish" />
+        <span className="writing-card__flourish" aria-hidden="true">
+          <i /><b /><i />
+        </span>
 
-        <div className="writing-card__line writing-card__line--title">
+        <div className="writing-card__line">
           <span className="writing-card__label">TITLE</span>
-          <span className="writing-card__rule" />
-          <span className="writing-card__written">{card.title}</span>
+          <span className="writing-card__written writing-card__written--title">
+            {card.title}
+          </span>
         </div>
-
-        <div className="writing-card__line writing-card__line--serves">
+        <div className="writing-card__line writing-card__line--last">
           <span className="writing-card__label">SERVES</span>
-          <span className="writing-card__rule" />
           <span className="writing-card__written">
             {card.serves}
             {card.minutes > 0 && ` · ${card.minutes} דק׳`}
           </span>
         </div>
 
-        <span className="writing-card__leaf" />
+        <span className="writing-card__leaf" aria-hidden="true" />
       </article>
+
+      {/* the ceramic box, drawn in front so the cards sit inside it */}
+      <span className="writing-card__box" aria-hidden="true" />
     </div>
   );
 }
