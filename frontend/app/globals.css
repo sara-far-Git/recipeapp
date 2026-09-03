@@ -1643,7 +1643,6 @@
     background: rgba(250, 248, 243, 0.82);
     color: #275E50;
   }
-  .home-page .home-panel-recipes .recipe-card-fallback { background: #234B3E; }
   .home-page .home-panel-recipes .recipe-card-draft,
   .home-page .home-panel-recipes .recipe-card-time {
     background: rgba(7, 29, 22, 0.84);
@@ -2504,6 +2503,7 @@
      cream stock, a hairline gold rule just inside the edge, a sage leaf
      watermark, and ruled label lines for the facts. Two fainter cards sit
      behind and lift in a stagger on hover, as if drawn from the stack. */
+  .recipe-card-shell.has-no-tab { padding-top: 0; }
   .recipe-card-shell {
     position: relative;
     isolation: isolate;
@@ -2512,7 +2512,7 @@
     --tab-h: 1.55rem;
     --card-stock: #FAF8F3;
     --card-rule: rgba(39, 94, 80, 0.14);
-    --card-gold: rgba(193, 154, 82, 0.55);
+    --card-rim: rgba(217, 119, 87, 0.5);
   }
   /* the two cards still in the box behind this one */
   .recipe-card-shell::before,
@@ -2551,7 +2551,7 @@
     inset: 5px;
     z-index: 2;
     border-radius: calc(var(--r-md) - 4px);
-    border: 1px solid var(--card-gold);
+    border: 1px solid var(--card-rim);
     pointer-events: none;
   }
   .recipe-card-shell:hover > .recipe-card { transform: none; }
@@ -2585,7 +2585,7 @@
   .tab-3 { --tab-bg: #E9EFEA; --tab-fg: #1E4D45; }
   .tab-4 { --tab-bg: #D97757; --tab-fg: #FAF8F3; }
   .tab-5 { --tab-bg: #F4EEDF; --tab-fg: #275E50; }
-  .tab-6 { --tab-bg: #C19A52; --tab-fg: #23331F; }
+  .tab-6 { --tab-bg: #9FB6A4; --tab-fg: #12352A; }
 
   /* the leaf printed on the card, well under the text */
   .recipe-card-leaf {

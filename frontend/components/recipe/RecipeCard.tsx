@@ -45,10 +45,12 @@ function RecipeCard({ recipe }: RecipeCardProps) {
   const isDraft = recipe.is_published === false;
 
   return (
-    <div className="recipe-card-shell group">
-    <span className={cn("recipe-card-tab", tabTone)} aria-hidden="true">
-      {recipe.category || "מתכון"}
-    </span>
+    <div className={cn("recipe-card-shell group", !recipe.category && "has-no-tab")}>
+    {recipe.category && (
+      <span className={cn("recipe-card-tab", tabTone)} aria-hidden="true">
+        {recipe.category}
+      </span>
+    )}
     <article className="recipe-card card-surface card-surface-hover h-full flex flex-col overflow-hidden">
       <span className="recipe-card-leaf" aria-hidden="true">
         <Leaf className="w-full h-full" strokeWidth={1.5} />
