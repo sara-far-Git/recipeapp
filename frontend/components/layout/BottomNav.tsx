@@ -3,7 +3,17 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { BookOpen, Home, Search, Plus, Bookmark, User, LogIn } from "lucide-react";
+import { Search, Plus, User, LogIn } from "lucide-react";
+import RecipeIcon from "@/components/ui/RecipeIcon";
+import SiteIcon from "@/components/ui/SiteIcon";
+
+/* The family's own marks, in the shape the tab list expects. */
+const NavBook = ({ className }: { className?: string }) => (
+  <span className={className}><RecipeIcon animated={false} /></span>
+);
+const NavSaved = ({ className }: { className?: string }) => (
+  <span className={className}><SiteIcon name="saved" /></span>
+);
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
@@ -13,17 +23,17 @@ export default function BottomNav() {
 
   const items = user
     ? [
-      { href: "/", icon: Home, label: "ראשי" },
+      { href: "/", icon: NavBook, label: "ראשי" },
       { href: "/search", icon: Search, label: "חיפוש" },
       { href: "/recipe/new", icon: Plus, label: "שמירה", special: true },
-      { href: `/profile/${user.username}?tab=saved`, icon: Bookmark, label: "שמורים" },
+      { href: `/profile/${user.username}?tab=saved`, icon: NavSaved, label: "שמורים" },
       { href: `/profile/${user.username}`, icon: User, label: "פרופיל" },
     ]
     : [
-      { href: "/", icon: Home, label: "ראשי" },
+      { href: "/", icon: NavBook, label: "ראשי" },
       { href: "/search", icon: Search, label: "חיפוש" },
       { href: "/register", icon: Plus, label: "הרשמה", special: true },
-      { href: "/#categories", icon: BookOpen, label: "קטגוריות" },
+      { href: "/#categories", icon: NavBook, label: "קטגוריות" },
       { href: "/login", icon: LogIn, label: "כניסה" },
     ];
 
@@ -63,7 +73,7 @@ export default function BottomNav() {
                     background: "#2F6B5D",
                     boxShadow: "0 8px 20px -6px rgba(12,40,31,0.45)",
                   }}>
-                  <item.icon className="w-5 h-5 text-forest-300 stroke-[2.5]" />
+                  <item.icon className="w-5 h-5 block text-forest-300" />
   </div>
   </Link>
   );

@@ -2245,6 +2245,13 @@
   }
 }
 
+  /* ─── Control glyphs share the illustration's line ────────
+     The lucide set is drawn on a 24-grid at 2px; the site's own marks are a
+     1.5 line on a 64-grid. Seven different stroke widths were scattered
+     through the markup. One weight here, applied over every `strokeWidth`
+     prop, and the controls read as the same hand as the illustrations. */
+  .lucide { stroke-width: 1.5; }
+
   /* ─── Recipe card — a card out of the box ─────────────────
      The same object as the icon: a single-weight line, the corner scale, a
      terracotta strap over the top edge, and two fainter cards behind it that
@@ -2305,6 +2312,10 @@
      first scrolls into view, the three cards rise in a stagger and the sprig
      tips. Motion is the only thing that changes; colour stays the panel's. */
   .recipe-icon { display: block; width: 100%; height: 100%; overflow: visible; }
+  /* The marks are drawn on a 64-grid; scaled to a 20px control the 1.5 line
+     would render at half a pixel. Non-scaling strokes keep it 1.5 CSS px at
+     every size — the same line as every control on the page. */
+  .recipe-icon * { vector-effect: non-scaling-stroke; }
   .recipe-icon__card,
   .recipe-icon__sprig {
     transform-box: fill-box;
