@@ -274,7 +274,7 @@ export default function FeedPage() {
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 70vw, 34rem" />
                       ) : (
-                        <Image src="/food/dessert-home-v3.png" alt="" fill className="object-cover" sizes="(max-width: 768px) 70vw, 34rem" />
+                        <Image src="/food/dessert-v4.png" alt="" fill className="object-cover" sizes="(max-width: 768px) 70vw, 34rem" />
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
