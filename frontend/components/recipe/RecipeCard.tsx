@@ -5,6 +5,9 @@ import Image from "next/image";
 import { Heart, Clock, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RecipeIcon from "@/components/ui/RecipeIcon";
+import { CATEGORIES } from "@/lib/categories";
+
+const CATEGORY_ORDER: readonly string[] = CATEGORIES.map((c) => c.name);
 import { recipesApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useState, memo } from "react";
@@ -38,14 +41,21 @@ function RecipeCard({ recipe }: RecipeCardProps) {
   const kosherLabel = recipe.kosher_type ? kosherLabels[recipe.kosher_type] : null;
   const tags = [recipe.category, diffLabel, kosherLabel].filter(Boolean) as string[];
   const hasImage = Boolean(recipe.image_url);
+  // Six tones for six categories, so a category always wears the same tab.
+  const tabTone = `tab-${(CATEGORY_ORDER.indexOf(recipe.category) + 6) % 6 + 1}`;
   const isDraft = recipe.is_published === false;
 
   return (
     <div className="recipe-card-shell group">
+    <span className={cn("recipe-card-tab", tabTone)} aria-hidden="true">
+      {recipe.category || "מתכון"}
+    </span>
     <article className="recipe-card card-surface card-surface-hover h-full flex flex-col overflow-hidden">
-      <span className="recipe-card-strap" aria-hidden="true" />
+      <span className="recipe-card-leaf" aria-hidden="true">
+        <RecipeIcon category={recipe.category} animated={false} compact />
+      </span>
       <Link href={`/recipe/${recipe.id}`} className="flex flex-col flex-1 min-h-0">
-        <div className="relative overflow-hidden shrink-0" style={{ aspectRatio: "4/3" }}>
+        <div className="relative overflow-hidden shrink-0 mx-[9px] mt-[9px] rounded-[calc(var(--r-md)-7px)]" style={{ aspectRatio: "4/3" }}>
           {hasImage ? (
             <Image
               src={recipe.image_url}
@@ -113,7 +123,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
 
       <div className="px-5 pb-4">
           <div className="flex items-center justify-between gap-4 pt-4 border-t border-surface-400">
-            <span className="flex items-center gap-1.5 text-[13px] font-semibold text-bark-200">
+            <span className="recipe-card-rule flex-1 text-[13px] font-semibold text-bark-200">
               <Users className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
               {recipe.servings || "—"} מנות
             </span>

@@ -2252,57 +2252,120 @@
      prop, and the controls read as the same hand as the illustrations. */
   .lucide { stroke-width: 1.5; }
 
-  /* ─── Recipe card — a card out of the box ─────────────────
-     The same object as the icon: a single-weight line, the corner scale, a
-     terracotta strap over the top edge, and two fainter cards behind it that
-     lift in a stagger on hover. Colour is the panel's — `currentColor` on the
-     shell — so it reads on cream and on green alike. */
+  /* ─── Recipe card — an index card from the box ────────────
+     Modelled on the cards in the box: a tab at the top carrying the category,
+     cream stock, a hairline gold rule just inside the edge, a sage leaf
+     watermark, and ruled label lines for the facts. Two fainter cards sit
+     behind and lift in a stagger on hover, as if drawn from the stack. */
   .recipe-card-shell {
     position: relative;
     isolation: isolate;
     height: 100%;
-    color: rgba(39, 94, 80, 0.55);
+    padding-top: var(--tab-h);
+    --tab-h: 1.55rem;
+    --card-stock: #FAF8F3;
+    --card-rule: rgba(39, 94, 80, 0.14);
+    --card-gold: rgba(193, 154, 82, 0.55);
   }
+  /* the two cards still in the box behind this one */
   .recipe-card-shell::before,
   .recipe-card-shell::after {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: var(--tab-h) 0 0;
     z-index: -1;
-    border: 1.5px solid currentColor;
     border-radius: var(--r-md);
-    background: transparent;
-    transform: translateY(-5px) scale(0.965);
-    opacity: 0.55;
+    background: var(--card-stock);
+    border: 1px solid var(--card-rule);
+    transform: translateY(-6px) scale(0.972);
     transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .recipe-card-shell::after {
-    transform: translateY(-10px) scale(0.93);
-    opacity: 0.3;
+    transform: translateY(-12px) scale(0.944);
+    opacity: 0.7;
     transition-delay: 60ms;
   }
-  .recipe-card-shell:hover::before { transform: translateY(-8px) scale(0.965); }
-  .recipe-card-shell:hover::after  { transform: translateY(-15px) scale(0.93); }
+  .recipe-card-shell:hover::before { transform: translateY(-10px) scale(0.972); }
+  .recipe-card-shell:hover::after  { transform: translateY(-19px) scale(0.944); }
+
+  /* the card itself: paper, not a panel */
   .recipe-card-shell > .recipe-card {
-    border: 1.5px solid currentColor;
-    box-shadow: none;
+    position: relative;
+    background: var(--card-stock);
+    border: 1px solid var(--card-rule);
+    border-radius: var(--r-md);
+    box-shadow: 0 10px 26px -18px rgba(30, 77, 69, 0.45);
+    backdrop-filter: none;
   }
-  .recipe-card-shell:hover > .recipe-card { transform: none; }
-  /* the strap that closes the box, hanging over the lip */
-  .recipe-card-strap {
+  /* the gold hairline that rims the box, set in from the edge */
+  .recipe-card-shell > .recipe-card::before {
+    content: "";
     position: absolute;
-    top: -1.5px;
-    left: 50%;
-    z-index: 3;
-    width: 26px;
-    height: 11px;
-    transform: translateX(-50%);
-    border-radius: 0 0 var(--r-sm) var(--r-sm);
-    background: var(--icon-accent, #D97757);
+    inset: 5px;
+    z-index: 2;
+    border-radius: calc(var(--r-md) - 4px);
+    border: 1px solid var(--card-gold);
     pointer-events: none;
   }
-  .home-page .home-panel-recipes .recipe-card-shell,
-  .panel-bark .recipe-card-shell { color: rgba(250, 248, 243, 0.5); }
+  .recipe-card-shell:hover > .recipe-card { transform: none; }
+
+  /* the tab, standing above the card the way it stands above the box */
+  /* Lives on the shell, not inside the card — the card clips its own photo. */
+  .recipe-card-tab {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 1.15rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    height: calc(var(--tab-h) + 0.55rem);
+    max-width: calc(100% - 2.3rem);
+    padding: 0 0.9rem 0.55rem;
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--tab-bg, #E9EFEA);
+    color: var(--tab-fg, #1E4D45);
+    box-shadow: 0 -1px 0 var(--card-rule) inset;
+  }
+  /* one tone per category, the way the box's tabs are colour-coded */
+  .tab-1 { --tab-bg: #1E4D45; --tab-fg: #FAF8F3; }
+  .tab-2 { --tab-bg: #2F6B5D; --tab-fg: #FAF8F3; }
+  .tab-3 { --tab-bg: #E9EFEA; --tab-fg: #1E4D45; }
+  .tab-4 { --tab-bg: #D97757; --tab-fg: #FAF8F3; }
+  .tab-5 { --tab-bg: #F4EEDF; --tab-fg: #275E50; }
+  .tab-6 { --tab-bg: #C19A52; --tab-fg: #23331F; }
+
+  /* the leaf printed on the card, well under the text */
+  .recipe-card-leaf {
+    position: absolute;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 0.9rem;
+    z-index: 1;
+    width: 2.4rem;
+    height: 2.4rem;
+    color: rgba(47, 107, 93, 0.16);
+    pointer-events: none;
+  }
+
+  /* "SERVES ————" : a label, then the rule it would be written on */
+  .recipe-card-rule {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .recipe-card-rule::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--card-rule);
+    transform: translateY(-2px);
+  }
   @media (prefers-reduced-motion: reduce) {
     .recipe-card-shell::before, .recipe-card-shell::after { transition: none; }
   }
