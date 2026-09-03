@@ -509,8 +509,31 @@
   .assistant-kicker .eyebrow { margin: 0; color: #D5E4D7; }
   .assistant-kicker span {
     color: #D97757;
-    font-size: 0.78rem;
-    font-weight: 500;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .home-index {
+    display: inline-block;
+    min-width: 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  .home-index--reason {
+    flex: 0 0 3rem;
+    font-size: 1.45rem;
+  }
+  .section-rail-link {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    min-height: 3rem;
+  }
+  .section-rail-index {
+    font-size: 1.35rem;
+    line-height: 1;
   }
   .assistant-title {
     max-width: 8ch;
@@ -706,7 +729,7 @@
   }
   .home-page .cat-tile:hover .category-photo {
     transform: rotate(-1.5deg) scale(1.035);
-    box-shadow: 0 1.45rem 3rem rgba(0, 0, 0, 0.28) !important;
+    box-shadow: 0 1.45rem 3rem rgba(12, 40, 31, 0.28) !important;
   }
   .home-page .cat-tile:active { transform: translateY(1px) scale(0.985); }
 
@@ -795,7 +818,7 @@
   .home-page .recipe-loader-mark {
     background: rgba(7, 29, 22, 0.38);
     border-color: rgba(250, 248, 243, 0.22);
-    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.22);
+    box-shadow: 0 1rem 2.5rem rgba(12, 40, 31, 0.22);
   }
   .home-page .recipe-loader-mark svg { color: #FAF8F3; }
   @keyframes recipe-loader-hat {
@@ -851,7 +874,7 @@
   .home-page .glass-stage {
     background: rgba(250, 248, 243, 0.055);
     border-color: rgba(250, 248, 243, 0.16);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+    box-shadow: 0 30px 80px rgba(12, 40, 31, 0.32);
   }
   .home-page .panel-bark .cat-tile {
     background: rgba(250, 248, 243, 0.055);
@@ -870,7 +893,7 @@
   .home-page .hero-search {
     background: rgba(250, 248, 243, 0.10);
     border-color: rgba(250, 248, 243, 0.20);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.30);
+    box-shadow: 0 18px 42px rgba(12, 40, 31, 0.30);
   }
   .home-page .hero-search input { color: #FAF8F3; }
   .home-page .hero-search input::placeholder { color: #B7C4BE; }
@@ -1020,7 +1043,7 @@
   }
 
   body:has(.home-page) footer {
-    background: #0C1814 !important;
+    background: #102B22 !important;
     border-top-color: rgba(250, 248, 243, 0.18) !important;
     color: #FAF8F3;
   }
@@ -1183,16 +1206,16 @@
     opacity: 0.4;
   }
 
-  /* Circled plus, the "open me" motif from the reference sites */
+  /* The plus stays a simple cue, without a decorative frame around it. */
   .plus-badge {
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    border: 1.5px solid currentColor;
+    width: auto;
+    height: auto;
+    border: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    margin-inline-end: 0.15rem;
     transition: background 0.25s ease, color 0.25s ease;
   }
 
@@ -1418,22 +1441,9 @@
     overflow: hidden;
     background: #E3CFB2;
   }
-  .experience-page::before {
-    content: "";
-    position: absolute;
-    z-index: -2;
-    top: 0;
-    right: 0;
-    width: min(30vw, 30rem);
-    height: 15rem;
-    background: #15382D;
-  }
   .experience-page--terracotta { background: #DAB691; }
-  .experience-page--terracotta::before { background: #B85F48; }
   .experience-page--sage { background: #C8D5B7; }
-  .experience-page--sage::before { background: #275E50; }
   .experience-page--plum { background: #D6B59C; }
-  .experience-page--plum::before { background: #523C35; }
   .experience-page-inner {
     position: relative;
     z-index: 1;
@@ -1441,28 +1451,6 @@
     max-width: 72rem;
     margin-inline: auto;
   }
-  .experience-page-mark {
-    position: absolute;
-    z-index: -1;
-    top: 2rem;
-    left: max(1rem, calc((100vw - 72rem) / 2));
-    width: 6.5rem;
-    display: grid;
-    gap: 0.35rem;
-    pointer-events: none;
-  }
-  .experience-page-mark span {
-    display: block;
-    height: 0.35rem;
-    background: #D97757;
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: experience-mark-in 680ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  .experience-page-mark span:nth-child(2) { width: 72%; animation-delay: 90ms; }
-  .experience-page-mark span:nth-child(3) { width: 42%; animation-delay: 180ms; }
-  @keyframes experience-mark-in { to { transform: scaleX(1); } }
-
   .experience-hero {
     position: relative;
     overflow: hidden;
@@ -1473,16 +1461,7 @@
     background: #15382D;
     color: #FAF8F3;
   }
-  .experience-hero::after {
-    content: "";
-    position: absolute;
-    inset: auto 1.15rem 1.15rem auto;
-    width: clamp(3.5rem, 12vw, 7.5rem);
-    height: clamp(3.5rem, 12vw, 7.5rem);
-    border: 1px solid rgba(250, 248, 243, 0.24);
-    pointer-events: none;
-  }
-  .experience-hero--shopping { background: #9E4D3E; border-right-color: #15382D; }
+  .experience-hero--shopping { background: #275E50; border-right-color: #DAB691; }
   .experience-hero--category { background: #B75E46; border-right-color: #15382D; }
   .experience-hero--profile { background: #275E50; border-right-color: #D97757; }
   .experience-hero--editor { background: #15382D; }
@@ -1493,7 +1472,7 @@
   .experience-hero .text-bark-300,
   .experience-hero .text-bark-200 { color: #FAF8F3 !important; }
   .experience-hero .eyebrow { color: #F1B49C !important; }
-  .experience-hero .plus-badge { color: #F1B49C !important; border-color: currentColor; }
+  .experience-hero .plus-badge { color: #F1B49C !important; }
   .experience-hero .btn-block {
     position: relative;
     z-index: 1;
@@ -1536,6 +1515,20 @@
     background: #F2E3CB;
   }
   .search-composer .input-dark { font-family: var(--font-display); }
+  .search-choice {
+    background: #E7D7BC;
+    border: 1px solid transparent;
+    color: #496259;
+  }
+  .search-choice:hover {
+    background: #D8C5A7;
+    color: #15382D;
+  }
+  .search-choice.is-selected {
+    background: #2F6B5D;
+    border-color: #2F6B5D;
+    color: #FAF8F3;
+  }
   .search-pantry { background: #C97658 !important; border-color: rgba(21, 56, 45, 0.35) !important; }
   .filter-drawer { border-right: 0.25rem solid #275E50 !important; }
   .experience-tabs {
@@ -1646,15 +1639,6 @@
     border: 1px solid rgba(250, 248, 243, 0.22);
     border-bottom: 0.3rem solid #D97757;
   }
-  .auth-stage::after {
-    content: "";
-    position: absolute;
-    width: 4.5rem;
-    height: 4.5rem;
-    left: 1.2rem;
-    bottom: 1.2rem;
-    border: 1px solid rgba(250, 248, 243, 0.2);
-  }
   .auth-stage .text-bark-500,
   .auth-stage .text-bark-300,
   .auth-stage .text-bark-200 { color: #FAF8F3 !important; }
@@ -1671,9 +1655,7 @@
   @media (max-width: 639px) {
     .experience-page { padding: 0.75rem 0.75rem 2.25rem; }
     .experience-page::before { height: 9rem; width: 52vw; }
-    .experience-page-mark { top: 1.15rem; left: 1.25rem; width: 3.75rem; }
     .experience-hero { min-height: 0; padding: 1.35rem; }
-    .experience-hero::after { width: 3.5rem; height: 3.5rem; }
     .shopping-board { box-shadow: 0 0.8rem 0 rgba(21, 56, 45, 0.18) !important; }
   }
   @media (prefers-reduced-motion: reduce) {

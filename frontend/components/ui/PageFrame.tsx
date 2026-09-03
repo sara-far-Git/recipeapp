@@ -12,11 +12,6 @@ type PageFrameProps = {
 export default function PageFrame({ children, tone = "forest", className }: PageFrameProps) {
   return (
     <div className={cn("experience-page", `experience-page--${tone}`, className)}>
-      <div className="experience-page-mark" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
       <div className="experience-page-inner">{children}</div>
     </div>
   );

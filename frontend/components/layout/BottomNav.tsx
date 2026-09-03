@@ -61,7 +61,7 @@ export default function BottomNav() {
                     height: 52,
                     borderRadius: 999,
                     background: "#2F6B5D",
-                    boxShadow: "0 8px 20px -6px rgba(0,0,0,0.45)",
+                    boxShadow: "0 8px 20px -6px rgba(12,40,31,0.45)",
                   }}>
                   <item.icon className="w-5 h-5 text-forest-300 stroke-[2.5]" />
   </div>

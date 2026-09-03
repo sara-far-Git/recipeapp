@@ -158,10 +158,10 @@ function SearchPageContent() {
             setAiSuggestions(null);
           }}
           className={cn(
-            "px-4 py-2.5 text-sm font-semibold transition-all border",
+            "search-choice px-4 py-2.5 text-sm font-semibold transition-colors",
             !ingredientMode
-              ? "btn-fire border-transparent text-cream-50"
-              : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+              ? "is-selected"
+              : ""
           )}
         >
           <Search className="w-4 h-4 inline-block ml-1.5" />
@@ -171,10 +171,10 @@ function SearchPageContent() {
           type="button"
           onClick={() => setIngredientMode(true)}
           className={cn(
-            "px-4 py-2.5 text-sm font-semibold transition-all border",
+            "search-choice px-4 py-2.5 text-sm font-semibold transition-colors",
             ingredientMode
-              ? "btn-fire border-transparent text-cream-50"
-              : "bg-surface-50 border-surface-400 text-bark-400 hover:border-cinnamon-400 hover:text-cinnamon-600"
+              ? "is-selected"
+              : ""
           )}
         >
           <Sparkles className="w-4 h-4 inline-block ml-1.5" />
@@ -230,10 +230,10 @@ function SearchPageContent() {
               type="button"
               onClick={() => setActiveCategory(activeCategory === cat.name ? "" : cat.name)}
               className={cn(
-                "px-3.5 py-1.5 text-xs font-bold border transition-colors",
+                "search-choice px-3.5 py-1.5 text-xs font-bold transition-colors",
                 activeCategory === cat.name
-                  ? "btn-fire border-transparent text-cream-50"
-                  : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
+                  ? "is-selected"
+                  : ""
               )}
             >
               {cat.name}
@@ -250,7 +250,7 @@ function SearchPageContent() {
               key={q}
               type="button"
               onClick={() => runQuickSearch(q)}
-              className="px-3 py-1.5 text-xs font-bold border border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-colors"
+              className="search-choice px-3 py-1.5 text-xs font-bold transition-colors"
             >
               {q}
             </button>
@@ -282,7 +282,7 @@ function SearchPageContent() {
                 key={ingredient}
                 type="button"
                 onClick={() => addIngredientTag(ingredient)}
-                className="px-3 py-1.5 text-xs font-bold border border-surface-400 text-bark-300 hover:border-cinnamon-300 hover:text-cinnamon-500 transition-colors"
+                className="search-choice px-3 py-1.5 text-xs font-bold transition-colors"
               >
                 {ingredient}
               </button>
@@ -437,10 +437,10 @@ function FilterRow({
             type="button"
             onClick={() => onChange(f.value)}
             className={cn(
-              "px-3.5 py-1.5 text-xs font-bold border transition-colors",
+              "search-choice px-3.5 py-1.5 text-xs font-bold transition-colors",
               value === f.value
-                ? "btn-fire border-transparent text-cream-50"
-                : "border-surface-400 text-bark-300 hover:border-bark-500 hover:text-bark-500"
+                ? "is-selected"
+                : ""
             )}
           >
             {f.label}

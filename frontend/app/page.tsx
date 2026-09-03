@@ -158,10 +158,10 @@ export default function FeedPage() {
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
                   <div className="category-photo relative aspect-square rounded-full overflow-hidden mb-3 mx-auto w-[72%] max-w-[15rem]"
-                    style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.35)" }}>
+                    style={{ boxShadow: "0 16px 36px rgba(12,40,31,0.35)" }}>
                     <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 40vw, 18rem" />
                   </div>
-                  <p className="tabular text-xs font-bold mb-1" style={{ color: "#D97757" }}>
+                  <p className="home-index tabular mb-2" style={{ color: "#D97757" }}>
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <h3 className="text-lg sm:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
@@ -267,7 +267,7 @@ export default function FeedPage() {
                 <Reveal>
                   <Link href={`/recipe/${editorPick.id}`} className="relative block group mx-auto md:mx-0" style={{ width: "min(100%, 22rem)" }}>
                     <div className="weekly-photo relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
-                      style={{ boxShadow: "0 28px 70px rgba(0,0,0,0.45)" }}>
+                      style={{ boxShadow: "0 28px 70px rgba(12,40,31,0.45)" }}>
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="22rem" />
                       ) : (
@@ -317,7 +317,7 @@ export default function FeedPage() {
                   className="row-wipe w-full text-right py-4 sm:py-5 flex items-start sm:items-center gap-5 sm:gap-8"
                   style={{ borderBottom: "1px solid rgba(31,42,38,0.14)" }}
                 >
-                  <span className="tabular text-sm w-8 text-cinnamon-500 font-extrabold pt-1 sm:pt-0">
+                  <span className="home-index home-index--reason tabular text-cinnamon-500 pt-1 sm:pt-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="text-base sm:text-lg font-extrabold text-bark-500">
@@ -565,7 +565,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
     <nav
       className="section-rail hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
-        background: "#0C1814",
+        background: "#102B22",
         borderInlineStart: "1px solid rgba(250,248,243,0.18)",
       }}
       aria-label="ניווט בין חלקי הדף">
@@ -573,9 +573,9 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
         const isActive = active === s.id;
         return (
           <a key={s.id} href={`#${s.id}`}
-            className="py-1.5"
+            className="section-rail-link py-2"
             aria-current={isActive ? "true" : undefined}>
-            <span className={cn("tabular text-[12px] font-extrabold transition-colors",
+            <span className={cn("section-rail-index tabular font-extrabold transition-colors",
               isActive
                 ? onDark ? "text-cinnamon-200" : "text-cinnamon-500"
                 : onDark ? "text-forest-100/70" : "text-bark-200")}>
