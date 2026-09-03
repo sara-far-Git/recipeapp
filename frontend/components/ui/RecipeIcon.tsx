@@ -82,11 +82,15 @@ export default function RecipeIcon({
   category,
   className,
   animated = true,
+  compact = false,
   title,
 }: {
   category?: string | null;
   className?: string;
   animated?: boolean;
+  /** For chips and tab bars (≤ 24px): one card, the box and the strap. The
+   *  full stack and the sprig turn to a smudge at that size. */
+  compact?: boolean;
   /** Accessible name; omit when the icon is decorative next to a label. */
   title?: string;
 }) {
@@ -105,14 +109,18 @@ export default function RecipeIcon({
       {title && <title>{title}</title>}
 
       {/* three cards, back to front — the stagger lifts them in this order */}
-      <g className="recipe-icon__card recipe-icon__card--3">
-        <rect x="19" y="14" width="26" height="24" rx="2.5" />
-      </g>
-      <g className="recipe-icon__card recipe-icon__card--2">
-        <rect x="16.5" y="18" width="31" height="24" rx="2.5" />
-      </g>
+      {!compact && (
+        <>
+          <g className="recipe-icon__card recipe-icon__card--3">
+            <rect x="19" y="14" width="26" height="24" rx="2.5" />
+          </g>
+          <g className="recipe-icon__card recipe-icon__card--2">
+            <rect x="16.5" y="18" width="31" height="24" rx="2.5" />
+          </g>
+        </>
+      )}
       <g className="recipe-icon__card recipe-icon__card--1">
-        <rect x="14" y="22" width="36" height="24" rx="2.5" />
+        <rect x="14" y={compact ? 16 : 22} width="36" height={compact ? 30 : 24} rx="2.5" />
         {kind === "book" ? (
           <path d="M22 30h20M22 35h14" />
         ) : (
@@ -126,10 +134,12 @@ export default function RecipeIcon({
       <path d="M29 40v4.5a3 3 0 0 0 6 0V40" stroke={ACCENT} />
 
       {/* sprig on the front */}
-      <g className="recipe-icon__sprig" stroke={ACCENT}>
-        <path d="M17 51c0-3.2 1.8-5.3 5-5.3-.2 3.2-2 5.3-5 5.3z" />
-        <path d="M17 51c1-1.6 2.2-2.8 3.7-3.6" />
-      </g>
+      {!compact && (
+        <g className="recipe-icon__sprig" stroke={ACCENT}>
+          <path d="M17 51c0-3.2 1.8-5.3 5-5.3-.2 3.2-2 5.3-5 5.3z" />
+          <path d="M17 51c1-1.6 2.2-2.8 3.7-3.6" />
+        </g>
+      )}
     </svg>
   );
 }

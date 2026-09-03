@@ -237,7 +237,7 @@ function SearchPageContent() {
                   : ""
               )}
             >
-              <span className="w-4 h-4 shrink-0"><RecipeIcon category={cat.name} animated={false} /></span>
+              <span className="w-4 h-4 shrink-0"><RecipeIcon category={cat.name} animated={false} compact /></span>
               {cat.name}
             </button>
           ))}

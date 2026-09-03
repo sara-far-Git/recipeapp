@@ -9,7 +9,7 @@ import SiteIcon from "@/components/ui/SiteIcon";
 
 /* The family's own marks, in the shape the tab list expects. */
 const NavBook = ({ className }: { className?: string }) => (
-  <span className={className}><RecipeIcon animated={false} /></span>
+  <span className={className}><RecipeIcon animated={false} compact /></span>
 );
 const NavSaved = ({ className }: { className?: string }) => (
   <span className={className}><SiteIcon name="saved" /></span>
