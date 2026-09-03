@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
+import PageFrame from "@/components/ui/PageFrame";
 import {
   Heart, Bookmark, Clock, Users, ChefHat,
   Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send,
@@ -181,11 +182,14 @@ export default function RecipeDetailPage() {
 
   if (loading) {
   return (
-  <RecipeLoading label="פותחת את המתכון" />
+  <PageFrame tone="sage" className="recipe-experience">
+    <RecipeLoading label="פותחת את המתכון" />
+  </PageFrame>
   );
   }
   if (missing || !recipe) {
   return (
+  <PageFrame tone="sage" className="recipe-experience">
   <div className="max-w-lg mx-auto text-center py-24">
   <h1 className="display-lg text-bark-500 mb-4">המתכון לא נמצא</h1>
   <p className="text-bark-300 text-[15px] mb-9">
@@ -196,6 +200,7 @@ export default function RecipeDetailPage() {
   <Link href="/" className="font-bold text-bark-300 hover:text-cinnamon-500">חזרה לדף הבית</Link>
   </div>
   </div>
+  </PageFrame>
   );
   }
 
@@ -320,7 +325,8 @@ export default function RecipeDetailPage() {
 
   // ── Main page ──────────────────────────────────────────────────────────────
   return (
-  <div className="max-w-3xl mx-auto">
+  <PageFrame tone="sage" className="recipe-experience">
+  <div className="recipe-detail-page max-w-3xl mx-auto">
   {/* Toast */}
   {toast && (
   <div className="recipe-toast fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-bark-500 text-cream-50 text-sm shadow-warm-lg whitespace-nowrap">
@@ -380,7 +386,7 @@ export default function RecipeDetailPage() {
   </Link>
 
   {/* Hero image */}
-  <div className="relative  overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#F4EEDF" }}>
+  <div className="recipe-hero relative overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#F4EEDF" }}>
   {recipe.image_url ? (
   <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
   ) : (
@@ -611,5 +617,6 @@ export default function RecipeDetailPage() {
   </div>
   </section>
   </div>
+  </PageFrame>
   );
 }

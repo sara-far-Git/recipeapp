@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { shoppingApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeLoading from "@/components/ui/RecipeLoading";
+import PageFrame from "@/components/ui/PageFrame";
 import { ShoppingCart, Trash2, Plus, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -94,7 +95,8 @@ export default function ShoppingListPage() {
 
   if (!user) {
     return (
-      <div className="text-center py-20 animate-fade-up">
+      <PageFrame tone="terracotta" className="shopping-experience">
+      <div className="max-w-xl mx-auto text-center py-20 animate-fade-up">
         <div className="w-20 h-20 card-surface flex items-center justify-center mx-auto mb-5">
           <ShoppingCart className="w-10 h-10 text-bark-200" />
         </div>
@@ -106,12 +108,15 @@ export default function ShoppingListPage() {
           התחברות
         </button>
       </div>
+      </PageFrame>
     );
   }
 
   if (loading) {
     return (
-      <RecipeLoading label="מסדרת את רשימת הקניות" />
+      <PageFrame tone="terracotta" className="shopping-experience">
+        <RecipeLoading label="מסדרת את רשימת הקניות" />
+      </PageFrame>
     );
   }
 
@@ -126,8 +131,9 @@ export default function ShoppingListPage() {
     .filter(({ item }: { item: any }) => item.checked);
 
   return (
+    <PageFrame tone="terracotta" className="shopping-experience">
     <div className="max-w-2xl mx-auto relative z-10">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 animate-fade-up">
+      <header className="experience-hero experience-hero--shopping flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-7 animate-fade-up">
         <div>
           <span className="eyebrow mb-3">
             <span className="plus-badge text-bark-500">
@@ -140,7 +146,7 @@ export default function ShoppingListPage() {
         <button onClick={createList} className="flex items-center gap-2 btn-block text-sm shrink-0">
           <Plus className="w-4 h-4" /> רשימה חדשה
         </button>
-      </div>
+      </header>
 
       {lists.length === 0 ? (
         <div className="text-center py-20 animate-fade-up">
@@ -156,7 +162,7 @@ export default function ShoppingListPage() {
       ) : (
         <>
           {lists.length > 1 && (
-            <div className="flex gap-2 mb-5 overflow-x-auto pb-2 animate-fade-up">
+            <div className="experience-tabs flex gap-2 mb-5 overflow-x-auto pb-2 animate-fade-up">
               {lists.map((list) => (
                 <button
                   key={list.id}
@@ -175,7 +181,7 @@ export default function ShoppingListPage() {
           )}
 
           {activeList && (
-            <div className="card-surface overflow-hidden animate-fade-up">
+            <div className="shopping-board card-surface overflow-hidden animate-fade-up">
               <div className="flex items-center justify-between px-5 py-4 border-b border-surface-300">
                 <div>
                   <h2 className="section-title text-bark-500">{activeList.name}</h2>
@@ -342,5 +348,6 @@ export default function ShoppingListPage() {
         </>
       )}
     </div>
+    </PageFrame>
   );
 }

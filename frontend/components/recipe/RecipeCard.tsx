@@ -84,7 +84,7 @@ function RecipeCard({ recipe }: RecipeCardProps) {
   const isDraft = recipe.is_published === false;
 
   return (
-    <article className="group card-surface card-surface-hover h-full flex flex-col overflow-hidden">
+    <article className="recipe-card group card-surface card-surface-hover h-full flex flex-col overflow-hidden">
       <Link href={`/recipe/${recipe.id}`} className="flex flex-col flex-1 min-h-0">
         <div className="relative overflow-hidden shrink-0" style={{ aspectRatio: "4/3" }}>
           {hasImage ? (

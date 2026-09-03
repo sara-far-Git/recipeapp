@@ -67,7 +67,7 @@ export default function ProPage() {
   };
 
   return (
-    <div className="full-bleed -my-8 sm:-my-8">
+    <div className="full-bleed -my-8 sm:-my-8 pro-experience">
       <section className="border-b border-bark-500/10 bg-forest-50">
         <div className="bleed-inner py-10 sm:py-14 lg:py-16">
           <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] gap-10 lg:gap-16 items-center">

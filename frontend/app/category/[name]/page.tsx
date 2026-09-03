@@ -7,6 +7,7 @@ import { searchApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
+import PageFrame from "@/components/ui/PageFrame";
 import { Plus } from "lucide-react";
 import { CATEGORIES, getCategory } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,9 @@ export default function CategoryPage() {
   }, [name]);
 
   return (
+    <PageFrame tone="terracotta" className="category-experience">
     <div className="max-w-5xl mx-auto">
-      <div className="mb-10 animate-fade-up">
+      <header className="experience-hero experience-hero--category mb-8 animate-fade-up">
         <Link href="/#categories" className="eyebrow mb-4 hover:text-cinnamon-500 transition-colors">
           <span className="plus-badge text-bark-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
@@ -48,13 +50,13 @@ export default function CategoryPage() {
             {recipes.length === 0 ? "עדיין אין מתכונים כאן" : `${recipes.length} מתכונים`}
           </p>
         )}
-      </div>
+      </header>
 
       {loading ? (
         <RecipeLoading label="מוצאת מתכונים מתאימים" />
       ) : recipes.length === 0 ? (
         <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
-          <div className="card-surface p-8 sm:p-10 mb-12">
+          <div className="card-surface empty-chapter p-8 sm:p-10 mb-12">
             <p className="section-title text-bark-500 mb-2">הפרק הזה עדיין ריק</p>
             <p className="text-bark-300 text-sm leading-relaxed max-w-md mb-6">
               {meta?.desc ?? "עוד לא נכתב כאן כלום."} אפשר להתחיל במתכון ראשון, או לעבור לקטגוריה אחרת.
@@ -103,7 +105,7 @@ export default function CategoryPage() {
           </div>
 
           <p className="eyebrow mb-4">עוד באוסף</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="experience-tabs flex flex-wrap gap-2">
             {others.map((cat) => (
               <Link
                 key={cat.name}
@@ -117,5 +119,6 @@ export default function CategoryPage() {
         </>
       )}
     </div>
+    </PageFrame>
   );
 }

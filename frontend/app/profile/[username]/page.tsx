@@ -7,6 +7,7 @@ import { usersApi, uploadApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
+import PageFrame from "@/components/ui/PageFrame";
 import { Loader2, Pencil, X, Camera, BookOpen, Heart, Users, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -107,18 +108,25 @@ function ProfilePageContent() {
 
   if (loading) {
     return (
-      <RecipeLoading label="פותחת את ספר המתכונים" />
+      <PageFrame tone="sage" className="profile-experience">
+        <RecipeLoading label="פותחת את ספר המתכונים" />
+      </PageFrame>
     );
   }
 
   if (!profile) {
-    return <p className="text-center text-bark-300 py-20">משתמש לא נמצא</p>;
+    return (
+      <PageFrame tone="sage" className="profile-experience">
+        <p className="text-center text-bark-300 py-20">משתמש לא נמצא</p>
+      </PageFrame>
+    );
   }
 
   const displayRecipes = activeTab === "saved" ? savedRecipes : recipes;
   const recipeCount = isOwn ? recipes.length : profile.recipes_count;
 
   return (
+    <PageFrame tone="sage" className="profile-experience">
     <div className="max-w-5xl mx-auto">
       {editOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
@@ -198,7 +206,7 @@ function ProfilePageContent() {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 animate-fade-up">
+      <header className="experience-hero experience-hero--profile flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-7 animate-fade-up">
         <div className="flex items-start gap-5 min-w-0">
           {profile.avatar_url ? (
             <img
@@ -257,10 +265,10 @@ function ProfilePageContent() {
             </button>
           )}
         </div>
-      </div>
+      </header>
 
       <div
-        className="flex items-end gap-8 mb-8 pb-4 animate-fade-up"
+        className="profile-stats flex items-end gap-8 mb-8 pb-4 animate-fade-up"
         style={{ borderBottom: "1px solid rgba(31,42,38,0.12)", animationDelay: "60ms" }}
       >
         <Stat n={recipeCount} label="מתכונים" icon={BookOpen} />
@@ -268,7 +276,7 @@ function ProfilePageContent() {
         <Stat n={profile.following_count} label="נעקבים" icon={Heart} />
       </div>
 
-      <div className="flex items-center gap-1 mb-8 animate-fade-up" style={{ animationDelay: "90ms" }}>
+      <div className="profile-tabs experience-tabs flex items-center gap-1 mb-8 animate-fade-up" style={{ animationDelay: "90ms" }}>
         <TabButton active={activeTab === "recipes"} onClick={() => switchTab("recipes")}>
           המתכונים ({recipes.length})
         </TabButton>
@@ -320,6 +328,7 @@ function ProfilePageContent() {
         </div>
       )}
     </div>
+    </PageFrame>
   );
 }
 

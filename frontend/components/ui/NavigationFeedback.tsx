@@ -39,6 +39,8 @@ export default function NavigationFeedback() {
   return (
     <div className={`route-progress${navigating ? " is-active" : ""}`} aria-label="טעינת עמוד" aria-live="polite">
       <span />
+      <i aria-hidden="true" />
+      <b aria-hidden="true">פותחים את הדף</b>
     </div>
   );
 }

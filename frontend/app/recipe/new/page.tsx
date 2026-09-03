@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
+import PageFrame from "@/components/ui/PageFrame";
 
 interface Ingredient { amount: number; unit: string; name: string; }
 interface Instruction { step: number; text: string; }
@@ -268,6 +269,7 @@ export default function NewRecipePage() {
   };
 
   return (
+  <PageFrame tone="forest" className="recipe-editor-experience">
   <div className="max-w-2xl md:max-w-3xl mx-auto">
   {/* Scan overlay */}
   {(scanning || transcribing) && (
@@ -288,7 +290,7 @@ export default function NewRecipePage() {
   )}
 
   {/* Page header */}
-  <div className="mb-10 animate-fade-up">
+  <header className="experience-hero experience-hero--editor mb-7 animate-fade-up">
   <span className="eyebrow mb-3">
   <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   שמירת מתכון
@@ -299,10 +301,10 @@ export default function NewRecipePage() {
   <p className="text-bark-300 text-base">
   שמרו אותו פעם אחת, ברור ומסודר, כדי שיהיה קל לחזור אליו.
   </p>
-  </div>
+  </header>
 
   {/* AI Scan card */}
-  <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
+  <div className="card-surface capture-action p-5 mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
   <div className="flex items-center justify-between gap-4">
   <div>
   <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
@@ -333,7 +335,7 @@ export default function NewRecipePage() {
   </div>
   )}
 
-  <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "60ms" }}>
+  <div className="card-surface capture-action p-5 mb-3 animate-fade-up" style={{ animationDelay: "60ms" }}>
     <div className="flex items-center justify-between gap-4">
       <div>
         <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
@@ -376,7 +378,7 @@ export default function NewRecipePage() {
   </div>
 
   {/* Import from URL card */}
-  <div className="card-surface p-5 mb-3 animate-fade-up" style={{ animationDelay: "75ms" }}>
+  <div className="card-surface capture-action p-5 mb-3 animate-fade-up" style={{ animationDelay: "75ms" }}>
   {!importOpen ? (
   <div className="flex items-center justify-between gap-4">
   <div>
@@ -417,7 +419,7 @@ export default function NewRecipePage() {
   )}
   </div>
 
-  <div className="card-surface p-4 mb-8 animate-fade-up" style={{ animationDelay: "90ms" }}>
+  <div className="card-surface plan-strip p-4 mb-8 animate-fade-up" style={{ animationDelay: "90ms" }}>
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="grid grid-cols-3 gap-2 flex-1">
         {AI_PLAN_LIMITS.map((plan) => (
@@ -434,7 +436,7 @@ export default function NewRecipePage() {
   </div>
 
   {/* Step indicators */}
-  <div className="flex items-center gap-3 mb-8 animate-fade-up" style={{ animationDelay: "100ms" }}>
+  <div className="recipe-stepper flex items-center gap-3 mb-6 animate-fade-up" style={{ animationDelay: "100ms" }}>
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1" aria-current={step === s ? "step" : undefined}>
   <div className={cn(
@@ -454,7 +456,7 @@ export default function NewRecipePage() {
   ))}
   </div>
 
-  <div className="card-surface p-4 mb-8 animate-fade-up" style={{ animationDelay: "120ms" }}>
+  <div className="card-surface recipe-step-note p-4 mb-8 animate-fade-up" style={{ animationDelay: "120ms" }}>
     <p className="text-sm font-bold text-bark-500 mb-1">
       {step === 1 ? "פרטי המתכון" : step === 2 ? "מצרכים" : "אופן ההכנה"}
     </p>
@@ -682,5 +684,6 @@ export default function NewRecipePage() {
   </div>
   )}
   </div>
+  </PageFrame>
   );
 }

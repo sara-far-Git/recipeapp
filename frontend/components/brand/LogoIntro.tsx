@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v13";
+const KEY = "logo-intro-v14";
+const EXIT_DURATION_MS = 420;
+const MAX_INTRO_DURATION_MS = 4600;
 
 function unlock() {
   const html = document.documentElement;
@@ -19,113 +21,61 @@ function introSrc() {
 
 export default function LogoIntro() {
   const [gone, setGone] = useState(false);
-  const [hole, setHole] = useState(0);
   const [src, setSrc] = useState("");
-  const [cue, setCue] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-  const phase = useRef<"play" | "reveal" | "done">("play");
-  const progress = useRef(0);
-  const detach = useRef(() => {});
-  const startReveal = useRef(() => {});
+  const finished = useRef(false);
+  const completeRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || window.scrollY > 48 || sessionStorage.getItem(KEY) === "1") {
+    const localPreview = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (localPreview || reduced || window.scrollY > 48 || sessionStorage.getItem(KEY) === "1") {
       unlock();
       setGone(true);
       return;
     }
 
     document.documentElement.classList.add("logo-intro");
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
     setSrc(introSrc());
 
     const complete = () => {
-      if (phase.current === "done") return;
-      phase.current = "done";
-      detach.current();
+      if (finished.current) return;
+      finished.current = true;
       sessionStorage.setItem(KEY, "1");
       unlock();
-      setGone(true);
+      setLeaving(true);
+      window.setTimeout(() => setGone(true), EXIT_DURATION_MS);
     };
+    completeRef.current = complete;
 
-    const openReveal = () => {
-      if (phase.current !== "play") return;
-      phase.current = "reveal";
-      setCue(true);
-    };
-    startReveal.current = openReveal;
-
-    const apply = (next: number) => {
-      progress.current = Math.min(1, Math.max(0, next));
-      setHole(progress.current * 150);
-      if (progress.current >= 0.995) complete();
-    };
-
-    const fallback = window.setTimeout(openReveal, 8000);
-    const onWheel = (event: WheelEvent) => {
-      if (phase.current === "done") return;
-      event.preventDefault();
-      if (phase.current === "reveal") apply(progress.current + event.deltaY / (window.innerHeight * 2.1));
-    };
-    let touchY = 0;
-    const onTouchStart = (event: TouchEvent) => { touchY = event.touches[0]?.clientY ?? 0; };
-    const onTouchMove = (event: TouchEvent) => {
-      if (phase.current === "done") return;
-      event.preventDefault();
-      if (phase.current !== "reveal") return;
-      const nextY = event.touches[0]?.clientY ?? touchY;
-      apply(progress.current + (touchY - nextY) / (window.innerHeight * 1.8));
-      touchY = nextY;
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") return complete();
-      if (phase.current !== "reveal") return;
-      if (event.key === "ArrowDown" || event.key === " " || event.key === "PageDown") {
-        event.preventDefault();
-        apply(progress.current + 0.085);
-      }
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("keydown", onKey);
-    detach.current = () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("keydown", onKey);
-    };
+    const fallback = window.setTimeout(complete, MAX_INTRO_DURATION_MS);
+    const skip = () => complete();
+    window.addEventListener("wheel", skip, { passive: true, once: true });
+    window.addEventListener("touchstart", skip, { passive: true, once: true });
+    window.addEventListener("keydown", skip, { once: true });
 
     return () => {
       window.clearTimeout(fallback);
-      detach.current();
-      if (phase.current !== "done") unlock();
+      window.removeEventListener("wheel", skip);
+      window.removeEventListener("touchstart", skip);
+      window.removeEventListener("keydown", skip);
+      completeRef.current = () => {};
+      if (!finished.current) unlock();
     };
   }, []);
 
   if (gone) return null;
 
-  const cueOn = cue && hole < 18;
-  const veilMask = hole > 0
-    ? `radial-gradient(circle at 50% 50%, transparent ${hole}%, #000 calc(${hole}% + 0.8px))`
-    : "none";
-
   return (
     <div
-      className="logo-intro-veil"
+      className={`logo-intro-veil${leaving ? " is-leaving" : ""}`}
       aria-hidden="true"
-      style={{
-        ["--hole" as string]: `${hole}%`,
-        opacity: hole > 132 ? 0 : 1,
-        WebkitMaskImage: veilMask,
-        maskImage: veilMask,
-      }}
     >
-      <div className="logo-intro-mark" style={{ opacity: 1 - Math.min(1, hole / 90) }}>
-        <img className="logo-intro-poster" src="/logo-transparent.png" alt="" style={{ opacity: videoReady ? 0 : 1 }} />
+      <div className="logo-intro-mark">
+        <p className="logo-intro-wordmark" style={{ opacity: videoReady ? 0 : 1 }}>
+          RECIPE<br />SPACE
+        </p>
         <video
           className="logo-intro-video"
           src={src || "/logo-intro.webm"}
@@ -134,17 +84,12 @@ export default function LogoIntro() {
           preload="auto"
           autoPlay
           style={{ opacity: videoReady ? 1 : 0 }}
+          onCanPlay={(event) => { event.currentTarget.play().catch(() => {}); }}
           onPlaying={() => setVideoReady(true)}
-          onEnded={() => startReveal.current()}
-          onError={() => startReveal.current()}
+          onEnded={() => completeRef.current()}
+          onError={() => completeRef.current()}
         />
       </div>
-      <p className={cueOn ? "logo-intro-cue is-on" : "logo-intro-cue"} style={{ opacity: cueOn ? 1 - hole / 18 : 0 }}>
-        <span>גללו לכניסה</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </p>
     </div>
   );
 }

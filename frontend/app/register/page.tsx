@@ -9,6 +9,7 @@ import Input from "@/components/ui/Input";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { Eye, EyeOff, Plus } from "lucide-react";
 import Logo from "@/components/brand/Logo";
+import PageFrame from "@/components/ui/PageFrame";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,9 +33,10 @@ export default function RegisterPage() {
   };
 
   return (
-  <div className="min-h-[85vh] flex items-center justify-center px-4">
+  <PageFrame tone="terracotta" className="auth-experience">
+  <div className="min-h-[76vh] flex items-center justify-center px-4">
   <div className="w-full max-w-md">
-  <div className="text-center mb-10 animate-fade-up">
+  <div className="auth-stage text-center mb-7 animate-fade-up">
           <Logo solid size={96} priority className="mx-auto mb-6 animate-float" />
           <span className="eyebrow mb-4">
             <span className="plus-badge text-cinnamon-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
@@ -78,5 +80,6 @@ export default function RegisterPage() {
   </p>
   </div>
   </div>
+  </PageFrame>
   );
 }

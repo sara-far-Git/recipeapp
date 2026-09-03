@@ -18,6 +18,11 @@ export default function RecipeLoading({
         <ChefHat strokeWidth={1.65} />
       </div>
       <p>{label}</p>
+      <span className="recipe-loader-beats" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
     </div>
   );
 }

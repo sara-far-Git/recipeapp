@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
+import PageFrame from "@/components/ui/PageFrame";
 
 interface Ingredient { amount: number; unit: string; name: string; }
 interface Instruction { step: number; text: string; }
@@ -129,6 +130,7 @@ export default function EditRecipePage() {
   };
 
   return (
+  <PageFrame tone="plum" className="recipe-editor-experience">
   <div className="max-w-2xl md:max-w-3xl mx-auto">
   {saveSuccess && (
   <div className="fixed inset-0 z-[100] bg-bark-600/80 flex items-center justify-center">
@@ -144,7 +146,7 @@ export default function EditRecipePage() {
   )}
 
   {/* Page header */}
-  <div className="mb-10 animate-fade-up">
+  <header className="experience-hero experience-hero--editor mb-7 animate-fade-up">
   <span className="eyebrow mb-3">
   <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   עריכת מתכון
@@ -152,10 +154,10 @@ export default function EditRecipePage() {
   <h1 className="display-lg text-bark-500">
   עדכון המתכון
   </h1>
-  </div>
+  </header>
 
   {/* Step indicators */}
-  <div className="flex items-center gap-3 mb-8 animate-fade-up">
+  <div className="recipe-stepper flex items-center gap-3 mb-8 animate-fade-up">
   {[1, 2, 3].map((s) => (
   <button key={s} onClick={() => setStep(s)} className="flex items-center gap-2 flex-1">
   <div className={cn(
@@ -362,5 +364,6 @@ export default function EditRecipePage() {
   </div>
   )}
   </div>
+  </PageFrame>
   );
 }

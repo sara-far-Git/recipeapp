@@ -6,6 +6,7 @@ import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
+import PageFrame from "@/components/ui/PageFrame";
 import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
@@ -131,8 +132,9 @@ function SearchPageContent() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-8 animate-fade-up">
+    <PageFrame tone="forest" className="search-experience">
+      <div className="max-w-5xl mx-auto">
+      <header className="experience-hero experience-hero--search mb-7 animate-fade-up">
         <span className="eyebrow mb-3">
           <span className="plus-badge text-bark-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
@@ -145,7 +147,7 @@ function SearchPageContent() {
         <p className="text-bark-300 text-sm sm:text-base mt-3 max-w-xl">
           חפשו לפי שם מתכון, מצרך, קטגוריה או מה שיש בבית.
         </p>
-      </div>
+      </header>
 
       <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
         <button
@@ -181,7 +183,7 @@ function SearchPageContent() {
       </div>
 
       {!ingredientMode && (
-        <div className="relative mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <div className="relative search-composer mb-5 animate-fade-up" style={{ animationDelay: "100ms" }}>
           <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-bark-200" />
           <input
             value={query}
@@ -272,7 +274,7 @@ function SearchPageContent() {
       )}
 
       {ingredientMode && (
-        <div className="card-surface p-6 mb-6 animate-fade-up">
+        <div className="card-surface search-pantry p-6 mb-6 animate-fade-up">
           <p className="text-sm text-bark-300 mb-4">כתבו מה יש בבית, ונמצא מתכונים שמתאימים למצרכים שלכם.</p>
           <div className="flex flex-wrap gap-2 mb-4">
             {QUICK_INGREDIENTS.map((ingredient) => (
@@ -358,7 +360,7 @@ function SearchPageContent() {
       )}
 
       {!ingredientMode && showFilters && (
-        <div className="card-surface p-5 mb-6 space-y-5 animate-fade-up">
+        <div className="card-surface filter-drawer p-5 mb-6 space-y-5 animate-fade-up">
           <div className="flex items-center justify-between">
             <h3 className="section-title text-bark-500">סינון</h3>
             {hasActiveFilters && (
@@ -409,7 +411,8 @@ function SearchPageContent() {
       ) : (
         <EmptyState title="בחרו קטגוריה או חיפוש מהיר" action={false} />
       )}
-    </div>
+      </div>
+    </PageFrame>
   );
 }
 
@@ -478,7 +481,9 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <RecipeLoading label="מכינה את החיפוש" compact />
+        <PageFrame tone="forest" className="search-experience">
+          <RecipeLoading label="מכינה את החיפוש" compact />
+        </PageFrame>
       }
     >
       <SearchPageContent />
