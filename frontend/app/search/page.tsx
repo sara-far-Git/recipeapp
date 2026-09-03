@@ -394,7 +394,7 @@ function SearchPageContent() {
           <EmptyState title="לא נמצאו מתכונים מהמצרכים האלה" />
         ) : null
       ) : loading ? (
-        <RecipeLoading label="מוצאת לך רעיונות" />
+        <RecipeLoading label="מוצאת לך רעיונות" kind="search" />
       ) : results.length > 0 ? (
         <div>
           <p className="text-sm text-bark-200 mb-5">{results.length} מתכונים</p>
@@ -482,7 +482,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <PageFrame tone="forest" className="search-experience">
-          <RecipeLoading label="מכינה את החיפוש" compact />
+          <RecipeLoading label="מכינה את החיפוש" kind="search" compact />
         </PageFrame>
       }
     >

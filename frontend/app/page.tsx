@@ -226,7 +226,7 @@ export default function FeedPage() {
 
           <div className="mt-8">
             {loading ? (
-              <RecipeLoading label="מחפשת מה טוב להכין" />
+              <RecipeLoading label="מחפשת מה טוב להכין" kind="search" />
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
                 <ChefHat className="w-12 h-12 mx-auto text-bark-200 mb-6" strokeWidth={1.2} />

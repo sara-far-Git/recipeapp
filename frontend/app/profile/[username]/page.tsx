@@ -109,7 +109,7 @@ function ProfilePageContent() {
   if (loading) {
     return (
       <PageFrame tone="sage" className="profile-experience">
-        <RecipeLoading label="פותחת את ספר המתכונים" />
+        <RecipeLoading label="פותחת את ספר המתכונים" kind="collection" />
       </PageFrame>
     );
   }
@@ -380,7 +380,7 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <RecipeLoading label="מכינה את הפרופיל" compact />
+        <RecipeLoading label="מכינה את הפרופיל" kind="collection" compact />
       }
     >
       <ProfilePageContent />

@@ -86,7 +86,7 @@ export default function EditRecipePage() {
 
   if (loading) {
   return (
-  <RecipeLoading label="מוציאה את המתכון לעבודה" />
+  <RecipeLoading label="מוציאה את המתכון לעבודה" kind="recipe" />
   );
   }
 

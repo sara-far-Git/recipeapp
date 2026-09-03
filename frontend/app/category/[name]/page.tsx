@@ -53,7 +53,7 @@ export default function CategoryPage() {
       </header>
 
       {loading ? (
-        <RecipeLoading label="מוצאת מתכונים מתאימים" />
+        <RecipeLoading label="מוצאת מתכונים מתאימים" kind="search" />
       ) : recipes.length === 0 ? (
         <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
           <div className="card-surface empty-chapter p-8 sm:p-10 mb-12">

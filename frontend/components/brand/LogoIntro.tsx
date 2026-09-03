@@ -20,7 +20,9 @@ function introSrc() {
 }
 
 export default function LogoIntro() {
-  const [gone, setGone] = useState(false);
+  // Keep the overlay out of the first paint. Otherwise every route transition
+  // can flash the logo before the client decides this session should skip it.
+  const [gone, setGone] = useState(true);
   const [src, setSrc] = useState("");
   const [leaving, setLeaving] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -33,11 +35,11 @@ export default function LogoIntro() {
     const forcePreview = new URLSearchParams(window.location.search).has("intro");
     if ((!forcePreview && localPreview) || reduced || window.scrollY > 48 || (!forcePreview && sessionStorage.getItem(KEY) === "1")) {
       unlock();
-      setGone(true);
       return;
     }
 
     document.documentElement.classList.add("logo-intro");
+    setGone(false);
     setSrc(introSrc());
 
     const complete = () => {

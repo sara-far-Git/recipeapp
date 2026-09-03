@@ -61,7 +61,7 @@ export default function RegisterPage() {
   <Input id="password" label="סיסמה" type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required dir="ltr" minLength={6} />
   <button type="button" onClick={() => setShowPass(!showPass)}
   aria-label={showPass ? "הסתרת הסיסמה" : "הצגת הסיסמה"}
-  className="absolute left-3 top-[42px] text-bark-200 hover:text-cinnamon-500 transition-colors">
+  className="absolute left-1 top-[30px] inline-flex min-h-11 min-w-11 items-center justify-center text-bark-200 hover:text-cinnamon-500 transition-colors">
   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
   </button>
   </div>
