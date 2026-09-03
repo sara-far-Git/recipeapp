@@ -39,18 +39,18 @@ export default function Footer() {
         </div>
       )}
 
-      <footer className="pb-24 sm:pb-20" style={{ background: "#FAF8F3", borderTop: "1px solid rgba(39,94,80,0.12)" }}>
+      <footer className="site-footer pb-24 sm:pb-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-6 text-center">
             <Link href="/" className="inline-flex" aria-label="ספר המתכונים — דף הבית">
-              <Logo solid size={72} />
+              <Logo transparent size={72} />
             </Link>
-            <p className="text-cream-200 text-[15px] max-w-md">
+            <p className="site-footer__blurb text-[15px] max-w-md">
               ספר המתכונים — המקום שבו המתכונים של הבית נשמרים, נמצאים, וחוזרים לשולחן.
             </p>
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
-              <Link href="/privacy" className="text-cream-200 hover:text-cinnamon-300 inline-flex items-center min-h-11 px-2">מדיניות פרטיות</Link>
-              <Link href="/terms" className="text-cream-200 hover:text-cinnamon-300 inline-flex items-center min-h-11 px-2">תנאי שימוש</Link>
+              <Link href="/privacy" className="site-footer__link inline-flex items-center min-h-11 px-2">מדיניות פרטיות</Link>
+              <Link href="/terms" className="site-footer__link inline-flex items-center min-h-11 px-2">תנאי שימוש</Link>
             </nav>
 
             {canInstall ? (
@@ -65,7 +65,7 @@ export default function Footer() {
               </Link>
             )}
 
-            <div className="text-[13px] text-cream-300">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
+            <div className="site-footer__fine text-[13px]">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
           </div>
         </div>
       </footer>
