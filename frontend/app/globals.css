@@ -454,7 +454,7 @@
   .home-page .home-stack {
     --stack-top: 4rem;
     --stack-count: 5;
-    --stack-span: 1.9;
+    --stack-span: 1.15;
     --stack-view: calc(100svh - var(--stack-top));
     position: relative;
     height: calc(var(--stack-view) * (1 + (var(--stack-count) - 1) * var(--stack-span)));

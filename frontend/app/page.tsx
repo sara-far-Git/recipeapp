@@ -387,7 +387,7 @@ type EnterDir = keyof typeof ENTER_FROM;
 
 function stackSpan(stack: Element) {
   const raw = Number(getComputedStyle(stack).getPropertyValue("--stack-span"));
-  return Number.isFinite(raw) && raw > 0 ? raw : 1.9;
+  return Number.isFinite(raw) && raw > 0 ? raw : 1.15;
 }
 
 function HomeStack({ count, children }: { count: number; children: React.ReactNode }) {
