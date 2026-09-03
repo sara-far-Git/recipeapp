@@ -476,18 +476,18 @@ export default function RecipeDetailPage() {
   {/* Stats strip — non-interactive, visually distinct from buttons */}
   <div className={cn("grid gap-3 mb-8 animate-fade-up", statsColumns)} style={{ animationDelay: "120ms" }}>
   {totalTime > 0 && (
-  <div className="p-4 text-center" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
+  <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
   <Clock className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{totalTime} דק׳</div>
   <div className="text-xs text-bark-200">זמן כולל</div>
   </div>
   )}
-  <div className="p-4 text-center" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
+  <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
   <Users className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{recipe.servings}</div>
   <div className="text-xs text-bark-200">סועדים</div>
   </div>
-  <div className="p-4 text-center" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
+  <div className="p-4 text-center rounded-lg" style={{ background: "#ede7d6", border: "1px solid #ddd0b4" }}>
   <ChefHat className="w-5 h-5 text-cinnamon-500 mx-auto mb-1.5" />
   <div className="text-sm font-bold text-bark-500">{difficultyLabels[recipe.difficulty] || "בינוני"}</div>
   <div className="text-xs text-bark-200">רמת קושי</div>

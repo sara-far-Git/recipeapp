@@ -339,7 +339,7 @@ function SearchPageContent() {
               </p>
               <div className="space-y-3">
                 {aiSuggestions.map((s: any, i: number) => (
-                  <div key={i} className="p-4 bg-surface-100" style={{ border: "1px solid rgba(39,94,80,0.12)" }}>
+                  <div key={i} className="p-4 bg-surface-100 rounded-lg" style={{ border: "1px solid rgba(39,94,80,0.12)" }}>
                     <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
                     <p className="text-sm text-bark-300 mb-2">{s.description}</p>
                     <div className="flex gap-2 text-xs text-bark-300">

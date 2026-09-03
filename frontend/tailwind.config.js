@@ -60,6 +60,16 @@ module.exports = {
           700: "#8F4330",
         },
       },
+      borderRadius: {
+        none: "0",
+        sm: "var(--r-sm)",
+        DEFAULT: "var(--r-sm)",
+        md: "var(--r-md)",
+        lg: "var(--r-md)",
+        xl: "var(--r-lg)",
+        "2xl": "var(--r-lg)",
+        full: "var(--r-pill)",
+      },
       boxShadow: {
         "warm-lg": "0 16px 40px rgba(39, 94, 80, 0.10), 0 4px 12px rgba(39, 94, 80, 0.06)",
       },

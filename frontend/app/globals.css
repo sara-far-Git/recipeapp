@@ -71,6 +71,14 @@
     --btn-hover: #27594E;
     --muted: #66736D;
     --logo: #1E4D45;
+    /* Corner scale. The display face, the logo and the food photography are
+       all round; the containers were square, and the two never met. Pills for
+       small controls, --r-md for surfaces you read, --r-lg for the big blocks
+       that open a page. Lines and underline fields stay square. */
+    --r-sm: 0.45rem;
+    --r-md: 0.85rem;
+    --r-lg: 1.4rem;
+    --r-pill: 999px;
     --font-brand: "Recipe Unica", "Recipe Plex Hebrew", "Aduma", "Aduma FOT", ".SF Hebrew", "SF Hebrew", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Arial Hebrew", Arial, sans-serif;
     --font-display: "Recipe Baba", "Recipe Unica", "Recipe Plex Hebrew", "Aduma", "Aduma FOT", ".SF Hebrew", "SF Hebrew", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Arial Hebrew", Arial, sans-serif;
   }
@@ -109,10 +117,6 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--ember); }
 
   input, textarea, select { color-scheme: light; }
-
-  *, *::before, *::after {
-    border-radius: 0 !important;
-  }
 
   :where(a, button, input, textarea, select):focus-visible {
     outline: 3px solid rgba(217, 119, 87, 0.42);
@@ -191,6 +195,7 @@
     transform: translateX(120%);
   }
   .route-progress b {
+    border-radius: var(--r-sm);
     position: absolute;
     top: 0.6rem;
     right: 1rem;
@@ -222,7 +227,7 @@
     position: relative;
     background: rgba(255, 252, 248, 0.55);
     border: 1px solid rgba(39, 94, 80, 0.10);
-    border-radius: 0;
+    border-radius: var(--r-lg);
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
     box-shadow: 0 24px 60px rgba(39, 94, 80, 0.08);
@@ -253,8 +258,8 @@
     box-shadow: inset 0 0 40px rgba(58, 44, 36, 0.25);
     pointer-events: none;
   }
-  /* The site stays angular, while the editorial food photography is its own
-     visual language: cropped into deliberate circles. */
+  /* Food photography is cropped into full circles — the far end of the same
+     corner scale the rest of the interface sits on. */
   .home-page .food-orb,
   .home-page .food-orb::after,
   .home-page .food-orb > span,
@@ -321,7 +326,7 @@
   .cat-tile {
     background: rgba(255, 252, 248, 0.55);
     border: 1px solid rgba(39, 94, 80, 0.10);
-    border-radius: 0;
+    border-radius: var(--r-lg);
     padding: 1.1rem 1.1rem 1.25rem;
     text-align: right;
     transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
@@ -586,6 +591,7 @@
     line-height: 1.7;
   }
   .assistant-composer {
+    border-radius: var(--r-pill);
     width: min(100%, 44rem);
     min-height: 4.5rem;
     display: flex;
@@ -621,6 +627,7 @@
   }
   .assistant-composer input::placeholder { color: #B7CDBB; }
   .assistant-composer button {
+    border-radius: var(--r-pill);
     width: 3.35rem;
     height: 3.35rem;
     display: grid;
@@ -682,6 +689,7 @@
     margin-top: 1rem;
   }
   .assistant-chip {
+    border-radius: var(--r-pill);
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -1142,6 +1150,7 @@
   }
   .home-join-callout .eyebrow { color: #18382D; }
   .home-join-primary {
+    border-radius: var(--r-pill);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1366,7 +1375,7 @@
   .card-surface {
     background: rgba(255, 252, 248, 0.7);
     border: 1px solid rgba(39, 94, 80, 0.10);
-    border-radius: 0;
+    border-radius: var(--r-md);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
@@ -1455,6 +1464,7 @@
   }
 
   .recipe-action-strip {
+    border-radius: var(--r-md);
     position: sticky;
     top: 4.75rem;
     z-index: 35;
@@ -1600,6 +1610,7 @@
     min-height: clamp(10rem, 19vw, 14rem);
     padding: clamp(1.35rem, 4vw, 3rem);
     border: 0;
+    border-radius: var(--r-lg);
     background: #15382D;
     color: #FAF8F3;
   }
@@ -1648,6 +1659,7 @@
   .experience-page .badge-neutral { background: rgba(21, 56, 45, 0.09); }
 
   .search-composer {
+    border-radius: var(--r-lg);
     padding: 0.7rem 1rem;
     border: 1px solid rgba(21, 56, 45, 0.25);
     background: #EEDCC0;
@@ -1660,6 +1672,7 @@
   }
   .search-composer .input-dark { font-family: var(--font-display); }
   .search-choice {
+    border-radius: var(--r-pill);
     background: #E7D7BC;
     border: 1px solid transparent;
     color: #496259;
@@ -1738,6 +1751,7 @@
   .experience-tabs > a:hover::after { transform: scaleX(1); }
 
   .shopping-board {
+    border-radius: var(--r-lg);
     background: #15382D !important;
     border-color: rgba(250, 248, 243, 0.24) !important;
     box-shadow: 0 1.35rem 0 rgba(21, 56, 45, 0.18) !important;
@@ -1757,6 +1771,8 @@
   .shopping-board [role="checkbox"] > span { border-color: #B7CDBB; }
 
   .profile-stats {
+    border-radius: var(--r-md);
+    overflow: hidden;
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch !important;
@@ -1806,11 +1822,12 @@
   .capture-action:hover::before { width: 100%; }
   .plan-strip { border-right: 0.35rem solid #275E50 !important; }
   .recipe-stepper {
+    border-radius: var(--r-md);
     padding: 0.65rem;
     background: #15382D;
     border: 1px solid rgba(21, 56, 45, 0.4);
   }
-  .recipe-stepper > button { min-height: 3.25rem; transition: transform 180ms ease; }
+  .recipe-stepper > button { min-height: 3.25rem; border-radius: var(--r-sm); transition: transform 180ms ease; }
   .recipe-stepper > button:hover { transform: translateY(-0.15rem); }
   .recipe-stepper-num {
     display: grid;
@@ -1828,6 +1845,8 @@
   .recipe-editor-experience [class*="border-dashed"]:hover { background: rgba(183, 94, 70, 0.09); }
 
   .recipe-detail-page .recipe-hero {
+    border-radius: var(--r-lg);
+    overflow: hidden;
     border: 1px solid rgba(21, 56, 45, 0.26);
     box-shadow: 0 1.25rem 0 rgba(21, 56, 45, 0.12);
   }
@@ -1854,6 +1873,7 @@
     white-space: nowrap;
   }
   .recipe-instruction-row {
+    border-radius: var(--r-md);
     display: grid;
     grid-template-columns: clamp(4.4rem, 8vw, 6.6rem) minmax(0, 1fr);
     align-items: stretch;
@@ -1892,6 +1912,7 @@
     background: #15382D;
     border: 1px solid rgba(250, 248, 243, 0.22);
     border-bottom: 0.3rem solid #D97757;
+    border-radius: var(--r-lg);
   }
   .auth-stage .text-bark-500,
   .auth-stage .text-bark-300,
@@ -1957,6 +1978,7 @@
   .site-header-login,
   .site-header-cta,
   .site-header-profile {
+    border-radius: var(--r-pill);
     min-height: 42px;
     display: inline-flex;
     align-items: center;
