@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type LoaderKind = "recipe" | "search" | "collection" | "shopping";
 
 type RecipeLoadingProps = {
@@ -27,11 +29,25 @@ export default function RecipeLoading({
       aria-live="polite"
       aria-busy="true"
     >
-      {/* the site's own mark, working: a card lifts out of the box and drops
-          back, over and over, while the writing on it flickers past */}
+      {/* The mark itself, working: the same two renders the hero uses, with
+          the card lifting out of the box and settling back. */}
       <span className="recipe-loader-box" aria-hidden="true">
-        <span className="recipe-loader-card"><i /><i /></span>
-        <span className="recipe-loader-front" />
+        <Image
+          src="/marks/card-front.png"
+          alt=""
+          width={1206}
+          height={1116}
+          sizes="120px"
+          className="recipe-loader-card"
+        />
+        <Image
+          src="/marks/box-front.png"
+          alt=""
+          width={1171}
+          height={1233}
+          sizes="120px"
+          className="recipe-loader-front"
+        />
       </span>
       <div className="recipe-loader-copy">
         <p>{label}</p>
