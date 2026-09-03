@@ -13,10 +13,16 @@ import { useEffect, useRef, useState } from "react";
 
 type Sample = { title: string; category: string; serves: number; minutes: number };
 
-const FALLBACK: Sample[] = [
-  { title: "עוגת גבינה וריבת חלב", category: "קינוחים", serves: 12, minutes: 70 },
-  { title: "עוף בלימון וטימין", category: "עיקריות", serves: 4, minutes: 55 },
-  { title: "לחם כפרי בסיר", category: "מאפים", serves: 8, minutes: 80 },
+/* The written lines are decoration, not information — nobody is meant to read
+   the card, and the script face has no Hebrew. So the hand writes English,
+   and the page's own recipes stay where they can actually be read. */
+const CARDS: Sample[] = [
+  { title: "Lemon & Thyme Chicken", category: "עיקריות", serves: 4, minutes: 55 },
+  { title: "Cheesecake, Dulce de Leche", category: "קינוחים", serves: 12, minutes: 70 },
+  { title: "Rustic Loaf in a Pot", category: "מאפים", serves: 8, minutes: 80 },
+  { title: "Garden Salad, Soft Herbs", category: "סלטים", serves: 4, minutes: 12 },
+  { title: "Grapefruit & Thyme Cooler", category: "משקאות", serves: 6, minutes: 8 },
+  { title: "Roasted Root Soup", category: "ראשונות", serves: 6, minutes: 45 },
 ];
 
 /** Tab tone per category — the six the recipe cards already use. */
@@ -31,17 +37,8 @@ const TONE: Record<string, { bg: string; fg: string }> = {
 
 const STEP_MS = 3800;
 
-export default function WritingCard({ recipes }: { recipes?: any[] }) {
-  const cards: Sample[] =
-    recipes && recipes.length
-      ? recipes.slice(0, 3).map((r) => ({
-          title: r.title,
-          category: r.category || "מתכון",
-          serves: r.servings || 4,
-          minutes: (r.prep_time_minutes || 0) + (r.cook_time_minutes || 0),
-        }))
-      : FALLBACK;
-
+export default function WritingCard() {
+  const cards = CARDS;
   const [i, setI] = useState(0);
   const [writing, setWriting] = useState(false);
   const timer = useRef<number | null>(null);
@@ -81,7 +78,7 @@ export default function WritingCard({ recipes }: { recipes?: any[] }) {
       onBlur={stop}
       tabIndex={0}
       role="img"
-      aria-label={`כרטיס מתכון: ${card.title}`}>
+      aria-label="כרטיס מתכון מצויר">
       {/* the two cards standing behind, showing only their tabs */}
       <span className="writing-card__filed writing-card__filed--back">
         <span className="writing-card__filed-tab">DESSERTS</span>
@@ -113,7 +110,7 @@ export default function WritingCard({ recipes }: { recipes?: any[] }) {
           <span className="writing-card__label">SERVES</span>
           <span className="writing-card__written">
             {card.serves}
-            {card.minutes > 0 && ` · ${card.minutes} דק׳`}
+            {card.minutes > 0 && ` · ${card.minutes} min`}
           </span>
         </div>
 

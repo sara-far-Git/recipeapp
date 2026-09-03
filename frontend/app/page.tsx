@@ -138,7 +138,7 @@ export default function FeedPage() {
               </Link>
             </div>
           </Reveal>
-          <WritingCard recipes={recipes} />
+          <WritingCard />
         </div>
       </CinematicSection>
 
