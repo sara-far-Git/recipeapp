@@ -4,12 +4,13 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
-import { ArrowUp, LoaderCircle, SlidersHorizontal, X, Plus, Search, ChefHat } from "lucide-react";
+import { ArrowUp, LoaderCircle, SlidersHorizontal, X, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Mark from "@/components/ui/Mark";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
@@ -231,7 +232,7 @@ export default function FeedPage() {
               <RecipeLoading label="מחפשת מה טוב להכין" kind="search" />
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
-                <ChefHat className="w-12 h-12 mx-auto text-bark-200 mb-6" strokeWidth={1.2} />
+                <Mark name="collection" className="w-32 mx-auto mb-5" sizes="128px" decorative />
                 <h3 className="display-md text-bark-500 mb-3">
                   {filtersActive ? "שום מתכון לא תפס את הסינון" : "האוסף עדיין ריק"}
                 </h3>

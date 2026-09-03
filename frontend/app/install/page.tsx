@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Mark from "@/components/ui/Mark";
 import { Download, Share, Plus, Smartphone, Monitor, Check } from "lucide-react";
 import Logo from "@/components/brand/Logo";
 
@@ -44,6 +45,7 @@ export default function InstallPage() {
           </span>
           אפליקציה
         </span>
+        <Mark name="desktop" className="w-40 mx-auto mb-4" sizes="160px" priority decorative />
         <h1 className="display-lg text-bark-500 mb-2">הספר על המסך</h1>
         <p className="text-bark-300 text-sm">גישה מהירה מהמסך הראשי, בלי דפדפן</p>
       </div>

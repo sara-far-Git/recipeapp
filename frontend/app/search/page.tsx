@@ -7,8 +7,9 @@ import { searchApi, suggestApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
-import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus, BookOpen } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Mark from "@/components/ui/Mark";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_FILTERS = [
@@ -465,7 +466,7 @@ function EmptyState({
 }) {
   return (
     <div className="card-surface p-8 sm:p-10 text-center animate-fade-up group">
-      <BookOpen className="w-12 h-12 mx-auto mb-4 text-bark-200" strokeWidth={1.2} />
+      <Mark name="search" className="w-32 mx-auto mb-4" sizes="128px" decorative />
       <p className="section-title text-bark-500 mb-2">{title}</p>
       <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.</p>
       {onReset ? (
