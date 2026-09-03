@@ -550,7 +550,7 @@
     position: relative;
     display: none;
     width: 100%;
-    aspect-ratio: 1 / 1.04;
+    aspect-ratio: 1 / 1.16;
     margin-inline-end: clamp(0.5rem, 3vw, 3rem);
   }
   .writing-card:focus-visible { outline: 3px solid rgba(217, 119, 87, 0.5); outline-offset: 8px; border-radius: 1rem; }
@@ -558,9 +558,9 @@
 
   .writing-card__filed {
     position: absolute;
-    inset-inline: 11%;
-    top: 6%;
-    height: 62%;
+    inset-inline: 14%;
+    top: -2%;
+    height: 66%;
     border-radius: 0.65rem;
     box-shadow: 0 10px 26px -16px rgba(6, 24, 18, 0.7);
   }
@@ -591,9 +591,9 @@
   .writing-card__sheet {
     position: absolute;
     z-index: 2;
-    inset-inline: 2%;
-    top: 14%;
-    bottom: 18%;
+    inset-inline: 6%;
+    top: 4%;
+    bottom: 22%;
     padding: 1.35rem 1.25rem 1.2rem;
     border-radius: 0.8rem;
     background: linear-gradient(#FCFAF6, #F6F1E6);
@@ -711,34 +711,18 @@
   }
   .writing-card.is-writing .writing-card__leaf { animation: wc-fade 560ms ease-out 820ms both; }
 
+  /* The box is the render itself, laid over the cards. Its front wall hides
+     their feet, which is what makes them read as standing inside it — the
+     swooping lip is the line they disappear behind. */
   .writing-card__box {
     position: absolute;
     z-index: 3;
     inset-inline: 0;
     bottom: 0;
-    height: 30%;
-    border-radius: 0.5rem 0.5rem 1.3rem 1.3rem;
-    background: linear-gradient(#F7F2E8 0%, #F0E8D8 55%, #E6DAC3 100%);
-    box-shadow: 0 26px 52px -22px rgba(6, 24, 18, 0.85),
-                inset 0 2px 0 rgba(255, 255, 255, 0.7);
-  }
-  .writing-card__box::before {
-    content: "";
-    position: absolute;
-    inset: 6px 12px auto;
-    height: 1.5px;
-    border-radius: 2px;
-    background: #D97757;
-    opacity: 0.85;
-  }
-  .writing-card__box::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    bottom: 16%;
-    height: 46%;
-    background: no-repeat center / contain
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%238FA894' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 56V30'/%3E%3Cpath d='M32 30c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 38c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3Ccircle cx='45' cy='24' r='2.4' fill='%23D97757' stroke='none'/%3E%3C/svg%3E");
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 34px rgba(6, 24, 18, 0.55));
+    pointer-events: none;
   }
 
   @keyframes wc-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -749,226 +733,6 @@
     .writing-card .writing-card__flourish,
     .writing-card .writing-card__written,
     .writing-card .writing-card__leaf { animation: none; clip-path: none; opacity: 1; }
-  }
-
-  /* ─── Footer — the page closes in the same forest it opens in ─
-     It used to sit on near-white, which read as a bright slab under a warm
-     page. Same green as the header, so the site is bookended. */
-  .site-footer {
-    background: #0B2A20;
-    border-top: 1px solid rgba(250, 248, 243, 0.10);
-    color: #D5E4D7;
-  }
-  .site-footer__blurb { color: #B7CDBB; }
-  .site-footer__link {
-    color: #D5E4D7;
-    transition: color 0.2s ease;
-  }
-  .site-footer__link:hover { color: #E4A184; }
-  .site-footer__fine { color: rgba(213, 228, 215, 0.6); }
-  /* the cream button reads as the light thing on a dark ground */
-  .site-footer .btn-cream {
-    background: #FAF8F3;
-    border-color: #FAF8F3;
-    color: #12352A;
-  }
-  .site-footer .btn-cream:hover {
-    background: #E4A184;
-    border-color: #E4A184;
-    color: #12352A;
-  }
-
-  /* ─── Hero: the card that writes itself ───────────────────
-     A card rises from the box, the tab slides up, the rules draw left to
-     right, and the writing lands on them in turn. Everything is keyframes off
-     a key change in React, so a cycle costs no per-frame JS. Large screens
-     only — below that the composer owns the panel. */
-  /* Every child is absolutely placed, so the box has no intrinsic width —
-     the grid track sets it and the card fills that track. */
-  .writing-card {
-    position: relative;
-    display: none;
-    width: 100%;
-    aspect-ratio: 1 / 1.02;
-  }
-  @media (min-width: 1100px) {
-    .writing-card { display: block; }
-  }
-
-  /* The box sits in FRONT of the cards — that is what makes them read as
-     being inside it rather than stacked on top of it. */
-  .writing-card__box {
-    position: absolute;
-    z-index: 3;
-    inset-inline: 0;
-    bottom: 0;
-    height: 34%;
-    border-radius: 0.55rem 0.55rem 1.25rem 1.25rem;
-    background: linear-gradient(#F6F1E6 0%, #EFE7D6 60%, #E7DCC6 100%);
-    box-shadow: 0 26px 52px -22px rgba(6, 24, 18, 0.8),
-                inset 0 2px 0 rgba(255, 255, 255, 0.6);
-  }
-  /* the gold rim along the box's lip */
-  .writing-card__box::before {
-    content: "";
-    position: absolute;
-    inset: 6px 10px auto;
-    height: 1.5px;
-    border-radius: 2px;
-    background: rgba(193, 154, 82, 0.9);
-  }
-  /* the sprig printed on its front */
-  .writing-card__box::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    bottom: 18%;
-    height: 34%;
-    background: no-repeat center / contain
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232F6B5D' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='0.45'%3E%3Cpath d='M32 56V28'/%3E%3Cpath d='M32 28c0-12 10-18 18-18-2 11-8 18-18 18z'/%3E%3Cpath d='M32 36c0-10-10-16-18-14 2 8 8 14 18 14z'/%3E%3C/svg%3E");
-  }
-
-  .writing-card__behind {
-    position: absolute;
-    inset-inline: 9%;
-    bottom: 22%;
-    height: 54%;
-    border-radius: 0.7rem 0.7rem 0.3rem 0.3rem;
-    background: #F2ECDD;
-    box-shadow: 0 -8px 20px -12px rgba(6, 24, 18, 0.55);
-  }
-  .writing-card__behind--1 { z-index: 1; transform: translate(1.5%, -3%) rotate(1.2deg); }
-  .writing-card__behind--2 { z-index: 0; transform: translate(-2.5%, -6%) rotate(-2deg); opacity: 0.8; }
-
-  .writing-card__sheet {
-    position: absolute;
-    z-index: 2;
-    inset-inline: 3%;
-    bottom: 20%;
-    padding: 1.45rem 1.3rem 2.6rem;
-    border-radius: 0.85rem 0.85rem 0.35rem 0.35rem;
-    background: #FAF8F3;
-    box-shadow: 0 -10px 26px -14px rgba(6, 24, 18, 0.55);
-    /* rises out of the box, which is drawn over its foot */
-    animation: wc-draw 820ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes wc-draw {
-    from { transform: translateY(22%); opacity: 0; }
-    to   { transform: none; opacity: 1; }
-  }
-
-  .writing-card__tab {
-    position: absolute;
-    top: -1.35rem;
-    inset-inline-start: 1.4rem;
-    height: 1.9rem;
-    padding: 0 0.85rem 0.5rem;
-    display: inline-flex;
-    align-items: center;
-    border-radius: 0.45rem 0.45rem 0 0;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    animation: wc-tab 620ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
-  }
-  @keyframes wc-tab {
-    from { transform: translateY(0.9rem); opacity: 0; }
-    to   { transform: none; opacity: 1; }
-  }
-
-  .writing-card__eyebrow {
-    margin: 0;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    color: #275E50;
-    animation: wc-fade 520ms ease-out 340ms both;
-  }
-  .writing-card__flourish {
-    display: block;
-    width: 3.5rem;
-    height: 1px;
-    margin: 0.55rem auto 1.25rem;
-    background: #D97757;
-    transform-origin: center;
-    animation: wc-flourish 520ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
-  }
-  @keyframes wc-flourish {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-
-  .writing-card__line {
-    position: relative;
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.9rem;
-  }
-  .writing-card__label {
-    flex-shrink: 0;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    color: #66736D;
-  }
-  /* the rule, drawn in from the start edge */
-  .writing-card__rule {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1px;
-    background: rgba(39, 94, 80, 0.28);
-    transform-origin: right;
-    animation: wc-rule 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes wc-rule {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-  /* the writing, landing after its own rule */
-  .writing-card__written {
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-weight: 700;
-    color: #1E4D45;
-    animation: wc-write 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes wc-write {
-    from { clip-path: inset(0 0 0 100%); opacity: 0.4; }
-    to   { clip-path: inset(0 0 0 0); opacity: 1; }
-  }
-  .writing-card__line--title .writing-card__written { font-size: 1.05rem; }
-  .writing-card__line--serves .writing-card__written { font-size: 0.9rem; color: #275E50; }
-  .writing-card__line--title  .writing-card__rule    { animation-delay: 520ms; }
-  .writing-card__line--title  .writing-card__written { animation-delay: 880ms; }
-  .writing-card__line--serves .writing-card__rule    { animation-delay: 700ms; }
-  .writing-card__line--serves .writing-card__written { animation-delay: 1180ms; }
-
-  .writing-card__leaf {
-    position: absolute;
-    inset-block-start: 1.2rem;
-    inset-inline-end: 1.1rem;
-    width: 2.6rem;
-    height: 2.6rem;
-    background: no-repeat center / contain
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232F6B5D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'%3E%3Cpath d='M32 56V26'/%3E%3Cpath d='M32 26c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 34c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3C/svg%3E");
-    animation: wc-fade 620ms ease-out 900ms both;
-  }
-
-  @keyframes wc-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .writing-card__sheet, .writing-card__tab, .writing-card__eyebrow,
-    .writing-card__flourish, .writing-card__rule, .writing-card__written,
-    .writing-card__leaf { animation: none; }
-    .writing-card__written { clip-path: none; opacity: 1; }
   }
 
   .assistant-home {

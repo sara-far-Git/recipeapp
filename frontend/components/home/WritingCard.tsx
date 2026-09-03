@@ -9,6 +9,7 @@
  * arrives; then the card writes itself, and every pass after that brings the
  * next recipe. Real recipes when the page has them, stand-ins before.
  */
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Sample = { title: string; category: string; serves: number; minutes: number };
@@ -117,8 +118,16 @@ export default function WritingCard() {
         <span className="writing-card__leaf" aria-hidden="true" />
       </article>
 
-      {/* the ceramic box, drawn in front so the cards sit inside it */}
-      <span className="writing-card__box" aria-hidden="true" />
+      {/* the real box, drawn over the cards' feet so they sit inside it */}
+      <Image
+        src="/marks/box.png"
+        alt=""
+        aria-hidden="true"
+        width={1291}
+        height={1006}
+        priority
+        className="writing-card__box"
+      />
     </div>
   );
 }
