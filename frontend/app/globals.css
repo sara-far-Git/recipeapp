@@ -450,39 +450,46 @@
     border-top-color: rgba(16, 43, 34, 0.22);
   }
 
-  /* The home starts as a task, not a stack of promotional panels. */
+  /* One sticky viewport: later panels slide over the previous one while you scroll. */
+  .home-page .home-stack {
+    --stack-top: 4rem;
+    --stack-count: 5;
+    position: relative;
+    height: calc((100svh - var(--stack-top)) * var(--stack-count));
+  }
+  .home-page .home-stack-stage {
+    position: sticky;
+    top: var(--stack-top);
+    height: calc(100svh - var(--stack-top));
+    overflow: hidden;
+  }
   .home-page .stack-panel,
   .home-page .stack-panel:not(:last-child) {
-    position: relative;
-    top: auto;
-    min-height: auto;
+    position: absolute;
+    inset: 0;
+    top: 0;
+    min-height: 0;
     max-height: none;
+    height: 100%;
     box-shadow: none;
     scroll-snap-align: none;
     scroll-snap-stop: normal;
+    overflow: hidden;
   }
   .home-page .panel-copy {
     padding-block: 0;
+    height: 100%;
   }
-  .home-page .home-panel-categories { --enter-x: 16vw; --enter-y: 0; }
-  .home-page .home-panel-recipes { --enter-x: -16vw; --enter-y: 0; }
-  .home-page .home-panel-weekly { --enter-x: 0; --enter-y: 18vh; }
-  .home-page .home-panel-why { --enter-x: 0; --enter-y: -14vh; }
-  .home-page .home-panel-join { --enter-x: -12vw; --enter-y: 12vh; }
-  @media (prefers-reduced-motion: no-preference) {
-    html:has(.home-page) { scroll-snap-type: none; }
-    .home-page .stack-panel:not(.is-first) .panel-copy {
-      opacity: 0;
-      transform: translate3d(var(--enter-x, 0), var(--enter-y, 4rem), 0) !important;
-    }
-    .home-page .stack-panel.in-view .panel-copy {
-      opacity: 1;
-      transform: none !important;
-      transition:
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.5s ease;
-    }
+  .home-page .stack-panel[data-enter="right"] { --from-x: 100%; --from-y: 0%; }
+  .home-page .stack-panel[data-enter="left"] { --from-x: -100%; --from-y: 0%; }
+  .home-page .stack-panel[data-enter="bottom"] { --from-x: 0%; --from-y: 100%; }
+  .home-page .stack-panel[data-enter="top"] { --from-x: 0%; --from-y: -100%; }
+  .home-page .stack-panel.is-first { transform: none; }
+  .home-page .stack-panel:not(.is-first) {
+    transform: translate3d(var(--from-x), var(--from-y), 0);
+    will-change: transform;
   }
+  html:has(.home-page) { scroll-snap-type: none; }
   .assistant-home {
     min-height: calc(100svh - 4rem);
     display: flex;
@@ -1927,9 +1934,14 @@
     z-index: 70;
     pointer-events: none;
     overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s linear 0.7s;
   }
-  .logo-menu:not(.is-open) { display: none; }
-  .logo-menu.is-open { pointer-events: auto; }
+  .logo-menu.is-open {
+    visibility: visible;
+    pointer-events: auto;
+    transition: visibility 0s;
+  }
   .logo-menu-bg,
   .logo-menu-slab {
     position: absolute;
@@ -1959,14 +1971,30 @@
     justify-content: center;
     padding: 6rem 1.5rem 3rem;
     overflow-y: auto;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .logo-menu.is-open .logo-menu-copy {
+  .logo-menu-brand,
+  .logo-menu-link,
+  .logo-menu-extras {
+    opacity: 0;
+    transform: translateY(1.4rem);
+    transition:
+      opacity 0.45s ease,
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo-menu.is-open .logo-menu-brand {
     opacity: 1;
     transform: none;
-    transition-delay: 0.32s;
+    transition-delay: 0.28s;
+  }
+  .logo-menu.is-open .logo-menu-link {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.38s + var(--i, 0) * 90ms);
+  }
+  .logo-menu.is-open .logo-menu-extras {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.68s;
   }
   .logo-menu-link {
     display: flex;
@@ -1978,12 +2006,14 @@
     border-bottom: 1px solid rgba(244, 238, 223, 0.12);
   }
   .logo-menu-link .num {
+    font-family: var(--font-display);
     font-variant-numeric: tabular-nums;
-    font-size: 0.85rem;
-    font-weight: 800;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 0.8;
     color: #D97757;
     letter-spacing: 0;
-    min-width: 2rem;
+    min-width: 2.4rem;
   }
   .logo-menu-link .lbl {
     font-family: var(--font-brand);
@@ -2022,7 +2052,10 @@
     .logo-trigger.is-open { animation: none; }
     .logo-menu-bg,
     .logo-menu-slab,
-    .logo-menu-copy { transition: none; }
+    .logo-menu-copy,
+    .logo-menu-brand,
+    .logo-menu-link,
+    .logo-menu-extras { transition: none; }
   }
 
   .logo-menu-brand {

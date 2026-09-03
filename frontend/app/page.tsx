@@ -89,10 +89,12 @@ export default function FeedPage() {
   const editorPick = filtersActive ? null : recipes[0];
   const gridRecipes = (filtersActive ? recipes : recipes.slice(1)).slice(0, 3);
 
+  const stackCount = editorPick ? 6 : 5;
+
   return (
     <div className="home-page">
-      <div className="full-bleed stack-root">
-      <CinematicSection id="hero" tone="bark" layer={1} className="home-panel-hero">
+      <HomeStack count={stackCount}>
+      <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
             <div className="assistant-kicker">
@@ -141,7 +143,7 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
-      <CinematicSection id="categories" tone="bark" layer={2} className="home-panel-categories">
+      <CinematicSection id="categories" tone="bark" index={1} enter="right" className="home-panel-categories">
         <div className="bleed-inner pt-1 pb-6 sm:pb-8">
           <Reveal>
             <h2 className="display-lg" style={{ color: "#FAF8F3" }}>מה מבשלים<br />היום?</h2>
@@ -175,7 +177,7 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
-      <CinematicSection id="recipes" tone="cream" layer={3} className="home-panel-recipes">
+      <CinematicSection id="recipes" tone="cream" index={2} enter="left" className="home-panel-recipes">
         <div className="bleed-inner py-8 sm:py-10">
           <div className="flex flex-wrap items-end justify-between gap-4 shrink-0">
             <Reveal>
@@ -260,7 +262,7 @@ export default function FeedPage() {
       </CinematicSection>
 
       {editorPick && (
-        <CinematicSection id="weekly" tone="bark" layer={4} className="home-panel-weekly">
+        <CinematicSection id="weekly" tone="bark" index={3} enter="bottom" className="home-panel-weekly">
           <div className="bleed-inner py-10">
             <div className="glass-stage overflow-visible">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 py-10 sm:px-10">
@@ -301,7 +303,7 @@ export default function FeedPage() {
         </CinematicSection>
       )}
 
-      <CinematicSection id="why" tone="cream" layer={5} className="home-panel-why">
+      <CinematicSection id="why" tone="cream" index={editorPick ? 4 : 3} enter={editorPick ? "top" : "bottom"} className="home-panel-why">
         <div className="bleed-inner py-12 sm:py-16">
           <Reveal>
             <h2 className="display-md text-bark-500">למה לשמור כאן?</h2>
@@ -339,7 +341,7 @@ export default function FeedPage() {
         </div>
       </CinematicSection>
 
-      <CinematicSection id="join" tone="bark" layer={6} className="home-panel-join">
+      <CinematicSection id="join" tone="bark" index={editorPick ? 5 : 4} enter={editorPick ? "right" : "top"} className="home-panel-join">
         <div className="bleed-inner py-12 sm:py-16">
           <div className="home-join-callout min-h-[22rem] flex items-center justify-center text-center">
             <div className="relative z-10 px-6 py-14 max-w-xl">
@@ -368,26 +370,70 @@ export default function FeedPage() {
           </div>
         </div>
       </CinematicSection>
-      </div>
+      </HomeStack>
 
     </div>
   );
 }
 
+const ENTER_FROM = {
+  right: [100, 0],
+  left: [-100, 0],
+  bottom: [0, 100],
+  top: [0, -100],
+} as const;
+
+type EnterDir = keyof typeof ENTER_FROM;
+
+function HomeStack({ count, children }: { count: number; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stack = ref.current;
+    if (!stack) return;
+    const stage = stack.querySelector<HTMLElement>(".home-stack-stage");
+    if (!stage) return;
+
+    const jumpHash = () => {
+      const id = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (!id) return;
+      const el = stack.querySelector<HTMLElement>(`#${CSS.escape(id)}`);
+      if (!el) return;
+      const index = Number(el.dataset.stackIndex);
+      if (!Number.isFinite(index)) return;
+      window.scrollTo({ top: index * stage.clientHeight });
+    };
+
+    jumpHash();
+    window.addEventListener("hashchange", jumpHash);
+    return () => window.removeEventListener("hashchange", jumpHash);
+  }, [count]);
+
+  return (
+    <div
+      ref={ref}
+      className="full-bleed stack-root home-stack"
+      style={{ ["--stack-count" as string]: count }}
+    >
+      <div className="home-stack-stage">{children}</div>
+    </div>
+  );
+}
+
 function CinematicSection({
-  id, tone, children, layer = 1, className,
+  id, tone, children, index = 0, enter, className,
 }: {
   id: string;
   tone: "cream" | "bark";
   children: React.ReactNode;
-  layer?: number;
+  index?: number;
+  enter?: EnterDir;
   className?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const scaleRef = useRef(1);
-  const isFirst = layer === 1;
+  const isFirst = index === 0;
   const [inView, setInView] = useState(isFirst);
-  const [tall, setTall] = useState(false);
   const [scale, setScale] = useState(1);
 
   /* A pinned panel can only ever show one screenful. Copy that overruns the
@@ -408,7 +454,6 @@ function CinematicSection({
       const next = natural > available ? Math.max(0.68, available / natural) : 1;
       scaleRef.current = next;
       setScale(next);
-      setTall(false);
     };
     measure();
     // The webfont lands after the first measurement and reflows the copy.
@@ -424,38 +469,62 @@ function CinematicSection({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    if (isFirst || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!el || !enter) {
       setInView(true);
       return;
     }
-    const mark = () => setInView(true);
-    if (window.location.hash === `#${id}`) mark();
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) mark();
-    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
-    io.observe(el);
-    const onHash = () => { if (window.location.hash === `#${id}`) mark(); };
-    window.addEventListener("hashchange", onHash);
-    return () => {
-      io.disconnect();
-      window.removeEventListener("hashchange", onHash);
+
+    const stack = el.closest(".home-stack");
+    const stage = stack?.querySelector<HTMLElement>(".home-stack-stage");
+    if (!stack || !stage) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const [fromX, fromY] = ENTER_FROM[enter];
+    let raf = 0;
+    let shown = false;
+
+    const update = () => {
+      raf = 0;
+      const headerBottom = document.querySelector("header")?.getBoundingClientRect().bottom ?? 64;
+      const stageH = stage.clientHeight || Math.max(1, window.innerHeight - headerBottom);
+      const scrolled = Math.max(0, headerBottom - stack.getBoundingClientRect().top);
+      let p = scrolled / stageH - (index - 1);
+      p = Math.min(1, Math.max(0, p));
+      if (reduce.matches) p = p >= 0.45 ? 1 : 0;
+      el.style.transform = `translate3d(${fromX * (1 - p)}%, ${fromY * (1 - p)}%, 0)`;
+      el.style.pointerEvents = p > 0.88 ? "auto" : "none";
+      const nextShown = p > 0.08;
+      if (nextShown !== shown) {
+        shown = nextShown;
+        setInView(nextShown);
+      }
     };
-  }, [isFirst, id]);
+
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [enter, index]);
 
   return (
     <section
       ref={ref}
       id={id}
+      data-stack-index={index}
+      data-enter={enter}
       className={cn(
         "stack-panel",
         isFirst && "is-first",
-        tall && "is-tall",
         tone === "bark" ? "panel-bark" : "panel-cream",
         inView && "in-view",
         className,
       )}
-      style={{ ["--stack-z" as string]: layer, ["--panel-scale" as string]: scale }}>
+      style={{ ["--stack-z" as string]: index + 1, ["--panel-scale" as string]: scale }}>
       <div className="cinematic-slabs" aria-hidden="true">
         <span className="slab slab-a" />
         <span className="slab slab-b slab-left slab-delay-1" />

@@ -152,6 +152,7 @@ export default function Header() {
         id="site-menu"
         className={cn("logo-menu", open && "is-open")}
         aria-hidden={!open}
+        inert={!open ? true : undefined}
       >
         <div className="logo-menu-slab" aria-hidden="true" />
         <div className="logo-menu-bg" aria-hidden="true" />
@@ -166,6 +167,7 @@ export default function Header() {
               tabIndex={open ? 0 : -1}
               onClick={() => setOpen(false)}
               className={cn("logo-menu-link", isActive(link.href) && "is-active")}
+              style={{ ["--i" as string]: i }}
             >
               <span className="num">{String(i + 1).padStart(2, "0")}</span>
               <span className="lbl">{link.label}</span>
