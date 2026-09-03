@@ -542,10 +542,10 @@
   }
 
   /* ─── Hero: the recipe box ────────────────────────────────
-     Built to the reference: two tabbed cards standing behind, a cream card
-     leaning out in front with RECIPE over a leaf flourish and dotted rules,
-     and the ceramic box drawn over their feet. Still until the pointer
-     arrives — then the front card writes itself, one recipe per pass. */
+     Three renders layered: the tabbed dividers behind, the blank recipe card
+     in front, and the ceramic box over their feet — its front wall is what
+     makes them read as standing inside it. The handwriting is real text laid
+     on the card's own empty rules, rotated to the angle they run at. */
   .writing-card {
     position: relative;
     display: none;
@@ -553,186 +553,95 @@
     aspect-ratio: 1 / 1.16;
     margin-inline-end: clamp(0.5rem, 3vw, 3rem);
   }
-  .writing-card:focus-visible { outline: 3px solid rgba(217, 119, 87, 0.5); outline-offset: 8px; border-radius: 1rem; }
+  .writing-card:focus-visible {
+    outline: 3px solid rgba(217, 119, 87, 0.5);
+    outline-offset: 8px;
+    border-radius: 1rem;
+  }
   @media (min-width: 1100px) { .writing-card { display: block; } }
 
-  .writing-card__filed {
-    position: absolute;
-    inset-inline: 14%;
-    top: -2%;
-    height: 66%;
-    border-radius: 0.65rem;
-    box-shadow: 0 10px 26px -16px rgba(6, 24, 18, 0.7);
-  }
-  .writing-card__filed-tab {
-    position: absolute;
-    top: -1.15rem;
-    inset-inline-start: 1.2rem;
-    height: 1.5rem;
-    padding: 0 0.7rem 0.35rem;
-    display: inline-flex;
-    align-items: center;
-    border-radius: 0.4rem 0.4rem 0 0;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-  }
-  .writing-card__filed--back {
-    background: #1E4D45;
-    transform: translate(-4%, -3%) rotate(-2.6deg);
-  }
-  .writing-card__filed--back .writing-card__filed-tab { background: #1E4D45; color: #E9EFEA; }
-  .writing-card__filed--mid {
-    background: #9FB6A4;
-    transform: translate(-1%, 2%) rotate(-1deg);
-  }
-  .writing-card__filed--mid .writing-card__filed-tab { background: #9FB6A4; color: #1E4D45; }
-
-  .writing-card__sheet {
-    position: absolute;
-    z-index: 2;
-    inset-inline: 6%;
-    top: 4%;
-    bottom: 22%;
-    padding: 1.35rem 1.25rem 1.2rem;
-    border-radius: 0.8rem;
-    background: linear-gradient(#FCFAF6, #F6F1E6);
-    box-shadow: 0 16px 34px -18px rgba(6, 24, 18, 0.7);
-    transform: rotate(1.6deg);
-    transform-origin: 50% 90%;
-  }
-  .writing-card.is-writing .writing-card__sheet {
-    animation: wc-draw 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes wc-draw {
-    from { transform: rotate(1.6deg) translateY(16%); opacity: 0; }
-    to   { transform: rotate(1.6deg); opacity: 1; }
-  }
-
-  .writing-card__tab {
-    position: absolute;
-    top: -1.2rem;
-    inset-inline-start: 1.3rem;
-    height: 1.65rem;
-    padding: 0 0.8rem 0.4rem;
-    display: inline-flex;
-    align-items: center;
-    border-radius: 0.42rem 0.42rem 0 0;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
-  .writing-card.is-writing .writing-card__tab {
-    animation: wc-tab 560ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
-  }
-  @keyframes wc-tab {
-    from { transform: translateY(0.8rem); opacity: 0; }
-    to   { transform: none; opacity: 1; }
-  }
-
-  .writing-card__eyebrow {
-    margin: 0;
-    text-align: center;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.05rem;
-    font-weight: 400;
-    letter-spacing: 0.26em;
-    text-indent: 0.26em;
-    color: #275E50;
-  }
-  .writing-card__flourish {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    margin: 0.5rem auto 1.1rem;
-  }
-  .writing-card__flourish i { width: 1.5rem; height: 1px; background: #D97757; }
-  .writing-card__flourish b {
-    width: 0.9rem;
-    height: 0.9rem;
-    background: no-repeat center / contain
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232F6B5D' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 58V30'/%3E%3Cpath d='M32 30c0-13 11-20 20-20-2 12-9 20-20 20z'/%3E%3Cpath d='M32 38c0-11-11-18-20-16 2 9 9 16 20 16z'/%3E%3C/svg%3E");
-  }
-  .writing-card.is-writing .writing-card__eyebrow { animation: wc-fade 480ms ease-out 300ms both; }
-  .writing-card.is-writing .writing-card__flourish { animation: wc-fade 480ms ease-out 380ms both; }
-
-  .writing-card__line {
-    display: flex;
-    align-items: baseline;
-    gap: 0.55rem;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.95rem;
-    border-bottom: 1px dotted rgba(39, 94, 80, 0.4);
-  }
-  .writing-card__line--last { margin-bottom: 0; }
-  .writing-card__label {
-    flex-shrink: 0;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    color: #66736D;
-  }
-  .writing-card__written {
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-family: "Recipe Hand", Georgia, cursive;
-    font-size: 1.35rem;
-    font-weight: 400;
-    line-height: 1.1;
-    color: #2F6B5D;
-    /* the ink sits a touch below the ruled line, the way a hand writes */
-    transform: translateY(0.1em);
-  }
-  .writing-card__written--title {
-    font-size: 1.75rem;
-    color: #1E4D45;
-  }
-  .writing-card.is-writing .writing-card__written {
-    animation: wc-write 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .writing-card.is-writing .writing-card__written--title { animation-delay: 520ms; }
-  .writing-card.is-writing .writing-card__line--last .writing-card__written { animation-delay: 860ms; }
-  @keyframes wc-write {
-    from { clip-path: inset(0 0 0 100%); }
-    to   { clip-path: inset(0 0 0 0); }
-  }
-
-  .writing-card__leaf {
-    position: absolute;
-    inset-block-start: 34%;
-    inset-inline-end: 0.9rem;
-    width: 34%;
-    height: 46%;
-    background: no-repeat center / contain
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='%238FA894' opacity='0.55'%3E%3Cpath d='M31 60h2V26h-2z'/%3E%3Cpath d='M33 30c0-14 12-22 22-22-2 13-10 22-22 22z'/%3E%3Cpath d='M31 38c0-12-12-19-21-17 2 10 10 17 21 17z'/%3E%3Cpath d='M33 44c0-10 8-16 16-16-2 8-7 14-16 16z'/%3E%3C/svg%3E");
-  }
-  .writing-card.is-writing .writing-card__leaf { animation: wc-fade 560ms ease-out 820ms both; }
-
-  /* The box is the render itself, laid over the cards. Its front wall hides
-     their feet, which is what makes them read as standing inside it — the
-     swooping lip is the line they disappear behind. */
+  .writing-card__dividers,
+  .writing-card__paper,
   .writing-card__box {
     position: absolute;
-    z-index: 3;
-    inset-inline: 0;
-    bottom: 0;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 24px 34px rgba(6, 24, 18, 0.55));
     pointer-events: none;
   }
 
-  @keyframes wc-fade { from { opacity: 0; } to { opacity: 1; } }
+  .writing-card__dividers {
+    z-index: 1;
+    left: 9%;
+    top: 0;
+    width: 74%;
+  }
+
+  /* the card in front, and the frame the ink is positioned against */
+  .writing-card__front {
+    position: absolute;
+    z-index: 2;
+    left: 3%;
+    top: 6%;
+    width: 88%;
+  }
+  .writing-card__paper { position: relative; }
+  .writing-card.is-writing .writing-card__front {
+    animation: wc-rise 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes wc-rise {
+    from { transform: translateY(9%); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  /* The rules in the render run at -7.5deg from 35% to 75% across the card,
+     so the ink sits on that line rather than level with the page. */
+  .writing-card__ink {
+    position: absolute;
+    left: 35%;
+    /* the rules stop at 75%, but the card runs to the edge — this is the room
+       the ink actually has before it would hang off the paper */
+    max-width: 56%;
+    overflow: hidden;
+    text-overflow: clip;
+    z-index: 3;
+    transform-origin: left bottom;
+    transform: rotate(-7.5deg);
+    white-space: nowrap;
+    font-family: "Recipe Hand", Georgia, cursive;
+    color: #2F6B5D;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .writing-card__ink--title {
+    top: 44%;
+    font-size: clamp(0.8rem, 1.35vw, 1.1rem);
+    color: #1E4D45;
+  }
+  .writing-card__ink--serves {
+    top: 55%;
+    font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+  }
+  .writing-card.is-writing .writing-card__ink {
+    animation: wc-write 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .writing-card.is-writing .writing-card__ink--title  { animation-delay: 500ms; }
+  .writing-card.is-writing .writing-card__ink--serves { animation-delay: 860ms; }
+  @keyframes wc-write {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  /* the box, over everything, so the cards stand inside it */
+  .writing-card__box {
+    z-index: 4;
+    left: 0;
+    bottom: 0;
+    filter: drop-shadow(0 22px 30px rgba(6, 24, 18, 0.5));
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .writing-card .writing-card__sheet,
-    .writing-card .writing-card__tab,
-    .writing-card .writing-card__eyebrow,
-    .writing-card .writing-card__flourish,
-    .writing-card .writing-card__written,
-    .writing-card .writing-card__leaf { animation: none; clip-path: none; opacity: 1; }
+    .writing-card .writing-card__front,
+    .writing-card .writing-card__ink { animation: none; clip-path: none; opacity: 1; }
   }
 
   .assistant-home {

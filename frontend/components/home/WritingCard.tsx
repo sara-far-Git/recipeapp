@@ -1,45 +1,34 @@
 "use client";
 
 /**
- * The hero's mark: the recipe box from the reference, built in CSS.
+ * The hero's mark, built from the three renders: the tabbed dividers behind,
+ * the blank recipe card in front, and the ceramic box laid over their feet.
  *
- * Two tabbed cards stand behind — one forest, one sage — and a cream card
- * leans out in front, tilted, with RECIPE set above a leaf flourish and the
- * TITLE and SERVES lines ruled in dots. It rests still until the pointer
- * arrives; then the card writes itself, and every pass after that brings the
- * next recipe. Real recipes when the page has them, stand-ins before.
+ * The card render leaves its TITLE and SERVES rules empty, so the handwriting
+ * is real text placed on top of them — rotated to -7.5deg, the angle those
+ * rules run at in the render. It rests still until the pointer arrives; then
+ * the card rises and writes, and each further pass brings the next name.
  */
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-type Sample = { title: string; category: string; serves: number; minutes: number };
+type Sample = { title: string; serves: string };
 
-/* The written lines are decoration, not information — nobody is meant to read
-   the card, and the script face has no Hebrew. So the hand writes English,
-   and the page's own recipes stay where they can actually be read. */
+/* Decoration, not information: nobody is meant to read the card, and the
+   script face carries no Hebrew. */
+/* Short enough to sit inside the rule without running off the paper. */
 const CARDS: Sample[] = [
-  { title: "Lemon & Thyme Chicken", category: "עיקריות", serves: 4, minutes: 55 },
-  { title: "Cheesecake, Dulce de Leche", category: "קינוחים", serves: 12, minutes: 70 },
-  { title: "Rustic Loaf in a Pot", category: "מאפים", serves: 8, minutes: 80 },
-  { title: "Garden Salad, Soft Herbs", category: "סלטים", serves: 4, minutes: 12 },
-  { title: "Grapefruit & Thyme Cooler", category: "משקאות", serves: 6, minutes: 8 },
-  { title: "Roasted Root Soup", category: "ראשונות", serves: 6, minutes: 45 },
+  { title: "Lemon Thyme Chicken", serves: "4 · 55 min" },
+  { title: "Dulce de Leche Cake", serves: "12 · 70 min" },
+  { title: "Rustic Loaf", serves: "8 · 80 min" },
+  { title: "Garden Herb Salad", serves: "4 · 12 min" },
+  { title: "Grapefruit Cooler", serves: "6 · 8 min" },
+  { title: "Roasted Root Soup", serves: "6 · 45 min" },
 ];
-
-/** Tab tone per category — the six the recipe cards already use. */
-const TONE: Record<string, { bg: string; fg: string }> = {
-  ראשונות: { bg: "#1E4D45", fg: "#FAF8F3" },
-  עיקריות: { bg: "#2F6B5D", fg: "#FAF8F3" },
-  מאפים: { bg: "#E9EFEA", fg: "#1E4D45" },
-  קינוחים: { bg: "#D97757", fg: "#FAF8F3" },
-  סלטים: { bg: "#F4EEDF", fg: "#275E50" },
-  משקאות: { bg: "#C19A52", fg: "#23331F" },
-};
 
 const STEP_MS = 3800;
 
 export default function WritingCard() {
-  const cards = CARDS;
   const [i, setI] = useState(0);
   const [writing, setWriting] = useState(false);
   const timer = useRef<number | null>(null);
@@ -51,24 +40,20 @@ export default function WritingCard() {
     }
   };
 
-  /** Nothing moves until the pointer arrives. */
   const start = () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setWriting(true);
-    setI((n) => (n + 1) % cards.length);
+    setI((n) => (n + 1) % CARDS.length);
     stop();
-    if (cards.length > 1) {
-      timer.current = window.setInterval(
-        () => setI((n) => (n + 1) % cards.length),
-        STEP_MS,
-      );
-    }
+    timer.current = window.setInterval(
+      () => setI((n) => (n + 1) % CARDS.length),
+      STEP_MS,
+    );
   };
 
   useEffect(() => stop, []);
 
-  const card = cards[i];
-  const tone = TONE[card.category] ?? { bg: "#2F6B5D", fg: "#FAF8F3" };
+  const card = CARDS[i];
 
   return (
     <div
@@ -79,46 +64,35 @@ export default function WritingCard() {
       onBlur={stop}
       tabIndex={0}
       role="img"
-      aria-label="כרטיס מתכון מצויר">
-      {/* the two cards standing behind, showing only their tabs */}
-      <span className="writing-card__filed writing-card__filed--back">
-        <span className="writing-card__filed-tab">DESSERTS</span>
-      </span>
-      <span className="writing-card__filed writing-card__filed--mid">
-        <span className="writing-card__filed-tab">MAINS</span>
-      </span>
+      aria-label="קופסת מתכונים עם כרטיסים">
+      <Image
+        src="/marks/card-dividers.png"
+        alt=""
+        aria-hidden="true"
+        width={1205}
+        height={1215}
+        className="writing-card__dividers"
+      />
 
-      {/* the card in front, leaning out — keyed so each pass replays */}
-      <article className="writing-card__sheet" key={i}>
-        <span
-          className="writing-card__tab"
-          style={{ background: tone.bg, color: tone.fg }}>
-          {card.category}
+      <div className="writing-card__front" key={i}>
+        <Image
+          src="/marks/card-front.png"
+          alt=""
+          aria-hidden="true"
+          width={1206}
+          height={1116}
+          priority
+          className="writing-card__paper"
+        />
+        {/* laid on the render's own empty rules */}
+        <span className="writing-card__ink writing-card__ink--title">
+          {card.title}
         </span>
-
-        <p className="writing-card__eyebrow">RECIPE</p>
-        <span className="writing-card__flourish" aria-hidden="true">
-          <i /><b /><i />
+        <span className="writing-card__ink writing-card__ink--serves">
+          {card.serves}
         </span>
+      </div>
 
-        <div className="writing-card__line">
-          <span className="writing-card__label">TITLE</span>
-          <span className="writing-card__written writing-card__written--title">
-            {card.title}
-          </span>
-        </div>
-        <div className="writing-card__line writing-card__line--last">
-          <span className="writing-card__label">SERVES</span>
-          <span className="writing-card__written">
-            {card.serves}
-            {card.minutes > 0 && ` · ${card.minutes} min`}
-          </span>
-        </div>
-
-        <span className="writing-card__leaf" aria-hidden="true" />
-      </article>
-
-      {/* the real box, drawn over the cards' feet so they sit inside it */}
       <Image
         src="/marks/box.png"
         alt=""
