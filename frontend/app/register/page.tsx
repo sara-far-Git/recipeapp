@@ -76,7 +76,7 @@ export default function RegisterPage() {
 
   <p className="text-center text-sm text-bark-300 mt-6 animate-fade-up" style={{ animationDelay: "250ms" }}>
   כבר יש לכם חשבון?{" "}
-  <Link href="/login" className="text-cinnamon-500 font-bold hover:text-cinnamon-600 transition-colors">התחברות</Link>
+  <Link href="/login" className="text-cinnamon-500 font-bold hover:text-cinnamon-600 transition-colors inline-flex items-center min-h-[24px] px-1">התחברות</Link>
   </p>
   </div>
   </div>

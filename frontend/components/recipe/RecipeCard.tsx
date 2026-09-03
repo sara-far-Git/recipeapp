@@ -71,7 +71,8 @@ function RecipeCard({ recipe }: RecipeCardProps) {
                 className="h-full flex flex-col justify-between p-4 rounded-md"
                 style={{ border: "1px solid rgba(39,94,80,0.14)" }}>
                 <div className="flex items-start justify-between gap-3">
-                  <span className="eyebrow text-[11px]">{recipe.category || "מתכון"}</span>
+                  {/* the tab already carries the category, so this only speaks up when there is none */}
+                  <span className="eyebrow text-[11px]">{recipe.category ? "" : "מתכון"}</span>
                   <div className="w-9 h-9 text-bark-500/50">
                     <ChefHat className="w-full h-full" strokeWidth={1.2} />
                   </div>
