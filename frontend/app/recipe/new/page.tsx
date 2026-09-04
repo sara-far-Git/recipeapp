@@ -117,10 +117,13 @@ export default function NewRecipePage() {
     setScanSuccess(false);
     try {
       const { data } = await scanApi.voice(file);
-      applyImported(data);
-      setIsScanned(true);
-      setScanSuccess(true);
-      setTimeout(() => setScanSuccess(false), 5000);
+      if (!applyImported(data)) {
+        setScanError("לא הצלחנו לחלץ מתכון מההקלטה. ספרו שוב, לאט וברור, עם המצרכים ושלבי ההכנה.");
+      } else {
+        setIsScanned(true);
+        setScanSuccess(true);
+        setTimeout(() => setScanSuccess(false), 5000);
+      }
     } catch (err: any) {
       const detail = err?.response?.data?.detail;
       setScanError(typeof detail === "string" ? detail : "שגיאה בתמלול ההקלטה. נסו שוב.");
@@ -209,7 +212,13 @@ export default function NewRecipePage() {
   setImageUploading(false);
   };
 
+  /** Returns whether the payload actually carried a recipe, so a caller never
+   *  reports success over a form that stayed empty. */
   const applyImported = (data: any) => {
+  const filled = Boolean(
+  data?.title?.trim() || data?.ingredients?.length || data?.instructions?.length,
+  );
+  if (!filled) return false;
   setTitle(data.title || "");
   setDescription(data.description || "");
   if (data.prep_time_minutes) setPrepTime(data.prep_time_minutes);
@@ -221,6 +230,7 @@ export default function NewRecipePage() {
   if (data.ingredients?.length)
   setIngredients(data.ingredients.map((ing: any) => ({ ...ing, amount: ing.amount ?? 0 })));
   if (data.instructions?.length) setInstructions(data.instructions);
+  return true;
   };
 
   const handleImportFromUrl = async () => {
@@ -229,7 +239,10 @@ export default function NewRecipePage() {
   setImporting(true);
   try {
   const { data } = await importApi.fromUrl(importUrl.trim());
-  applyImported(data);
+  if (!applyImported(data)) {
+  setImportError("לא נמצא מתכון בכתובת הזאת. בדקו שהקישור מוביל לעמוד מתכון.");
+  return;
+  }
   setIsScanned(true);
   setImportOpen(false);
   setImportUrl("");
@@ -249,10 +262,13 @@ export default function NewRecipePage() {
   setScanSuccess(false);
   try {
   const { data } = await scanApi.scan(file);
-  applyImported(data);
+  if (!applyImported(data)) {
+  setScanError("לא הצלחנו לקרוא מתכון מהתמונה. נסו תמונה ברורה יותר, עם כל הטקסט בתוך הפריים.");
+  } else {
   setIsScanned(true);
   setScanSuccess(true);
   setTimeout(() => setScanSuccess(false), 5000);
+  }
   } catch (err: any) {
   const detail = err?.response?.data?.detail;
   setScanError(typeof detail === "string" ? detail : "שגיאה בסריקת התמונה. נסו שוב.");

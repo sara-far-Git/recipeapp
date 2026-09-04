@@ -108,13 +108,21 @@ AUDIO_EXT = {
 }
 
 
-def _parse_recipe_json(raw: str | None) -> ScanResponse:
+def _parse_recipe_json(raw: str | None, empty_detail: str) -> ScanResponse:
     if not raw:
         raise HTTPException(status_code=502, detail="AI returned empty response")
     text = raw.strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    return ScanResponse(**json.loads(text))
+    parsed = ScanResponse(**json.loads(text))
+
+    # A recipe with no name, no ingredients and no steps is a well-formed answer
+    # to a question the model could not actually answer — silent audio, a blurred
+    # photo. Returning it 200 lets the page announce success over an empty form,
+    # so it is refused here and the caller gets something to say.
+    if not parsed.title.strip() and not parsed.ingredients and not parsed.instructions:
+        raise HTTPException(status_code=422, detail=empty_detail)
+    return parsed
 
 
 @router.post("", response_model=ScanResponse)
@@ -158,7 +166,10 @@ async def scan_recipe_image(
             max_tokens=2000,
             temperature=0.1,
         )
-        return _parse_recipe_json(response.choices[0].message.content)
+        return _parse_recipe_json(
+            response.choices[0].message.content,
+            "לא הצלחנו לקרוא מתכון מהתמונה. נסו תמונה ברורה יותר, עם כל הטקסט בתוך הפריים.",
+        )
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=502, detail="AI returned invalid JSON")
@@ -224,7 +235,15 @@ async def transcribe_recipe_voice(
             max_tokens=2000,
             temperature=0.1,
         )
-        return _parse_recipe_json(response.choices[0].message.content)
+        # Quoting what was heard back is the fastest way to tell a bad recording
+        # (silence, the wrong microphone) apart from a recording that simply
+        # never named ingredients or steps.
+        heard = spoken[:70] + ("…" if len(spoken) > 70 else "")
+        return _parse_recipe_json(
+            response.choices[0].message.content,
+            "לא הצלחנו לחלץ מתכון מההקלטה. ספרו שוב, לאט וברור, עם המצרכים ושלבי ההכנה. "
+            f"מה שנשמע בהקלטה: “{heard}”",
+        )
 
     except HTTPException:
         raise
