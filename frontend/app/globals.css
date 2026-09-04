@@ -1921,7 +1921,6 @@
     background: #5B7D6C;
   }
   .profile-tabs { border-bottom: 1px solid rgba(21, 56, 45, 0.24); }
-  .profile-experience .recipe-card-fallback { background: #D4B794; }
   .empty-chapter { border-right: 0.35rem solid #275E50 !important; }
 
   .capture-action {

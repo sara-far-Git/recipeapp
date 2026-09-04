@@ -121,6 +121,19 @@ export default function CardsPreview() {
         </div>
       </section>
 
+      {/* the profile page's canvas — where the card wore its own fallback tone
+          and stopped matching the rest of the site */}
+      <section
+        className="profile-experience rounded-[var(--r-lg)] p-6 sm:p-9 mb-14"
+        style={{ background: "#C8D5B7" }}>
+        <h2 className="section-title text-bark-500 mb-5">על מרווה — האזור האישי</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-9">
+          {MOCK.slice(0, 3).map((r) => (
+            <RecipeCard key={r.id} recipe={r} />
+          ))}
+        </div>
+      </section>
+
       <section
         className="rounded-[var(--r-lg)] p-6 sm:p-9"
         style={{ background: "#1E4D45" }}>

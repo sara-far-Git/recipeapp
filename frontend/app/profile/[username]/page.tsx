@@ -11,6 +11,7 @@ import PageFrame from "@/components/ui/PageFrame";
 import { Loader2, Pencil, X, Camera, BookOpen, Heart, Users, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
+import { CATEGORIES } from "@/lib/categories";
 
 function ProfilePageContent() {
   const params = useParams();
@@ -27,6 +28,9 @@ function ProfilePageContent() {
     searchParams.get("tab") === "saved" ? "saved" : "recipes"
   );
   const [isFollowing, setIsFollowing] = useState(false);
+  /** "" is every category. Cleared on a tab switch, since the two lists rarely
+   *  hold the same categories and a stale filter would look like an empty book. */
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   const [editOpen, setEditOpen] = useState(false);
   const [editFullName, setEditFullName] = useState("");
@@ -103,6 +107,7 @@ function ProfilePageContent() {
 
   const switchTab = (tab: "recipes" | "saved") => {
     setActiveTab(tab);
+    setCategoryFilter("");
     const href = tab === "saved" ? `/profile/${username}?tab=saved` : `/profile/${username}`;
     router.replace(href, { scroll: false });
   };
@@ -125,6 +130,17 @@ function ProfilePageContent() {
 
   const displayRecipes = activeTab === "saved" ? savedRecipes : recipes;
   const recipeCount = isOwn ? recipes.length : profile.recipes_count;
+
+  /* Only the categories this shelf actually holds, in the site's own order, so
+     the row never offers a filter that leads nowhere. */
+  const counts = new Map<string, number>();
+  for (const r of displayRecipes) {
+    if (r.category) counts.set(r.category, (counts.get(r.category) || 0) + 1);
+  }
+  const shelfCategories = CATEGORIES.filter((c) => counts.has(c.name));
+  const visibleRecipes = categoryFilter
+    ? displayRecipes.filter((r: any) => r.category === categoryFilter)
+    : displayRecipes;
 
   return (
     <PageFrame tone="sage" className="profile-experience">
@@ -287,9 +303,41 @@ function ProfilePageContent() {
         )}
       </div>
 
-      {displayRecipes.length > 0 ? (
+      {shelfCategories.length > 1 && (
+        <div
+          className="flex flex-wrap gap-2 mb-7 animate-fade-up"
+          role="group"
+          aria-label="סינון לפי קטגוריה"
+          style={{ animationDelay: "110ms" }}>
+          <button
+            type="button"
+            onClick={() => setCategoryFilter("")}
+            aria-pressed={!categoryFilter}
+            className={cn(
+              "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
+              !categoryFilter && "is-selected",
+            )}>
+            הכל ({displayRecipes.length})
+          </button>
+          {shelfCategories.map((cat) => (
+            <button
+              key={cat.name}
+              type="button"
+              onClick={() => setCategoryFilter(categoryFilter === cat.name ? "" : cat.name)}
+              aria-pressed={categoryFilter === cat.name}
+              className={cn(
+                "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
+                categoryFilter === cat.name && "is-selected",
+              )}>
+              {cat.name} ({counts.get(cat.name)})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {visibleRecipes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {displayRecipes.map((recipe: any, i: number) => (
+          {visibleRecipes.map((recipe: any, i: number) => (
             <div
               key={recipe.id}
               className="animate-slide-up"
@@ -298,6 +346,13 @@ function ProfilePageContent() {
               <RecipeCard recipe={recipe} />
             </div>
           ))}
+        </div>
+      ) : categoryFilter ? (
+        <div className="text-center py-16 animate-fade-up">
+          <p className="section-title text-bark-500 mb-2">אין כאן מתכונים ב{categoryFilter}</p>
+          <button type="button" onClick={() => setCategoryFilter("")} className="btn-outline mt-4 inline-flex">
+            להצגת הכל
+          </button>
         </div>
       ) : (
         <div className="text-center py-16 animate-fade-up">
