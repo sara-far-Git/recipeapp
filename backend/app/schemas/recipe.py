@@ -9,6 +9,11 @@ class Ingredient(BaseModel):
     amount: Optional[float] = None
     unit: Optional[str] = None
     name: str
+    # A heading between ingredients — "for the dough", "for the filling".
+    # `name` carries the text; amount and unit are ignored. Ingredients live in
+    # a JSON column, so this needs no migration, and rows saved before it
+    # simply read as False.
+    note: bool = False
 
 
 class Instruction(BaseModel):

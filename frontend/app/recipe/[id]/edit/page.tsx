@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import PageFrame from "@/components/ui/PageFrame";
 
-interface Ingredient { amount: number; unit: string; name: string; }
+interface Ingredient { amount: number; unit: string; name: string; note?: boolean; }
 interface Instruction { step: number; text: string; }
 
 const DIFFICULTY_OPTIONS = [
@@ -75,7 +75,7 @@ export default function EditRecipePage() {
   setCategory(data.category || "");
   setIngredients(
   data.ingredients?.length
-  ? data.ingredients.map((i: any) => ({ amount: i.amount || 0, unit: i.unit || "", name: i.name }))
+  ? data.ingredients.map((i: any) => ({ amount: i.amount || 0, unit: i.unit || "", name: i.name, note: !!i.note }))
   : [{ amount: 0, unit: "", name: "" }]
   );
   setInstructions(data.instructions?.length ? data.instructions : [{ step: 1, text: "" }]);

@@ -15,7 +15,9 @@ import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import PageFrame from "@/components/ui/PageFrame";
 
-interface Ingredient { amount: number; unit: string; name: string; }
+/** `note: true` makes the row a heading between ingredients — "for the dough",
+ *  "for the filling". Its `name` is the text; amount and unit are unused. */
+interface Ingredient { amount: number; unit: string; name: string; note?: boolean; }
 interface Instruction { step: number; text: string; }
 
 const DIFFICULTY_OPTIONS = [
@@ -258,6 +260,13 @@ export default function NewRecipePage() {
   };
 
   const addIngredient = () => setIngredients([...ingredients, { amount: 0, unit: "", name: "" }]);
+  /** Drops a heading in at a given position rather than only at the end. */
+  const addNoteAt = (i: number) =>
+  setIngredients([
+  ...ingredients.slice(0, i),
+  { amount: 0, unit: "", name: "", note: true },
+  ...ingredients.slice(i),
+  ]);
   const removeIngredient = (i: number) => setIngredients(ingredients.filter((_, idx) => idx !== i));
   const updateIngredient = (i: number, field: keyof Ingredient, value: any) => {
   const c = [...ingredients]; c[i] = { ...c[i], [field]: value }; setIngredients(c);
@@ -617,8 +626,19 @@ export default function NewRecipePage() {
   </p>
 
   {ingredients.map((ing, i) => (
-  <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
+  <div key={i}>
+  {/* slip a heading in above this row */}
+  <button type="button" onClick={() => addNoteAt(i)} className="ingredient-divider">
+  <span><Plus className="w-3 h-3" strokeWidth={2.6} /> הוספת כותרת</span>
+  </button>
+  <div className={cn("flex items-start gap-2 card-surface p-3 animate-fade-up", ing.note && "is-note")} style={{ animationDelay: `${i * 40}ms` }}>
   <GripVertical className="w-4 h-4 text-bark-200 mt-2.5 flex-shrink-0" />
+  {ing.note ? (
+  <div className="flex-1">
+  <input placeholder="כותרת — למשל: לבצק" aria-label={`כותרת ${i + 1}`} value={ing.name}
+  onChange={(e) => updateIngredient(i, "name", e.target.value)} className="input-dark font-bold" />
+  </div>
+  ) : (
   <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_1fr_2fr] gap-2">
   <input type="number" placeholder="כמות" aria-label={`כמות למצרך ${i + 1}`} value={ing.amount || ""}
   onChange={(e) => updateIngredient(i, "amount", Number(e.target.value))}
@@ -628,15 +648,21 @@ export default function NewRecipePage() {
   <input placeholder="שם המצרך" aria-label={`שם מצרך ${i + 1}`} value={ing.name}
   onChange={(e) => updateIngredient(i, "name", e.target.value)} className="input-dark" />
   </div>
+  )}
   {ingredients.length > 1 && (
   <button onClick={() => removeIngredient(i)}
-  aria-label={`מחיקת מצרך ${i + 1}`}
+  aria-label={ing.note ? `מחיקת כותרת ${i + 1}` : `מחיקת מצרך ${i + 1}`}
   className="p-2 text-bark-200 hover:text-red-500 hover:bg-red-50  transition-colors mt-0.5">
   <Trash2 className="w-4 h-4" />
   </button>
   )}
   </div>
+  </div>
   ))}
+  {/* and one at the very end */}
+  <button type="button" onClick={() => addNoteAt(ingredients.length)} className="ingredient-divider">
+  <span><Plus className="w-3 h-3" strokeWidth={2.6} /> הוספת כותרת</span>
+  </button>
 
   <button onClick={addIngredient}
   className="w-full py-3  border-2 border-dashed border-surface-400 text-bark-200 hover:border-cinnamon-300 hover:text-cinnamon-500 flex items-center justify-center gap-2 text-sm transition-all duration-300">

@@ -91,11 +91,13 @@ export default function RecipeDetailPage() {
 
   const scaledIngredients = useMemo(() => {
   if (!recipe) return [];
-  return recipe.ingredients.map((ing: any) => ({
-  ...ing,
-  amount: Math.round(ing.amount * servingMultiplier * 100) / 100,
-  }));
+  return recipe.ingredients.map((ing: any) =>
+  ing.note ? ing : { ...ing, amount: Math.round(ing.amount * servingMultiplier * 100) / 100 },
+  );
   }, [recipe, servingMultiplier]);
+
+  /** Headings are not buyable, so "select all" counts only the real rows. */
+  const buyableCount = scaledIngredients.filter((ing: any) => !ing.note).length;
 
   const handleServingsChange = (delta: number) => {
   if (!recipe) return;
@@ -128,7 +130,9 @@ export default function RecipeDetailPage() {
 
   const openShoppingModal = () => {
   if (!user) { router.push("/login"); return; }
-  setSelectedIngredients(new Set(scaledIngredients.map((_: any, i: number) => i)));
+  setSelectedIngredients(new Set(
+  scaledIngredients.flatMap((ing: any, i: number) => (ing.note ? [] : [i])),
+  ));
   setShoppingModalOpen(true);
   };
 
@@ -276,7 +280,9 @@ export default function RecipeDetailPage() {
   )}
   </div>
   <ul className="space-y-1">
-  {scaledIngredients.map((ing: any, i: number) => (
+  {scaledIngredients.map((ing: any, i: number) => ing.note ? (
+  <li key={i} className="pt-4 pb-1 text-amber-300 font-bold text-sm">{ing.name}</li>
+  ) : (
   <li key={i} onClick={() => toggleIngredient(i)}
   className={cn("flex items-center gap-3 py-2.5 cursor-pointer select-none border-b border-amber-900/40 last:border-b-0 transition-opacity",
   checkedIngredients.has(i) && "opacity-40")}>
@@ -289,7 +295,8 @@ export default function RecipeDetailPage() {
   </span>
   <span className={cn("text-amber-100", checkedIngredients.has(i) && "line-through")}>{ing.name}</span>
   </li>
-  ))}
+  ),
+  )}
   </ul>
   </div>
 
@@ -345,12 +352,15 @@ export default function RecipeDetailPage() {
   <button
   onClick={() => setSelectedIngredients(
   selectedIngredients.size === scaledIngredients.length
-  ? new Set() : new Set(scaledIngredients.map((_: any, i: number) => i))
+  ? new Set()
+  : new Set(scaledIngredients.flatMap((ing: any, i: number) => (ing.note ? [] : [i])))
   )}
   className="w-full text-right text-xs text-cinnamon-600 hover:text-cinnamon-500 mb-2 px-1 transition-colors">
-  {selectedIngredients.size === scaledIngredients.length ? "בטלו הכל" : "בחרו הכל"}
+  {selectedIngredients.size === buyableCount ? "בטלו הכל" : "בחרו הכל"}
   </button>
-  {scaledIngredients.map((ing: any, i: number) => (
+  {scaledIngredients.map((ing: any, i: number) => ing.note ? (
+  <p key={i} className="ingredient-heading px-1 pt-3 pb-1">{ing.name}</p>
+  ) : (
   <button key={i}
   onClick={() => setSelectedIngredients((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
   className={cn("w-full flex items-center gap-3 p-3  text-right transition-all",
@@ -362,7 +372,8 @@ export default function RecipeDetailPage() {
   <span className="flex-1 text-sm text-bark-500">{ing.name}</span>
   <span className="text-sm text-bark-300 font-medium" dir="ltr">{ing.amount || ""} {ing.unit || ""}</span>
   </button>
-  ))}
+  ),
+  )}
   </div>
   <div className="p-4 border-t border-surface-300">
   <button onClick={handleShoppingConfirm} disabled={selectedIngredients.size === 0 || shoppingLoading}
@@ -529,14 +540,18 @@ export default function RecipeDetailPage() {
   </div>
   </div>
   <div className="card-surface divide-y divide-surface-300">
-  {scaledIngredients.map((ing: any, i: number) => (
+  {scaledIngredients.map((ing: any, i: number) =>
+  ing.note ? (
+  <p key={i} className="ingredient-heading px-5 pt-4 pb-2">{ing.name}</p>
+  ) : (
   <div key={i} className="recipe-ingredient-row px-5 py-3">
   <span className="ingredient-amount" dir="ltr">
   {ing.amount}{ing.unit ? ` ${ing.unit}` : ""}
   </span>
   <span className="text-bark-400 text-sm">{ing.name}</span>
   </div>
-  ))}
+  ),
+  )}
   </div>
   </section>
 

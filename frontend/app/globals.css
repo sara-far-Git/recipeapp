@@ -2492,6 +2492,58 @@
     .recipe-card-shell::before, .recipe-card-shell::after { transition: none; }
   }
 
+  /* the heading as it reads on a recipe */
+  .ingredient-heading {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #275E50;
+  }
+
+  /* ─── Ingredient headings ─────────────────────────────────
+     A hairline between two ingredient rows that offers to put a heading
+     there — "for the dough", "for the filling". Quiet until you reach for it. */
+  .ingredient-divider {
+    display: block;
+    width: 100%;
+    padding: 0.3rem 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .ingredient-divider > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #275E50;
+  }
+  .ingredient-divider > span::before,
+  .ingredient-divider > span::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(39, 94, 80, 0.22);
+  }
+  .ingredient-divider:hover,
+  .ingredient-divider:focus-visible { opacity: 1; }
+  /* Touch has no hover, so there it simply stays visible but faint. */
+  @media (hover: none) {
+    .ingredient-divider { opacity: 0.55; }
+  }
+  /* the heading row itself reads as a label, not another ingredient */
+  .card-surface.is-note {
+    background: rgba(39, 94, 80, 0.07);
+    border-color: rgba(39, 94, 80, 0.18);
+  }
+  .card-surface.is-note .input-dark { font-size: 1rem; }
+
 @layer utilities {
   .tabular { font-variant-numeric: tabular-nums; }
 

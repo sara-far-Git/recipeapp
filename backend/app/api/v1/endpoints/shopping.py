@@ -78,6 +78,9 @@ def add_recipe_to_shopping_list(
     items = list(sl.items) if sl.items else []
 
     for ing in (recipe.ingredients or []):
+        # Headings between ingredients are not things to buy.
+        if ing.get("note"):
+            continue
         new_item = {
             "name": ing.get("name", ""),
             "amount": round(ing.get("amount", 0) * data.servings_multiplier, 2),
