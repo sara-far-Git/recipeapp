@@ -39,7 +39,7 @@ export default function CategoryPage() {
     <PageFrame tone="terracotta" className="category-experience">
     <div className="max-w-5xl mx-auto">
       <header className="experience-hero experience-hero--category mb-8 animate-fade-up">
-        <Link href="/#categories" className="eyebrow mb-4 hover:text-cinnamon-500 transition-colors">
+        <Link href="/#categories" className="eyebrow mb-4 min-h-[24px] hover:text-cinnamon-500 transition-colors">
           <span className="plus-badge text-bark-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
           </span>

@@ -376,7 +376,7 @@ export default function RecipeDetailPage() {
   </div>
   )}
 
-  <Link href="/search" className="eyebrow mb-6 hover:text-cinnamon-500 transition-colors">
+  <Link href="/search" className="eyebrow mb-6 min-h-[24px] hover:text-cinnamon-500 transition-colors">
   <span className="plus-badge text-bark-500"><Plus className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
   מתכון
   </Link>
@@ -588,7 +588,7 @@ export default function RecipeDetailPage() {
   <div key={comment.id} className="card-surface p-4">
   <div className="flex items-center justify-between mb-2">
   <Link href={`/profile/${comment.author.username}`}
-  className="text-sm font-semibold text-cinnamon-500 hover:text-cinnamon-600 transition-colors">
+  className="text-sm font-semibold text-cinnamon-500 hover:text-cinnamon-600 transition-colors inline-flex items-center min-h-[24px]">
   {comment.author.full_name || comment.author.username}
   </Link>
   <div className="flex items-center gap-2">
