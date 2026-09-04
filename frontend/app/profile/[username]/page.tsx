@@ -38,6 +38,7 @@ function ProfilePageContent() {
   const [editAvatar, setEditAvatar] = useState("");
   const [editSaving, setEditSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
 
   const isOwn = currentUser?.username === username;
 
@@ -75,10 +76,25 @@ function ProfilePageContent() {
     const file = e.target.files?.[0];
     if (!file) return;
     setAvatarUploading(true);
+    setAvatarError("");
     try {
       const { data } = await uploadApi.upload(file);
       setEditAvatar(data.url);
-    } catch {}
+    } catch (err: any) {
+      // The same silent catch that made a failed recipe photo look like nothing
+      // had happened at all.
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail;
+      setAvatarError(
+        status === 503
+          ? "העלאת תמונות לא מוגדרת בשרת עדיין."
+          : status === 401
+            ? "פג תוקף החיבור. התחברו שוב."
+            : typeof detail === "string"
+              ? detail
+              : "לא הצלחנו להעלות את התמונה. נסו שוב.",
+      );
+    }
     setAvatarUploading(false);
   };
 
@@ -187,7 +203,14 @@ function ProfilePageContent() {
                     />
                   </label>
                 </div>
-                <p className="text-sm text-bark-300">לחצו על המצלמה להחלפת תמונה</p>
+                <div className="min-w-0">
+                  <p className="text-sm text-bark-300">לחצו על המצלמה להחלפת תמונה</p>
+                  {avatarError && (
+                    <p role="alert" className="mt-1.5 text-sm font-semibold" style={{ color: "#B3452B" }}>
+                      {avatarError}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="field-row">

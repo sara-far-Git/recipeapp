@@ -6,7 +6,7 @@ from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_optional_current_user
 from app.models.user import User, Follow
-from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, KosherType
+from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, KosherType, visible_to
 from app.schemas.recipe import RecipeListItem
 
 router = APIRouter(prefix="/search", tags=["search"])
@@ -35,7 +35,7 @@ def search_recipes(
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
-    query = db.query(Recipe).filter(Recipe.is_published == True)
+    query = db.query(Recipe).filter(visible_to(current_user))
 
     if q:
         # Every word has to appear somewhere; each one may appear in either

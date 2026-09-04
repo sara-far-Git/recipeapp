@@ -84,3 +84,53 @@ def test_recipe_like_toggle(client, registered_user):
     )
     # endpoint may return 200 or 201 with updated counts
     assert r.status_code in (200, 201)
+
+
+def test_search_finds_your_own_draft(client, registered_user):
+    """A cook who is not on the publisher list still searches their own book.
+
+    Their recipes are saved as drafts, so a search that only looked at
+    published ones handed them an empty page for a recipe they had just
+    written.
+    """
+    client.post(
+        "/api/v1/recipes",
+        json=_sample_recipe(),
+        headers=registered_user["auth_header"],
+    )
+
+    mine = client.get("/api/v1/search?q=שוקולד", headers=registered_user["auth_header"])
+    assert mine.status_code == 200
+    assert any(i["title"] == "עוגת שוקולד" for i in mine.json())
+
+
+def test_search_hides_someone_elses_draft(client, registered_user, publisher_user):
+    """The draft stays private: it is findable by its author, and by no one else."""
+    client.post(
+        "/api/v1/recipes",
+        json=_sample_recipe(),
+        headers=registered_user["auth_header"],
+    )
+
+    stranger = client.get("/api/v1/search?q=שוקולד", headers=publisher_user["auth_header"])
+    assert stranger.status_code == 200
+    assert not any(i["title"] == "עוגת שוקולד" for i in stranger.json())
+
+    anonymous = client.get("/api/v1/search?q=שוקולד")
+    assert anonymous.status_code == 200
+    assert not any(i["title"] == "עוגת שוקולד" for i in anonymous.json())
+
+
+def test_ingredient_search_finds_your_own_draft(client, registered_user):
+    client.post(
+        "/api/v1/recipes",
+        json=_sample_recipe(),
+        headers=registered_user["auth_header"],
+    )
+    r = client.post(
+        "/api/v1/suggest/from-ingredients",
+        json={"ingredients": ["קמח"]},
+        headers=registered_user["auth_header"],
+    )
+    assert r.status_code == 200
+    assert any(i["title"] == "עוגת שוקולד" for i in r.json())

@@ -1,14 +1,38 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import String, cast, or_
 from sqlalchemy.orm import Session, joinedload
 from app.core.database import get_db
 from app.core.config import settings
 from app.core.security import get_current_user, get_optional_current_user
 from app.models.user import User
-from app.models.recipe import Recipe
+from app.models.recipe import Recipe, visible_to
 from app.schemas.recipe import AISuggestRequest, RecipeListItem
 from typing import Optional
 
 router = APIRouter(prefix="/suggest", tags=["suggest"])
+
+
+def _like(value: str) -> str:
+    """A contains-pattern with the wildcards spelled out rather than obeyed."""
+    escaped = value.replace("!", "!!").replace("%", "!%").replace("_", "!_")
+    return f"%{escaped}%"
+
+
+def _ingredient_patterns(word: str) -> list[str]:
+    """Both spellings of an ingredient.
+
+    The JSON serializer writes ASCII, so a column holding "דבש" actually reads
+    "\u05d3\u05d1\u05e9" once cast back to text. Searching for the word as
+    typed therefore matched nothing in Hebrew at all. Rows written either way
+    are matched by looking for both.
+    """
+    plain = word.strip()
+    if not plain:
+        return []
+    escaped = json.dumps(plain)[1:-1]
+    return [plain] if escaped == plain else [plain, escaped]
 
 
 @router.post("/from-ingredients", response_model=list[RecipeListItem])
@@ -21,17 +45,17 @@ def suggest_from_ingredients(
     if not data.ingredients:
         raise HTTPException(status_code=400, detail="Provide at least one ingredient")
 
-    query = db.query(Recipe).filter(Recipe.is_published == True).options(joinedload(Recipe.author))
+    query = db.query(Recipe).filter(visible_to(current_user)).options(joinedload(Recipe.author))
 
-    # For each ingredient, check if it appears in the JSON ingredients array
-    # PostgreSQL JSON containment would be ideal, but for MVP we use ILIKE on the cast
-    from sqlalchemy import cast, String
+    # Whether the ingredients array holds the word, read off the cast text.
+    # PostgreSQL JSON containment would be ideal, but for MVP we use ILIKE.
     conditions = []
     for ing in data.ingredients[:10]:  # limit to 10
-        pattern = f"%{ing.strip().lower()}%"
-        conditions.append(cast(Recipe.ingredients, String).ilike(pattern))
+        for pattern in _ingredient_patterns(ing):
+            conditions.append(
+                cast(Recipe.ingredients, String).ilike(_like(pattern), escape="!")
+            )
 
-    from sqlalchemy import or_
     if conditions:
         query = query.filter(or_(*conditions))
 

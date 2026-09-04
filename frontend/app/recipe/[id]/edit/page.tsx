@@ -46,6 +46,7 @@ export default function EditRecipePage() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [title, setTitle] = useState("");
@@ -97,7 +98,25 @@ export default function EditRecipePage() {
   const file = e.target.files?.[0];
   if (!file) return;
   setImageUploading(true);
-  try { const { data } = await uploadApi.upload(file); setImageUrl(data.url); } catch {}
+  setImageError("");
+  try {
+  const { data } = await uploadApi.upload(file);
+  setImageUrl(data.url);
+  } catch (err: any) {
+  // Swallowing this left the picker looking as if nothing had happened at
+  // all, which is the one outcome that cannot be acted on.
+  const status = err?.response?.status;
+  const detail = err?.response?.data?.detail;
+  setImageError(
+  status === 503
+  ? "העלאת תמונות לא מוגדרת בשרת עדיין. אפשר לשמור את המתכון בלי תמונה."
+  : status === 401
+  ? "פג תוקף החיבור. התחברו שוב ונסו להעלות מחדש."
+  : typeof detail === "string"
+  ? detail
+  : "לא הצלחנו להעלות את התמונה. נסו שוב, או שמרו בלי תמונה.",
+  );
+  }
   setImageUploading(false);
   };
 
@@ -222,6 +241,11 @@ export default function EditRecipePage() {
   </button>
   )}
   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+  {imageError && (
+  <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#B3452B" }}>
+  {imageError}
+  </p>
+  )}
   </div>
 
   <div className="grid grid-cols-2 gap-6">

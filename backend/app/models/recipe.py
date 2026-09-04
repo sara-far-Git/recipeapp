@@ -161,3 +161,16 @@ class ShoppingList(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     user = relationship("User", back_populates="shopping_lists")
+
+
+def visible_to(user):
+    """What a searcher is allowed to find.
+
+    Everything published, plus a signed-in cook's own book — their drafts are
+    theirs to search even while the rest of the site cannot see them.
+    """
+    from sqlalchemy import or_
+
+    if user is None:
+        return Recipe.is_published == True
+    return or_(Recipe.is_published == True, Recipe.author_id == user.id)
