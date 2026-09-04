@@ -14,7 +14,9 @@ import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import PageFrame from "@/components/ui/PageFrame";
 
-interface Ingredient { amount: number; unit: string; name: string; note?: boolean; }
+/** `amount` is the raw text while editing — `Number("0.")` is 0, so parsing
+ *  on every keystroke made a decimal point impossible to type. */
+interface Ingredient { amount: number | string; unit: string; name: string; note?: boolean; }
 interface Instruction { step: number; text: string; }
 
 const DIFFICULTY_OPTIONS = [
@@ -118,7 +120,9 @@ export default function EditRecipePage() {
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
-  ingredients: ingredients.filter((i) => i.name.trim()),
+  ingredients: ingredients
+  .filter((i) => i.name.trim())
+  .map((i) => ({ ...i, amount: i.note ? 0 : Number(i.amount) || 0 })),
   instructions: instructions.filter((i) => i.text.trim()),
   });
   setSaveSuccess(true);
@@ -289,9 +293,9 @@ export default function EditRecipePage() {
   <div key={i} className="flex items-start gap-2 card-surface p-3 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
   <GripVertical className="w-4 h-4 text-bark-200 mt-2.5 flex-shrink-0" />
   <div className="flex-1 grid grid-cols-[1fr_1fr_2fr] gap-2">
-  <input type="number" placeholder="כמות" value={ing.amount || ""}
-  onChange={(e) => updateIngredient(i, "amount", Number(e.target.value))}
-  className="input-dark" min={0} step="any" />
+  <input type="number" placeholder="כמות" value={ing.amount ?? ""}
+  onChange={(e) => updateIngredient(i, "amount", e.target.value)}
+  className="input-dark" min={0} step="any" inputMode="decimal" />
   <input placeholder="יחידה" value={ing.unit}
   onChange={(e) => updateIngredient(i, "unit", e.target.value)} className="input-dark" />
   <input placeholder="שם המצרך" value={ing.name}

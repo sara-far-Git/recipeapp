@@ -17,7 +17,9 @@ import PageFrame from "@/components/ui/PageFrame";
 
 /** `note: true` makes the row a heading between ingredients — "for the dough",
  *  "for the filling". Its `name` is the text; amount and unit are unused. */
-interface Ingredient { amount: number; unit: string; name: string; note?: boolean; }
+/** `amount` is the raw text while editing — `Number("0.")` is 0, so parsing
+ *  on every keystroke made a decimal point impossible to type. */
+interface Ingredient { amount: number | string; unit: string; name: string; note?: boolean; }
 interface Instruction { step: number; text: string; }
 
 const DIFFICULTY_OPTIONS = [
@@ -286,7 +288,9 @@ export default function NewRecipePage() {
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
-  ingredients: ingredients.filter((i) => i.name.trim()),
+  ingredients: ingredients
+  .filter((i) => i.name.trim())
+  .map((i) => ({ ...i, amount: i.note ? 0 : Number(i.amount) || 0 })),
   instructions: instructions.filter((i) => i.text.trim()), is_scanned: isScanned,
   });
   router.push(`/recipe/${data.id}`);
@@ -640,9 +644,9 @@ export default function NewRecipePage() {
   </div>
   ) : (
   <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_1fr_2fr] gap-2">
-  <input type="number" placeholder="כמות" aria-label={`כמות למצרך ${i + 1}`} value={ing.amount || ""}
-  onChange={(e) => updateIngredient(i, "amount", Number(e.target.value))}
-  className="input-dark" min={0} step="any" />
+  <input type="number" placeholder="כמות" aria-label={`כמות למצרך ${i + 1}`} value={ing.amount ?? ""}
+  onChange={(e) => updateIngredient(i, "amount", e.target.value)}
+  className="input-dark" min={0} step="any" inputMode="decimal" />
   <input placeholder="יחידה" aria-label={`יחידה למצרך ${i + 1}`} value={ing.unit}
   onChange={(e) => updateIngredient(i, "unit", e.target.value)} className="input-dark" />
   <input placeholder="שם המצרך" aria-label={`שם מצרך ${i + 1}`} value={ing.name}
@@ -693,10 +697,11 @@ export default function NewRecipePage() {
   </p>
 
   {instructions.map((inst, i) => (
-  <div key={i} className="flex items-start gap-3 card-surface p-4 animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
-  <span className="recipe-stepper-num bg-cinnamon-50 text-cinnamon-500 mt-0.5">
+  <div key={i} className="recipe-instruction-row card-surface animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
+  <span className="recipe-step-number" aria-hidden="true">
   {inst.step}
   </span>
+  <div className="recipe-step-fields">
   <textarea value={inst.text} onChange={(e) => updateInstruction(i, e.target.value)}
   aria-label={`שלב הכנה ${inst.step}`}
   placeholder={`שלב ${inst.step}...`} rows={2}
@@ -708,6 +713,7 @@ export default function NewRecipePage() {
   <Trash2 className="w-4 h-4" />
   </button>
   )}
+  </div>
   </div>
   ))}
 
