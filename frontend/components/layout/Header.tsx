@@ -151,8 +151,10 @@ export default function Header() {
       <div
         id="site-menu"
         className={cn("logo-menu", open && "is-open")}
+        /* The closed menu is `visibility: hidden`, which already takes it out
+           of the tab order and the accessibility tree. `inert` alongside it
+           only made React 18 warn on every render. */
         aria-hidden={!open}
-        inert={!open ? true : undefined}
       >
         <div className="logo-menu-slab" aria-hidden="true" />
         <div className="logo-menu-bg" aria-hidden="true" />

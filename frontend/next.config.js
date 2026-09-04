@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const isProduction = process.env.NODE_ENV === "production";
+const API_BACKEND = (
+  process.env.NEXT_PUBLIC_API_URL || "https://recipeapp-backend-iwn0.onrender.com"
+).replace(/\/$/, "");
 
 const nextConfig = {
   images: {
@@ -46,6 +49,18 @@ const nextConfig = {
     return [
       { source: "/icon-192", destination: "/icon-192.png" },
       { source: "/icon-512", destination: "/icon-512.png" },
+      // The browser calls the API at a relative path, and vercel.json rewrites
+      // it to the backend. The dev server has no such rewrite, so without this
+      // every client-side call 404s and nothing data-driven can be tried
+      // locally.
+      ...(isProduction
+        ? []
+        : [
+            {
+              source: "/api/v1/:path*",
+              destination: `${API_BACKEND}/api/v1/:path*`,
+            },
+          ]),
     ];
   },
   compress: true,

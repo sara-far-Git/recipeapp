@@ -248,7 +248,7 @@ export default function FeedPage() {
                 זה כל מה שיש כרגע — המתכון היחיד מחכה למטה.
               </p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="home-recipe-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {gridRecipes.map((recipe, i) => (
                   <Reveal key={recipe.id} delay={(i % 3) * 90}>
                     <RecipeCard recipe={recipe} />
@@ -359,7 +359,10 @@ export default function FeedPage() {
                     {user ? "שומרים מתכון" : "פותחים ספר מתכונים"}
                   </Link>
                   {!user && (
-                    <Link href="/login" className="font-medium hover:text-forest-500" style={{ color: "#102B22" }}>
+                    <Link
+                      href="/login"
+                      className="font-medium hover:text-forest-500 inline-flex items-center min-h-[24px]"
+                      style={{ color: "#102B22" }}>
                       כבר רשומים? כניסה
                     </Link>
                   )}
@@ -374,6 +377,10 @@ export default function FeedPage() {
     </div>
   );
 }
+
+/** How far a panel's copy may be shrunk before it stops being comfortable to
+ *  read. Below this the panel is carrying more than a screen can hold. */
+const MIN_SCALE = 0.64;
 
 const ENTER_FROM = {
   right: [100, 0],
@@ -440,10 +447,12 @@ function CinematicSection({
   const [inView, setInView] = useState(isFirst);
   const [scale, setScale] = useState(1);
 
-  /* A pinned panel can only ever show one screenful. Copy that overruns the
-     screen by a little is scaled down to fit — barely noticeable, and it keeps
-     the panel in the stack. Only copy that would have to shrink past
-     MIN_SCALE leaves the stack and scrolls normally instead. */
+  /* A pinned panel can only ever show one screenful, and it clips what does not
+     fit. Copy that overruns the screen by a little is scaled down — barely
+     noticeable at these ratios. The floor is where the copy would start to be
+     too small to read; a panel that would need less than that has too much in
+     it for a phone, and the answer is to put less in it, not to shrink it
+     further. */
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -452,22 +461,48 @@ function CinematicSection({
     if (!inner) return;
 
     const measure = () => {
-      const available = window.innerHeight - 64;
-      const padding = parseFloat(getComputedStyle(copy!).paddingBottom) || 0;
-      const natural = inner.getBoundingClientRect().height / (scaleRef.current || 1) + padding;
-      const next = natural > available ? Math.max(0.68, available / natural) : 1;
+      // Measured against the panel's own box rather than the window: the panel
+      // is what clips, and guessing its height from the viewport was off by
+      // whatever padding sat above the copy, which left the fit short.
+      const cs = getComputedStyle(copy!);
+      const padY =
+        (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+      // The panel box can read 0 mid-resize, while the stage's height variable
+      // is being recomputed. Bailing out then would leave the last scale in
+      // place for good, so fall back to the viewport estimate.
+      const box = el.clientHeight || window.innerHeight - 64;
+      const available = box - padY;
+      const natural = inner.getBoundingClientRect().height / (scaleRef.current || 1);
+      if (available <= 0 || natural <= 0) return;
+      // A pixel of slack: the fit is computed in fractions and clipped in whole
+      // pixels, and landing exactly on the boundary rounds the wrong way.
+      const next = natural > available ? Math.max(MIN_SCALE, (available - 1) / natural) : 1;
       scaleRef.current = next;
       setScale(next);
     };
     measure();
-    // The webfont lands after the first measurement and reflows the copy.
+    // The first measurement runs before the panel has settled: the webfont, the
+    // images and the reveal transforms all land afterwards and each one changes
+    // the height. Measuring once more after they have is what keeps a panel
+    // from deciding it fits and then being clipped for the rest of the session.
     document.fonts?.ready.then(measure).catch(() => {});
+    const raf = requestAnimationFrame(() => requestAnimationFrame(measure));
+    window.addEventListener("load", measure);
+    // Once a scale is applied the copy's layout box stops changing — only its
+    // transform does — so the observer below goes quiet and cannot report the
+    // growth that comes later: a late image decode, a font swap, a description
+    // that only appears above a breakpoint. These catch it.
+    const timers = [400, 1200, 2500].map((ms) => window.setTimeout(measure, ms));
     const ro = new ResizeObserver(measure);
     ro.observe(inner);
+    ro.observe(el);
     window.addEventListener("resize", measure);
     return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(window.clearTimeout);
       ro.disconnect();
       window.removeEventListener("resize", measure);
+      window.removeEventListener("load", measure);
     };
   }, []);
 

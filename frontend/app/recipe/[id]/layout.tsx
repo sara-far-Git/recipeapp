@@ -28,8 +28,15 @@ const getRecipe = (id: string) => apiGetResult<Recipe>(`/recipes/${encodeURIComp
 const iso = (min?: number | null) => (min && min > 0 ? `PT${min}M` : undefined);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { data: recipe } = await getRecipe(params.id);
-  if (!recipe) return { title: "המתכון לא נמצא", robots: { index: false, follow: true } };
+  const { data: recipe, status } = await getRecipe(params.id);
+  // Same rule as the layout below: only a definite 404 means the recipe is
+  // gone. A backend that was still waking up must not hand a crawler a page
+  // that calls itself missing and asks not to be indexed.
+  if (!recipe) {
+    return status === 404
+      ? { title: "המתכון לא נמצא", robots: { index: false, follow: true } }
+      : { alternates: { canonical: `${SITE_URL}/recipe/${encodeURIComponent(params.id)}` } };
+  }
 
   const description =
     recipe.description?.trim() ||

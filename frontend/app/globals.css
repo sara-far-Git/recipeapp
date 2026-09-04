@@ -905,6 +905,8 @@
     align-items: center;
     gap: 0.45rem;
     position: relative;
+    /* WCAG 2.5.8: these sat at 22px, just under the 24px a target needs. */
+    min-height: 24px;
     color: #D5E4D7;
     font-size: 0.9rem;
     font-weight: 500;
@@ -1058,6 +1060,19 @@
   /* The panel paints its own text light because it sits on green. The recipe
      card is cream paper, so those rules must stop at its edge — otherwise the
      title goes near-white on cream and the card body turns grey. */
+  /* The panel is pinned, so it shows exactly one screenful and clips the rest.
+     A second row of cards is always taller than that, at every width — on a
+     phone it hid two of the three recipes outright. So the panel carries the
+     one row that fits across, and "לכל המתכונים" carries the rest. */
+  .home-page .home-panel-recipes .home-recipe-grid > *:nth-child(n + 2) { display: none; }
+  @media (min-width: 640px) {
+    .home-page .home-panel-recipes .home-recipe-grid > *:nth-child(n + 3) { display: none; }
+  }
+  @media (min-width: 1024px) {
+    .home-page .home-panel-recipes .home-recipe-grid > *:nth-child(n + 3) { display: block; }
+    .home-page .home-panel-recipes .home-recipe-grid > *:nth-child(n + 4) { display: none; }
+  }
+
   .home-page .home-panel-recipes .recipe-card-shell .text-bark-500 { color: #1E4D45 !important; }
   .home-page .home-panel-recipes .recipe-card-shell .text-bark-400 { color: #275E50 !important; }
   .home-page .home-panel-recipes .recipe-card-shell .text-bark-300 { color: #2F6B5D !important; }
