@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Overlay from "@/components/ui/Overlay";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -59,6 +60,7 @@ export default function NewRecipePage() {
   const [recordSecs, setRecordSecs] = useState(0);
   const [transcribing, setTranscribing] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
   const [importUrl, setImportUrl] = useState("");
   const [importing, setImporting] = useState(false);
@@ -181,7 +183,25 @@ export default function NewRecipePage() {
   const file = e.target.files?.[0];
   if (!file) return;
   setImageUploading(true);
-  try { const { data } = await uploadApi.upload(file); setImageUrl(data.url); } catch { alert("שגיאה בהעלאת התמונה"); }
+  setImageError("");
+  try {
+  const { data } = await uploadApi.upload(file);
+  setImageUrl(data.url);
+  } catch (err: any) {
+  // The server knows why — say so, instead of the same sentence for a file
+  // that is too large, a session that expired, and storage that is off.
+  const status = err?.response?.status;
+  const detail = err?.response?.data?.detail;
+  setImageError(
+  status === 503
+  ? "העלאת תמונות לא מוגדרת בשרת עדיין. אפשר לשמור את המתכון בלי תמונה."
+  : status === 401
+  ? "פג תוקף החיבור. התחברו שוב ונסו להעלות מחדש."
+  : typeof detail === "string"
+  ? detail
+  : "לא הצלחנו להעלות את התמונה. נסו שוב, או שמרו בלי תמונה.",
+  );
+  }
   setImageUploading(false);
   };
 
@@ -273,7 +293,7 @@ export default function NewRecipePage() {
   <div className="max-w-2xl md:max-w-3xl mx-auto">
   {/* Scan overlay */}
   {(scanning || transcribing) && (
-  <div className="fixed inset-0 z-[100] bg-bark-600/90 backdrop-blur-sm flex items-center justify-center">
+  <Overlay className="bg-bark-600/90 backdrop-blur-sm" label="השף הדיגיטלי עובד">
   <div className="card-surface p-8 text-center max-w-sm mx-4 animate-scale-in">
   <div className="relative w-20 h-20 mx-auto mb-5">
   <Sparkles className="w-10 h-10 text-cinnamon-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
@@ -286,7 +306,7 @@ export default function NewRecipePage() {
     {transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
   </p>
   </div>
-  </div>
+  </Overlay>
   )}
 
   {/* Page header */}
@@ -507,6 +527,11 @@ export default function NewRecipePage() {
   </button>
   )}
   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+  {imageError && (
+  <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#B3452B" }}>
+  {imageError}
+  </p>
+  )}
   </div>
 
   <div className="grid grid-cols-2 gap-6">

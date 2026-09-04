@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Overlay from "@/components/ui/Overlay";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { recipesApi, uploadApi } from "@/lib/api";
@@ -133,7 +134,7 @@ export default function EditRecipePage() {
   <PageFrame tone="plum" className="recipe-editor-experience">
   <div className="max-w-2xl md:max-w-3xl mx-auto">
   {saveSuccess && (
-  <div className="fixed inset-0 z-[100] bg-bark-600/80 flex items-center justify-center">
+  <Overlay className="bg-bark-600/80" label="המתכון עודכן">
   <div className="card-surface p-8 text-center  animate-scale-in">
   <div className="w-16 h-16 rounded-full bg-cinnamon-50 border border-cinnamon-200 flex items-center justify-center mx-auto mb-4">
   <Check className="w-8 h-8 text-cinnamon-500" />
@@ -142,7 +143,7 @@ export default function EditRecipePage() {
   המתכון עודכן בהצלחה!
   </p>
   </div>
-  </div>
+  </Overlay>
   )}
 
   {/* Page header */}
