@@ -35,6 +35,8 @@ def search_recipes(
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
+    # Signed-in cooks see their own book (including drafts) plus every
+    # published recipe. Guests see the public shelf only.
     query = db.query(Recipe).filter(visible_to(current_user))
 
     if q:

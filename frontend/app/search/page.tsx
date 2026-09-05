@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
@@ -37,6 +38,7 @@ const QUICK_INGREDIENTS = ["ביצים", "גבינה", "תפוח אדמה", "ט�
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
+  const { isLoading: authLoading } = useAuth();
   const initialQ = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "";
 
@@ -73,21 +75,23 @@ function SearchPageContent() {
   }, []);
 
   useEffect(() => {
+    if (authLoading) return;
     const q = searchParams.get("q") || "";
     const cat = searchParams.get("category") || "";
     setQuery(q);
     setActiveCategory(cat);
     if (q.length >= 2 || cat) doSearch(q, "", "", 0, cat);
-  }, [searchParams, doSearch]);
+  }, [searchParams, doSearch, authLoading]);
 
   useEffect(() => {
+    if (authLoading) return;
     const timer = setTimeout(() => {
       if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory) {
         doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory);
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch]);
+  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch, authLoading]);
 
   const hasActiveFilters = Boolean(difficulty || kosherType || maxPrepTime > 0);
   const activeFilterCount = [activeCategory, difficulty, kosherType, maxPrepTime > 0].filter(Boolean).length;

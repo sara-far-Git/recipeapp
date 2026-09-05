@@ -1,4 +1,5 @@
 import axios, { type AxiosRequestConfig } from "axios";
+import { mergeRecipesById, recipeMatchesSearch } from "./recipeSearch";
 
 // ── Lightweight GET cache ─────────────────────────────────────────────────────
 // Deduplicates concurrent identical requests and short-circuits repeated calls
@@ -8,12 +9,23 @@ type CacheEntry = { data: any; expires: number };
 const _getCache = new Map<string, CacheEntry>();
 const _inflight = new Map<string, Promise<any>>();
 
+function _authTag(): string {
+  if (typeof window === "undefined") return "ssr";
+  return localStorage.getItem("token") ? "in" : "out";
+}
+
+function _bareKey(key: string): string {
+  return key.replace(/^(in|out|ssr):/, "");
+}
+
 function _key(url: string, params?: Record<string, any>): string {
-  if (!params) return url;
-  const qs = Object.keys(params).sort()
-    .filter((k) => params[k] != null && params[k] !== "")
-    .map((k) => `${k}=${params[k]}`).join("&");
-  return qs ? `${url}?${qs}` : url;
+  const qs = params
+    ? Object.keys(params).sort()
+        .filter((k) => params[k] != null && params[k] !== "")
+        .map((k) => `${k}=${params[k]}`).join("&")
+    : "";
+  const path = qs ? `${url}?${qs}` : url;
+  return `${_authTag()}:${path}`;
 }
 
 function cachedGet(url: string, params?: Record<string, any>, ttlMs = 30_000): Promise<any> {
@@ -30,7 +42,23 @@ function cachedGet(url: string, params?: Record<string, any>, ttlMs = 30_000): P
 }
 
 export function invalidateCache(prefix: string) {
-  Array.from(_getCache.keys()).forEach((k) => { if (k.startsWith(prefix)) _getCache.delete(k); });
+  Array.from(_getCache.keys()).forEach((k) => {
+    if (_bareKey(k).startsWith(prefix)) _getCache.delete(k);
+  });
+}
+
+export function clearCache() {
+  _getCache.clear();
+  _inflight.clear();
+}
+
+function storedUsername(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return JSON.parse(localStorage.getItem("user") || "null")?.username ?? null;
+  } catch {
+    return null;
+  }
 }
 
 declare module "axios" {
@@ -112,11 +140,28 @@ export const recipesApi = {
   list: (skip = 0, limit = 20) => cachedGet("/recipes", { skip, limit }, 20_000),
   get: (id: number) => cachedGet(`/recipes/${id}`, undefined, 60_000),
   create: (data: any) =>
-    api.post("/recipes", data).then((r) => { invalidateCache("/recipes"); return r; }),
+    api.post("/recipes", data).then((r) => {
+      invalidateCache("/recipes");
+      invalidateCache("/search");
+      invalidateCache("/users/");
+      return r;
+    }),
   update: (id: number, data: any) =>
-    api.put(`/recipes/${id}`, data).then((r) => { invalidateCache("/recipes"); invalidateCache(`/recipes/${id}`); return r; }),
+    api.put(`/recipes/${id}`, data).then((r) => {
+      invalidateCache("/recipes");
+      invalidateCache(`/recipes/${id}`);
+      invalidateCache("/search");
+      invalidateCache("/users/");
+      return r;
+    }),
   delete: (id: number) =>
-    api.delete(`/recipes/${id}`).then((r) => { invalidateCache("/recipes"); invalidateCache(`/recipes/${id}`); return r; }),
+    api.delete(`/recipes/${id}`).then((r) => {
+      invalidateCache("/recipes");
+      invalidateCache(`/recipes/${id}`);
+      invalidateCache("/search");
+      invalidateCache("/users/");
+      return r;
+    }),
   toggleLike: (id: number) =>
     api.post(`/recipes/${id}/like`).then((r) => { invalidateCache(`/recipes/${id}`); return r; }),
   toggleSave: (id: number) =>
@@ -132,7 +177,7 @@ export const recipesApi = {
 
 // ---------- Search ----------
 export const searchApi = {
-  search: (params: {
+  search: async (params: {
     q?: string;
     difficulty?: string;
     kosher_type?: string;
@@ -140,7 +185,26 @@ export const searchApi = {
     category?: string;
     skip?: number;
     limit?: number;
-  }) => cachedGet("/search", params as Record<string, any>, 20_000),
+    includePersonal?: boolean;
+  }) => {
+    const { includePersonal = true, category, skip = 0, limit = 20, ...rest } = params;
+    const username = includePersonal ? storedUsername() : null;
+    const fetchLimit = Math.min(100, Math.max(limit, username || category ? 100 : limit));
+    const searchRes = await cachedGet("/search", { ...rest, limit: fetchLimit }, 15_000);
+
+    let rows = Array.isArray(searchRes.data) ? searchRes.data : [];
+    if (username) {
+      try {
+        const mine = await cachedGet(`/users/${username}/recipes`, { skip: 0, limit: 100 }, 15_000);
+        rows = mergeRecipesById(rows, Array.isArray(mine.data) ? mine.data : []);
+      } catch {
+        /* keep public hits if the personal book cannot load */
+      }
+    }
+
+    rows = rows.filter((recipe: any) => recipeMatchesSearch(recipe, params));
+    return { ...searchRes, data: rows.slice(skip, skip + limit) };
+  },
 };
 
 // ---------- Scan ----------
