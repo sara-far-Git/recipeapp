@@ -39,6 +39,14 @@ services:
         value: "false"
       - key: GOOGLE_CLIENT_ID
         sync: false
+      # Image upload needs one storage provider. Without these the /upload
+      # endpoint answers 503 and a recipe can only be saved without a photo.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
       - key: SENTRY_DSN
         sync: false
       - key: SENTRY_ENVIRONMENT
