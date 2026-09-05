@@ -242,7 +242,7 @@
 
   .glass-stage {
     position: relative;
-    background: rgba(255, 252, 248, 0.55);
+    background: rgba(244, 238, 223, 0.72);
     border: 1px solid rgba(39, 94, 80, 0.10);
     border-radius: var(--r-lg);
     backdrop-filter: blur(22px);
@@ -294,7 +294,7 @@
     display: flex;
     align-items: center;
     gap: 0.85rem;
-    background: rgba(255, 252, 248, 0.82);
+    background: rgba(244, 238, 223, 0.92);
     border: 1px solid rgba(39, 94, 80, 0.14);
     border-radius: 999px;
     padding: 0.35rem 0.5rem 0.35rem 1rem;
@@ -341,7 +341,7 @@
     }
   }
   .cat-tile {
-    background: rgba(255, 252, 248, 0.55);
+    background: rgba(244, 238, 223, 0.72);
     border: 1px solid rgba(39, 94, 80, 0.10);
     border-radius: var(--r-lg);
     padding: 1.1rem 1.1rem 1.25rem;
@@ -351,7 +351,7 @@
   .cat-tile:hover {
     transform: translateY(-4px);
     border-color: rgba(217, 119, 87, 0.45);
-    background: rgba(255, 252, 248, 0.85);
+    background: rgba(244, 238, 223, 0.94);
   }
   @media (min-width: 1024px) {
     .food-orb {
@@ -568,11 +568,17 @@
     pointer-events: none;
   }
 
+  /* The box render has no back wall, so whatever the cards do not cover shows
+     the page straight through the opening. Measured off the artwork: the box's
+     inner walls stand at 2.6% and 96.4% of the frame, and each render carries
+     its own transparent margin — so these two layers are set wider than the
+     frame to bring the cards out to those walls. The cards are what fills the
+     box. */
   .writing-card__dividers {
     z-index: 1;
-    left: 13%;
-    top: -3%;
-    width: 66%;
+    left: -6%;
+    top: -9%;
+    width: 100%;
     transform: rotate(2.5deg);
     transform-origin: 50% 90%;
   }
@@ -585,9 +591,9 @@
   .writing-card__front {
     position: absolute;
     z-index: 2;
-    left: 7%;
+    left: 4%;
     top: 3%;
-    width: 80%;
+    width: 85%;
     transform: rotate(5deg);
     transform-origin: 50% 88%;
   }
@@ -1085,8 +1091,8 @@
     border-color: var(--card-rule);
   }
   .home-page .home-panel-recipes .recipe-card-shell .badge-neutral {
-    background: #F4EEDF;
-    color: #275E50;
+    background: #B7C4BE;
+    color: #1E4D45;
     border-color: var(--card-rule);
   }
 
@@ -1510,7 +1516,7 @@
 
   /* ─── Surfaces ────────────────────────────────────────────*/
   .card-surface {
-    background: rgba(255, 252, 248, 0.7);
+    background: rgba(244, 238, 223, 0.92);
     border: 1px solid rgba(39, 94, 80, 0.10);
     border-radius: var(--r-md);
     backdrop-filter: blur(18px);
@@ -1524,14 +1530,14 @@
     transform: translateY(-4px);
     box-shadow: 0 24px 60px -20px rgba(39, 94, 80, 0.16);
   }
-  .recipe-card-fallback { background: #F4EEDF; }
+  .recipe-card-fallback { background: var(--card-stock, #C8D5B7); }
   .recipe-card-draft {
-    background: #FAF8F3;
-    color: #275E50;
+    background: #2F6B5D;
+    color: #E9EFEA;
   }
   .recipe-card-time {
-    background: rgba(250, 248, 243, 0.82);
-    color: #275E50;
+    background: rgba(30, 77, 69, 0.78);
+    color: #E9EFEA;
   }
   .home-page .home-panel-recipes .recipe-card-draft,
   .home-page .home-panel-recipes .recipe-card-time {
@@ -1774,11 +1780,14 @@
   .experience-hero .btn-block:hover { background: #E3CFB2; border-color: #E3CFB2; color: #15382D; }
 
   .experience-page .card-surface {
-    background: rgba(244, 225, 193, 0.78);
+    background: #EEDCC0;
     border-color: rgba(21, 56, 45, 0.24);
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+  .experience-page .recipe-card-shell {
+    --card-stock: #C8D5B7;
   }
   .experience-page .card-surface-hover:hover {
     transform: translateY(-5px) rotate(-0.25deg);
@@ -2410,7 +2419,7 @@
     height: 100%;
     padding-top: var(--tab-h);
     --tab-h: 1.55rem;
-    --card-stock: #FAF8F3;
+    --card-stock: #C8D5B7;
     --card-rule: rgba(39, 94, 80, 0.14);
     --card-rim: rgba(217, 119, 87, 0.5);
   }
