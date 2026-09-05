@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { authApi, usersApi } from "./api";
+import { authApi, usersApi, clearCache } from "./api";
 
 export interface User {
   id: number;
@@ -39,6 +39,7 @@ const clearSession = () => {
 const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>) => void) => {
   const requestId = ++authRequestId;
   localStorage.setItem("token", accessToken);
+  clearCache();
   set({ token: accessToken, isLoading: true });
   try {
     const { data: user } = await usersApi.getMe({ skipAuthRedirect: true });
@@ -89,6 +90,7 @@ export const useAuth = create<AuthState>((set) => ({
   logout: () => {
     authRequestId += 1;
     clearSession();
+    clearCache();
     set({ user: null, token: null, isLoading: false });
   },
 

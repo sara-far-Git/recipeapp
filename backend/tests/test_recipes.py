@@ -121,6 +121,26 @@ def test_search_hides_someone_elses_draft(client, registered_user, publisher_use
     assert not any(i["title"] == "עוגת שוקולד" for i in anonymous.json())
 
 
+def test_search_category_includes_own_draft(client, registered_user):
+    """Category search is the cook's book plus the public shelf, not public only."""
+    client.post(
+        "/api/v1/recipes",
+        json={**_sample_recipe(), "category": "מאפים"},
+        headers=registered_user["auth_header"],
+    )
+
+    mine = client.get(
+        "/api/v1/search?category=מאפים",
+        headers=registered_user["auth_header"],
+    )
+    assert mine.status_code == 200
+    assert any(i["title"] == "עוגת שוקולד" for i in mine.json())
+
+    anonymous = client.get("/api/v1/search?category=מאפים")
+    assert anonymous.status_code == 200
+    assert not any(i["title"] == "עוגת שוקולד" for i in anonymous.json())
+
+
 def test_ingredient_search_finds_your_own_draft(client, registered_user):
     client.post(
         "/api/v1/recipes",

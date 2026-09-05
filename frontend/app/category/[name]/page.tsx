@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 export default function CategoryPage() {
   const params = useParams();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   // The param arrives decoded on some paths and encoded on others.
   const raw = params.name as string;
   const name = CATEGORIES.some((c) => c.name === raw)
@@ -27,13 +27,14 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
     setLoading(true);
     searchApi
       .search({ category: name, limit: 100 })
       .then((res) => setRecipes(res.data))
       .catch(() => setRecipes([]))
       .finally(() => setLoading(false));
-  }, [name]);
+  }, [name, authLoading]);
 
   return (
     <PageFrame tone="terracotta" className="category-experience">

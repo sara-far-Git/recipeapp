@@ -54,7 +54,7 @@ export default function FeedPage() {
   const loadRecipes = useCallback(async (diff = difficulty, kosh = kosher, time = maxTime) => {
     try {
       const res = (diff || kosh || time)
-        ? await searchApi.search({ difficulty: diff || undefined, kosher_type: kosh || undefined, max_prep_time: time || undefined, skip: 0, limit: 4 })
+        ? await searchApi.search({ difficulty: diff || undefined, kosher_type: kosh || undefined, max_prep_time: time || undefined, skip: 0, limit: 4, includePersonal: false })
         : await recipesApi.list(0, 4);
       setRecipes(res.data);
     } catch {} finally { setLoading(false); }
