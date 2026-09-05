@@ -1530,14 +1530,14 @@
     transform: translateY(-4px);
     box-shadow: 0 24px 60px -20px rgba(39, 94, 80, 0.16);
   }
-  .recipe-card-fallback { background: var(--card-stock, #C8D5B7); }
+  .recipe-card-fallback { background: #F4EEDF; }
   .recipe-card-draft {
-    background: #2F6B5D;
-    color: #E9EFEA;
+    background: #FAF8F3;
+    color: #275E50;
   }
   .recipe-card-time {
-    background: rgba(30, 77, 69, 0.78);
-    color: #E9EFEA;
+    background: rgba(250, 248, 243, 0.82);
+    color: #275E50;
   }
   .home-page .home-panel-recipes .recipe-card-draft,
   .home-page .home-panel-recipes .recipe-card-time {
@@ -1786,9 +1786,6 @@
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-  }
-  .experience-page .recipe-card-shell {
-    --card-stock: #C8D5B7;
   }
   .experience-page .card-surface-hover:hover {
     transform: translateY(-5px) rotate(-0.25deg);
@@ -2420,7 +2417,7 @@
     height: 100%;
     padding-top: var(--tab-h);
     --tab-h: 1.55rem;
-    --card-stock: #C8D5B7;
+    --card-stock: #FAF8F3;
     --card-rule: rgba(39, 94, 80, 0.14);
     --card-rim: rgba(217, 119, 87, 0.5);
   }
