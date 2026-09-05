@@ -11,6 +11,7 @@ import { LogIn, Plus, Search, ShoppingCart, User } from "lucide-react";
 const NAV_PAGES = [
   { href: "/", label: "בית" },
   { href: "/search", label: "מתכונים" },
+  { href: "/holiday", label: "תכנון חג" },
   { href: "/#categories", label: "קטגוריות" },
 ];
 

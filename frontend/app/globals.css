@@ -1760,6 +1760,7 @@
   .experience-hero--shopping .eyebrow,
   .experience-hero--shopping .plus-badge { color: #FAF8F3 !important; }
   .experience-hero--category { background: #B75E46; }
+  .experience-hero--holiday { background: #1E4D45; }
   .experience-hero--profile { background: #275E50; }
   .experience-hero--editor { background: #15382D; }
   .experience-page--plum .experience-hero--editor { background: #523C35; }
@@ -2577,6 +2578,195 @@
     border-color: rgba(39, 94, 80, 0.18);
   }
   .card-surface.is-note .input-dark { font-size: 1rem; }
+
+  .holiday-experience.experience-page {
+    background: #15382D;
+    color: #F4EEDF;
+  }
+  .holiday-board {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+  .holiday-masthead {
+    padding-block: 0.25rem 2.25rem;
+  }
+  .holiday-kicker,
+  .holiday-chapter-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #F1B49C;
+    margin-bottom: 0.85rem;
+  }
+  .holiday-kicker-link:hover { color: #F4EEDF; }
+  .holiday-experience .display-lg { color: #F4EEDF; }
+  .holiday-lead {
+    margin-top: 0.85rem;
+    max-width: 28rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #C9D6C8;
+  }
+  .holiday-chapter { margin-bottom: 2.25rem; }
+  .holiday-ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(244, 238, 223, 0.16);
+  }
+  .holiday-ledger-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid rgba(244, 238, 223, 0.16);
+    color: inherit;
+    transition: background 180ms ease;
+  }
+  .holiday-ledger-row:hover { background: rgba(244, 238, 223, 0.04); }
+  .holiday-ledger-num {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    line-height: 1;
+    color: #D97757;
+  }
+  .holiday-ledger-name {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    line-height: 1.1;
+    color: #F4EEDF;
+  }
+  .holiday-ledger-menu {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: #9FB6A4;
+  }
+  .holiday-ledger-count {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: #F1B49C;
+  }
+  .holiday-shop {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+    padding: 1.5rem 1.4rem;
+    background: #D97757;
+    color: #F4EEDF;
+  }
+  .holiday-shop-title {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    line-height: 1.1;
+  }
+  .holiday-shop-copy {
+    margin-top: 0.4rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #FFE8DC;
+  }
+  .holiday-shop-error { margin-top: 0.5rem; font-size: 0.88rem; }
+  .holiday-shop-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 3rem;
+    padding: 0 1.2rem;
+    background: #15382D;
+    color: #F4EEDF;
+    font-weight: 800;
+  }
+  .holiday-shop-btn:disabled { opacity: 0.45; }
+  .holiday-shop-btn:not(:disabled):hover { background: #1E4D45; }
+  .holiday-courses { display: flex; flex-direction: column; gap: 2.4rem; }
+  .holiday-course-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .holiday-course-num {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: #D97757;
+  }
+  .holiday-course-name {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    line-height: 1;
+    color: #F4EEDF;
+  }
+  .holiday-empty {
+    font-size: 0.9rem;
+    color: #9FB6A4;
+  }
+  .holiday-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+  }
+  @media (min-width: 720px) {
+    .holiday-choices { grid-template-columns: repeat(4, 1fr); }
+    .holiday-shop {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .holiday-choice {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    color: inherit;
+    min-width: 0;
+  }
+  .holiday-choice-photo {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #1E4D45;
+    outline: 1px solid rgba(244, 238, 223, 0.12);
+    outline-offset: -1px;
+  }
+  .holiday-choice.is-selected .holiday-choice-photo {
+    outline: 3px solid #D97757;
+    outline-offset: -3px;
+  }
+  .holiday-choice-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: #C8D5B7;
+  }
+  .holiday-choice-title {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #E4EDDF;
+  }
+  .holiday-choice.is-selected .holiday-choice-title { color: #F1B49C; }
+  .holiday-back {
+    display: inline-flex;
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #F1B49C;
+  }
+  .holiday-back:hover { color: #F4EEDF; }
+  .holiday-experience .recipe-loader { color: #F4EEDF; }
 
 @layer utilities {
   .tabular { font-variant-numeric: tabular-nums; }
