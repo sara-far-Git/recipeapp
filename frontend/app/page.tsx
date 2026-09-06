@@ -12,12 +12,17 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
 import WritingCard from "@/components/home/WritingCard";
+import HeroClock from "@/components/home/HeroClock";
 import VerbCycle from "@/components/home/VerbCycle";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
+/** How long a scene holds before the next one fades in. Long: it is meant to
+ *  be noticed on a second look, not to perform. */
+const SCENE_MS = 9000;
+
 /** The verb that changes in the headline. Module constants so the component
  *  is handed the same array every render. */
 const VERBS_SIGNED_IN = ["לבשל", "להכין", "לאפות", "לטגן"];
@@ -125,10 +130,18 @@ export default function FeedPage() {
     const t = window.setInterval(pick, 60_000);
     return () => window.clearInterval(t);
   }, []);
-  const mealHint = useTypedHint(
-    mealBand,
-    typingWanted && !composerFocused && !heroQuery,
-  );
+  const mealHint = MEAL_HOURS[mealBand].hints[0];
+
+  /* Two scenes, changing together and slowly. The panel used to run three
+     separate animations at once, inches apart, all competing for the same
+     glance; this is one rhythm instead — a headline and the mark that belongs
+     with it, crossfading. */
+  const [scene, setScene] = useState(0);
+  useEffect(() => {
+    if (!typingWanted) return;
+    const t = window.setInterval(() => setScene((n) => (n + 1) % 2), SCENE_MS);
+    return () => window.clearInterval(t);
+  }, [typingWanted]);
 
   /* The day of the week, decided in the browser. Rendered on the server it is
      the server's day, in the server's timezone — which is both a different
@@ -195,21 +208,33 @@ export default function FeedPage() {
       <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
-            <h1 className="display-hero assistant-title">
-              {user ? (
-                <>
-                  מה בא לך<br />
-                  <VerbCycle words={VERBS_SIGNED_IN} /> היום?
-                </>
-              ) : (
-                <>
-                  מה <VerbCycle words={VERBS_SIGNED_OUT} />
-                  <br />
-                  היום?
-                </>
-              )}
+            <h1 className="display-hero assistant-title hero-scenes">
+              <span className={cn("hero-scene", scene === 0 && "is-on")}>
+                {user ? (
+                  <>
+                    מה בא לך<br />
+                    <VerbCycle words={VERBS_SIGNED_IN} /> היום?
+                  </>
+                ) : (
+                  <>
+                    מה <VerbCycle words={VERBS_SIGNED_OUT} />
+                    <br />
+                    היום?
+                  </>
+                )}
+              </span>
+              <span className={cn("hero-scene", scene === 1 && "is-on")} aria-hidden={scene !== 1}>
+                למתי את צריכה<br />את זה?
+              </span>
             </h1>
-            <p className="assistant-prompt">ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.</p>
+            <p className="assistant-prompt hero-scenes">
+              <span className={cn("hero-scene", scene === 0 && "is-on")}>
+                ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.
+              </span>
+              <span className={cn("hero-scene", scene === 1 && "is-on")} aria-hidden={scene !== 1}>
+                ארוחת ערב בעוד שעה, או משהו שנשאר טרי עד שבת.
+              </span>
+            </p>
             <form onSubmit={submitHeroSearch} className={cn("assistant-composer", composerAttention && "is-attention", isSearching && "is-searching")}>
               <Search className="w-5 h-5 shrink-0" strokeWidth={2.1} aria-hidden="true" />
               <input
@@ -246,7 +271,14 @@ export default function FeedPage() {
               </Link>
             </div>
           </Reveal>
-          <WritingCard />
+          <div className="hero-marks">
+            <div className={cn("hero-scene", scene === 0 && "is-on")}>
+              <WritingCard />
+            </div>
+            <div className={cn("hero-scene", scene === 1 && "is-on")}>
+              <HeroClock />
+            </div>
+          </div>
         </div>
       </CinematicSection>
 

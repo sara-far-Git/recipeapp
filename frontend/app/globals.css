@@ -866,6 +866,50 @@
     .tip__bubble { display: none; }
   }
 
+  /* ── The hero's two scenes ────────────────────────────────────────
+     A headline, the line under it and the mark beside it all change together,
+     because they say the same thing. Stacked in one grid cell so the slot is
+     as tall as the taller scene and nothing below moves as they trade places;
+     crossfaded slowly, with only a breath of drift — the panel should look
+     like it is breathing, not performing. */
+  .hero-scenes {
+    display: grid;
+  }
+  .hero-scenes > .hero-scene {
+    grid-area: 1 / 1;
+  }
+  .hero-scene {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 800ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 800ms;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .hero-scene.is-on {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+  /* The two marks share one square, so the column does not resize between
+     them and the copy beside it stays put. */
+  .hero-marks {
+    position: relative;
+    display: none;
+    width: 100%;
+    aspect-ratio: 1 / 1.16;
+  }
+  @media (min-width: 1100px) { .hero-marks { display: block; } }
+  .hero-marks > .hero-scene {
+    position: absolute;
+    inset: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scene { transition: none; }
+  }
+
   /* The changing word in the headline.
      The ghosts are never seen: they hold the slot open at the width of the
      longest word so that typing inside it cannot shuffle the rest of a centred
