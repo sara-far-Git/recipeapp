@@ -20,21 +20,66 @@ const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'"
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
 /** What the search line asks for, by the hour the visitor is actually in.
- *  Ordered by `from`; the last one wraps around midnight. */
+ *  Ordered by `from`; the last band wraps around midnight. Each holds a few
+ *  lines, which the composer types out one after another. */
 const MEAL_HOURS = [
-  { from: 5, hint: "חביתה, לחם טרי וגבינה..." },
-  { from: 11, hint: "יש לי עוף, אורז ועגבניות..." },
-  { from: 16, hint: "משהו מתוק לצד הקפה..." },
-  { from: 19, hint: "מה עושים לארוחת ערב..." },
-  { from: 23, hint: "משהו מתוק ומהיר..." },
+  { from: 5, hints: ["חביתה, לחם טרי וגבינה...", "משהו מהיר לפני שיוצאים...", "אפייה לארוחת בוקר..."] },
+  { from: 11, hints: ["יש לי עוף, אורז ועגבניות...", "ארוחה חמה ב-20 דקות...", "משהו קל לצהריים..."] },
+  { from: 16, hints: ["משהו מתוק לצד הקפה...", "עוגה שנשארת טרייה...", "מאפה לאורחים..."] },
+  { from: 19, hints: ["מה עושים לארוחת ערב...", "יש לי מה שנשאר במקרר...", "ארוחה לכל המשפחה..."] },
+  { from: 23, hints: ["משהו מתוק ומהיר...", "עוגיות בעשר דקות...", "מה יש במקרר..."] },
 ];
-const NIGHT = MEAL_HOURS[MEAL_HOURS.length - 1];
+const NIGHT_BAND = MEAL_HOURS.length - 1;
 
-function hintForHour(hour: number) {
-  if (hour < MEAL_HOURS[0].from) return NIGHT.hint;
-  let found = NIGHT;
-  for (const b of MEAL_HOURS) if (hour >= b.from) found = b;
-  return found.hint;
+function bandForHour(hour: number) {
+  if (hour < MEAL_HOURS[0].from) return NIGHT_BAND;
+  let found = NIGHT_BAND;
+  MEAL_HOURS.forEach((b, i) => {
+    if (hour >= b.from) found = i;
+  });
+  return found;
+}
+
+/** The search line typing itself out, one line of the hour after another.
+ *  Held still while someone is actually using the field — a placeholder that
+ *  writes itself under a waiting cursor is only a distraction — and for anyone
+ *  who asked their system for less movement. */
+function useTypedHint(band: number, enabled: boolean) {
+  const [text, setText] = useState(MEAL_HOURS[band].hints[0]);
+
+  useEffect(() => {
+    const hints = MEAL_HOURS[band].hints;
+    if (!enabled) {
+      setText(hints[0]);
+      return;
+    }
+    let phrase = 0;
+    let cut = hints[0].length;
+    let erasing = true;
+    let timer = 0;
+
+    const tick = () => {
+      const full = hints[phrase % hints.length];
+      cut += erasing ? -1 : 1;
+      setText(full.slice(0, cut));
+
+      let next = erasing ? 26 : 58;
+      if (!erasing && cut >= full.length) {
+        erasing = true;
+        next = 2400;
+      } else if (erasing && cut <= 0) {
+        erasing = false;
+        phrase += 1;
+        next = 320;
+      }
+      timer = window.setTimeout(tick, next);
+    };
+
+    timer = window.setTimeout(tick, 2400);
+    return () => window.clearTimeout(timer);
+  }, [band, enabled]);
+
+  return text;
 }
 
 const REASONS = [
@@ -60,17 +105,24 @@ export default function FeedPage() {
   const [activeQuickStart, setActiveQuickStart] = useState<string | null>(null);
   const [composerAttention, setComposerAttention] = useState(false);
   const composerRef = useRef<HTMLInputElement>(null);
-  /* Starts on the daytime line and moves to the visitor's own hour once
+  /* Starts on the daytime band and moves to the visitor's own hour once
      mounted — the server cannot know their clock, and guessing would show one
      line and then swap it a frame later. */
-  const [mealHint, setMealHint] = useState(MEAL_HOURS[1].hint);
+  const [mealBand, setMealBand] = useState(1);
+  const [composerFocused, setComposerFocused] = useState(false);
+  const [typingWanted, setTypingWanted] = useState(false);
   useEffect(() => {
-    const pick = () => setMealHint(hintForHour(new Date().getHours()));
+    const pick = () => setMealBand(bandForHour(new Date().getHours()));
     pick();
+    setTypingWanted(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     // Someone leaves the page open across an hour boundary.
     const t = window.setInterval(pick, 60_000);
     return () => window.clearInterval(t);
   }, []);
+  const mealHint = useTypedHint(
+    mealBand,
+    typingWanted && !composerFocused && !heroQuery,
+  );
 
 
   useEffect(() => {
@@ -139,6 +191,8 @@ export default function FeedPage() {
                 value={heroQuery}
                 onChange={(e) => setHeroQuery(e.target.value)}
                 placeholder={mealHint}
+                onFocus={() => setComposerFocused(true)}
+                onBlur={() => setComposerFocused(false)}
                 aria-label="מה בא לך להכין"
               />
               <button type="submit" disabled={isSearching} aria-label="חיפוש מתכון" title="חיפוש מתכון">
