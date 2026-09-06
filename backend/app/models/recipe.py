@@ -1,6 +1,6 @@
 from sqlalchemy import (
     Column, Integer, String, Boolean, DateTime, Text,
-    Float, ForeignKey, Enum as SAEnum, JSON, Index
+    Float, ForeignKey, Enum as SAEnum, JSON, Index, LargeBinary
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -174,3 +174,25 @@ def visible_to(user):
     if user is None:
         return Recipe.is_published == True
     return or_(Recipe.is_published == True, Recipe.author_id == user.id)
+
+
+class StoredImage(Base):
+    """A recipe photo held in our own database.
+
+    The alternative is an image host, and reaching one turned out to be the
+    hard part: the network this site is run from filters most of the web, so
+    the console of every provider was unreachable. Bytes in Postgres need no
+    account, no key and no second domain for a filter to block. They cost
+    space instead — which is why nothing is stored here at full size.
+    """
+
+    __tablename__ = "stored_images"
+
+    # A random id, not a running number: these are served without auth, and a
+    # sequence would let anyone walk the whole library.
+    id = Column(String(32), primary_key=True)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    content_type = Column(String(40), nullable=False)
+    byte_size = Column(Integer, nullable=False)
+    data = Column(LargeBinary, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

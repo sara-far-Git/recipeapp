@@ -43,8 +43,8 @@ app.add_middleware(
 # --- Routers --------------------------------------------------------
 for r in [
     auth.router, recipes.router, users.router, search.router, scan.router,
-    upload.router, collections.router, shopping.router, suggest.router,
-    importer.router,
+    upload.router, upload.images_router, collections.router, shopping.router,
+    suggest.router, importer.router,
 ]:
     app.include_router(r, prefix=settings.API_V1_PREFIX)
 

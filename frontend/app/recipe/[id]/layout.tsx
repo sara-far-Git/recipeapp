@@ -27,6 +27,12 @@ const getRecipe = (id: string) => apiGetResult<Recipe>(`/recipes/${encodeURIComp
 
 const iso = (min?: number | null) => (min && min > 0 ? `PT${min}M` : undefined);
 
+/** Photos kept in our own database are addressed by a path, which is all the
+ *  browser needs. Open Graph and schema.org are read off the page by machines
+ *  that have no origin to resolve it against, so they get the full URL. */
+const absolute = (url?: string | null) =>
+  !url ? undefined : url.startsWith("/") ? `${SITE_URL}${url}` : url;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { data: recipe, status } = await getRecipe(params.id);
   // Same rule as the layout below: only a definite 404 means the recipe is
@@ -42,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     recipe.description?.trim() ||
     `מתכון ל${recipe.title}${recipe.category ? ` · ${recipe.category}` : ""}, בספר המתכונים.`;
   const url = `${SITE_URL}/recipe/${recipe.id}`;
-  const image = recipe.image_url || `${SITE_URL}/icon-512`;
+  const image = absolute(recipe.image_url) || `${SITE_URL}/icon-512`;
 
   return {
     title: recipe.title,
@@ -67,7 +73,7 @@ function RecipeJsonLd({ recipe }: { recipe: Recipe }) {
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description || undefined,
-    image: recipe.image_url || undefined,
+    image: absolute(recipe.image_url) || undefined,
     author: recipe.author?.full_name
       ? { "@type": "Person", name: recipe.author.full_name }
       : undefined,
