@@ -47,6 +47,9 @@ class UserPublic(BaseModel):
 
 class UserMe(UserPublic):
     email: str
+    # Set from configuration, not stored: it decides whether the site offers
+    # the link to its own numbers.
+    is_admin: bool = False
 
 
 class Token(BaseModel):

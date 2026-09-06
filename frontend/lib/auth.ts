@@ -11,6 +11,9 @@ export interface User {
   followers_count: number;
   following_count: number;
   recipes_count: number;
+  /** Set by the server from ADMIN_EMAILS. Decides whether the site offers the
+   *  link to its own numbers; the page behind it checks again regardless. */
+  is_admin?: boolean;
 }
 
 interface AuthState {

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
 from app.core.database import get_db
-from app.core.security import get_current_user, get_optional_current_user
+from app.core.security import get_current_user, is_admin, get_optional_current_user
 from app.models.user import User, Follow
 from app.models.recipe import Recipe
 from app.schemas.user import UserPublic, UserMe, UserUpdate
@@ -16,6 +16,7 @@ def _enrich_user(user: User) -> User:
     user.followers_count = len(user.followers)
     user.following_count = len(user.following)
     user.recipes_count = sum(1 for r in user.recipes if r.is_published)
+    user.is_admin = is_admin(user)
     return user
 
 

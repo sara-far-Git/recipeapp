@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, is_admin
 from app.models.recipe import Recipe, StoredImage
 from app.models.user import User
 
@@ -25,10 +25,7 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
     Kept in configuration rather than in the database so that granting it does
     not need a migration, and so that a stolen account cannot grant itself.
     """
-    allowed = {
-        e.strip().lower() for e in settings.ADMIN_EMAILS.split(",") if e.strip()
-    }
-    if not allowed or (current_user.email or "").lower() not in allowed:
+    if not is_admin(current_user):
         # The same answer a stranger gets for a page that does not exist: no
         # need to advertise that there is an admin area at all.
         raise HTTPException(status_code=404, detail="Not found")

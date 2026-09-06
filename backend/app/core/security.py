@@ -78,3 +78,15 @@ def get_optional_current_user(
 ):
     """Returns user if authenticated, None otherwise."""
     return _resolve_user(token, db, required=False)
+
+
+def is_admin(user) -> bool:
+    """Whether this cook may read the site's own numbers.
+
+    Named in configuration rather than stored on the row, so granting it needs
+    no migration and a compromised account cannot grant it to itself.
+    """
+    allowed = {
+        e.strip().lower() for e in settings.ADMIN_EMAILS.split(",") if e.strip()
+    }
+    return bool(allowed) and (getattr(user, "email", "") or "").lower() in allowed

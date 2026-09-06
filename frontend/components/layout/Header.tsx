@@ -15,8 +15,14 @@ const NAV_PAGES = [
   { href: "/#categories", label: "קטגוריות" },
 ];
 
+/** Only shown to whoever the server says runs the site. Hiding it is a
+ *  courtesy, not the protection — /admin and its endpoint check for
+ *  themselves, and answer a stranger with a 404. */
+const ADMIN_PAGE = { href: "/admin", label: "ניהול" };
+
 export default function Header() {
   const { user, logout } = useAuth();
+  const navPages = user?.is_admin ? [...NAV_PAGES, ADMIN_PAGE] : NAV_PAGES;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -95,7 +101,7 @@ export default function Header() {
             </button>
 
             <nav className="hidden lg:flex items-center gap-1" aria-label="ניווט ראשי">
-              {NAV_PAGES.map((link) => {
+              {navPages.map((link) => {
                 const active = isActive(link.href);
                 return (
                   <Link
@@ -163,7 +169,7 @@ export default function Header() {
           <div className="logo-menu-brand">
             <Logo transparent size={420} className="w-[min(78vw,26rem)] h-auto" />
           </div>
-          {NAV_PAGES.map((link, i) => (
+          {navPages.map((link, i) => (
             <Link
               key={link.href}
               href={link.href}

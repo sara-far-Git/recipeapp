@@ -81,3 +81,26 @@ def test_signing_in_is_recorded(client, registered_user, monkeypatch):
     after = stats()
     assert after["seen_today"] == before["seen_today"] + 1
     assert after["never_signed_in"] == before["never_signed_in"] - 1
+
+
+def test_the_flag_travels_with_the_signed_in_cook(client, registered_user, monkeypatch):
+    """So the site can offer the link without guessing."""
+    monkeypatch.setattr(config.settings, "ADMIN_EMAILS", registered_user["email"])
+    me = client.get("/api/v1/users/me", headers=registered_user["auth_header"])
+    assert me.status_code == 200
+    assert me.json()["is_admin"] is True
+
+
+def test_everyone_else_is_told_they_are_not(client, registered_user, monkeypatch):
+    monkeypatch.setattr(config.settings, "ADMIN_EMAILS", "someone@else.com")
+    me = client.get("/api/v1/users/me", headers=registered_user["auth_header"])
+    assert me.json()["is_admin"] is False
+
+
+def test_the_flag_is_not_on_a_public_profile(client, registered_user, monkeypatch):
+    """A stranger reading a profile learns nothing about who runs the site."""
+    monkeypatch.setattr(config.settings, "ADMIN_EMAILS", registered_user["email"])
+    public = client.get(f"/api/v1/users/{registered_user['username']}")
+    assert public.status_code == 200
+    assert "is_admin" not in public.json()
+    assert "email" not in public.json()
