@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Overlay from "@/components/ui/Overlay";
+import RecipeLoading from "@/components/ui/RecipeLoading";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -323,18 +324,10 @@ export default function NewRecipePage() {
   {/* Scan overlay */}
   {(scanning || transcribing) && (
   <Overlay className="bg-bark-600/90 backdrop-blur-sm" label="השף הדיגיטלי עובד">
-  <div className="card-surface p-8 text-center max-w-sm mx-4 animate-scale-in">
-  <div className="relative w-20 h-20 mx-auto mb-5">
-  <Sparkles className="w-10 h-10 text-cinnamon-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-  <div className="w-20 h-20 rounded-full border-4 border-surface-400 border-t-cinnamon-500 animate-spin" />
-  </div>
-  <h3 className="section-title text-bark-500 mb-2">
-  השף הדיגיטלי עובד
-  </h3>
-  <p className="text-bark-300 text-sm">
-    {transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
-  </p>
-  </div>
+  <RecipeLoading
+    compact
+    hint={transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
+  />
   </Overlay>
   )}
 

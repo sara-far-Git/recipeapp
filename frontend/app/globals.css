@@ -1012,30 +1012,77 @@
   }
 
   .recipe-loader {
-    min-height: clamp(8rem, 22vh, 12rem);
+    min-height: clamp(11rem, 28vh, 16rem);
     display: grid;
     place-items: center;
   }
-  .recipe-loader.is-compact { min-height: 5rem; }
+  .recipe-loader.is-compact { min-height: 0; }
+  .recipe-loader-panel {
+    width: min(20rem, calc(100% - 2rem));
+    padding: 2rem 1.75rem 1.75rem;
+    text-align: center;
+  }
+  .recipe-loader.is-compact .recipe-loader-panel {
+    padding: 1.5rem 1.35rem 1.35rem;
+  }
+  .recipe-loader-mark {
+    position: relative;
+    display: block;
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto 1.15rem;
+  }
+  .recipe-loader.is-compact .recipe-loader-mark {
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 0.9rem;
+  }
+  .recipe-loader-spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #D97757;
+    transform: translate(-50%, -50%);
+    animation: recipe-spark-pulse 1.4s ease-in-out infinite;
+  }
+  .recipe-loader.is-compact .recipe-loader-spark {
+    width: 2rem;
+    height: 2rem;
+  }
   .recipe-loader-spin {
-    width: 2.25rem;
-    height: 2.25rem;
+    display: block;
+    width: 100%;
+    height: 100%;
     border-radius: 999px;
-    border: 3px solid rgba(30, 77, 69, 0.16);
+    border: 4px solid #D5DED8;
     border-top-color: #D97757;
     animation: recipe-spin 700ms linear infinite;
   }
-  .home-page .recipe-loader-spin,
-  .holiday-experience .recipe-loader-spin,
-  .recipe-loader-spin.is-on-dark {
-    border-color: rgba(250, 248, 243, 0.18);
-    border-top-color: #D97757;
+  .recipe-loader-panel p {
+    margin: 0;
+    color: #1E4D45;
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+  .recipe-loader-panel > span {
+    display: block;
+    margin-top: 0.35rem;
+    color: #66736D;
+    font-size: 0.82rem;
+    font-weight: 500;
   }
   @keyframes recipe-spin {
     to { transform: rotate(360deg); }
   }
+  @keyframes recipe-spark-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .recipe-loader-spin { animation: none; border-top-color: #D97757; }
+    .recipe-loader-spin,
+    .recipe-loader-spark { animation: none; }
   }
 
   .recipe-toast {

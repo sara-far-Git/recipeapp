@@ -1,11 +1,15 @@
+import { Sparkles } from "lucide-react";
+
 type RecipeLoadingProps = {
   label?: string;
+  hint?: string;
   compact?: boolean;
   kind?: "recipe" | "search" | "collection" | "shopping";
 };
 
 export default function RecipeLoading({
-  label = "טוען",
+  label = "השף הדיגיטלי עובד",
+  hint,
   compact = false,
 }: RecipeLoadingProps) {
   return (
@@ -16,7 +20,14 @@ export default function RecipeLoading({
       aria-busy="true"
       aria-label={label}
     >
-      <span className="recipe-loader-spin" aria-hidden="true" />
+      <div className="card-surface recipe-loader-panel">
+        <span className="recipe-loader-mark" aria-hidden="true">
+          <Sparkles className="recipe-loader-spark" strokeWidth={2} />
+          <span className="recipe-loader-spin" />
+        </span>
+        <p>השף הדיגיטלי עובד</p>
+        {hint ? <span>{hint}</span> : null}
+      </div>
     </div>
   );
 }
