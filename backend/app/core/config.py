@@ -64,7 +64,11 @@ class Settings(BaseSettings):
     # Rate limiting (requests per minute per IP)
     RATE_LIMIT_LOGIN: str = "10/minute"
     RATE_LIMIT_REGISTER: str = "5/minute"
-    RATE_LIMIT_AI: str = "20/hour"
+    # An hourly cap alone still allows 20 x 24 x 30 calls a month, and vision
+    # and transcription are the expensive models — that arithmetic reaches four
+    # figures for a single determined account. The daily cap is what actually
+    # bounds the month; no ordinary cook comes near it.
+    RATE_LIMIT_AI: str = "20/hour;60/day"
     RATE_LIMIT_SEARCH: str = "60/minute"
     RATE_LIMIT_UPLOAD: str = "40/hour"
 
