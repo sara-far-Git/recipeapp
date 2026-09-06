@@ -18,6 +18,11 @@ import { CATEGORIES } from "@/lib/categories";
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
+/** The verb that changes in the headline. Module constants so the component
+ *  is handed the same array every render. */
+const VERBS_SIGNED_IN = ["לבשל", "להכין", "לאפות", "לטגן"];
+const VERBS_SIGNED_OUT = ["נכין", "נבשל", "נאפה", "נטגן"];
+
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
 /** What the search line asks for, by the hour the visitor is actually in.
@@ -194,11 +199,11 @@ export default function FeedPage() {
               {user ? (
                 <>
                   מה בא לך<br />
-                  <VerbCycle words={["לבשל", "להכין", "לאפות", "לטגן"]} /> היום?
+                  <VerbCycle words={VERBS_SIGNED_IN} /> היום?
                 </>
               ) : (
                 <>
-                  מה <VerbCycle words={["נכין", "נבשל", "נאפה", "נטגן"]} />
+                  מה <VerbCycle words={VERBS_SIGNED_OUT} />
                   <br />
                   היום?
                 </>
