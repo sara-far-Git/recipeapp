@@ -559,6 +559,82 @@
   }
   @media (min-width: 1100px) { .writing-card { display: block; } }
 
+  /* ── The gathering ────────────────────────────────────────────────
+     Cards strewn across the panel that sweep into the box on load. They are
+     drawn rather than photographed: this is the first thing the hero paints,
+     and eight more renders would be paid for in load time. Each one carries
+     its own start (--gx/--gy/--gr), its resting offset (--rx/--ry/--rr) and
+     its delay (--gd). */
+  .gather-field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .gather-card {
+    position: absolute;
+    left: 12%;
+    top: 14%;
+    width: 62%;
+    aspect-ratio: 1 / 0.92;
+    border-radius: 0.7rem;
+    background: #FAF8F3;
+    border: 1px solid rgba(39, 94, 80, 0.16);
+    box-shadow: 0 14px 30px -14px rgba(6, 24, 18, 0.55);
+    padding: 14% 12% 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7%;
+    opacity: 0;
+    transform: translate(var(--gx), var(--gy)) rotate(var(--gr));
+  }
+  /* the tab, and the ruled lines under it */
+  .gather-card::before {
+    content: "";
+    position: absolute;
+    top: -0.5rem;
+    inset-inline-start: 14%;
+    width: 30%;
+    height: 0.75rem;
+    border-radius: 0.35rem 0.35rem 0 0;
+    background: var(--gather-tab, #9FB6A4);
+  }
+  .gather-card i {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(39, 94, 80, 0.16);
+  }
+  .gather-card i:nth-child(1) { width: 74%; }
+  .gather-card i:nth-child(2) { width: 92%; }
+  .gather-card i:nth-child(3) { width: 58%; }
+  .gather-card--a { --gather-tab: #1E4D45; }
+  .gather-card--b { --gather-tab: #D97757; }
+  .gather-card--c { --gather-tab: #9FB6A4; }
+
+  .writing-card.is-writing .gather-card {
+    animation: gather-in 1750ms cubic-bezier(0.16, 1, 0.3, 1) var(--gd) both;
+  }
+  @keyframes gather-in {
+    0% {
+      opacity: 0;
+      transform: translate(var(--gx), var(--gy)) rotate(var(--gr));
+    }
+    10% {
+      opacity: 1;
+      transform: translate(var(--gx), var(--gy)) rotate(var(--gr));
+    }
+    100% {
+      opacity: 1;
+      transform: translate(var(--rx), var(--ry)) rotate(var(--rr));
+    }
+  }
+  /* Once gathered they are just the stack behind the front card. */
+  .writing-card.is-gathered .gather-card {
+    opacity: 1;
+    transform: translate(var(--rx), var(--ry)) rotate(var(--rr));
+  }
+
   .writing-card__dividers,
   .writing-card__paper,
   .writing-card__box {
@@ -594,11 +670,43 @@
     left: 4%;
     top: 3%;
     width: 85%;
-    transform: rotate(5deg);
+    transform: translate(var(--drag-x, 0px), var(--drag-y, 0px))
+      rotate(calc(5deg + var(--drag-r, 0deg)));
     transform-origin: 50% 88%;
+    touch-action: none;
+  }
+  .writing-card.is-gathered .writing-card__front { cursor: grab; }
+  .writing-card.is-dragging .writing-card__front {
+    animation: none;
+    cursor: grabbing;
+    z-index: 5;
+  }
+  /* let go and it drops back into the stack */
+  .writing-card.is-gathered:not(.is-dragging) .writing-card__front {
+    transition: transform 540ms cubic-bezier(0.34, 1.4, 0.64, 1);
   }
   .writing-card__paper { position: relative; }
-  .writing-card.is-writing .writing-card__front {
+
+  /* The dividers and the front card come in after the loose cards, so the
+     stack builds back to front and the front card is the last thing to land. */
+  .writing-card.is-writing:not(.is-gathered) .writing-card__dividers {
+    animation: gather-dividers 1500ms cubic-bezier(0.16, 1, 0.3, 1) 660ms both;
+  }
+  @keyframes gather-dividers {
+    0%   { opacity: 0; transform: translate(-155%, -100%) rotate(-19deg); }
+    10%  { opacity: 1; transform: translate(-155%, -100%) rotate(-19deg); }
+    100% { opacity: 1; transform: rotate(2.5deg); }
+  }
+  .writing-card.is-writing:not(.is-gathered) .writing-card__front {
+    animation: gather-front 1440ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+  }
+  @keyframes gather-front {
+    0%   { opacity: 0; transform: translate(190%, -135%) rotate(27deg); }
+    10%  { opacity: 1; transform: translate(190%, -135%) rotate(27deg); }
+    100% { opacity: 1; transform: rotate(5deg); }
+  }
+  /* Only once the stack has landed does a card write itself. */
+  .writing-card.is-writing.is-gathered .writing-card__front {
     animation: wc-rise 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   @keyframes wc-rise {
@@ -634,11 +742,12 @@
     top: 55%;
     font-size: clamp(0.7rem, 1.1vw, 0.9rem);
   }
-  .writing-card.is-writing .writing-card__ink {
+  .writing-card.is-writing.is-gathered .writing-card__ink {
     animation: wc-write 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-  .writing-card.is-writing .writing-card__ink--title  { animation-delay: 500ms; }
-  .writing-card.is-writing .writing-card__ink--serves { animation-delay: 860ms; }
+  .writing-card.is-writing:not(.is-gathered) .writing-card__ink { opacity: 0; }
+  .writing-card.is-gathered .writing-card__ink--title  { animation-delay: 500ms; }
+  .writing-card.is-gathered .writing-card__ink--serves { animation-delay: 860ms; }
   @keyframes wc-write {
     from { clip-path: inset(0 100% 0 0); }
     to   { clip-path: inset(0 0 0 0); }
@@ -653,8 +762,15 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .writing-card .gather-card,
+    .writing-card .writing-card__dividers,
     .writing-card .writing-card__front,
-    .writing-card .writing-card__ink { animation: none; clip-path: none; opacity: 1; }
+    .writing-card .writing-card__ink {
+      animation: none;
+      clip-path: none;
+      opacity: 1;
+      transition: none;
+    }
   }
 
   .assistant-home {
@@ -667,6 +783,11 @@
     width: min(100%, 52rem);
     margin-inline: auto;
     text-align: center;
+    /* The gathering cards sweep across the whole panel, and the mark is a
+       later sibling — without this they would fly over the headline instead
+       of behind it. */
+    position: relative;
+    z-index: 1;
   }
   @media (min-width: 1100px) {
     /* The pair is centred as one group. Left to a 1fr column the copy pinned
