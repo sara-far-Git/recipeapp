@@ -19,6 +19,24 @@ const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשר�
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
+/** What the search line asks for, by the hour the visitor is actually in.
+ *  Ordered by `from`; the last one wraps around midnight. */
+const MEAL_HOURS = [
+  { from: 5, hint: "חביתה, לחם טרי וגבינה..." },
+  { from: 11, hint: "יש לי עוף, אורז ועגבניות..." },
+  { from: 16, hint: "משהו מתוק לצד הקפה..." },
+  { from: 19, hint: "מה עושים לארוחת ערב..." },
+  { from: 23, hint: "משהו מתוק ומהיר..." },
+];
+const NIGHT = MEAL_HOURS[MEAL_HOURS.length - 1];
+
+function hintForHour(hour: number) {
+  if (hour < MEAL_HOURS[0].from) return NIGHT.hint;
+  let found = NIGHT;
+  for (const b of MEAL_HOURS) if (hour >= b.from) found = b;
+  return found.hint;
+}
+
 const REASONS = [
   { t: "כל המתכונים במקום אחד", d: "בלי צילומי מסך, פתקים והודעות שנעלמות בדיוק כשצריך אותן." },
   { t: "חיפוש שמגיע מהר", d: "שם, קטגוריה, זמן, רמת קושי או מצרך — ומוצאים מה מתאים להיום." },
@@ -42,6 +60,17 @@ export default function FeedPage() {
   const [activeQuickStart, setActiveQuickStart] = useState<string | null>(null);
   const [composerAttention, setComposerAttention] = useState(false);
   const composerRef = useRef<HTMLInputElement>(null);
+  /* Starts on the daytime line and moves to the visitor's own hour once
+     mounted — the server cannot know their clock, and guessing would show one
+     line and then swap it a frame later. */
+  const [mealHint, setMealHint] = useState(MEAL_HOURS[1].hint);
+  useEffect(() => {
+    const pick = () => setMealHint(hintForHour(new Date().getHours()));
+    pick();
+    // Someone leaves the page open across an hour boundary.
+    const t = window.setInterval(pick, 60_000);
+    return () => window.clearInterval(t);
+  }, []);
 
 
   useEffect(() => {
@@ -109,7 +138,7 @@ export default function FeedPage() {
                 ref={composerRef}
                 value={heroQuery}
                 onChange={(e) => setHeroQuery(e.target.value)}
-                placeholder="יש לי עוף, אורז ועגבניות..."
+                placeholder={mealHint}
                 aria-label="מה בא לך להכין"
               />
               <button type="submit" disabled={isSearching} aria-label="חיפוש מתכון" title="חיפוש מתכון">
