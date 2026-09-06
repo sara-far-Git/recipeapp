@@ -88,3 +88,28 @@ def test_authenticated_endpoint_with_token(client, registered_user):
     r = client.get("/api/v1/users/me", headers=registered_user["auth_header"])
     assert r.status_code == 200
     assert r.json()["email"] == registered_user["email"]
+
+
+def test_register_duplicate_username_rejected(client):
+    payload = {
+        "username": "sameuser",
+        "email": "one@example.com",
+        "password": "longenoughpw",
+    }
+    assert client.post("/api/v1/auth/register", json=payload).status_code == 201
+    payload["email"] = "two@example.com"
+    r = client.post("/api/v1/auth/register", json=payload)
+    assert r.status_code == 400
+    assert "Username" in r.json()["detail"]
+
+
+def test_register_rejects_short_username(client):
+    r = client.post(
+        "/api/v1/auth/register",
+        json={
+            "username": "ab",
+            "email": "tiny@example.com",
+            "password": "longenoughpw",
+        },
+    )
+    assert r.status_code == 422

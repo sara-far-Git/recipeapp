@@ -33,6 +33,9 @@ out/
 .env.test.local
 .env.production.local
 npm-debug.log*
+test-results/
+playwright-report/
+playwright/.cache/
 yarn-debug.log*
 yarn-error.log*
 
