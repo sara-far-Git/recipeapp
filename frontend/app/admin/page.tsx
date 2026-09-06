@@ -66,9 +66,17 @@ export default function AdminPage() {
       <PageFrame tone="sage">
         <div className="max-w-md mx-auto text-center py-20">
           <h1 className="display-md text-bark-500 mb-3">הדף לא נמצא</h1>
-          <p className="text-bark-300 text-sm mb-6">
-            אם זה הדף שלך, ודאי שהאימייל שלך נמצא ב-ADMIN_EMAILS בשרת.
+          <p className="text-bark-300 text-sm mb-4">
+            אם זה הדף שלך, ההגדרה ADMIN_EMAILS בשרת צריכה להכיל בדיוק את
+            הכתובת שאיתה נכנסת:
           </p>
+          {user?.email && (
+            <p
+              className="card-surface inline-block px-4 py-2 mb-6 text-sm font-bold"
+              style={{ direction: "ltr" }}>
+              {user.email}
+            </p>
+          )}
           <Link href="/" className="btn-outline inline-flex">
             לדף הבית
           </Link>

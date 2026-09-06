@@ -1037,6 +1037,9 @@
     height: 4rem;
     margin-bottom: 0.9rem;
   }
+  .recipe-loader-panel.is-mark-only .recipe-loader-mark {
+    margin-bottom: 0;
+  }
   .recipe-loader-spark {
     position: absolute;
     top: 50%;
@@ -1066,7 +1069,7 @@
     font-size: 1.05rem;
     font-weight: 800;
   }
-  .recipe-loader-panel > span {
+  .recipe-loader-hint {
     display: block;
     margin-top: 0.35rem;
     color: #66736D;
@@ -1835,6 +1838,21 @@
     color: #15382D;
   }
   .experience-hero .btn-block:hover { background: #E3CFB2; border-color: #E3CFB2; color: #15382D; }
+  /* The outline button is deep green on light ground everywhere else, and the
+     profile hero is that exact green — the edit button was reading as an empty
+     space on its own page. On a dark hero it takes the light of the panel. */
+  .experience-hero .btn-outline {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    border-color: rgba(250, 248, 243, 0.55);
+    color: #FAF8F3;
+  }
+  .experience-hero .btn-outline:hover {
+    background: #FAF8F3;
+    border-color: #FAF8F3;
+    color: #15382D;
+  }
 
   .experience-page .card-surface {
     background: #EEDCC0;
