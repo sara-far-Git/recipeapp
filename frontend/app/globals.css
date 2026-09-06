@@ -1864,10 +1864,19 @@
     color: #15382D;
   }
 
-  /* The recipe card's paper on these pages. #FAF8F3 is a cool near-white, and
-     against a warm tan ground that is what the eye calls it — a white slab
-     dropped on the page. Same lightness, warm instead of cool. */
-  .experience-page .recipe-card-shell { --card-stock: #F6EFE1; }
+  /* The recipe card's paper on these pages.
+     Every other card here is #EEDCC0 — the recipe card was the one that
+     stayed a near-white, which is why it read as a slab dropped on the page
+     rather than as part of it. It matches the rest now, and the photo area
+     keeps the lighter cream so the card still has a front to it. */
+  .experience-page .recipe-card-shell {
+    --card-stock: #EEDCC0;
+    --card-rule: rgba(39, 94, 80, 0.18);
+  }
+  /* On a card with no photo this tile is most of what you see, so leaving it
+     pale kept the card looking pale however the body was painted. It takes
+     the card's own paper now; its border still marks where a photo goes. */
+  .experience-page .recipe-card-fallback { background: transparent; }
 
   .experience-page .card-surface {
     background: #EEDCC0;
