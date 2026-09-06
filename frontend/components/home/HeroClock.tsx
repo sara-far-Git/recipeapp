@@ -59,6 +59,9 @@ export default function HeroClock() {
       aria-hidden="true"
       width={1200}
       height={1200}
+      // Every layer is hero art, above the fold. Left to lazy loading the
+      // hands were never requested at all and the dial stood empty.
+      priority
       className={className}
       style={
         still
