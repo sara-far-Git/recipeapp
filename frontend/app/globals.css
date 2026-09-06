@@ -802,10 +802,13 @@
     .home-page .display-lg { font-size: 4.1rem; }
     .home-page .display-md { font-size: 2.55rem; }
   }
+  /* The hero's copy in the site's rose rather than cream. 8.6 against the
+     panel — well past what body text needs, let alone a headline. */
+  .assistant-title { color: #F1B49C; }
   .assistant-prompt {
     max-width: 38rem;
     margin: 1.25rem auto 0;
-    color: #D5E4D7;
+    color: #F1B49C;
     font-size: 1.125rem;
     font-weight: 500;
     line-height: 1.7;
@@ -1172,6 +1175,10 @@
   .home-page .home-panel-recipes .recipe-card-shell .border-surface-400 {
     border-color: var(--card-rule) !important;
   }
+  /* One paper for the whole card. The stock was #FAF8F3 while the photo tile
+     was #F4EEDF, and that difference is what showed as a white strip along
+     the bottom of every card on this panel. */
+  .home-page .home-panel-recipes .recipe-card-shell { --card-stock: #F4EEDF; }
   .home-page .home-panel-recipes .recipe-card-shell .card-surface {
     background: var(--card-stock);
     border-color: var(--card-rule);

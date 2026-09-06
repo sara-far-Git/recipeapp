@@ -189,7 +189,7 @@ export default function FeedPage() {
       <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
-            <h1 className="display-hero assistant-title" style={{ color: "#FAF8F3" }}>
+            <h1 className="display-hero assistant-title">
               {user ? <>מה בא לך<br />לבשל היום?</> : <>מה נכין<br />היום?</>}
             </h1>
             <p className="assistant-prompt">ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.</p>
