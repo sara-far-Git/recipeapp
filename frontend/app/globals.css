@@ -546,6 +546,72 @@
      in front, and the ceramic box over their feet — its front wall is what
      makes them read as standing inside it. The handwriting is real text laid
      on the card's own empty rules, rotated to the angle they run at. */
+  /* ── The kitchen clock ────────────────────────────────────────────
+     Pivots measured off the artwork: the dial sits in the upper half of its
+     canvas with the pendulum hanging below, so nothing here is centred on
+     50% 50%. Every layer shares the same 1200x1200 frame, which is what lets
+     the hands turn about the dial's real centre. */
+  .hero-clock {
+    position: relative;
+    display: none;
+    width: 118%;
+    margin-inline: -9%;
+    aspect-ratio: 1;
+  }
+  @media (min-width: 1100px) { .hero-clock { display: block; } }
+
+  .hero-clock__layer {
+    position: absolute;
+    /* Not `inset: 0` — pinning top and bottom together overrides the natural
+       height and stretches a square render into a tall oval, which also moves
+       every pivot off the dial. */
+    top: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+  }
+  /* The pendulum hangs from behind the case, so its eyelet is hidden. */
+  .hero-clock__pendulum {
+    z-index: 0;
+    transform-origin: 49.36% 54.12%;
+  }
+  .hero-clock__face { z-index: 1; }
+  .hero-clock__hour,
+  .hero-clock__minute,
+  .hero-clock__second {
+    transform-origin: 50.21% 33.25%;
+  }
+  .hero-clock__hour { z-index: 2; }
+  .hero-clock__minute { z-index: 3; }
+  .hero-clock__second { z-index: 4; }
+
+  /* Nothing turns until the real time is known, or the first paint would show
+     midnight and then jump. */
+  .hero-clock.is-set:not(.is-still) .hero-clock__hour {
+    animation: clock-turn 43200s linear infinite var(--delay);
+  }
+  .hero-clock.is-set:not(.is-still) .hero-clock__minute {
+    animation: clock-turn 3600s linear infinite var(--delay);
+  }
+  .hero-clock.is-set:not(.is-still) .hero-clock__second {
+    animation: clock-turn 60s linear infinite var(--delay);
+  }
+  .hero-clock:not(.is-still) .hero-clock__pendulum {
+    animation: clock-swing 2.6s ease-in-out infinite alternate;
+  }
+  @keyframes clock-turn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes clock-swing {
+    from { transform: rotate(-7deg); }
+    to { transform: rotate(7deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-clock .hero-clock__layer { animation: none; }
+  }
+
   .writing-card {
     position: relative;
     display: none;
