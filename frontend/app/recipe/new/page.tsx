@@ -326,6 +326,7 @@ export default function NewRecipePage() {
   <Overlay className="bg-bark-600/90 backdrop-blur-sm" label="השף הדיגיטלי עובד">
   <RecipeLoading
     compact
+    title="השף הדיגיטלי עובד"
     hint={transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
   />
   </Overlay>
