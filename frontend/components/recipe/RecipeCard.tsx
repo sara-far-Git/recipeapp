@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, Clock, Users, Leaf, ChefHat, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Tip from "@/components/ui/Tip";
 import { CATEGORIES } from "@/lib/categories";
 
 const CATEGORY_ORDER: readonly string[] = CATEGORIES.map((c) => c.name);
@@ -103,9 +104,14 @@ function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
           )}
 
           {isDraft && (
-            <span className="recipe-card-draft absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold">
-              טיוטה
-            </span>
+            <Tip
+              text="טיוטה — המתכון שמור אצלכם ואינו מופיע לאף אחד אחר."
+              className="absolute top-3 left-3 z-[2]"
+              place="bottom">
+              <span className="recipe-card-draft px-2.5 py-1 text-[11px] font-bold">
+                טיוטה
+              </span>
+            </Tip>
           )}
 
           {totalTime > 0 && (

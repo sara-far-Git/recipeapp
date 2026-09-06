@@ -11,6 +11,7 @@ import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
 import PageFrame from "@/components/ui/PageFrame";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Tip from "@/components/ui/Tip";
 import { Heart, Bookmark, Clock, Users, Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send, ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer, ChefHat } from "lucide-react";
 
 const HIDDEN_AUTHORS = new Set(["שרי פרקש", "רבקי פרקש"]);
@@ -521,14 +522,18 @@ export default function RecipeDetailPage() {
 
   {/* CTA buttons — clearly interactive (btn-fire / btn-outline) */}
   <div className="recipe-action-strip grid grid-cols-3 gap-2 sm:gap-3 mb-6 animate-fade-up" style={{ animationDelay: "140ms" }}>
+  <Tip text="מסך גדול לשלב אחד בכל פעם, בלי שהמסך נכבה באמצע." place="bottom">
   <button onClick={() => setCookingMode(true)}
   className="flex flex-col items-center gap-2 py-4 btn-fire font-semibold text-sm w-full">
   <CookingPot className="w-5 h-5" /> מצב הכנה
   </button>
+  </Tip>
+  <Tip text="בוחרים מצרכים מהמתכון והם נוספים לרשימת הקניות שלכם." place="bottom">
   <button onClick={openShoppingModal}
   className="flex flex-col items-center gap-2 py-4 w-full font-semibold text-sm btn-outline">
   <ShoppingCart className="w-5 h-5" /> קניות
   </button>
+  </Tip>
   <button onClick={handleShare}
   className="flex flex-col items-center gap-2 py-4 w-full font-semibold text-sm btn-outline">
   <Share2 className="w-5 h-5" /> שיתוף
@@ -547,6 +552,7 @@ export default function RecipeDetailPage() {
   <h2 className="section-title text-bark-500">
   מצרכים
   </h2>
+  <Tip text="שינוי מספר הסועדים מחשב מחדש את כל הכמויות ברשימת המצרכים.">
   <div className="flex items-center gap-2 card-surface px-3 py-1.5">
   <button onClick={() => handleServingsChange(-1)} aria-label="פחות סועדים" className="p-0.5 min-w-[24px] min-h-[24px] flex items-center justify-center hover:text-cinnamon-500 text-bark-200 transition-colors">
   <Minus className="w-4 h-4" />
@@ -556,6 +562,7 @@ export default function RecipeDetailPage() {
   <Plus className="w-4 h-4" />
   </button>
   </div>
+  </Tip>
   </div>
   <div className="card-surface divide-y divide-surface-300">
   {scaledIngredients.map((ing: any, i: number) =>

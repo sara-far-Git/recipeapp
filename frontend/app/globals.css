@@ -802,6 +802,70 @@
     .home-page .display-lg { font-size: 4.1rem; }
     .home-page .display-md { font-size: 2.55rem; }
   }
+  /* ── The explanation bubble ───────────────────────────────────────
+     Appears on hover and on keyboard focus. It never carries anything a
+     control has not already said in its own label — it explains, it does not
+     name, because a touch screen has no hover to reveal it with. */
+  .tip {
+    position: relative;
+    display: inline-flex;
+  }
+  .tip__bubble {
+    position: absolute;
+    z-index: 60;
+    left: 50%;
+    transform: translateX(-50%) translateY(0.25rem);
+    width: max-content;
+    max-width: min(18rem, 70vw);
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.6rem;
+    background: #15382D;
+    color: #F4EEDF;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.45;
+    text-align: center;
+    box-shadow: 0 10px 30px -10px rgba(6, 24, 18, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 140ms ease, transform 140ms ease, visibility 0s linear 140ms;
+    pointer-events: none;
+  }
+  .tip--top .tip__bubble { bottom: calc(100% + 0.45rem); }
+  .tip--bottom .tip__bubble { top: calc(100% + 0.45rem); }
+
+  /* The little point, drawn as a rotated corner of the bubble's own colour. */
+  .tip__bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-inline-start: -0.25rem;
+    background: inherit;
+    transform: rotate(45deg);
+  }
+  .tip--top .tip__bubble::after { bottom: -0.2rem; }
+  .tip--bottom .tip__bubble::after { top: -0.2rem; }
+
+  .tip:hover .tip__bubble,
+  .tip:focus-within .tip__bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    transition-delay: 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tip__bubble { transition: none; transform: translateX(-50%); }
+    .tip:hover .tip__bubble,
+    .tip:focus-within .tip__bubble { transform: translateX(-50%); }
+  }
+  /* No hover to reveal it with, and a bubble that opens on tap would sit over
+     the thing just tapped. */
+  @media (hover: none) {
+    .tip__bubble { display: none; }
+  }
+
   /* The changing word in the headline.
      The ghosts are never seen: they hold the slot open at the width of the
      longest word so that typing inside it cannot shuffle the rest of a centred
