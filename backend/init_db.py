@@ -32,6 +32,8 @@ SOFT_MIGRATIONS = [
      "ALTER TABLE users ADD COLUMN google_id VARCHAR(255)"),
     ("recipes", "category",
      "ALTER TABLE recipes ADD COLUMN category VARCHAR(50)"),
+    ("users", "last_seen_at",
+     "ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ"),
 ]
 
 

@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.core.limiter import limiter
 from app.core.observability import init_sentry
 from app.api.v1.endpoints import (
+    admin,
     auth, recipes, users, search, scan, upload,
     collections, shopping, suggest, importer,
 )
@@ -44,7 +45,7 @@ app.add_middleware(
 for r in [
     auth.router, recipes.router, users.router, search.router, scan.router,
     upload.router, upload.images_router, collections.router, shopping.router,
-    suggest.router, importer.router,
+    suggest.router, importer.router, admin.router,
 ]:
     app.include_router(r, prefix=settings.API_V1_PREFIX)
 

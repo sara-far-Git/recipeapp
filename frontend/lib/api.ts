@@ -226,6 +226,11 @@ export const scanApi = {
   },
 };
 
+// ---------- Admin ----------
+export const adminApi = {
+  stats: () => api.get("/admin/stats"),
+};
+
 // ---------- Import (URL) ----------
 export const importApi = {
   fromUrl: (url: string) => api.post("/import", { url }),

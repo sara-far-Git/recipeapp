@@ -124,6 +124,15 @@ export default function FeedPage() {
     typingWanted && !composerFocused && !heroQuery,
   );
 
+  /* The day of the week, decided in the browser. Rendered on the server it is
+     the server's day, in the server's timezone — which is both a different
+     word than the visitor's when the two straddle midnight, and a hydration
+     mismatch on every single load. */
+  const [weekday, setWeekday] = useState("");
+  useEffect(() => {
+    setWeekday(new Date().toLocaleDateString("he-IL", { weekday: "long" }));
+  }, []);
+
 
   useEffect(() => {
     document.documentElement.style.removeProperty("overflow");
@@ -199,9 +208,8 @@ export default function FeedPage() {
                 {isSearching ? <LoaderCircle className="w-5 h-5 animate-spin" strokeWidth={2.4} /> : <ArrowUp className="w-5 h-5" strokeWidth={2.4} />}
               </button>
             </form>
-            <div className={cn("assistant-thinking", isSearching && "is-visible")} role="status" aria-live="polite">
+            <div className={cn("assistant-thinking", isSearching && "is-visible")} role="status" aria-live="polite" aria-label="טוען">
               <span className="assistant-thinking-dots" aria-hidden="true"><i /><i /><i /></span>
-              מחפשת באוסף שלך
             </div>
             <div className="assistant-suggestions" aria-label="רעיונות להתחלה">
               {QUICK_STARTS.map((prompt) => (
@@ -360,7 +368,7 @@ export default function FeedPage() {
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
                       style={{ background: "#D97757", color: "#FAF8F3", borderRadius: 999 }}>
-                      {new Date().toLocaleDateString("he-IL", { weekday: "long" })}
+                      {weekday}
                     </span>
                   </Link>
                 </Reveal>

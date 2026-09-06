@@ -75,6 +75,10 @@ class Settings(BaseSettings):
     # Photos live in our own database, so an upload spends storage the way a
     # scan spends credit. One cook's whole book fits inside this many times
     # over; an abusive one cannot fill the disk.
+    # Comma-separated addresses that may read the site's numbers. Empty means
+    # nobody, which is the right default for a setting that grants access.
+    ADMIN_EMAILS: str = ""
+
     MAX_IMAGES_PER_USER: int = 400
     MAX_IMAGE_BYTES_PER_USER: int = 120 * 1024 * 1024
 

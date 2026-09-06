@@ -35,6 +35,9 @@ class User(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    # Stamped on every sign-in. Registrations tell you who once tried the
+    # site; this is the column that tells you who came back.
+    last_seen_at = Column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     recipes = relationship("Recipe", back_populates="author", cascade="all, delete-orphan")

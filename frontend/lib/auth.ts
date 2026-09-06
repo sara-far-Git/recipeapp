@@ -59,10 +59,14 @@ const finishLogin = async (accessToken: string, set: (state: Partial<AuthState>)
 };
 
 export const useAuth = create<AuthState>((set) => ({
-  user: typeof window !== "undefined"
-    ? (() => { try { return JSON.parse(localStorage.getItem("user") || "null"); } catch { return null; } })()
-    : null,
-  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+  /* Signed out until proven otherwise, on the server and on the client alike.
+     Reading the cached session here instead made the browser's first render
+     disagree with the server's on every page that shows a name or a headline,
+     and React answered by throwing the server's HTML away and rebuilding the
+     page. The cache is still used — `loadUser` applies it a tick later, from
+     an effect, which is early enough that nobody sees the difference. */
+  user: null,
+  token: null,
   isLoading: true,
 
   login: async (email, password) => {
@@ -100,6 +104,14 @@ export const useAuth = create<AuthState>((set) => ({
     if (!token) {
       set({ user: null, token: null, isLoading: false });
       return;
+    }
+    // Show the cached session at once so the header does not sit empty while
+    // the server is asked; the answer below either confirms or clears it.
+    try {
+      const cached = JSON.parse(localStorage.getItem("user") || "null");
+      if (cached) set({ user: cached, token });
+    } catch {
+      /* a corrupt cache is simply no cache */
     }
     try {
       const { data } = await usersApi.getMe();

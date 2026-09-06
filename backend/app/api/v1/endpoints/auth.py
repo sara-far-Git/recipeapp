@@ -1,5 +1,6 @@
 """Authentication endpoints — local password + Google OAuth."""
 import re
+from datetime import datetime, timezone
 import secrets
 from typing import Optional
 
@@ -19,6 +20,15 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserMe, Token, GoogleAuthRequest
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+def _stamp_seen(user: User, db: Session) -> None:
+    """Record that this cook was here. Never let it fail a sign-in."""
+    try:
+        user.last_seen_at = datetime.now(timezone.utc)
+        db.commit()
+    except Exception:  # noqa: BLE001
+        db.rollback()
 
 
 # ---------------------------------------------------------------------------
@@ -67,6 +77,7 @@ def login(
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Account is deactivated")
 
+    _stamp_seen(user, db)
     token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
@@ -184,5 +195,6 @@ def google_auth(
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Account is deactivated")
 
+    _stamp_seen(user, db)
     token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
