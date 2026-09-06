@@ -68,3 +68,67 @@ def test_a_file_that_is_not_an_image_is_refused(client, registered_user):
 
 def test_a_missing_image_is_a_404(client):
     assert client.get("/api/v1/images/deadbeef").status_code == 404
+
+
+# ── What keeps the bills bounded ────────────────────────────────────────────
+
+
+def test_the_quota_refuses_an_upload_once_the_cap_is_reached(
+    client, registered_user, monkeypatch
+):
+    """Photos cost storage now, so one account cannot take the whole disk."""
+    from app.core import config
+
+    monkeypatch.setattr(config.settings, "MAX_IMAGES_PER_USER", 2)
+
+    for n in range(2):
+        ok = client.post(
+            "/api/v1/upload",
+            files={"file": (f"{n}.jpg", _photo(80, 80), "image/jpeg")},
+            headers=registered_user["auth_header"],
+        )
+        assert ok.status_code == 200, ok.text
+
+    refused = client.post(
+        "/api/v1/upload",
+        files={"file": ("third.jpg", _photo(80, 80), "image/jpeg")},
+        headers=registered_user["auth_header"],
+    )
+    assert refused.status_code == 413
+    assert "מקסימום" in refused.json()["detail"]
+
+
+def test_the_byte_quota_refuses_an_upload(client, registered_user, monkeypatch):
+    from app.core import config
+
+    monkeypatch.setattr(config.settings, "MAX_IMAGE_BYTES_PER_USER", 100)
+
+    refused = client.post(
+        "/api/v1/upload",
+        files={"file": ("big.jpg", _photo(900, 900), "image/jpeg")},
+        headers=registered_user["auth_header"],
+    )
+    assert refused.status_code == 413
+    assert "MB" in refused.json()["detail"]
+
+
+def test_one_cook_does_not_spend_anothers_quota(client, registered_user, publisher_user, monkeypatch):
+    """The quota is counted per owner, not across the whole table."""
+    from app.core import config
+
+    monkeypatch.setattr(config.settings, "MAX_IMAGES_PER_USER", 1)
+
+    first = client.post(
+        "/api/v1/upload",
+        files={"file": ("a.jpg", _photo(60, 60), "image/jpeg")},
+        headers=registered_user["auth_header"],
+    )
+    assert first.status_code == 200
+
+    # A different cook still has their own allowance.
+    other = client.post(
+        "/api/v1/upload",
+        files={"file": ("b.jpg", _photo(60, 60), "image/jpeg")},
+        headers=publisher_user["auth_header"],
+    )
+    assert other.status_code == 200

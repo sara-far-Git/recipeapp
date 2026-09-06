@@ -1,10 +1,11 @@
 import json
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import String, cast, or_
 from sqlalchemy.orm import Session, joinedload
 from app.core.database import get_db
 from app.core.config import settings
+from app.core.limiter import limiter, paying_key
 from app.core.security import get_current_user, get_optional_current_user
 from app.models.user import User
 from app.models.recipe import Recipe, visible_to
@@ -36,7 +37,9 @@ def _ingredient_patterns(word: str) -> list[str]:
 
 
 @router.post("/from-ingredients", response_model=list[RecipeListItem])
+@limiter.limit(settings.RATE_LIMIT_SEARCH, key_func=paying_key)
 def suggest_from_ingredients(
+    request: Request,
     data: AISuggestRequest,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
@@ -78,7 +81,9 @@ def suggest_from_ingredients(
 
 
 @router.post("/ai-generate")
+@limiter.limit(settings.RATE_LIMIT_AI, key_func=paying_key)
 async def ai_generate_from_ingredients(
+    request: Request,
     data: AISuggestRequest,
     current_user: User = Depends(get_current_user),
 ):

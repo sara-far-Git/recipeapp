@@ -1,10 +1,14 @@
 import io
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
+from fastapi import (
+    APIRouter, Depends, HTTPException, Request, Response, UploadFile, File,
+)
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.limiter import limiter, paying_key
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.recipe import StoredImage
@@ -27,7 +31,9 @@ MAX_SIZE = 25 * 1024 * 1024
 
 
 @router.post("")
+@limiter.limit(settings.RATE_LIMIT_UPLOAD, key_func=paying_key)
 async def upload_image(
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -91,6 +97,31 @@ async def _upload_s3(contents: bytes, filename: str) -> dict:
 
 
 
+def _check_quota(user: User, incoming: int, db: Session) -> None:
+    """How much of the database one cook may take up.
+
+    The photos are ours to store now, which means they are ours to pay for.
+    A book of a few hundred recipes sits far inside this; a script pointed at
+    the upload endpoint runs into it.
+    """
+    count, used = (
+        db.query(func.count(StoredImage.id), func.coalesce(func.sum(StoredImage.byte_size), 0))
+        .filter(StoredImage.owner_id == user.id)
+        .one()
+    )
+    if count >= settings.MAX_IMAGES_PER_USER:
+        raise HTTPException(
+            status_code=413,
+            detail=f"הגעתם למקסימום של {settings.MAX_IMAGES_PER_USER} תמונות. מחקו תמונה ישנה כדי להעלות חדשה.",
+        )
+    if int(used) + incoming > settings.MAX_IMAGE_BYTES_PER_USER:
+        allowed = settings.MAX_IMAGE_BYTES_PER_USER // (1024 * 1024)
+        raise HTTPException(
+            status_code=413,
+            detail=f"הגעתם למקסימום של {allowed}MB תמונות. מחקו תמונה ישנה כדי להעלות חדשה.",
+        )
+
+
 def _store_in_db(contents: bytes, user: User, db: Session) -> dict:
     """Shrink the photo, then keep it in our own database.
 
@@ -114,6 +145,8 @@ def _store_in_db(contents: bytes, user: User, db: Session) -> dict:
         raise
     except Exception:
         raise HTTPException(status_code=400, detail="לא הצלחנו לקרוא את התמונה. נסו קובץ אחר.")
+
+    _check_quota(user, len(data), db)
 
     image = StoredImage(
         id=uuid.uuid4().hex,

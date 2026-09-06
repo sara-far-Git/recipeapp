@@ -3,7 +3,7 @@ import io
 import json
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from app.core.config import settings
-from app.core.limiter import limiter
+from app.core.limiter import limiter, paying_key
 from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.recipe import ScanResponse
@@ -126,7 +126,7 @@ def _parse_recipe_json(raw: str | None, empty_detail: str) -> ScanResponse:
 
 
 @router.post("", response_model=ScanResponse)
-@limiter.limit(settings.RATE_LIMIT_AI)
+@limiter.limit(settings.RATE_LIMIT_AI, key_func=paying_key)
 async def scan_recipe_image(
     request: Request,
     file: UploadFile = File(...),
@@ -180,7 +180,7 @@ async def scan_recipe_image(
 
 
 @router.post("/voice", response_model=ScanResponse)
-@limiter.limit(settings.RATE_LIMIT_AI)
+@limiter.limit(settings.RATE_LIMIT_AI, key_func=paying_key)
 async def transcribe_recipe_voice(
     request: Request,
     file: UploadFile = File(...),

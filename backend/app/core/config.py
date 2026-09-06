@@ -65,6 +65,14 @@ class Settings(BaseSettings):
     RATE_LIMIT_LOGIN: str = "10/minute"
     RATE_LIMIT_REGISTER: str = "5/minute"
     RATE_LIMIT_AI: str = "20/hour"
+    RATE_LIMIT_SEARCH: str = "60/minute"
+    RATE_LIMIT_UPLOAD: str = "40/hour"
+
+    # Photos live in our own database, so an upload spends storage the way a
+    # scan spends credit. One cook's whole book fits inside this many times
+    # over; an abusive one cannot fill the disk.
+    MAX_IMAGES_PER_USER: int = 400
+    MAX_IMAGE_BYTES_PER_USER: int = 120 * 1024 * 1024
 
     class Config:
         env_file = ".env"

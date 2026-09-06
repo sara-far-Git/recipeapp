@@ -24,7 +24,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, HttpUrl
 
 from app.core.config import settings
-from app.core.limiter import limiter
+from app.core.limiter import limiter, paying_key
 from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.recipe import ScanResponse
@@ -268,7 +268,7 @@ def _extract_with_ai(page_text: str) -> dict:
 # Endpoint
 # ---------------------------------------------------------------------------
 @router.post("", response_model=ScanResponse)
-@limiter.limit(settings.RATE_LIMIT_AI)
+@limiter.limit(settings.RATE_LIMIT_AI, key_func=paying_key)
 async def import_from_url(
     request: Request,
     payload: ImportRequest,
