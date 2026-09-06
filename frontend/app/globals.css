@@ -2568,6 +2568,36 @@
   .tab-5 { --tab-bg: #F4EEDF; --tab-fg: #275E50; }
   .tab-6 { --tab-bg: #9FB6A4; --tab-fg: #12352A; }
 
+  /* Only drawn where a cook manages their own book. Sits opposite the tab so
+     it never covers the category, and stays a 24px target. */
+  .recipe-card-delete {
+    position: absolute;
+    top: calc(var(--tab-h) + 0.5rem);
+    inset-inline-start: 0.6rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(250, 248, 243, 0.9);
+    border: 1px solid var(--card-rule);
+    color: #8A6A5E;
+    opacity: 0;
+    transition: opacity 200ms ease, color 200ms ease, background 200ms ease;
+  }
+  .recipe-card-shell:hover .recipe-card-delete,
+  .recipe-card-delete:focus-visible { opacity: 1; }
+  .recipe-card-delete:hover {
+    background: #B3452B;
+    border-color: #B3452B;
+    color: #FFF6F1;
+  }
+  /* A pointer is not always there to hover with. */
+  @media (hover: none) {
+    .recipe-card-delete { opacity: 1; }
+  }
+
   /* the leaf printed on the card, well under the text */
   .recipe-card-leaf {
     position: absolute;

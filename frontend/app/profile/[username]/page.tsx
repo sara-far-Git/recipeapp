@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { usersApi, uploadApi } from "@/lib/api";
+import { recipesApi, usersApi, uploadApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
@@ -12,6 +12,7 @@ import { Loader2, Pencil, X, Camera, BookOpen, Heart, Users, Plus } from "lucide
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
 import { CATEGORIES } from "@/lib/categories";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 function ProfilePageContent() {
   const params = useParams();
@@ -39,6 +40,11 @@ function ProfilePageContent() {
   const [editSaving, setEditSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState("");
+  /* Deleting is the one action here that cannot be taken back, so it asks
+     first and says so when it fails. */
+  const [pendingDelete, setPendingDelete] = useState<any>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const isOwn = currentUser?.username === username;
 
@@ -121,6 +127,23 @@ function ProfilePageContent() {
     }));
   };
 
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await recipesApi.delete(pendingDelete.id);
+      setRecipes((prev) => prev.filter((r) => r.id !== pendingDelete.id));
+      setSavedRecipes((prev) => prev.filter((r) => r.id !== pendingDelete.id));
+      setPendingDelete(null);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail;
+      setDeleteError(typeof detail === "string" ? detail : "לא הצלחנו למחוק. נסו שוב.");
+      setPendingDelete(null);
+    }
+    setDeleting(false);
+  };
+
   const switchTab = (tab: "recipes" | "saved") => {
     setActiveTab(tab);
     setCategoryFilter("");
@@ -160,6 +183,15 @@ function ProfilePageContent() {
 
   return (
     <PageFrame tone="sage" className="profile-experience">
+    <ConfirmDialog
+      open={Boolean(pendingDelete)}
+      title="למחוק את המתכון?"
+      body={pendingDelete ? `"${pendingDelete.title}" יימחק לצמיתות, ואי אפשר לשחזר אותו.` : undefined}
+      confirmLabel="מחיקה"
+      busy={deleting}
+      onConfirm={confirmDelete}
+      onCancel={() => setPendingDelete(null)}
+    />
     <div className="max-w-5xl mx-auto">
       {editOpen && (
         <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
@@ -326,6 +358,12 @@ function ProfilePageContent() {
         )}
       </div>
 
+      {deleteError && (
+        <p role="alert" className="mb-5 text-sm font-semibold" style={{ color: "#B3452B" }}>
+          {deleteError}
+        </p>
+      )}
+
       {shelfCategories.length > 1 && (
         <div
           className="flex flex-wrap gap-2 mb-7 animate-fade-up"
@@ -366,7 +404,10 @@ function ProfilePageContent() {
               className="animate-slide-up"
               style={{ animationDelay: `${i * 50}ms` }}
             >
-              <RecipeCard recipe={recipe} />
+              <RecipeCard
+                recipe={recipe}
+                onDelete={isOwn && activeTab === "recipes" ? setPendingDelete : undefined}
+              />
             </div>
           ))}
         </div>

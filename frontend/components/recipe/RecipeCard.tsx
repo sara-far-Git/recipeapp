@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Clock, Users, Leaf, ChefHat } from "lucide-react";
+import { Heart, Clock, Users, Leaf, ChefHat, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -14,13 +14,16 @@ import { useRouter } from "next/navigation";
 
 interface RecipeCardProps {
   recipe: any;
+  /** Given only where the cook manages their own book, so the control does
+   *  not appear on every card on the site. */
+  onDelete?: (recipe: any) => void;
 }
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
 
 
-function RecipeCard({ recipe }: RecipeCardProps) {
+function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [liked, setLiked] = useState(recipe.is_liked);
@@ -55,6 +58,20 @@ function RecipeCard({ recipe }: RecipeCardProps) {
       <span className="recipe-card-leaf" aria-hidden="true">
         <Leaf className="w-full h-full" strokeWidth={1.5} />
       </span>
+      {onDelete && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDelete(recipe);
+          }}
+          aria-label={`מחיקת ${recipe.title}`}
+          title="מחיקת המתכון"
+          className="recipe-card-delete">
+          <Trash2 className="w-4 h-4" strokeWidth={1.9} />
+        </button>
+      )}
       <Link href={`/recipe/${recipe.id}`} className="flex flex-col flex-1 min-h-0">
         <div className="relative overflow-hidden shrink-0 mx-[9px] mt-[9px] rounded-[calc(var(--r-md)-7px)]" style={{ aspectRatio: "4/3" }}>
           {hasImage ? (

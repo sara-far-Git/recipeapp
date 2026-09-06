@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
 import PageFrame from "@/components/ui/PageFrame";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { Heart, Bookmark, Clock, Users, Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send, ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer, ChefHat } from "lucide-react";
 
 const HIDDEN_AUTHORS = new Set(["שרי פרקש", "רבקי פרקש"]);
@@ -42,6 +43,7 @@ export default function RecipeDetailPage() {
   const [newComment, setNewComment] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [missing, setMissing] = useState(false);
 
   const [shoppingModalOpen, setShoppingModalOpen] = useState(false);
@@ -156,10 +158,17 @@ export default function RecipeDetailPage() {
   };
 
   const handleDelete = async () => {
-  if (!confirm("למחוק את המתכון? פעולה זו בלתי הפיכה.")) return;
   setDeleting(true);
-  try { await recipesApi.delete(recipe.id); router.push("/profile/" + user?.username); }
-  catch { setDeleting(false); }
+  try {
+  await recipesApi.delete(recipe.id);
+  router.push("/profile/" + user?.username);
+  } catch (err: any) {
+  // A silent failure here looked exactly like a button that does nothing.
+  const detail = err?.response?.data?.detail;
+  setConfirmDelete(false);
+  setDeleting(false);
+  showToast(typeof detail === "string" ? detail : "לא הצלחנו למחוק. נסו שוב.");
+  }
   };
 
   const handleShare = async () => {
@@ -329,6 +338,15 @@ export default function RecipeDetailPage() {
   // ── Main page ──────────────────────────────────────────────────────────────
   return (
   <PageFrame tone="sage" className="recipe-experience">
+  <ConfirmDialog
+  open={confirmDelete}
+  title="למחוק את המתכון?"
+  body={`"${recipe.title}" יימחק לצמיתות, ואי אפשר לשחזר אותו.`}
+  confirmLabel="מחיקה"
+  busy={deleting}
+  onConfirm={handleDelete}
+  onCancel={() => setConfirmDelete(false)}
+  />
   <div className="recipe-detail-page max-w-3xl mx-auto">
   {/* Toast */}
   {toast && (
@@ -471,7 +489,7 @@ export default function RecipeDetailPage() {
   className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-cinnamon-500">
   <Pencil className="w-5 h-5" />
   </Link>
-  <button onClick={handleDelete} disabled={deleting} aria-label="מחיקת המתכון"
+  <button onClick={() => setConfirmDelete(true)} disabled={deleting} aria-label="מחיקת המתכון" title="מחיקת המתכון"
   className="p-2.5  hover:bg-red-50 transition-colors text-bark-200 hover:text-red-500">
   <Trash2 className="w-5 h-5" />
   </button>
