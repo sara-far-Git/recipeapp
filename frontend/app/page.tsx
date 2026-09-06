@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
 import WritingCard from "@/components/home/WritingCard";
+import VerbCycle from "@/components/home/VerbCycle";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
@@ -190,7 +191,18 @@ export default function FeedPage() {
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
             <h1 className="display-hero assistant-title">
-              {user ? <>מה בא לך<br />לבשל היום?</> : <>מה נכין<br />היום?</>}
+              {user ? (
+                <>
+                  מה בא לך<br />
+                  <VerbCycle words={["לבשל", "להכין", "לאפות", "לטגן"]} /> היום?
+                </>
+              ) : (
+                <>
+                  מה <VerbCycle words={["נכין", "נבשל", "נאפה", "נטגן"]} />
+                  <br />
+                  היום?
+                </>
+              )}
             </h1>
             <p className="assistant-prompt">ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.</p>
             <form onSubmit={submitHeroSearch} className={cn("assistant-composer", composerAttention && "is-attention", isSearching && "is-searching")}>

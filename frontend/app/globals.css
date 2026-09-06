@@ -802,6 +802,42 @@
     .home-page .display-lg { font-size: 4.1rem; }
     .home-page .display-md { font-size: 2.55rem; }
   }
+  /* The changing word in the headline.
+     Every word sits in the same grid cell, so the slot is as wide as the
+     longest and the words after it do not shift as they swap. Each runs the
+     same animation one slice of the cycle apart — no timer, nothing to
+     re-render, and it cannot drift out of step. */
+  .verb-cycle {
+    display: inline-grid;
+    /* The slot is as wide as the longest word, and these differ by a good
+       deal at headline size. Centring each one left a gap on both sides;
+       held to the start, the slack falls on one side only and reads as a
+       slightly wide space rather than a hole in the sentence. */
+    justify-items: start;
+    vertical-align: baseline;
+    text-align: inherit;
+  }
+  .verb-cycle > span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    animation: verb-swap var(--verb-cycle) cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    animation-delay: calc(var(--verb-index) * var(--verb-cycle) / var(--verb-count));
+  }
+  /* The window each word is visible for is one turn divided by how many there
+     are; at four words that is the 25% below. */
+  @keyframes verb-swap {
+    0%   { opacity: 0; transform: translateY(0.34em); }
+    4%   { opacity: 1; transform: translateY(0); }
+    21%  { opacity: 1; transform: translateY(0); }
+    25%  { opacity: 0; transform: translateY(-0.34em); }
+    100% { opacity: 0; transform: translateY(-0.34em); }
+  }
+  /* Asked for less movement: the first word, standing still. */
+  @media (prefers-reduced-motion: reduce) {
+    .verb-cycle > span { animation: none; opacity: 0; }
+    .verb-cycle > span:first-child { opacity: 1; }
+  }
+
   /* The hero's copy in the site's rose rather than cream. 8.6 against the
      panel — well past what body text needs, let alone a headline. */
   .assistant-title { color: #F1B49C; }
