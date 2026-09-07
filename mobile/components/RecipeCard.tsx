@@ -47,8 +47,15 @@ export default function RecipeCard({ recipe }: Props) {
         {recipe.image_url ? (
           <Image source={{ uri: imageUri(recipe.image_url) }} style={styles.image} />
         ) : (
-          <View style={styles.placeholder}>
-            <Ionicons name="restaurant-outline" size={40} color={colors.bark[100]} />
+          /* The site does not leave this space empty either: a recipe with no
+             picture gets a panel that carries its name, rather than a lone
+             icon floating in a large blank. */
+          <View style={styles.fallback}>
+            <View style={styles.fallbackInner}>
+              <ThemedText variant="heading" numberOfLines={3} style={styles.fallbackTitle}>
+                {recipe.title}
+              </ThemedText>
+            </View>
           </View>
         )}
 
@@ -90,9 +97,13 @@ export default function RecipeCard({ recipe }: Props) {
           </ThemedText>
         </View>
 
-        <ThemedText variant="heading" numberOfLines={1} style={styles.title}>
-          {recipe.title}
-        </ThemedText>
+        {/* When there is no picture the panel above already carries the name,
+            and the site does not repeat it here either. */}
+        {recipe.image_url && (
+          <ThemedText variant="heading" numberOfLines={1} style={styles.title}>
+            {recipe.title}
+          </ThemedText>
+        )}
 
         {recipe.description && (
           <ThemedText variant="caption" numberOfLines={2} style={styles.desc}>
@@ -123,22 +134,32 @@ export default function RecipeCard({ recipe }: Props) {
 }
 
 const styles = StyleSheet.create({
+  /* The site's card-surface: cream, a faint green edge, and no drop shadow —
+     the shadow was taken off the site's cards deliberately and the phone had
+     kept a brown one, which is why a card read as white paper on cream. */
   card: {
-    backgroundColor: colors.white,
-    borderRadius: radius.xl,
+    backgroundColor: colors.bg.card,
+    borderRadius: radius.lg,
     overflow: "hidden",
     marginBottom: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.surface[300],
-    shadowColor: "#6e3c14",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
-    elevation: 2,
+    borderColor: "rgba(39, 94, 80, 0.10)",
   },
   imageContainer: { aspectRatio: 4 / 3, backgroundColor: colors.surface[200] },
   image: { width: "100%", height: "100%" },
   placeholder: { flex: 1, alignItems: "center", justifyContent: "center" },
+  fallback: { flex: 1, padding: 14 },
+  fallbackInner: {
+    flex: 1,
+    /* Ends level with the name: the two top corners belong to the save
+       button and the kosher badge, so nothing decorative goes up there. */
+    justifyContent: "flex-end",
+    padding: 14,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: "rgba(39, 94, 80, 0.14)",
+  },
+  fallbackTitle: { textAlign: "right" },
   saveBtn: {
     position: "absolute",
     top: 10,

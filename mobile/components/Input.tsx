@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     fontSize: fontSize.base,
     color: colors.gray[900],
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     textAlign: "right",
     writingDirection: "rtl",
   },

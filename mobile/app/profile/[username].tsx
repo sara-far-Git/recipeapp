@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   profileSection: {
     alignItems: "center",
     padding: spacing.lg,
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     marginHorizontal: spacing.lg,
     borderRadius: radius.xl,
     borderWidth: 1,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: colors.smoke[500],
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
   },
   filterChipActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
   tabsRow: {

@@ -14,7 +14,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
-import { imageUri, recipesApi } from "@/lib/api";
+import { imageUri, recipesApi, shoppingApi } from "@/lib/api";
 import { categoryTone } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/Button";
@@ -109,6 +109,30 @@ export default function RecipeDetailScreen() {
         },
       },
     ]);
+  };
+
+  const [addingToList, setAddingToList] = useState(false);
+
+  /* Send this recipe's ingredients to the shopping list, scaled to whatever
+     number of servings is on screen — the site does the same. */
+  const addToShoppingList = async () => {
+    if (!user) {
+      router.push("/login" as any);
+      return;
+    }
+    setAddingToList(true);
+    try {
+      const { data: lists } = await shoppingApi.list();
+      const list = lists[0] || (await shoppingApi.create()).data;
+      await shoppingApi.addRecipe(list.id, recipe.id, servingMultiplier);
+      Alert.alert("נוסף לרשימה", "המצרכים מחכים ברשימת הקניות.", [
+        { text: "סגירה", style: "cancel" },
+        { text: "לרשימה", onPress: () => router.push("/shopping" as any) },
+      ]);
+    } catch {
+      Alert.alert("לא הצלחנו להוסיף", "נסי שוב בעוד רגע.");
+    }
+    setAddingToList(false);
   };
 
   const toggleLike = async () => {
@@ -333,7 +357,21 @@ export default function RecipeDetailScreen() {
           {/* Ingredients */}
           <View style={styles.section}>
             <View style={styles.servingsRow}>
-              <ThemedText variant="heading">מצרכים</ThemedText>
+              <View style={{ flexDirection: "row-reverse", alignItems: "center", gap: 10 }}>
+                <ThemedText variant="heading">מצרכים</ThemedText>
+                <TouchableOpacity
+                  onPress={addToShoppingList}
+                  disabled={addingToList}
+                  hitSlop={8}
+                  accessibilityLabel="הוספת המצרכים לרשימת הקניות"
+                >
+                  <Ionicons
+                    name="cart-outline"
+                    size={20}
+                    color={addingToList ? colors.gray[400] : colors.cinnamon[600]}
+                  />
+                </TouchableOpacity>
+              </View>
               <View style={styles.servingsControl}>
                 <TouchableOpacity onPress={() => changeServings(-1)} style={styles.servingsBtn}>
                   <Ionicons name="remove" size={18} color={colors.gray[700]} />
@@ -506,6 +544,9 @@ const styles = StyleSheet.create({
   servingsBtn: { padding: 6 },
   ingRow: {
     flexDirection: "row-reverse",
+    /* The name is flex:1 and butted straight up against the amount, so
+       "4 יחידות" and "נתחי סלמון" ran together as one word. */
+    gap: 8,
     paddingVertical: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: colors.gray[100],
@@ -522,7 +563,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 10,
     padding: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.gray[100],
@@ -555,7 +596,7 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
   commentCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.gray[100],
@@ -568,7 +609,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   // Cooking mode
-  cookingContainer: { flex: 1, backgroundColor: colors.white },
+  cookingContainer: { flex: 1, backgroundColor: colors.bg.primary },
   cookingHeader: {
     flexDirection: "row-reverse",
     alignItems: "center",
@@ -601,7 +642,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.gray[200],
     marginBottom: 10,
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg.card,
   },
   cookStepDone: { borderColor: colors.green[400], backgroundColor: colors.green[50] },
   cookStepText: { flex: 1, fontSize: fontSize.lg, lineHeight: 28, textAlign: "right" },

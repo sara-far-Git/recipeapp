@@ -1,105 +1,117 @@
+/**
+ * The site's palette, as the site actually uses it today.
+ *
+ * It moved to forest green on cream with a terracotta accent, and the phone
+ * was still wearing the browns and oranges it had before — the two no longer
+ * looked like the same product. The values here are copied from the site's
+ * tailwind config rather than approximated, so a screen photographed side by
+ * side with the website matches.
+ *
+ * The group names are the ones the screens already use, so nothing had to be
+ * renamed to change how the app looks.
+ */
 export const colors = {
   bg: {
-    primary: "#faf6f0",
-    secondary: "#f5ede0",
-    card: "#ffffff",
-    cardHover: "#fdfaf7",
+    primary: "#FAF8F3",
+    secondary: "#F4EEDF",
+    card: "#F7F2E6",
+    cardHover: "#F4EEDF",
   },
-  // Cinnamon / warm orange accents (buttons, active states)
+  // Terracotta — buttons, active states, the accent throughout
   fire: {
-    50: "#fef3e8",
-    100: "#fde0c2",
-    200: "#d47c3a",   // logo/accent orange
-    300: "#c06828",
-    400: "#b86028",   // primary buttons
-    500: "#9a4d20",
-    600: "#7a3a18",
+    50: "#FBEDE8",
+    100: "#F6D9CE",
+    200: "#E39A80",
+    300: "#D97757",
+    400: "#C46244",
+    500: "#B85A3E",
+    600: "#8F4330",
   },
-  // Cinnamon alias (same palette)
   cinnamon: {
-    50: "#fef3e8",
-    100: "#fde0c2",
-    200: "#f5bf8a",
-    300: "#e8965a",
-    400: "#d47c3a",
-    500: "#b86028",
-    600: "#9a4d20",
+    50: "#FBEDE8",
+    100: "#F6D9CE",
+    200: "#E39A80",
+    300: "#D97757",
+    400: "#C46244",
+    500: "#D97757",
+    600: "#B85A3E",
+    700: "#8F4330",
   },
-  // Bark — warm browns for headings/body text
+  // Bark — the deep greens that carry headings and body text
   bark: {
-    50: "#c4a882",
-    100: "#a07c56",
-    200: "#8b6040",
-    300: "#6b4a2d",
-    400: "#4d3018",
-    500: "#3d2515",
-    600: "#2c1a0e",
+    50: "#B7C4BE",
+    100: "#8A9690",
+    200: "#66736D",
+    300: "#66736D",
+    400: "#3D4A45",
+    500: "#275E50",
+    600: "#1E4D45",
+    700: "#1E4D45",
   },
-  // Surface — cream tones for backgrounds
   surface: {
-    100: "#faf6f0",
-    200: "#f5ede0",
-    300: "#ecddd0",
-    400: "#e0cbb8",
-    500: "#d4b8a0",
+    100: "#FAF8F3",
+    200: "#F4EEDF",
+    300: "#E9EFEA",
+    400: "#D5DED8",
+    500: "#B7C4BE",
   },
-  // Smoke — mapped so existing screens work on LIGHT background:
-  // old dark theme: smoke[100]=white text, smoke[600]=dark border
-  // new light theme: smoke[100]=dark text, smoke[600]=light border
+  // Smoke — dark first, light last, the order the screens already expect:
+  // smoke[100] is the strongest text, smoke[500]/[600] are borders.
   smoke: {
-    100: "#2c1a0e",   // was near-white → now dark espresso (primary text)
-    200: "#4d3018",   // was light gray → now warm dark brown (secondary text)
-    300: "#6b4a2d",   // muted text
-    400: "#9a8070",   // placeholder/hint text
-    500: "#e0cbb8",   // was dark border → now light warm border
-    600: "#ecddd0",   // was near-black → now cream border (dividers)
-    700: "#f5ede0",   // very light surface
+    100: "#1E4D45",
+    200: "#275E50",
+    300: "#3D4A45",
+    400: "#66736D",
+    500: "#D5DED8",
+    600: "#E9EFEA",
+    700: "#F4EEDF",
   },
   white: "#ffffff",
   black: "#000000",
-  error: "#ef4444",
-  success: "#22c55e",
+  error: "#B3452B",
+  success: "#2F6B5D",
   red: {
-    50: "#fef2f2",
-    100: "#fee2e2",
-    500: "#ef4444",
-    600: "#dc2626",
+    50: "#FBEDE8",
+    100: "#F6D9CE",
+    500: "#B3452B",
+    600: "#8F4330",
   },
-  // Forest green — the site's own, used for a step already done. It was
-  // referenced before it existed: `colors.green[400]` inside a
-  // StyleSheet.create, which runs at import, so opening a recipe threw before
-  // it drew anything.
+  // Header background — the site's deepest green
+  header: "#1E4D45",
+  // primary — the accent, aliased for screens that ask for it by this name
+  primary: {
+    50: "#FBEDE8",
+    100: "#F6D9CE",
+    200: "#E39A80",
+    300: "#D97757",
+    400: "#C46244",
+    500: "#D97757",
+    600: "#B85A3E",
+    700: "#8F4330",
+  },
+  // Forest green — a step already done, and anything that means "good"
   green: {
-    50: "#EAF1EC",
-    100: "#C8D5B7",
-    400: "#4F8B77",
-    500: "#2F6B5D",
+    50: "#E9EFEA",
+    100: "#D5DED8",
+    400: "#2F6B5D",
+    500: "#275E50",
     600: "#1E4D45",
   },
-  // Header background (dark espresso, kept for contrast)
-  header: "#2c1a0e",
-  // primary alias for fire/cinnamon
-  primary: {
-    50: "#fef3e8",
-    100: "#fde0c2",
-    200: "#f5bf8a",
-    300: "#e8965a",
-    400: "#d47c3a",
-    500: "#b86028",
-    600: "#9a4d20",
-    700: "#7a3a18",
-  },
+  // gray — light first, dark last: backgrounds at the low end, text at the high
   gray: {
-    50: "#faf6f0",
-    100: "#f5ede0",
-    200: "#ecddd0",
-    300: "#e0cbb8",
-    400: "#d4b8a0",
-    500: "#a07c56",
-    600: "#6b4a2d",
-    700: "#3d2515",
-    800: "#2c1a0e",
-    900: "#1e1008",
+    50: "#FAF8F3",
+    100: "#F4EEDF",
+    200: "#E9EFEA",
+    300: "#D5DED8",
+    /* Foreground, not a border: this is the placeholder text, the muted
+       icons and the struck-through step. At #B7C4BE it sat at 1.6:1 on
+       cream and could not be read at all. */
+    400: "#66736D",
+    500: "#66736D",
+    600: "#3D4A45",
+    700: "#275E50",
+    800: "#1E4D45",
+    900: "#173A34",
   },
 };
 
@@ -113,11 +125,12 @@ export const spacing = {
   "3xl": 32,
 };
 
+/* The site's own radii: --r-sm 0.45rem, --r-md 0.85rem, --r-lg 1.4rem. */
 export const radius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
+  sm: 7,
+  md: 14,
+  lg: 22,
+  xl: 26,
   full: 9999,
 };
 

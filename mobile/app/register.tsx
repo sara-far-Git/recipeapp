@@ -118,7 +118,7 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.white },
+  container: { flex: 1, backgroundColor: colors.bg.primary },
   scroll: { padding: spacing["2xl"], paddingTop: spacing.lg },
   closeBtn: { alignSelf: "flex-start", padding: 4, marginBottom: 8 },
   header: { alignItems: "center", marginBottom: spacing["3xl"] },

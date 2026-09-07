@@ -42,7 +42,11 @@ export function imageUri(url?: string | null): string | undefined {
 const api = axios.create({
   baseURL: `${getBaseUrl()}/api/v1`,
   headers: { "Content-Type": "application/json" },
-  timeout: 15000,
+  /* The backend sleeps when nobody has used it for a while, and waking it
+     takes the better part of a minute. At 15s the very first request of the
+     day always lost the race and the app said "שגיאת חיבור" on a server that
+     was merely getting up. */
+  timeout: 60000,
 });
 
 api.interceptors.request.use(async (config) => {
