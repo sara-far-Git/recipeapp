@@ -65,6 +65,17 @@ export const colors = {
     500: "#ef4444",
     600: "#dc2626",
   },
+  // Forest green — the site's own, used for a step already done. It was
+  // referenced before it existed: `colors.green[400]` inside a
+  // StyleSheet.create, which runs at import, so opening a recipe threw before
+  // it drew anything.
+  green: {
+    50: "#EAF1EC",
+    100: "#C8D5B7",
+    400: "#4F8B77",
+    500: "#2F6B5D",
+    600: "#1E4D45",
+  },
   // Header background (dark espresso, kept for contrast)
   header: "#2c1a0e",
   // primary alias for fire/cinnamon

@@ -11,16 +11,20 @@ const tokenRemove = async () => {
   return SecureStore.deleteItemAsync("token");
 };
 
-const getBaseUrl = () => {
-  // Android emulator uses 10.0.2.2 to reach host machine
-  // iOS simulator uses localhost
-  // Physical device: replace with your machine's local IP
-  if (__DEV__) {
-    if (Platform.OS === "android") return "http://10.0.2.2:8000";
-    return "http://localhost:8000";
-  }
-  return "https://recipeapp-backend.onrender.com"; // production URL — update with your actual Render URL
-};
+/** The site's own backend. */
+const LIVE_API = "https://recipeapp-backend-iwn0.onrender.com";
+
+/** Point at a backend running on your own machine instead.
+ *
+ *  Set EXPO_PUBLIC_API_URL to use one — on an Android emulator the host
+ *  machine is 10.0.2.2, not localhost, because localhost is the emulator:
+ *
+ *    EXPO_PUBLIC_API_URL=http://10.0.2.2:8000 npm run android
+ *
+ *  Without it the app talks to the live backend, which is what you want for
+ *  simply running the app and looking at it.
+ */
+const getBaseUrl = () => process.env.EXPO_PUBLIC_API_URL || LIVE_API;
 
 const api = axios.create({
   baseURL: `${getBaseUrl()}/api/v1`,
