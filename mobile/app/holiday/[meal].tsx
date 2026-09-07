@@ -97,7 +97,7 @@ export default function HolidayMealScreen() {
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
         <View style={styles.body}>
-          <ThemedText variant="body">הסעודה הזאת לא קיימת.</ThemedText>
+          <ThemedText variant="body" onDark>הסעודה הזאת לא קיימת.</ThemedText>
           <TouchableOpacity onPress={() => router.replace("/holiday" as any)} style={{ marginTop: 14 }}>
             <ThemedText bold color={colors.cinnamon[600]}>
               חזרה לראש השנה
@@ -114,18 +114,18 @@ export default function HolidayMealScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.topBar}>
         <TouchableOpacity onPress={() => router.back()} accessibilityLabel="חזרה">
-          <Ionicons name="arrow-forward" size={22} color={colors.bark[400]} />
+          <Ionicons name="arrow-forward" size={22} color={colors.onDark.body} />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.body}>
-        <ThemedText variant="caption" bold color={colors.cinnamon[600]}>
+        <ThemedText variant="eyebrow" onDark>
           ראש השנה
         </ThemedText>
-        <ThemedText variant="title" style={{ marginTop: 4 }}>
+        <ThemedText variant="display" onDark style={{ marginTop: 6 }}>
           {meal.name}
         </ThemedText>
-        <ThemedText variant="caption" style={{ marginTop: 6 }}>
+        <ThemedText variant="caption" onDark style={{ marginTop: 8 }}>
           {meal.when === "night" ? "סעודת לילה" : "סעודת יום"}
           {plan ? ` · ${filled} מתוך ${HOLIDAY_COURSES.length}` : ""}
         </ThemedText>
@@ -139,14 +139,14 @@ export default function HolidayMealScreen() {
             return (
               <View key={course.id} style={{ marginTop: 26 }}>
                 <View style={styles.courseHead}>
-                  <ThemedText variant="caption" color={colors.bark[100]}>
+                  <ThemedText variant="title" onDark style={{ fontSize: 20, opacity: 0.5 }}>
                     {String(index + 1).padStart(2, "0")}
                   </ThemedText>
-                  <ThemedText variant="heading">{course.name}</ThemedText>
+                  <ThemedText variant="heading" onDark>{course.name}</ThemedText>
                 </View>
 
                 {recipes.length === 0 ? (
-                  <ThemedText variant="caption" style={{ marginTop: 8 }}>
+                  <ThemedText variant="caption" onDark style={{ marginTop: 8 }}>
                     עוד אין כאן מתכונים. אפשר להוסיף מהספר ואז לבחור.
                   </ThemedText>
                 ) : (
@@ -196,7 +196,7 @@ export default function HolidayMealScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.holiday },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   body: { paddingHorizontal: spacing.lg, paddingBottom: 44 },
   courseHead: { flexDirection: "row-reverse", alignItems: "center", gap: 10 },

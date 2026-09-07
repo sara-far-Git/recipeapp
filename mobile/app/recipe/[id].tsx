@@ -244,7 +244,7 @@ export default function RecipeDetailScreen() {
 
   // ===== Regular Detail View =====
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.gray[50] }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg.page }} edges={["top"]}>
       <ScrollView>
         {/* Back button */}
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   // Cooking mode
-  cookingContainer: { flex: 1, backgroundColor: colors.bg.primary },
+  cookingContainer: { flex: 1, backgroundColor: colors.bg.page },
   cookingHeader: {
     flexDirection: "row-reverse",
     alignItems: "center",

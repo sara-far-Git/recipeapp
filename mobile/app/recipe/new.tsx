@@ -494,7 +494,7 @@ export default function NewRecipeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.gray[50] },
+  container: { flex: 1, backgroundColor: colors.bg.page },
   header: {
     flexDirection: "row-reverse",
     alignItems: "center",

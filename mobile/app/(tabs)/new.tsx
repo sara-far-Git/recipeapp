@@ -33,7 +33,7 @@ export default function NewTabRedirect() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.page },
   center: { flex: 1, justifyContent: "center", alignItems: "center", padding: spacing.xl },
   title: { fontSize: fontSize.xl, fontWeight: "700", color: colors.smoke[100], marginTop: 16, textAlign: "center" },
   subtitle: { fontSize: fontSize.base, color: colors.smoke[300], marginTop: 8, marginBottom: 32, textAlign: "center" },

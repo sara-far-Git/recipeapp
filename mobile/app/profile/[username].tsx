@@ -282,7 +282,7 @@ function MenuRow({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.gray[50] },
+  container: { flex: 1, backgroundColor: colors.bg.page },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   topBar: {
     flexDirection: "row-reverse",

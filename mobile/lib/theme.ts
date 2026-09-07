@@ -10,14 +10,33 @@
  * The group names are the ones the screens already use, so nothing had to be
  * renamed to change how the app looks.
  */
+/**
+ * The site's palette, taken from the site as it actually looks.
+ *
+ * An earlier pass read these out of the tailwind config and picked the wrong
+ * value for the ground: cream is the colour of a *card* there, while the page
+ * itself is near-black forest green. The app was built as the site's inverse.
+ * These names now mean what they mean on the site.
+ *
+ * The group names are the ones the screens already use, so changing how the
+ * app looks did not mean renaming anything.
+ */
 export const colors = {
   bg: {
-    primary: "#FAF8F3",
-    secondary: "#F4EEDF",
-    card: "#F7F2E6",
-    cardHover: "#F4EEDF",
+    /** The home screen and the nav bar: the site's near-black green. */
+    primary: "#0C281F",
+    /** A panel sitting on it. */
+    secondary: "#132D23",
+    /** Every inner screen. The site gives its product pages one warm sand
+     *  canvas — four differently named tones that all resolve to this. */
+    page: "#E3CFB2",
+    /** The holiday planner, which the site keeps dark on purpose. */
+    holiday: "#15382D",
+    /** A card: cream, and what most text sits on. */
+    card: "#F4EEDF",
+    cardHover: "#FAF8F3",
   },
-  // Terracotta — buttons, active states, the accent throughout
+  // Terracotta — the accent, and the colour the big headings are set in
   fire: {
     50: "#FBEDE8",
     100: "#F6D9CE",
@@ -37,7 +56,7 @@ export const colors = {
     600: "#B85A3E",
     700: "#8F4330",
   },
-  // Bark — the deep greens that carry headings and body text
+  // Bark — deep greens for text sitting on cream
   bark: {
     50: "#B7C4BE",
     100: "#8A9690",
@@ -46,7 +65,7 @@ export const colors = {
     400: "#3D4A45",
     500: "#275E50",
     600: "#1E4D45",
-    700: "#1E4D45",
+    700: "#102B22",
   },
   surface: {
     100: "#FAF8F3",
@@ -55,16 +74,26 @@ export const colors = {
     400: "#D5DED8",
     500: "#B7C4BE",
   },
-  // Smoke — dark first, light last, the order the screens already expect:
-  // smoke[100] is the strongest text, smoke[500]/[600] are borders.
+  // Smoke — strongest text first, borders last
   smoke: {
-    100: "#1E4D45",
+    100: "#102B22",
     200: "#275E50",
     300: "#3D4A45",
     400: "#66736D",
     500: "#D5DED8",
     600: "#E9EFEA",
     700: "#F4EEDF",
+  },
+  /** Text sitting on the dark ground, rather than on a card. */
+  onDark: {
+    /** Headings — the salmon the site sets its display type in. */
+    display: "#E8B4A0",
+    /** Body copy on green. */
+    body: "#D5E4D7",
+    /** Quieter still. */
+    muted: "#8FA79A",
+    /** A hairline on green. */
+    line: "rgba(213, 228, 215, 0.20)",
   },
   white: "#ffffff",
   black: "#000000",
@@ -73,12 +102,10 @@ export const colors = {
   red: {
     50: "#FBEDE8",
     100: "#F6D9CE",
-    500: "#B3452B",
+    500: "#C4553A",
     600: "#8F4330",
   },
-  // Header background — the site's deepest green
-  header: "#1E4D45",
-  // primary — the accent, aliased for screens that ask for it by this name
+  header: "#0C281F",
   primary: {
     50: "#FBEDE8",
     100: "#F6D9CE",
@@ -89,7 +116,6 @@ export const colors = {
     600: "#B85A3E",
     700: "#8F4330",
   },
-  // Forest green — a step already done, and anything that means "good"
   green: {
     50: "#E9EFEA",
     100: "#D5DED8",
@@ -97,22 +123,33 @@ export const colors = {
     500: "#275E50",
     600: "#1E4D45",
   },
-  // gray — light first, dark last: backgrounds at the low end, text at the high
+  // gray — light first, dark last: card tints at the low end, text at the high
   gray: {
     50: "#FAF8F3",
     100: "#F4EEDF",
     200: "#E9EFEA",
     300: "#D5DED8",
-    /* Foreground, not a border: this is the placeholder text, the muted
-       icons and the struck-through step. At #B7C4BE it sat at 1.6:1 on
-       cream and could not be read at all. */
     400: "#66736D",
     500: "#66736D",
     600: "#3D4A45",
     700: "#275E50",
     800: "#1E4D45",
-    900: "#173A34",
+    900: "#102B22",
   },
+};
+
+/**
+ * The site's own typefaces, bundled with the app.
+ *
+ * Baba sets the big headings, Unica everything else — the same division the
+ * site makes between --font-display and --font-brand. IBM Plex Hebrew is the
+ * site's third face but ships there as woff2, which React Native cannot load,
+ * so Unica covers its work here.
+ */
+export const fonts = {
+  display: "RecipeBaba",
+  brand: "RecipeUnica",
+  brandMedium: "RecipeUnicaMedium",
 };
 
 export const spacing = {

@@ -240,8 +240,8 @@ export default function ShoppingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
-  center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.page },
+  center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.bg.page },
   header: {
     flexDirection: "row-reverse",
     alignItems: "center",

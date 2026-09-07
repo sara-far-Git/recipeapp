@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { searchApi } from "@/lib/api";
 import RecipeCard from "@/components/RecipeCard";
+import Masthead from "@/components/Masthead";
 import { CATEGORIES, categoryTone } from "@/lib/categories";
 import { colors, spacing, radius, fontSize } from "@/lib/theme";
 
@@ -81,6 +82,14 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.mast}>
+        <Masthead
+          eyebrow="האוסף"
+          title="כל המתכונים"
+          lead="חפשו לפי שם מתכון, מצרך, קטגוריה או מה שיש בבית."
+        />
+      </View>
+
       <View style={styles.searchRow}>
         <Ionicons name="search" size={20} color={colors.smoke[400]} />
         <TextInput
@@ -151,7 +160,8 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.page },
+  mast: { paddingHorizontal: spacing.lg, paddingTop: spacing.md },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 80 },
   searchRow: {
     flexDirection: "row-reverse",

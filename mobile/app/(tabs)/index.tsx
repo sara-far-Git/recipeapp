@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +15,7 @@ import { router } from "expo-router";
 import { recipesApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/RecipeCard";
-import { colors, spacing, fontSize, radius } from "@/lib/theme";
+import { colors, spacing, fontSize, radius, fonts } from "@/lib/theme";
 
 export default function FeedScreen() {
   const user = useAuth((s) => s.user);
@@ -64,7 +65,7 @@ export default function FeedScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.logo}>🍳 RecipeApp</Text>
+        <Image source={require("../../assets/logo.png")} style={styles.logo} resizeMode="contain" />
         {/* The site keeps the shopping list one tap away in its header. */}
         {user && (
           <TouchableOpacity
@@ -167,21 +168,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.smoke[600],
+    borderBottomWidth: 1,
+    borderBottomColor: colors.onDark.line,
   },
-  logo: {
-    fontSize: fontSize.xl,
-    fontWeight: "700",
-    color: colors.fire[200],
-  },
+  /* The site's own mark. Its artwork is cream on transparent, so it reads
+     against the dark bar without a plate behind it. */
+  logo: { width: 96, height: 34 },
   loginBtn: {
     backgroundColor: colors.fire[400],
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     borderRadius: radius.full,
   },
-  loginBtnText: { color: colors.white, fontWeight: "600", fontSize: fontSize.sm },
+  loginBtnText: { color: colors.white, fontFamily: fonts.brandMedium, fontSize: fontSize.sm },
   list: { padding: spacing.lg, gap: spacing.md },
   listEmpty: { flexGrow: 1 },
   empty: {
@@ -193,9 +192,9 @@ const styles = StyleSheet.create({
   },
   emptyIcon: { fontSize: 64, marginBottom: spacing.lg },
   emptyTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: "700",
-    color: colors.smoke[100],
+    fontFamily: fonts.display,
+    fontSize: 30,
+    color: colors.onDark.display,
     textAlign: "center",
     marginBottom: spacing.sm,
   },

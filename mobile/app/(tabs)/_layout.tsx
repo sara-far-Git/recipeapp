@@ -1,6 +1,7 @@
+import { View } from "react-native";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/lib/theme";
+import { colors, fonts, radius } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 
 export default function TabsLayout() {
@@ -10,19 +11,21 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.cinnamon[400],
-        tabBarInactiveTintColor: colors.bark[200],
+        /* The site's own bar: deep green, a hairline above it, and the
+           active tab in terracotta. */
+        tabBarActiveTintColor: colors.cinnamon[300],
+        tabBarInactiveTintColor: colors.onDark.muted,
         tabBarStyle: {
-          backgroundColor: colors.bg.card,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.surface[400],
+          backgroundColor: colors.bg.primary,
+          borderTopWidth: 1,
+          borderTopColor: colors.onDark.line,
           height: 85,
           paddingBottom: 28,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
+          fontFamily: fonts.brandMedium,
           fontSize: 10,
-          fontWeight: "600",
         },
       }}
     >
@@ -44,12 +47,28 @@ export default function TabsLayout() {
           ),
         }}
       />
+      {/* The site sets this one apart as a round button lifted out of the
+          bar, rather than a fifth icon among equals. */}
       <Tabs.Screen
         name="new"
         options={{
-          title: "חדש",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
+          title: "",
+          tabBarIcon: () => (
+            <View
+              style={{
+                width: 54,
+                height: 54,
+                marginTop: -18,
+                borderRadius: radius.full,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: colors.green[400],
+                borderWidth: 3,
+                borderColor: colors.bg.primary,
+              }}
+            >
+              <Ionicons name="add" size={28} color={colors.white} />
+            </View>
           ),
         }}
       />

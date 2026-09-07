@@ -14,6 +14,7 @@ import { searchApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/RecipeCard";
 import ThemedText from "@/components/ThemedText";
+import Masthead from "@/components/Masthead";
 import { CATEGORIES, CATEGORY_DESC } from "@/lib/categories";
 import { colors, radius, spacing } from "@/lib/theme";
 
@@ -52,15 +53,11 @@ export default function CategoryScreen() {
 
   const Header = () => (
     <View style={{ paddingBottom: 6 }}>
-      <ThemedText variant="caption" bold color={colors.cinnamon[600]}>
-        קטגוריה
-      </ThemedText>
-      <ThemedText variant="title" style={{ marginTop: 4 }}>
-        {name}
-      </ThemedText>
-      <ThemedText variant="body" color={colors.bark[200]} style={{ marginTop: 6 }}>
-        {CATEGORY_DESC[name] || "מתכונים לפי סוג מנה"}
-      </ThemedText>
+      <Masthead
+        eyebrow="קטגוריה"
+        title={name}
+        lead={CATEGORY_DESC[name] || "מתכונים לפי סוג מנה"}
+      />
       {!loading && (
         <ThemedText variant="caption" style={{ marginTop: 8, marginBottom: 12 }}>
           {recipes.length === 0 ? "עדיין אין מתכונים כאן" : `${recipes.length} מתכונים`}
@@ -137,7 +134,7 @@ export default function CategoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.page },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   list: { paddingHorizontal: spacing.lg, paddingBottom: 40 },
   empty: {

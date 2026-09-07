@@ -73,25 +73,25 @@ export default function HolidayScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.topBar}>
         <TouchableOpacity onPress={() => router.back()} accessibilityLabel="חזרה">
-          <Ionicons name="arrow-forward" size={22} color={colors.bark[400]} />
+          <Ionicons name="arrow-forward" size={22} color={colors.onDark.body} />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.body}>
-        <ThemedText variant="caption" bold color={colors.cinnamon[600]}>
+        <ThemedText variant="eyebrow" onDark>
           ראש השנה
         </ThemedText>
-        <ThemedText variant="title" style={{ marginTop: 4 }}>
+        <ThemedText variant="display" onDark style={{ marginTop: 6 }}>
           ארבע סעודות
         </ThemedText>
-        <ThemedText variant="body" color={colors.bark[200]} style={styles.lead}>
+        <ThemedText variant="body" onDark style={styles.lead}>
           שתיים בלילה, שתיים ביום. נכנסים לסעודה, בוחרים מנה אחת מכל סוג, ואז
           אוספים קניות לכל השולחנות.
         </ThemedText>
 
         {(["night", "day"] as const).map((when) => (
           <View key={when} style={{ marginTop: 26 }}>
-            <ThemedText variant="caption" bold color={colors.bark[200]}>
+            <ThemedText variant="eyebrow" onDark>
               {when === "night" ? "לילה" : "יום"}
             </ThemedText>
             {HOLIDAY_MEALS.filter((m) => m.when === when).map((meal, i) => {
@@ -104,16 +104,16 @@ export default function HolidayScreen() {
                   onPress={() => router.push(`/holiday/${meal.id}` as any)}
                   style={styles.row}
                 >
-                  <ThemedText variant="caption" color={colors.bark[100]}>
+                  <ThemedText variant="title" onDark style={{ fontSize: 22, opacity: 0.5 }}>
                     {num}
                   </ThemedText>
                   <View style={{ flex: 1 }}>
-                    <ThemedText variant="heading">{meal.name}</ThemedText>
-                    <ThemedText variant="caption" numberOfLines={2}>
+                    <ThemedText variant="heading" onDark>{meal.name}</ThemedText>
+                    <ThemedText variant="caption" onDark numberOfLines={2}>
                       {titles.length === 0 ? "השולחן עדיין ריק" : titles.join(" · ")}
                     </ThemedText>
                   </View>
-                  <ThemedText variant="caption" bold color={colors.cinnamon[600]}>
+                  <ThemedText variant="caption" bold color={colors.cinnamon[300]}>
                     {count}/{HOLIDAY_COURSES.length}
                   </ThemedText>
                 </TouchableOpacity>
@@ -152,7 +152,7 @@ export default function HolidayScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.holiday },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   body: { paddingHorizontal: spacing.lg, paddingBottom: 40 },
   lead: { marginTop: 8, lineHeight: 22 },
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(39, 94, 80, 0.12)",
+    borderBottomColor: colors.onDark.line,
   },
   shop: {
     marginTop: 30,

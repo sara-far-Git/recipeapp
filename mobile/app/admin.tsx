@@ -182,7 +182,7 @@ function Figure({ n, text, label }: { n?: number; text?: string; label: string }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg.primary },
+  container: { flex: 1, backgroundColor: colors.bg.page },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   body: { paddingHorizontal: spacing.lg, paddingBottom: 40 },
   sectionHead: { flexDirection: "row-reverse", alignItems: "center", gap: 8, marginBottom: 12 },
