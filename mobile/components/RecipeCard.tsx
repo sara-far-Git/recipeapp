@@ -155,6 +155,9 @@ const styles = StyleSheet.create({
        button and the kosher badge, so nothing decorative goes up there. */
     justifyContent: "flex-end",
     padding: 14,
+    /* The category tab and the draft badge sit along the bottom of the
+       picture area; leave them their band so the name clears both. */
+    paddingBottom: 44,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: "rgba(39, 94, 80, 0.14)",

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { recipesApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -64,6 +65,16 @@ export default function FeedScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.logo}>🍳 RecipeApp</Text>
+        {/* The site keeps the shopping list one tap away in its header. */}
+        {user && (
+          <TouchableOpacity
+            onPress={() => router.push("/shopping" as any)}
+            style={{ marginRight: "auto", padding: 6 }}
+            accessibilityLabel="רשימת קניות"
+          >
+            <Ionicons name="cart-outline" size={24} color={colors.bark[400]} />
+          </TouchableOpacity>
+        )}
         {!user && (
           <TouchableOpacity
             style={styles.loginBtn}
