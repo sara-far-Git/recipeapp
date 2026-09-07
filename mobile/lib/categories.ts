@@ -16,6 +16,16 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number];
 
+/** The one-line description the site shows under a category's name. */
+export const CATEGORY_DESC: Record<string, string> = {
+  "ראשונות": "פתיחה קטנה שעושה שולחן גדול",
+  "עיקריות": "מנות מרכזיות לאמצע השבוע ולשבת",
+  "מאפים": "בצקים, לחמים וריח חם מהתנור",
+  "קינוחים": "משהו מתוק לסגור איתו את היום",
+  "סלטים": "טרי, צבעוני ומוכן מהר",
+  "משקאות": "חם, קר, מרענן או מפנק",
+};
+
 /** A category always wears the same colour, the way it wears the same tab on
  *  the site — so a glance at a list is enough to tell the groups apart. */
 const TONES: Record<string, string> = {

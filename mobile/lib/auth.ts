@@ -28,6 +28,10 @@ export interface User {
   followers_count: number;
   following_count: number;
   recipes_count: number;
+  /** Set by the server for whoever it is configured to treat as running the
+   *  site. Hiding the admin screen from everyone else is a courtesy — the
+   *  endpoint checks for itself and answers a stranger with a 404. */
+  is_admin?: boolean;
 }
 
 interface AuthState {

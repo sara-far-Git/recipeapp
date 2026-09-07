@@ -115,13 +115,25 @@ export const recipesApi = {
 
 // ---------- Search ----------
 export const searchApi = {
+  /* `category` and `limit` are what the category and holiday screens search
+     by; the endpoint has always taken them, this client just never sent
+     them. */
   search: (params: {
     q?: string;
     difficulty?: string;
     kosher_type?: string;
     max_prep_time?: number;
+    category?: string;
     skip?: number;
+    limit?: number;
   }) => api.get("/search", { params }),
+};
+
+export const adminApi = {
+  /** Counts only, and 404 rather than 403 to anyone not named in the
+   *  server's configuration — so it cannot be used to discover that an
+   *  admin area exists at all. */
+  stats: () => api.get("/admin/stats"),
 };
 
 // ---------- Scan ----------

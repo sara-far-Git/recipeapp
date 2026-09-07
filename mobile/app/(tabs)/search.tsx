@@ -3,10 +3,12 @@ import {
   View, Text, FlatList, TextInput, TouchableOpacity,
   ActivityIndicator, StyleSheet, ScrollView,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { searchApi } from "@/lib/api";
 import RecipeCard from "@/components/RecipeCard";
+import { CATEGORIES, categoryTone } from "@/lib/categories";
 import { colors, spacing, radius, fontSize } from "@/lib/theme";
 
 const DIFFICULTY = [
@@ -29,6 +31,7 @@ const TIME = [
 ];
 
 export default function SearchScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [kosherType, setKosherType] = useState("");
@@ -119,10 +122,26 @@ export default function SearchScreen() {
           renderItem={({ item }) => <RecipeCard recipe={item} />}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
-            <View style={styles.center}>
+            <View style={styles.emptyWrap}>
               <Text style={styles.emptyText}>
-                {searched ? "לא נמצאו מתכונים" : "🔍 הקלידו לפחות 2 תווים"}
+                {searched ? "לא נמצאו מתכונים" : "הקלידו לפחות 2 תווים"}
               </Text>
+
+              {/* Before anything has been typed, the collection is a better
+                  thing to show than an empty list — the same six categories
+                  the site puts on its home page. */}
+              <Text style={styles.browseLabel}>או לפי קטגוריה</Text>
+              <View style={styles.browseGrid}>
+                {CATEGORIES.map((name) => (
+                  <TouchableOpacity
+                    key={name}
+                    onPress={() => router.push(`/category/${encodeURIComponent(name)}` as any)}
+                    style={[styles.browseTile, { backgroundColor: categoryTone(name) }]}
+                  >
+                    <Text style={styles.browseTileText}>{name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           }
         />
@@ -170,5 +189,24 @@ const styles = StyleSheet.create({
   chipText: { fontSize: fontSize.xs, color: colors.smoke[200], fontWeight: "500" },
   chipTextActive: { color: colors.white },
   list: { padding: spacing.lg, gap: spacing.md },
+  emptyWrap: { paddingTop: 40, paddingHorizontal: 4 },
+  browseLabel: {
+    marginTop: 36,
+    marginBottom: 12,
+    textAlign: "center",
+    fontSize: fontSize.sm,
+    fontWeight: "700",
+    color: colors.bark[200],
+  },
+  browseGrid: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 10, justifyContent: "center" },
+  browseTile: {
+    flexGrow: 1,
+    flexBasis: "30%",
+    height: 74,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  browseTileText: { color: colors.white, fontWeight: "700", fontSize: fontSize.base },
   emptyText: { fontSize: fontSize.base, color: colors.smoke[300], textAlign: "center" },
 });

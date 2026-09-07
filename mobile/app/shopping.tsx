@@ -12,7 +12,9 @@ import {
   Alert,
   FlatList,
   RefreshControl,
+  ScrollView,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -35,10 +37,12 @@ type Item = {
 export default function ShoppingScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const [lists, setLists] = useState<any[]>([]);
   const [listId, setListId] = useState<number | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [draft, setDraft] = useState("");
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -46,15 +50,20 @@ export default function ShoppingScreen() {
       const { data } = await shoppingApi.list();
       /* No list yet on a new account — make the one the rest of the screen
          needs, rather than showing an empty state that can do nothing. */
-      const list = data[0] || (await shoppingApi.create()).data;
-      setListId(list.id);
-      setItems(list.items || []);
+      const rows = data.length ? data : [(await shoppingApi.create()).data];
+      setLists(rows);
+      /* Keep whichever list is open across a refresh; the holiday planner
+         makes a second one, and landing back on the wrong list after every
+         pull would be its own small bug. */
+      const current = rows.find((l: any) => l.id === listId) || rows[0];
+      setListId(current.id);
+      setItems(current.items || []);
     } catch {
       Alert.alert("לא הצלחנו לטעון", "ייתכן שהשרת עדיין מתעורר. נסי לרענן בעוד רגע.");
     }
     setLoading(false);
     setRefreshing(false);
-  }, [user]);
+  }, [user, listId]);
 
   useEffect(() => {
     load();
@@ -66,12 +75,26 @@ export default function ShoppingScreen() {
     const previous = items;
     setItems(next);
     if (!listId) return;
+    setLists((rows) => rows.map((l) => (l.id === listId ? { ...l, items: next } : l)));
     try {
       await shoppingApi.updateItems(listId, next);
     } catch {
       setItems(previous);
       Alert.alert("לא נשמר", "השינוי לא הגיע לשרת. נסי שוב.");
     }
+  };
+
+  const openList = (list: any) => {
+    setListId(list.id);
+    setItems(list.items || []);
+  };
+
+  /* Something bought that no recipe asked for. */
+  const addByHand = () => {
+    const name = draft.trim();
+    if (!name) return;
+    setDraft("");
+    save([...items, { name, checked: false }]);
   };
 
   const toggle = (i: number) =>
@@ -112,6 +135,54 @@ export default function ShoppingScreen() {
         ) : (
           <View style={{ width: 22 }} />
         )}
+      </View>
+
+      {lists.length > 1 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          /* A horizontal ScrollView is still a flex child of the column, so
+             without this it claims the rest of the screen and stretches each
+             tab the full height of it. */
+          style={styles.tabStrip}
+          contentContainerStyle={styles.tabs}
+        >
+          {lists.map((l) => (
+            <TouchableOpacity
+              key={l.id}
+              onPress={() => openList(l)}
+              style={[styles.tab, l.id === listId && styles.tabOn]}
+            >
+              <ThemedText
+                variant="caption"
+                bold
+                color={l.id === listId ? colors.white : colors.bark[300]}
+              >
+                {l.name}
+              </ThemedText>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
+      <View style={styles.addRow}>
+        <TextInput
+          value={draft}
+          onChangeText={setDraft}
+          onSubmitEditing={addByHand}
+          returnKeyType="done"
+          placeholder="להוסיף מצרך…"
+          placeholderTextColor={colors.gray[400]}
+          style={styles.addInput}
+          textAlign="right"
+        />
+        <TouchableOpacity onPress={addByHand} disabled={!draft.trim()} hitSlop={8}>
+          <Ionicons
+            name="add-circle"
+            size={30}
+            color={draft.trim() ? colors.primary[500] : colors.surface[500]}
+          />
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -179,6 +250,40 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   list: { padding: spacing.lg, gap: 8 },
+  tabStrip: { flexGrow: 0, flexShrink: 0 },
+  tabs: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: 10,
+  },
+  tab: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    borderColor: colors.surface[500],
+    backgroundColor: colors.bg.card,
+  },
+  tabOn: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
+  addRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 10,
+    marginHorizontal: spacing.lg,
+    marginBottom: 4,
+  },
+  addInput: {
+    flex: 1,
+    height: 46,
+    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.surface[500],
+    backgroundColor: colors.bg.card,
+    color: colors.smoke[100],
+  },
   row: {
     flexDirection: "row-reverse",
     alignItems: "center",

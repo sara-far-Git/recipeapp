@@ -156,6 +156,31 @@ export default function ProfileScreen() {
         )}
       </View>
 
+      {/* The pages the site keeps in its header, which the tab bar has no
+          room for. Only on your own profile — and ניהול only for whoever the
+          server says runs the site. */}
+      {isOwn && (
+        <View style={styles.menu}>
+          <MenuRow
+            icon="sparkles-outline"
+            label="תכנון חג"
+            onPress={() => router.push("/holiday" as any)}
+          />
+          <MenuRow
+            icon="cart-outline"
+            label="רשימת קניות"
+            onPress={() => router.push("/shopping" as any)}
+          />
+          {currentUser?.is_admin && (
+            <MenuRow
+              icon="stats-chart-outline"
+              label="ניהול"
+              onPress={() => router.push("/admin" as any)}
+            />
+          )}
+        </View>
+      )}
+
       {/* Tabs */}
       <View style={styles.tabsRow}>
         <TouchableOpacity
@@ -238,6 +263,24 @@ export default function ProfileScreen() {
   );
 }
 
+function MenuRow({
+  icon,
+  label,
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.menuRow}>
+      <Ionicons name={icon} size={19} color={colors.cinnamon[600]} />
+      <ThemedText style={{ flex: 1 }}>{label}</ThemedText>
+      <Ionicons name="chevron-back" size={17} color={colors.bark[100]} />
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.gray[50] },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
@@ -272,6 +315,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   stat: { alignItems: "center" },
+  menu: {
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.lg,
+    borderRadius: radius.md,
+    backgroundColor: colors.bg.card,
+    borderWidth: 1,
+    borderColor: "rgba(39, 94, 80, 0.10)",
+    overflow: "hidden",
+  },
+  menuRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(39, 94, 80, 0.08)",
+  },
   filterRow: { flexDirection: "row-reverse", gap: 8, paddingHorizontal: spacing.lg, paddingBottom: 12 },
   filterChip: {
     paddingHorizontal: 14,
