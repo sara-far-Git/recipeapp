@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   View,
   ScrollView,
@@ -12,11 +12,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import { recipesApi, scanApi, uploadApi } from "@/lib/api";
+import { imageUri, recipesApi, scanApi, uploadApi } from "@/lib/api";
+import { CATEGORIES } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -57,14 +58,57 @@ export default function NewRecipeScreen() {
   const [servings, setServings] = useState("4");
   const [difficulty, setDifficulty] = useState("medium");
   const [kosherType, setKosherType] = useState("");
+  const [category, setCategory] = useState("");
   const [isScanned, setIsScanned] = useState(false);
+
+  /* The same form edits an existing recipe. The site has an edit screen and
+     the phone had none, so a recipe saved here could never be corrected. */
+  const { edit } = useLocalSearchParams<{ edit?: string }>();
+  const editId = edit ? Number(edit) : null;
+  const [loadingExisting, setLoadingExisting] = useState(Boolean(editId));
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([{ amount: 0, unit: "", name: "" }]);
   const [instructions, setInstructions] = useState<Instruction[]>([{ step: 1, text: "" }]);
 
+  useEffect(() => {
+    if (!editId) return;
+    let alive = true;
+    recipesApi
+      .get(editId)
+      .then(({ data }) => {
+        if (!alive) return;
+        setTitle(data.title || "");
+        setDescription(data.description || "");
+        setImageUrl(data.image_url || "");
+        setPrepTime(data.prep_time_minutes ? String(data.prep_time_minutes) : "");
+        setCookTime(data.cook_time_minutes ? String(data.cook_time_minutes) : "");
+        setServings(String(data.servings ?? 4));
+        setDifficulty(data.difficulty || "medium");
+        setKosherType(data.kosher_type || "");
+        setCategory(data.category || "");
+        if (data.ingredients?.length) setIngredients(data.ingredients);
+        if (data.instructions?.length) setInstructions(data.instructions);
+      })
+      .catch(() => Alert.alert("לא הצלחנו לטעון", "המתכון לא נפתח לעריכה."))
+      .finally(() => alive && setLoadingExisting(false));
+    return () => {
+      alive = false;
+    };
+  }, [editId]);
+
   if (!user) {
     router.replace("/login" as any);
     return null;
+  }
+
+  /* An empty form that fills in a moment later reads as a blank new recipe,
+     so wait for the one being edited before drawing it. */
+  if (loadingExisting) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: "center" }]} edges={["top"]}>
+        <ActivityIndicator size="large" color={colors.primary[500]} />
+      </SafeAreaView>
+    );
   }
 
   const pickImage = async (forScan: boolean) => {
@@ -86,6 +130,7 @@ export default function NewRecipeScreen() {
         if (data.servings) setServings(String(data.servings));
         if (data.difficulty) setDifficulty(data.difficulty);
         if (data.kosher_type) setKosherType(data.kosher_type);
+        if (data.category) setCategory(data.category);
         if (data.ingredients?.length) setIngredients(data.ingredients);
         if (data.instructions?.length) setInstructions(data.instructions);
         setIsScanned(true);
@@ -124,6 +169,7 @@ export default function NewRecipeScreen() {
         if (data.servings) setServings(String(data.servings));
         if (data.difficulty) setDifficulty(data.difficulty);
         if (data.kosher_type) setKosherType(data.kosher_type);
+        if (data.category) setCategory(data.category);
         if (data.ingredients?.length) setIngredients(data.ingredients);
         if (data.instructions?.length) setInstructions(data.instructions);
         setIsScanned(true);
@@ -166,7 +212,7 @@ export default function NewRecipeScreen() {
     if (!title.trim()) { Alert.alert("שגיאה", "נדרשת כותרת למתכון"); return; }
     setSubmitting(true);
     try {
-      const { data } = await recipesApi.create({
+      const payload = {
         title,
         description: description || null,
         image_url: imageUrl || null,
@@ -175,13 +221,21 @@ export default function NewRecipeScreen() {
         servings: Number(servings) || 4,
         difficulty,
         kosher_type: kosherType || null,
+        category: category || null,
         ingredients: ingredients.filter((i) => i.name.trim()),
         instructions: instructions.filter((i) => i.text.trim()),
         is_scanned: isScanned,
-      });
+      };
+      const { data } = editId
+        ? await recipesApi.update(editId, payload)
+        : await recipesApi.create(payload);
       router.replace(`/recipe/${data.id}` as any);
     } catch (err: any) {
-      Alert.alert("שגיאה", err.response?.data?.detail || "שגיאה ביצירת המתכון");
+      Alert.alert(
+        "שגיאה",
+        err.response?.data?.detail ||
+          (editId ? "לא הצלחנו לשמור את השינויים" : "שגיאה ביצירת המתכון"),
+      );
     }
     setSubmitting(false);
   };
@@ -208,7 +262,7 @@ export default function NewRecipeScreen() {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-forward" size={22} color={colors.gray[600]} />
         </TouchableOpacity>
-        <ThemedText variant="heading">מתכון חדש</ThemedText>
+        <ThemedText variant="heading">{editId ? "עריכת מתכון" : "מתכון חדש"}</ThemedText>
         <View style={{ width: 22 }} />
       </View>
 
@@ -247,7 +301,7 @@ export default function NewRecipeScreen() {
 
               {imageUrl ? (
                 <View style={styles.imagePreview}>
-                  <Image source={{ uri: imageUrl }} style={styles.previewImage} />
+                  <Image source={{ uri: imageUri(imageUrl) }} style={styles.previewImage} />
                   <TouchableOpacity onPress={() => setImageUrl("")} style={styles.removeImage}>
                     <Ionicons name="trash" size={18} color={colors.red[500]} />
                   </TouchableOpacity>
@@ -296,6 +350,27 @@ export default function NewRecipeScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
+
+              {/* Without one the recipe is filed nowhere, and the site's
+                  category pages never show it. */}
+              <ThemedText variant="label" style={{ marginTop: 12, marginBottom: 6 }}>קטגוריה</ThemedText>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 4 }}>
+                {CATEGORIES.map((name) => (
+                  <TouchableOpacity
+                    key={name}
+                    onPress={() => setCategory(category === name ? "" : name)}
+                    style={[styles.chipBtn, category === name && styles.chipBtnActive]}
+                  >
+                    <ThemedText
+                      variant="caption"
+                      color={category === name ? colors.white : colors.gray[700]}
+                      bold
+                    >
+                      {name}
+                    </ThemedText>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
 
               <ThemedText variant="label" style={{ marginTop: 12, marginBottom: 6 }}>כשרות</ThemedText>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>

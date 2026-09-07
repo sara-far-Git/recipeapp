@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { usersApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/RecipeCard";
+import { CATEGORIES } from "@/lib/categories";
 import Button from "@/components/Button";
 import ThemedText from "@/components/ThemedText";
 import { colors, spacing, radius } from "@/lib/theme";
@@ -26,6 +28,7 @@ export default function ProfileScreen() {
   const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"recipes" | "saved">("recipes");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
 
   const isOwn = currentUser?.username === username;
@@ -84,7 +87,16 @@ export default function ProfileScreen() {
     );
   }
 
-  const displayRecipes = activeTab === "saved" ? savedRecipes : recipes;
+  const shownList = activeTab === "saved" ? savedRecipes : recipes;
+  const displayRecipes = categoryFilter
+    ? shownList.filter((r: any) => r.category === categoryFilter)
+    : shownList;
+
+  /* Only offer a category that something here is actually filed under —
+     a filter that always empties the list is just a dead end. */
+  const presentCategories = CATEGORIES.filter((name) =>
+    shownList.some((r: any) => r.category === name),
+  );
 
   const HeaderComponent = () => (
     <>
@@ -171,6 +183,38 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {presentCategories.length > 1 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterRow}
+        >
+          <TouchableOpacity
+            onPress={() => setCategoryFilter("")}
+            style={[styles.filterChip, !categoryFilter && styles.filterChipActive]}
+          >
+            <ThemedText variant="caption" bold color={!categoryFilter ? colors.white : colors.gray[700]}>
+              הכול
+            </ThemedText>
+          </TouchableOpacity>
+          {presentCategories.map((name) => (
+            <TouchableOpacity
+              key={name}
+              onPress={() => setCategoryFilter(categoryFilter === name ? "" : name)}
+              style={[styles.filterChip, categoryFilter === name && styles.filterChipActive]}
+            >
+              <ThemedText
+                variant="caption"
+                bold
+                color={categoryFilter === name ? colors.white : colors.gray[700]}
+              >
+                {name}
+              </ThemedText>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </>
   );
 
@@ -228,6 +272,16 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   stat: { alignItems: "center" },
+  filterRow: { flexDirection: "row-reverse", gap: 8, paddingHorizontal: spacing.lg, paddingBottom: 12 },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    borderColor: colors.smoke[500],
+    backgroundColor: colors.white,
+  },
+  filterChipActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
   tabsRow: {
     flexDirection: "row-reverse",
     borderBottomWidth: 1,

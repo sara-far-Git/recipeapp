@@ -14,7 +14,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
-import { recipesApi } from "@/lib/api";
+import { imageUri, recipesApi } from "@/lib/api";
+import { categoryTone } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/Button";
 import ThemedText from "@/components/ThemedText";
@@ -71,10 +72,14 @@ export default function RecipeDetailScreen() {
 
   const scaledIngredients = useMemo(() => {
     if (!recipe) return [];
-    return recipe.ingredients.map((ing: any) => ({
-      ...ing,
-      amount: Math.round(ing.amount * servingMultiplier * 100) / 100,
-    }));
+    /* A heading carries no amount. Scaling one gave `NaN`, and the row drew
+       the word NaN where a number would be — so headings pass through whole,
+       exactly as they do on the site. */
+    return recipe.ingredients.map((ing: any) =>
+      ing.note
+        ? ing
+        : { ...ing, amount: Math.round(ing.amount * servingMultiplier * 100) / 100 },
+    );
   }, [recipe, servingMultiplier]);
 
   const changeServings = (delta: number) => {
@@ -82,6 +87,28 @@ export default function RecipeDetailScreen() {
     const cur = recipe.servings * servingMultiplier;
     const next = Math.max(1, cur + delta);
     setServingMultiplier(next / recipe.servings);
+  };
+
+  const isAuthor = Boolean(user && recipe && user.id === recipe.author.id);
+
+  const handleDelete = () => {
+    /* Ask first, and let the safe answer be the easy one — deleting a recipe
+       cannot be undone. */
+    Alert.alert("למחוק את המתכון?", `"${recipe.title}" יימחק לצמיתות.`, [
+      { text: "ביטול", style: "cancel" },
+      {
+        text: "מחיקה",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await recipesApi.delete(recipe.id);
+            router.replace("/" as any);
+          } catch (err: any) {
+            Alert.alert("לא הצלחנו למחוק", err?.response?.data?.detail || "נסי שוב בעוד רגע.");
+          }
+        },
+      },
+    ]);
   };
 
   const toggleLike = async () => {
@@ -203,7 +230,7 @@ export default function RecipeDetailScreen() {
         {/* Image */}
         <View style={styles.imageContainer}>
           {recipe.image_url ? (
-            <Image source={{ uri: recipe.image_url }} style={styles.heroImage} />
+            <Image source={{ uri: imageUri(recipe.image_url) }} style={styles.heroImage} />
           ) : (
             <View style={styles.placeholderImage}>
               <Ionicons name="restaurant-outline" size={56} color={colors.gray[300]} />
@@ -237,6 +264,24 @@ export default function RecipeDetailScreen() {
               <TouchableOpacity onPress={toggleSave} style={styles.actionBtn}>
                 <Ionicons name={saved ? "bookmark" : "bookmark-outline"} size={22} color={saved ? colors.primary[500] : colors.gray[500]} />
               </TouchableOpacity>
+              {isAuthor && (
+                <>
+                  <TouchableOpacity
+                    onPress={() => router.push(`/recipe/new?edit=${recipe.id}` as any)}
+                    style={styles.actionBtn}
+                    accessibilityLabel="עריכת המתכון"
+                  >
+                    <Ionicons name="create-outline" size={22} color={colors.gray[500]} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleDelete}
+                    style={styles.actionBtn}
+                    accessibilityLabel="מחיקת המתכון"
+                  >
+                    <Ionicons name="trash-outline" size={22} color={colors.red[500]} />
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           </View>
 
@@ -249,6 +294,13 @@ export default function RecipeDetailScreen() {
 
           {/* Info chips */}
           <View style={styles.chips}>
+            {recipe.category && (
+              <View style={[styles.chip, { backgroundColor: categoryTone(recipe.category) }]}>
+                <ThemedText variant="caption" bold color={colors.white}>
+                  {recipe.category}
+                </ThemedText>
+              </View>
+            )}
             {totalTime > 0 && (
               <View style={styles.chip}>
                 <Ionicons name="time-outline" size={14} color={colors.gray[600]} />
@@ -294,12 +346,20 @@ export default function RecipeDetailScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-            {scaledIngredients.map((ing: any, i: number) => (
-              <View key={i} style={styles.ingRow}>
-                <ThemedText style={styles.ingAmount}>{ing.amount} {ing.unit || ""}</ThemedText>
-                <ThemedText style={styles.ingName}>{ing.name}</ThemedText>
-              </View>
-            ))}
+            {scaledIngredients.map((ing: any, i: number) =>
+              ing.note ? (
+                <ThemedText key={i} bold style={styles.ingHeading}>
+                  {ing.name}
+                </ThemedText>
+              ) : (
+                <View key={i} style={styles.ingRow}>
+                  <ThemedText style={styles.ingAmount}>
+                    {ing.amount ? `${ing.amount} ${ing.unit || ""}`.trim() : ing.unit || ""}
+                  </ThemedText>
+                  <ThemedText style={styles.ingName}>{ing.name}</ThemedText>
+                </View>
+              ),
+            )}
           </View>
 
           {/* Instructions */}
@@ -423,6 +483,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   section: { marginBottom: spacing["2xl"] },
+  ingHeading: {
+    color: colors.cinnamon[600],
+    fontSize: 14,
+    marginTop: 16,
+    marginBottom: 2,
+  },
   servingsRow: {
     flexDirection: "row-reverse",
     alignItems: "center",

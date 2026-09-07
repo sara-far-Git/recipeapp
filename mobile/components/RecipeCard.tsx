@@ -3,7 +3,8 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import ThemedText from "./ThemedText";
 import { colors, radius, spacing, fontSize } from "@/lib/theme";
-import { recipesApi } from "@/lib/api";
+import { imageUri, recipesApi } from "@/lib/api";
+import { categoryTone } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import { useState } from "react";
 
@@ -44,7 +45,7 @@ export default function RecipeCard({ recipe }: Props) {
     >
       <View style={styles.imageContainer}>
         {recipe.image_url ? (
-          <Image source={{ uri: recipe.image_url }} style={styles.image} />
+          <Image source={{ uri: imageUri(recipe.image_url) }} style={styles.image} />
         ) : (
           <View style={styles.placeholder}>
             <Ionicons name="restaurant-outline" size={40} color={colors.bark[100]} />
@@ -58,6 +59,18 @@ export default function RecipeCard({ recipe }: Props) {
             color={saved ? colors.cinnamon[500] : colors.bark[300]}
           />
         </TouchableOpacity>
+
+        {recipe.category && (
+          <View style={[styles.categoryTab, { backgroundColor: categoryTone(recipe.category) }]}>
+            <ThemedText style={styles.categoryText}>{recipe.category}</ThemedText>
+          </View>
+        )}
+
+        {recipe.is_published === false && (
+          <View style={styles.draftBadge}>
+            <ThemedText style={styles.draftText}>טיוטה</ThemedText>
+          </View>
+        )}
 
         {recipe.kosher_type && (
           <View style={styles.kosherBadge}>
@@ -144,6 +157,27 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   kosherText: { fontSize: fontSize.xs, fontWeight: "500" },
+  /* Along the bottom of the picture, clear of the save button and the kosher
+     badge that already hold the two top corners. */
+  categoryTab: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    borderRadius: radius.full,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  categoryText: { fontSize: fontSize.xs, fontWeight: "700", color: colors.white },
+  draftBadge: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    borderRadius: radius.full,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  draftText: { fontSize: fontSize.xs, fontWeight: "700", color: colors.bark[300] },
   content: { padding: spacing.lg },
   metaRow: { flexDirection: "row-reverse", alignItems: "center", marginBottom: 4 },
   title: { marginBottom: 2, textAlign: "right" },

@@ -26,6 +26,19 @@ const LIVE_API = "https://recipeapp-backend-iwn0.onrender.com";
  */
 const getBaseUrl = () => process.env.EXPO_PUBLIC_API_URL || LIVE_API;
 
+/** An image address the phone can actually fetch.
+ *
+ *  Pictures live in our own database now, and the server returns them as a
+ *  path — "/api/v1/images/12". A browser resolves that against the page it is
+ *  on; React Native has no page to resolve against, so <Image> was handed a
+ *  relative string and drew nothing. Every uploaded picture was blank here.
+ */
+export function imageUri(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (/^(https?:|data:|file:)/.test(url)) return url;
+  return `${getBaseUrl()}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
 const api = axios.create({
   baseURL: `${getBaseUrl()}/api/v1`,
   headers: { "Content-Type": "application/json" },
