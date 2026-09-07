@@ -6,6 +6,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -50,7 +51,7 @@ export default function RegisterScreen() {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Ionicons name="restaurant" size={48} color={colors.primary[500]} />
+            <Image source={require("../assets/logo.png")} style={styles.mark} resizeMode="contain" />
             <ThemedText variant="title" center style={{ marginTop: 12 }}>
               יצירת חשבון
             </ThemedText>
@@ -118,6 +119,14 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
+  /* Cream artwork on a light canvas, tinted to the ink colour. */
+  mark: {
+    width: 132,
+    height: 46,
+    alignSelf: "center",
+    marginBottom: 6,
+    tintColor: colors.smoke[100],
+  },
   container: { flex: 1, backgroundColor: colors.bg.page },
   scroll: { padding: spacing["2xl"], paddingTop: spacing.lg },
   closeBtn: { alignSelf: "flex-start", padding: 4, marginBottom: 8 },

@@ -52,8 +52,10 @@ const styles = StyleSheet.create({
   title: { fontFamily: fonts.display, fontSize: 26, lineHeight: 31 },
   heading: { fontFamily: fonts.brandMedium, fontSize: fontSize.lg },
   body: { fontSize: fontSize.base, lineHeight: 23 },
-  caption: { fontSize: fontSize.sm, color: colors.bark[200] },
-  label: { fontFamily: fonts.brandMedium, fontSize: fontSize.sm, color: colors.bark[300] },
+  /* Deep enough to read on the sand canvas, which is darker than a cream
+     card — the lighter grey managed 3.3:1 there. */
+  caption: { fontSize: fontSize.sm, color: colors.bark[400] },
+  label: { fontFamily: fonts.brandMedium, fontSize: fontSize.sm, color: colors.bark[400] },
   eyebrow: {
     fontFamily: fonts.brandMedium,
     fontSize: fontSize.xs,
