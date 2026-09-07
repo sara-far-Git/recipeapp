@@ -13,20 +13,73 @@ import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
 import WritingCard from "@/components/home/WritingCard";
 import HeroClock from "@/components/home/HeroClock";
-import VerbCycle from "@/components/home/VerbCycle";
 import { CATEGORIES } from "@/lib/categories";
 
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
+/** The hero's scenes. A headline, the line under it and the mark beside it,
+ *  changing together because they say the same thing. Adding a fifth is one
+ *  more entry — nothing else counts them. */
+const SCENES = [
+  {
+    mark: "box",
+    title: (
+      <>
+        מה נכין
+        <br />
+        היום?
+      </>
+    ),
+    prompt: "ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.",
+  },
+  {
+    mark: "clock",
+    title: (
+      <>
+        למתי את צריכה
+        <br />
+        את זה?
+      </>
+    ),
+    prompt: "ארוחת ערב בעוד שעה, או משהו שנשאר טרי עד שבת.",
+  },
+  {
+    mark: "search",
+    title: (
+      <>
+        מה יש לך
+        <br />
+        במקרר?
+      </>
+    ),
+    prompt: "מצרך אחד מספיק. נמצא מה אפשר להכין ממנו כבר היום.",
+  },
+  {
+    mark: "saved",
+    title: (
+      <>
+        וזה נשאר
+        <br />
+        אצלך
+      </>
+    ),
+    prompt: "כל מתכון ששמרת מחכה במקום אחד, גם בעוד שנה.",
+  },
+] as const;
+
+/** The first scene greets a signed-in cook by what they came to do. */
+const HERO_TITLE_SIGNED_IN = (
+  <>
+    מה בא לך
+    <br />
+    לבשל היום?
+  </>
+);
+
 /** How long a scene holds before the next one fades in. Long: it is meant to
  *  be noticed on a second look, not to perform. */
-const SCENE_MS = 9000;
-
-/** The verb that changes in the headline. Module constants so the component
- *  is handed the same array every render. */
-const VERBS_SIGNED_IN = ["לבשל", "להכין", "לאפות", "לטגן"];
-const VERBS_SIGNED_OUT = ["נכין", "נבשל", "נאפה", "נטגן"];
+const SCENE_MS = 7500;
 
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
@@ -139,7 +192,7 @@ export default function FeedPage() {
   const [scene, setScene] = useState(0);
   useEffect(() => {
     if (!typingWanted) return;
-    const t = window.setInterval(() => setScene((n) => (n + 1) % 2), SCENE_MS);
+    const t = window.setInterval(() => setScene((n) => (n + 1) % SCENES.length), SCENE_MS);
     return () => window.clearInterval(t);
   }, [typingWanted]);
 
@@ -209,31 +262,24 @@ export default function FeedPage() {
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
             <h1 className="display-hero assistant-title hero-scenes">
-              <span className={cn("hero-scene", scene === 0 && "is-on")}>
-                {user ? (
-                  <>
-                    מה בא לך<br />
-                    <VerbCycle words={VERBS_SIGNED_IN} /> היום?
-                  </>
-                ) : (
-                  <>
-                    מה <VerbCycle words={VERBS_SIGNED_OUT} />
-                    <br />
-                    היום?
-                  </>
-                )}
-              </span>
-              <span className={cn("hero-scene", scene === 1 && "is-on")} aria-hidden={scene !== 1}>
-                למתי את צריכה<br />את זה?
-              </span>
+              {SCENES.map((s, i) => (
+                <span
+                  key={s.mark}
+                  className={cn("hero-scene", scene === i && "is-on")}
+                  aria-hidden={scene !== i}>
+                  {i === 0 && user ? HERO_TITLE_SIGNED_IN : s.title}
+                </span>
+              ))}
             </h1>
             <p className="assistant-prompt hero-scenes">
-              <span className={cn("hero-scene", scene === 0 && "is-on")}>
-                ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.
-              </span>
-              <span className={cn("hero-scene", scene === 1 && "is-on")} aria-hidden={scene !== 1}>
-                ארוחת ערב בעוד שעה, או משהו שנשאר טרי עד שבת.
-              </span>
+              {SCENES.map((s, i) => (
+                <span
+                  key={s.mark}
+                  className={cn("hero-scene", scene === i && "is-on")}
+                  aria-hidden={scene !== i}>
+                  {s.prompt}
+                </span>
+              ))}
             </p>
             <form onSubmit={submitHeroSearch} className={cn("assistant-composer", composerAttention && "is-attention", isSearching && "is-searching")}>
               <Search className="w-5 h-5 shrink-0" strokeWidth={2.1} aria-hidden="true" />
@@ -272,12 +318,24 @@ export default function FeedPage() {
             </div>
           </Reveal>
           <div className="hero-marks">
-            <div className={cn("hero-scene", scene === 0 && "is-on")}>
-              <WritingCard />
-            </div>
-            <div className={cn("hero-scene", scene === 1 && "is-on")}>
-              <HeroClock />
-            </div>
+            {SCENES.map((s, i) => (
+              <div key={s.mark} className={cn("hero-scene", scene === i && "is-on")}>
+                {s.mark === "box" ? (
+                  <WritingCard />
+                ) : s.mark === "clock" ? (
+                  <HeroClock />
+                ) : (
+                  <Image
+                    src={`/marks/${s.mark}.png`}
+                    alt=""
+                    aria-hidden="true"
+                    width={1240}
+                    height={1240}
+                    className="hero-mark-art"
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </CinematicSection>
