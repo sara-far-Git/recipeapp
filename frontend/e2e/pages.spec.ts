@@ -5,10 +5,19 @@ async function assertNoServerError(page: Page) {
   await expect(page.locator("body")).not.toContainText("Application error");
 }
 
+// Exercise the real intro before interacting with any route. Completing an
+// intro on a deep link intentionally redirects home, so wait for that redirect.
+test.beforeEach(async ({ page }) => {
+  await page.goto("/?intro");
+  await expect(page).toHaveURL(/\/$/, { timeout: 15_000 });
+  await expect(page.locator("html")).not.toHaveClass(/logo-intro/);
+  await expect(page.locator(".logo-intro-veil")).toHaveCount(0);
+});
+
 test.describe("public pages render", () => {
   test("home shows the hero and main nav", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /מה (נכין|בא לך)/ })).toBeVisible();
+    await expect(page.locator("h1.assistant-title")).toBeVisible();
     await expect(page.locator("header").getByRole("link", { name: "תכנון חג" })).toBeVisible();
     await expect(page.locator(".assistant-composer input")).toBeAttached();
     await assertNoServerError(page);
@@ -81,7 +90,7 @@ test.describe("flows", () => {
 
   test("nav can open holiday planning", async ({ page }) => {
     await page.goto("/");
-    await page.locator("header").getByRole("link", { name: "תכנון חג" }).click({ force: true });
+    await page.locator("header").getByRole("link", { name: "תכנון חג" }).click();
     await expect(page).toHaveURL(/\/holiday/);
     await expect(page.getByRole("heading", { name: "ארבע סעודות" })).toBeVisible();
   });
