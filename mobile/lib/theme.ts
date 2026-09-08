@@ -36,6 +36,16 @@ export const colors = {
     card: "#F4EEDF",
     cardHover: "#FAF8F3",
   },
+  /** The home page is a run of full-bleed panels, alternating green and
+   *  terracotta. Read off the site rather than guessed. */
+  panel: {
+    hero: "#0B2A20",
+    categories: "#D88E6C",
+    recipes: "#275E50",
+    weekly: "#E3A184",
+    why: "#174438",
+    join: "#C87558",
+  },
   // Terracotta — the accent, and the colour the big headings are set in
   fire: {
     50: "#FBEDE8",

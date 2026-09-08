@@ -39,3 +39,14 @@ const TONES: Record<string, string> = {
 
 export const categoryTone = (name?: string | null) =>
   (name && TONES[name]) || "#A07C56";
+
+/** The site's own dish photographs, scaled down for the phone — they draw at
+ *  about 86pt here, and the originals are 2.4MB apiece. */
+export const CATEGORY_PHOTO: Record<string, any> = {
+  "ראשונות": require("../assets/food/starters.png"),
+  "עיקריות": require("../assets/food/mains.png"),
+  "מאפים": require("../assets/food/bread.png"),
+  "קינוחים": require("../assets/food/dessert.png"),
+  "סלטים": require("../assets/food/salad.png"),
+  "משקאות": require("../assets/food/drinks.png"),
+};

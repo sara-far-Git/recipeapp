@@ -15,6 +15,13 @@ import { router } from "expo-router";
 import { recipesApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/RecipeCard";
+import {
+  CategoriesPanel,
+  HeroPanel,
+  JoinPanel,
+  RecipesPanelHeader,
+  WhyPanel,
+} from "@/components/HomePanels";
 import { colors, spacing, fontSize, radius, fonts } from "@/lib/theme";
 
 export default function FeedScreen() {
@@ -89,11 +96,21 @@ export default function FeedScreen() {
       <FlatList
         data={recipes}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <RecipeCard recipe={item} />}
-        contentContainerStyle={[
-          styles.list,
-          recipes.length === 0 && styles.listEmpty,
-        ]}
+        /* The panels run edge to edge, so the list itself carries no padding
+           — only the strip the recipe cards sit in does. */
+        contentContainerStyle={recipes.length === 0 ? styles.listEmpty : undefined}
+        ListHeaderComponent={
+          <>
+            <HeroPanel signedIn={Boolean(user)} />
+            <CategoriesPanel />
+            <RecipesPanelHeader />
+          </>
+        }
+        renderItem={({ item }) => (
+          <View style={styles.cardStrip}>
+            <RecipeCard recipe={item} />
+          </View>
+        )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -105,9 +122,22 @@ export default function FeedScreen() {
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          loadingMore ? (
-            <ActivityIndicator style={{ padding: 20 }} color={colors.fire[200]} />
-          ) : null
+          <>
+            {loadingMore && (
+              <View style={{ backgroundColor: colors.panel.recipes, paddingVertical: 20 }}>
+                <ActivityIndicator color={colors.onDark.display} />
+              </View>
+            )}
+            {/* Closing the run the way the site does, rather than ending on a
+                half-empty strip of cards. */}
+            {recipes.length > 0 && (
+              <>
+                <View style={{ height: 24, backgroundColor: colors.panel.recipes }} />
+                <WhyPanel />
+                <JoinPanel signedIn={Boolean(user)} />
+              </>
+            )}
+          </>
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -181,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   loginBtnText: { color: colors.white, fontFamily: fonts.brandMedium, fontSize: fontSize.sm },
-  list: { padding: spacing.lg, gap: spacing.md },
+  cardStrip: { backgroundColor: colors.panel.recipes, paddingHorizontal: spacing.lg, paddingBottom: spacing.md },
   listEmpty: { flexGrow: 1 },
   empty: {
     flex: 1,

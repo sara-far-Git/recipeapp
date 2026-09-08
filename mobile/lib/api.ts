@@ -129,6 +129,27 @@ export const searchApi = {
   }) => api.get("/search", { params }),
 };
 
+/**
+ * A sentence to show for a failed request.
+ *
+ * FastAPI's `detail` is a string for an error it raises itself, but for a
+ * validation failure it is an array of objects — {type, loc, msg, input, ctx}
+ * each. Handing that array straight to a <Text> made React throw "Objects are
+ * not valid as a React child" and took the screen down, so a rejected sign-up
+ * crashed the app instead of explaining itself.
+ */
+export function errorText(err: any, fallback: string): string {
+  const detail = err?.response?.data?.detail;
+  if (typeof detail === "string" && detail.trim()) return detail;
+  if (Array.isArray(detail)) {
+    const lines = detail
+      .map((d: any) => (typeof d === "string" ? d : d?.msg))
+      .filter((m: unknown): m is string => typeof m === "string" && m.length > 0);
+    if (lines.length) return lines.join(". ");
+  }
+  return fallback;
+}
+
 export const adminApi = {
   /** Counts only, and 404 rather than 403 to anyone not named in the
    *  server's configuration — so it cannot be used to discover that an

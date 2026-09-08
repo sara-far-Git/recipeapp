@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { errorText } from "@/lib/api";
 import {
   View,
   StyleSheet,
@@ -34,7 +35,7 @@ export default function RegisterScreen() {
       await register(form);
       router.back();
     } catch (err: any) {
-      setError(err.response?.data?.detail || "שגיאה בהרשמה");
+      setError(errorText(err, "שגיאה בהרשמה"));
     }
     setLoading(false);
   };

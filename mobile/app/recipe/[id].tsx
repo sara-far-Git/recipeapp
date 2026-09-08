@@ -14,7 +14,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
-import { imageUri, recipesApi, shoppingApi } from "@/lib/api";
+import { errorText, imageUri, recipesApi, shoppingApi } from "@/lib/api";
 import { categoryTone } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/Button";
@@ -104,7 +104,7 @@ export default function RecipeDetailScreen() {
             await recipesApi.delete(recipe.id);
             router.replace("/" as any);
           } catch (err: any) {
-            Alert.alert("לא הצלחנו למחוק", err?.response?.data?.detail || "נסי שוב בעוד רגע.");
+            Alert.alert("לא הצלחנו למחוק", errorText(err, "נסי שוב בעוד רגע."));
           }
         },
       },

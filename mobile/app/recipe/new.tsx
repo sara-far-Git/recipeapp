@@ -16,7 +16,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import { imageUri, recipesApi, scanApi, uploadApi } from "@/lib/api";
+import { errorText, imageUri, recipesApi, scanApi, uploadApi } from "@/lib/api";
 import { CATEGORIES } from "@/lib/categories";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/Button";
@@ -233,8 +233,7 @@ export default function NewRecipeScreen() {
     } catch (err: any) {
       Alert.alert(
         "שגיאה",
-        err.response?.data?.detail ||
-          (editId ? "לא הצלחנו לשמור את השינויים" : "שגיאה ביצירת המתכון"),
+        errorText(err, editId ? "לא הצלחנו לשמור את השינויים" : "שגיאה ביצירת המתכון"),
       );
     }
     setSubmitting(false);

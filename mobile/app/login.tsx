@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { errorText } from "@/lib/api";
 import {
   View,
   StyleSheet,
@@ -32,7 +33,7 @@ export default function LoginScreen() {
       await login(email, password);
       router.back();
     } catch (err: any) {
-      setError(err.response?.data?.detail || "שגיאה בהתחברות");
+      setError(errorText(err, "שגיאה בהתחברות"));
     }
     setLoading(false);
   };
