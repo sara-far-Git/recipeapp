@@ -9,10 +9,10 @@ type RecipeLoadingProps = {
   kind?: LoaderKind;
 };
 const LABELS: Record<LoaderKind, string> = {
-  recipe: "פותחת את המתכון",
-  search: "מוצאת מתכונים מתאימים",
-  collection: "פותחת את ספר המתכונים",
-  shopping: "מסדרת את רשימת הקניות",
+  recipe: "פותח את המתכון",
+  search: "מוצא מתכונים מתאימים",
+  collection: "פותח את ספר המתכונים",
+  shopping: "מסדר את רשימת הקניות",
 };
 
 export default function RecipeLoading({ label, title, hint, compact = false, kind = "collection" }: RecipeLoadingProps) {

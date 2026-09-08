@@ -64,7 +64,7 @@ export default function CategoryPage() {
       </header>
 
       {loading ? (
-        <RecipeLoading label="מוצאת מתכונים מתאימים" kind="search" />
+        <RecipeLoading label="מוצא מתכונים מתאימים" kind="search" />
       ) : loadError ? (
         <ErrorNotice message="לא הצלחנו לטעון את המתכונים בקטגוריה. נסו שוב." onRetry={() => setAttempt((n) => n + 1)} />
       ) : recipes.length === 0 ? (

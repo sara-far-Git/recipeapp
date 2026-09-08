@@ -195,7 +195,7 @@ export default function RecipeDetailPage() {
   if (loading) {
   return (
   <PageFrame tone="sage" className="recipe-experience">
-    <RecipeLoading label="פותחת את המתכון" kind="recipe" />
+    <RecipeLoading label="פותח את המתכון" kind="recipe" />
   </PageFrame>
   );
   }

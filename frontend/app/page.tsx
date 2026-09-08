@@ -363,7 +363,7 @@ export default function FeedPage() {
 
           <div className="mt-8">
             {loading ? (
-              <RecipeLoading label="מחפשת מה טוב להכין" kind="search" />
+              <RecipeLoading label="מחפש מה טוב להכין" kind="search" />
             ) : recipes.length === 0 ? (
               <div className="text-center py-12">
                 <Mark name="collection" className="w-32 mx-auto mb-5" sizes="128px" decorative />

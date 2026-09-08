@@ -117,7 +117,7 @@ export default function HolidayMealPage() {
         </header>
 
         {loading || !plan ? (
-          <RecipeLoading label="מסדרת את המנות" kind="search" />
+          <RecipeLoading label="מסדר את המנות" kind="search" />
         ) : (
           <div className="holiday-courses">
             {HOLIDAY_COURSES.map((course, index) => {

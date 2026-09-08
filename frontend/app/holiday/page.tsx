@@ -118,7 +118,7 @@ export default function HolidayPlanPage() {
             onClick={sendToShopping}
           >
             <ShoppingCart className="w-4 h-4" strokeWidth={2.2} />
-            {shopping ? "אוספת מצרכים…" : "רשימת קניות"}
+            {shopping ? "אוסף מצרכים…" : "רשימת קניות"}
           </button>
         </section>
       </div>

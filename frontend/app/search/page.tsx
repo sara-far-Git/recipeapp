@@ -419,7 +419,7 @@ function SearchPageContent() {
           <EmptyState title="לא נמצאו מתכונים מהמצרכים האלה" />
         ) : null
       ) : loading ? (
-        <RecipeLoading label="מוצאת לך רעיונות" kind="search" />
+        <RecipeLoading label="מוצא לך רעיונות" kind="search" />
       ) : searchError ? (
         <ErrorNotice message={searchError} onRetry={() => doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory)} />
       ) : results.length > 0 ? (
@@ -515,7 +515,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <PageFrame tone="forest" className="search-experience">
-          <RecipeLoading label="מכינה את החיפוש" kind="search" compact />
+          <RecipeLoading label="מכין את החיפוש" kind="search" compact />
         </PageFrame>
       }
     >

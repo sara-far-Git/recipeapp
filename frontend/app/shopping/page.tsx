@@ -116,7 +116,7 @@ export default function ShoppingListPage() {
   if (loading) {
     return (
       <PageFrame tone="terracotta" className="shopping-experience">
-        <RecipeLoading label="מסדרת את רשימת הקניות" kind="shopping" />
+        <RecipeLoading label="מסדר את רשימת הקניות" kind="shopping" />
       </PageFrame>
     );
   }

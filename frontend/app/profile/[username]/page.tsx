@@ -154,7 +154,7 @@ function ProfilePageContent() {
   if (loading) {
     return (
       <PageFrame tone="sage" className="profile-experience">
-        <RecipeLoading label="טוענת את הפרופיל" kind="collection" />
+        <RecipeLoading label="טוען את הפרופיל" kind="collection" />
       </PageFrame>
     );
   }
@@ -500,7 +500,7 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <RecipeLoading label="טוענת את הפרופיל" kind="collection" compact />
+        <RecipeLoading label="טוען את הפרופיל" kind="collection" compact />
       }
     >
       <ProfilePageContent />
