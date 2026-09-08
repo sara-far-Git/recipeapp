@@ -76,9 +76,8 @@ const HERO_TITLE_SIGNED_IN = (
   </>
 );
 
-/** How long a scene holds before the next one fades in. Long: it is meant to
- *  be noticed on a second look, not to perform. */
-const SCENE_MS = 7500;
+/** Keep the artwork and copy moving together while leaving time to read. */
+const SCENE_MS = 4000;
 
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
@@ -185,7 +184,7 @@ export default function FeedPage() {
   }, []);
   const mealHint = MEAL_HOURS[mealBand].hints[0];
 
-  /* Two scenes, changing together and slowly. The panel used to run three
+  /* Scenes change together. The panel used to run three
      separate animations at once, inches apart, all competing for the same
      glance; this is one rhythm instead — a headline and the mark that belongs
      with it, crossfading. */
