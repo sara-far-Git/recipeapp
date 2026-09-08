@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Overlay from "@/components/ui/Overlay";
 import { canEditChef } from "@/lib/attribution";
+import ErrorNotice from "@/components/ui/ErrorNotice";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -59,6 +60,7 @@ export default function NewRecipePage() {
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [scanning, setScanning] = useState(false);
   const [scanSuccess, setScanSuccess] = useState(false);
   const [scanError, setScanError] = useState("");
@@ -301,6 +303,7 @@ export default function NewRecipePage() {
 
   const handleSubmit = async () => {
   if (!canPublish) return;
+  setSubmitError("");
   setSubmitting(true);
   try {
   const { data } = await recipesApi.create({
@@ -316,7 +319,7 @@ export default function NewRecipePage() {
   router.push(`/recipe/${data.id}`);
   } catch (err: any) {
   const detail = err.response?.data?.detail;
-  alert(typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map((d: any) => d.msg).join(", ") : "שגיאה ביצירת המתכון");
+  setSubmitError(typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map((d: any) => d.msg).join(", ") : "שגיאה ביצירת המתכון");
   }
   setSubmitting(false);
   };
@@ -741,6 +744,7 @@ export default function NewRecipePage() {
   <Plus className="w-4 h-4" /> הוספת שלב
   </button>
 
+  {submitError && <ErrorNotice message={submitError} />}
   <div className="flex gap-3">
   <button onClick={() => setStep(2)}
   className="flex-1 py-3  btn-outline font-semibold text-sm flex items-center justify-center gap-2">

@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { recipesApi, uploadApi } from "@/lib/api";
 import { canEditChef } from "@/lib/attribution";
+import ErrorNotice from "@/components/ui/ErrorNotice";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import {
   Upload, Plus, Trash2, GripVertical, ArrowLeft, ArrowRight,
@@ -46,6 +47,7 @@ export default function EditRecipePage() {
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -143,6 +145,7 @@ export default function EditRecipePage() {
   };
 
   const handleSubmit = async () => {
+  setSubmitError("");
   setSubmitting(true);
   try {
   await recipesApi.update(Number(params.id), {
@@ -159,7 +162,7 @@ export default function EditRecipePage() {
   setTimeout(() => router.push(`/recipe/${params.id}`), 1200);
   } catch (err: any) {
   const detail = err.response?.data?.detail;
-  alert(typeof detail === "string" ? detail : "שגיאה בשמירת המתכון");
+  setSubmitError(typeof detail === "string" ? detail : "שגיאה בשמירת המתכון");
   }
   setSubmitting(false);
   };
@@ -417,6 +420,7 @@ export default function EditRecipePage() {
   <Plus className="w-4 h-4" /> הוספת שלב
   </button>
 
+  {submitError && <ErrorNotice message={submitError} />}
   <div className="flex gap-3">
   <button onClick={() => setStep(2)}
   className="flex-1 py-3  btn-outline font-semibold text-sm flex items-center justify-center gap-2">

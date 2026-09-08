@@ -6,6 +6,7 @@ import Link from "next/link";
 import { searchApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
+import ErrorNotice from "@/components/ui/ErrorNotice";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
 import { Plus } from "lucide-react";
@@ -25,40 +26,47 @@ export default function CategoryPage() {
 
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (authLoading) return;
+    let active = true;
     setLoading(true);
+    setLoadError(false);
     searchApi
       .search({ category: name, limit: 100 })
-      .then((res) => setRecipes(res.data))
-      .catch(() => setRecipes([]))
-      .finally(() => setLoading(false));
-  }, [name, authLoading]);
+      .then((res) => { if (active) setRecipes(res.data); })
+      .catch(() => { if (active) setLoadError(true); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [name, authLoading, attempt]);
 
   return (
     <PageFrame tone="terracotta" className="category-experience">
     <div className="max-w-5xl mx-auto">
       <header className="experience-hero experience-hero--category mb-8 animate-fade-up">
-        <Link href="/#categories" className="eyebrow mb-4 min-h-[24px] hover:text-cinnamon-500 transition-colors">
+        <Link href="/recipes" className="eyebrow mb-4 min-h-[24px] hover:text-cinnamon-500 transition-colors">
           <span className="plus-badge text-bark-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
           </span>
-          קטגוריה
+          כל המתכונים
         </Link>
         <h1 className="display-lg text-bark-500">{name}</h1>
         <p className="text-bark-300 text-lg mt-3 max-w-md leading-snug">
           {meta?.desc ?? "מתכונים לפי סוג מנה"}
         </p>
-        {!loading && (
+        {!loading && !loadError && (
           <p className="text-sm text-bark-200 mt-3">
-            {recipes.length === 0 ? "עדיין אין מתכונים כאן" : `${recipes.length} מתכונים`}
+            {recipes.length === 0 ? "עדיין אין מתכונים כאן" : recipes.length === 1 ? "מתכון אחד" : `${recipes.length} מתכונים`}
           </p>
         )}
       </header>
 
       {loading ? (
         <RecipeLoading label="מוצאת מתכונים מתאימים" kind="search" />
+      ) : loadError ? (
+        <ErrorNotice message="לא הצלחנו לטעון את המתכונים בקטגוריה. נסו שוב." onRetry={() => setAttempt((n) => n + 1)} />
       ) : recipes.length === 0 ? (
         <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
           <div className="card-surface empty-chapter p-8 sm:p-10 mb-12">
