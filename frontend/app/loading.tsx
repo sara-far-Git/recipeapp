@@ -9,7 +9,7 @@ export default function Loading() {
     : path.startsWith("/recipe/") ? "פותחת את המתכון"
     : path.startsWith("/search") || path.startsWith("/category/") ? "מוצאת מתכונים מתאימים"
     : path.startsWith("/holiday") ? "מסדרת את סעודות החג"
-    : path.startsWith("/profile/") ? "פותחת את ספר המתכונים"
+    : path.startsWith("/profile/") ? "טוענת את הפרופיל"
     : path.startsWith("/login") ? "מכינה את הכניסה לספר"
     : path.startsWith("/register") ? "מכינה מקום לספר שלכם"
     : "פותחת את ספר המתכונים";
