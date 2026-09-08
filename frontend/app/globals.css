@@ -3099,11 +3099,11 @@
 }
 
 /* Shared product language: warm paper, pill controls, and the auth panel. */
-button, [role="button"], input:not([type="checkbox"]):not([type="radio"]), select,
+button, [role="button"],
 .btn-block, .btn-outline, .btn-cream, .search-choice {
   border-radius: var(--r-pill);
 }
-textarea { border-radius: var(--r-md); }
+
 .experience-page .recipe-stepper > button,
 .experience-page .recipe-stepper > button span { border-radius: var(--r-pill); }
 .experience-hero,
@@ -3228,4 +3228,40 @@ html.logo-intro body::before { content: ""; position: fixed; inset: 0; backgroun
   .catalog-filter-count { display: grid; place-items: center; min-width: 26px; height: 26px; border-radius: 50%; background: #15382D; color: #E3CFB2; font-size: 13px; }
   .catalog-filters.grid { margin-top: 18px; padding-top: 18px; border-top: 1px solid #8B9A7F; }
   .catalog-filters label:last-child { grid-column: 1 / -1; }
+}
+
+/* Text-entry fields share one straight underline across every page. */
+:root { --field-focus: #C05E82; }
+:is(input:not([type]), input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea, select) {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-bottom: 2px solid rgba(83, 107, 88, 0.55) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transition: border-color 180ms ease;
+}
+:is(input:not([type]), input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea, select):is(:focus, :focus-visible) {
+  border-bottom-color: var(--field-focus) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+:is(.assistant-composer, .search-composer, .hero-search) {
+  border: 0 !important;
+  border-bottom: 2px solid rgba(83, 107, 88, 0.55) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+:is(.assistant-composer, .search-composer, .hero-search):focus-within {
+  border-bottom-color: var(--field-focus) !important;
+  transform: none !important;
+}
+:is(.assistant-composer, .search-composer, .hero-search) input {
+  border-bottom: 0 !important;
+}
+.assistant-composer { --field-focus: #E99AB6; }
+:is(input, textarea, select)[aria-invalid="true"] { border-bottom-color: #BE4455 !important; }
+@media (prefers-reduced-motion: reduce) {
+  input, textarea, select { transition: none !important; }
 }
