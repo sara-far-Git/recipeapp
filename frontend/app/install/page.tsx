@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import Mark from "@/components/ui/Mark";
 import { Download, Share, Plus, Smartphone, Monitor, Check } from "lucide-react";
 
-/* The signed Android build, published as a release on the project's GitHub.
-   Kept off this site on purpose: it is tens of megabytes, and a file that
-   size in the repository would ride along in every deploy. */
-const APK_URL = "https://github.com/sara-far-Git/recipeapp/releases/latest/download/recipespace.apk";
+
 import Logo from "@/components/brand/Logo";
 
 export default function InstallPage() {
@@ -127,26 +124,13 @@ export default function InstallPage() {
                   <p className="text-xs text-bark-200">אפליקציה מלאה, לא דרך הדפדפן</p>
                 </div>
               </div>
-              <a
-                href={APK_URL}
-                className="w-full btn-block flex items-center justify-center gap-2"
-                /* A cross-origin download attribute is ignored, so the name
-                   comes from the file itself rather than from here. */
-                rel="noopener">
+              <button type="button" disabled
+                className="w-full btn-block flex items-center justify-center gap-2 cursor-not-allowed">
                 <Download className="w-5 h-5" />
-                הורדת האפליקציה
-              </a>
-              <div className="space-y-3 mt-4">
-                <Step n={1} text="פתחו את הקובץ שירד" />
-                <Step
-                  n={2}
-                  text={'אנדרואיד ישאל אם להתקין מ"מקור לא מוכר" — מאשרים'}
-                />
-                <Step n={3} text="האפליקציה תופיע בין שאר האפליקציות" />
-              </div>
+                הורדה לאנדרואיד — בקרוב
+              </button>
               <p className="text-xs text-bark-200 mt-4 leading-relaxed">
-                ההתקנה הזאת לא עוברת דרך חנות Play, ולכן אנדרואיד מבקש אישור
-                פעם אחת. עדכון מגיע בהורדה מחדש מכאן.
+                האפליקציה לאנדרואיד תהיה זמינה בהמשך. בינתיים אפשר להוסיף את האתר למסך הבית.
               </p>
             </div>
           )}

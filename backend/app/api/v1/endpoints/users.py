@@ -12,6 +12,14 @@ from app.schemas.recipe import RecipeListItem
 router = APIRouter(prefix="/users", tags=["users"])
 
 
+def _public_user(db, username):
+    from app.core.attribution import hidden_account
+    if username.startswith("community-") and username[10:].isdigit():
+        user = db.query(User).filter(User.id == int(username[10:])).first()
+        return user if user and hidden_account(user) else None
+    return db.query(User).filter(User.username == username).first()
+
+
 def _enrich_user(user: User) -> User:
     user.followers_count = len(user.followers)
     user.following_count = len(user.following)
@@ -46,7 +54,7 @@ def get_user_profile(
     username: str,
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.username == username).first()
+    user = _public_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     _enrich_user(user)
@@ -61,7 +69,7 @@ def get_user_recipes(
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
-    user = db.query(User).filter(User.username == username).first()
+    user = _public_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -128,7 +136,7 @@ def toggle_follow(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    target = db.query(User).filter(User.username == username).first()
+    target = _public_user(db, username)
     if not target:
         raise HTTPException(status_code=404, detail="User not found")
     if target.id == current_user.id:
@@ -154,7 +162,7 @@ def get_followers(
     username: str,
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.username == username).first()
+    user = _public_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     for f in user.followers:
@@ -167,7 +175,7 @@ def get_following(
     username: str,
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.username == username).first()
+    user = _public_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     for f in user.following:

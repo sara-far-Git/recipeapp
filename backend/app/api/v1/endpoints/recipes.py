@@ -1,3 +1,4 @@
+from app.core.attribution import can_set_chef_name
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
@@ -140,12 +141,15 @@ def create_recipe(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    if data.chef_name and not can_set_chef_name(current_user):
+        raise HTTPException(status_code=403, detail="Custom chef credit is not enabled for this account")
     ALLOWED_PUBLISHERS = {"שרי פרקש", "רבקי פרקש"}
     is_published = current_user.full_name in ALLOWED_PUBLISHERS
 
     recipe = Recipe(
         author_id=current_user.id,
         title=data.title,
+        chef_name=data.chef_name,
         description=data.description,
         image_url=data.image_url,
         prep_time_minutes=data.prep_time_minutes,
@@ -183,6 +187,8 @@ def update_recipe(
         raise HTTPException(status_code=403, detail="Not your recipe")
 
     update_data = data.model_dump(exclude_unset=True)
+    if "chef_name" in update_data and not can_set_chef_name(current_user):
+        raise HTTPException(status_code=403, detail="Custom chef credit is not enabled for this account")
     if "ingredients" in update_data and update_data["ingredients"] is not None:
         update_data["ingredients"] = [ing.model_dump() if hasattr(ing, "model_dump") else ing for ing in update_data["ingredients"]]
     if "instructions" in update_data and update_data["instructions"] is not None:

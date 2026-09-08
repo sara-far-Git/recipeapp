@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi, suggestApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/recipe/RecipeCard";
+import ErrorNotice from "@/components/ui/ErrorNotice";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
 import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
@@ -48,6 +49,9 @@ function SearchPageContent() {
   const [kosherType, setKosherType] = useState("");
   const [maxPrepTime, setMaxPrepTime] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+  const requestVersion = useRef(0);
+  const [searchError, setSearchError] = useState("");
+  const [suggestError, setSuggestError] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -59,6 +63,8 @@ function SearchPageContent() {
   const [aiSuggestions, setAiSuggestions] = useState<any[] | null>(null);
 
   const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number, cat: string) => {
+    const version = ++requestVersion.current;
+    setSearchError("");
     setLoading(true);
     setSearched(true);
     try {
@@ -69,9 +75,15 @@ function SearchPageContent() {
       if (time > 0) params.max_prep_time = time;
       if (cat) params.category = cat;
       const { data } = await searchApi.search(params);
-      setResults(data);
-    } catch {}
-    setLoading(false);
+      if (version === requestVersion.current) setResults(data);
+    } catch {
+      if (version === requestVersion.current) {
+        setResults([]);
+        setSearchError("לא הצלחנו לטעון את תוצאות החיפוש. נסו שוב.");
+      }
+    } finally {
+      if (version === requestVersion.current) setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -80,18 +92,24 @@ function SearchPageContent() {
     const cat = searchParams.get("category") || "";
     setQuery(q);
     setActiveCategory(cat);
-    if (q.length >= 2 || cat) doSearch(q, "", "", 0, cat);
-  }, [searchParams, doSearch, authLoading]);
+
+  }, [searchParams, authLoading]);
 
   useEffect(() => {
     if (authLoading) return;
-    const timer = setTimeout(() => {
-      if (query.length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory) {
-        doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory);
-      }
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch, authLoading]);
+    ++requestVersion.current;
+    const hasQuery = query.trim().length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory;
+    if (!hasQuery || ingredientMode) {
+      setLoading(false);
+      setResults([]);
+      setSearchError("");
+      setSearched(false);
+      return;
+    }
+    setLoading(true);
+    const timer = setTimeout(() => doSearch(query.trim(), difficulty, kosherType, maxPrepTime, activeCategory), 400);
+    return () => { clearTimeout(timer); ++requestVersion.current; };
+  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch, authLoading, ingredientMode]);
 
   const hasActiveFilters = Boolean(difficulty || kosherType || maxPrepTime > 0);
   const activeFilterCount = [activeCategory, difficulty, kosherType, maxPrepTime > 0].filter(Boolean).length;
@@ -111,7 +129,7 @@ function SearchPageContent() {
     setIngredientMode(false);
     setQuery(q);
     setActiveCategory("");
-    doSearch(q, difficulty, kosherType, maxPrepTime, "");
+
   };
   const addIngredientTag = (raw = ingredientInput) => {
     const t = raw.trim();
@@ -122,17 +140,18 @@ function SearchPageContent() {
 
   const searchByIngredients = async () => {
     if (ingredientTags.length === 0) return;
+    setSuggestError("");
     setSuggestLoading(true);
     setSuggestions(null);
     setAiSuggestions(null);
     try {
       const { data } = await suggestApi.fromIngredients(ingredientTags);
       setSuggestions(data);
-    } catch {}
+    } catch { setSuggestError("לא הצלחנו לבדוק את המצרכים כרגע. נסו שוב."); }
     try {
       const { data } = await suggestApi.aiGenerate(ingredientTags);
       setAiSuggestions(data.suggestions);
-    } catch {}
+    } catch { setSuggestError("ההצעות הנוספות אינן זמינות כרגע. אפשר לנסות שוב."); }
     setSuggestLoading(false);
   };
 
@@ -385,6 +404,7 @@ function SearchPageContent() {
         </div>
       )}
 
+      {ingredientMode && suggestError && <ErrorNotice message={suggestError} onRetry={searchByIngredients} />}
       {ingredientMode ? (
         suggestions && suggestions.length > 0 ? (
           <div>
@@ -400,9 +420,11 @@ function SearchPageContent() {
         ) : null
       ) : loading ? (
         <RecipeLoading label="מוצאת לך רעיונות" kind="search" />
+      ) : searchError ? (
+        <ErrorNotice message={searchError} onRetry={() => doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory)} />
       ) : results.length > 0 ? (
         <div>
-          <p className="text-sm text-bark-200 mb-5">{results.length} מתכונים</p>
+          <p className="text-sm text-bark-200 mb-5">{results.length === 1 ? "מתכון אחד" : `${results.length} מתכונים`}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {results.map((r, i) => (
               <div key={r.id} className="animate-slide-up" style={{ animationDelay: `${i * 40}ms` }}>
@@ -414,7 +436,7 @@ function SearchPageContent() {
       ) : searched ? (
         <EmptyState title="לא נמצאו מתכונים" onReset={clearAll} icon={activeCategory} />
       ) : (
-        <EmptyState title="בחרו קטגוריה או חיפוש מהיר" action={false} />
+        <EmptyState title="בחרו קטגוריה או חיפוש מהיר" hint="אפשר גם להקליד שם מתכון בשדה החיפוש." action={false} />
       )}
       </div>
     </PageFrame>
@@ -458,11 +480,13 @@ function FilterRow({
 
 function EmptyState({
   title,
+  hint = "נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.",
   action = true,
   onReset,
   icon,
 }: {
   title: string;
+  hint?: string;
   action?: boolean;
   onReset?: () => void;
   /** Category whose box to show; anything else shows the recipe book. */
@@ -472,14 +496,14 @@ function EmptyState({
     <div className="card-surface p-8 sm:p-10 text-center animate-fade-up group">
       <Mark name="search" className="w-32 mx-auto mb-4" sizes="128px" decorative />
       <p className="section-title text-bark-500 mb-2">{title}</p>
-      <p className="text-bark-300 text-sm mb-6">נסו מילה אחרת, מצרך אחר או קטגוריה קרובה.</p>
+      <p className="text-bark-300 text-sm mb-6">{hint}</p>
       {onReset ? (
         <button type="button" onClick={onReset} className="btn-outline inline-flex">
           איפוס חיפוש
         </button>
       ) : action && (
-        <Link href="/#categories" className="btn-outline inline-flex">
-          לכל הקטגוריות
+        <Link href="/recipes" className="btn-outline inline-flex">
+          לכל המתכונים
         </Link>
       )}
     </div>

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from datetime import datetime
 from app.models.recipe import DifficultyLevel, KosherType
@@ -21,7 +21,18 @@ class Instruction(BaseModel):
     text: str
 
 
-class RecipeCreate(BaseModel):
+class RecipeCredit(BaseModel):
+    chef_name: Optional[str] = Field(default=None, max_length=100)
+
+    @field_validator("chef_name")
+    @classmethod
+    def normalize_credit(cls, value):
+        from app.core.attribution import hidden_credit
+        value = (value or "").strip()
+        return None if not value or hidden_credit(value) else value
+
+
+class RecipeCreate(RecipeCredit):
     title: str
     description: Optional[str] = None
     image_url: Optional[str] = None
@@ -36,7 +47,7 @@ class RecipeCreate(BaseModel):
     is_scanned: bool = False
 
 
-class RecipeUpdate(BaseModel):
+class RecipeUpdate(RecipeCredit):
     title: Optional[str] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
@@ -51,7 +62,7 @@ class RecipeUpdate(BaseModel):
     is_published: Optional[bool] = None
 
 
-class RecipeResponse(BaseModel):
+class RecipeResponse(RecipeCredit):
     id: int
     title: str
     description: Optional[str]
@@ -82,7 +93,7 @@ class RecipeResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class RecipeListItem(BaseModel):
+class RecipeListItem(RecipeCredit):
     id: int
     title: str
     description: Optional[str]

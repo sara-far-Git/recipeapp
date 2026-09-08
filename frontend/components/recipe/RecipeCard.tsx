@@ -1,5 +1,6 @@
 "use client";
 
+import { chefName } from "@/lib/attribution";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Users, Leaf, ChefHat, Trash2 } from "lucide-react";
@@ -138,6 +139,7 @@ function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
             </h3>
           )}
 
+          {chefName(recipe) && <p className="text-sm font-bold text-bark-300 mt-2">{chefName(recipe)}</p>}
           {recipe.description && (
             <p className={cn("line-clamp-2 text-bark-200 text-[14px] leading-relaxed", hasImage && "mt-2")}>
               {recipe.description}

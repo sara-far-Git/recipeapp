@@ -1,3 +1,4 @@
+import { publicAttribution } from "./attribution";
 import axios, { type AxiosRequestConfig } from "axios";
 import { mergeRecipesById, recipeMatchesSearch } from "./recipeSearch";
 
@@ -34,7 +35,7 @@ function cachedGet(url: string, params?: Record<string, any>, ttlMs = 30_000): P
   if (hit && hit.expires > Date.now()) return Promise.resolve(hit.data);
   const inflight = _inflight.get(key);
   if (inflight) return inflight;
-  const promise = api.get(url, { params })
+  const promise = api.get(url, { params, timeout: 20000 })
     .then((res) => { _getCache.set(key, { data: res, expires: Date.now() + ttlMs }); _inflight.delete(key); return res; })
     .catch((err) => { _inflight.delete(key); throw err; });
   _inflight.set(key, promise);
@@ -85,7 +86,10 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (!res.config.url?.startsWith("/auth/") && res.config.url !== "/users/me") res.data = publicAttribution(res.data);
+    return res;
+  },
   (error) => {
     if (
       error.response?.status === 401 &&

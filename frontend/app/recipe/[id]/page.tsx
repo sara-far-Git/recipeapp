@@ -7,6 +7,7 @@ import Link from "next/link";
 import { recipesApi, shoppingApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
+import { chefName, hiddenAuthor } from "@/lib/attribution";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import StarRating from "@/components/ui/StarRating";
 import PageFrame from "@/components/ui/PageFrame";
@@ -15,7 +16,7 @@ import Tip from "@/components/ui/Tip";
 import { Clock, Users, Minus, Plus, CookingPot, Check, Flag, Send, ShoppingCart, Star, X, Trash2, Timer, ChefHat } from "lucide-react";
 import Symbol from "@/components/ui/Symbol";
 
-const HIDDEN_AUTHORS = new Set(["שרי פרקש", "רבקי פרקש"]);
+
 import { cn } from "@/lib/utils";
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
@@ -215,7 +216,8 @@ export default function RecipeDetailPage() {
   );
   }
 
-  const hideAuthor = HIDDEN_AUTHORS.has(recipe.author?.full_name);
+  const publicChef = chefName(recipe);
+  const hideAuthor = !publicChef;
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const currentServings = Math.round(recipe.servings * servingMultiplier);
   const statsColumns = totalTime > 0 ? "grid-cols-3" : "grid-cols-2";
@@ -433,7 +435,7 @@ export default function RecipeDetailPage() {
   {/* Meta eyebrow */}
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
   <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500">
-  {!hideAuthor && <>{recipe.author.full_name || recipe.author.username}</>}
+  {!hideAuthor && <>{publicChef}</>}
   {!hideAuthor && totalTime > 0 && <span className="text-bark-200 font-normal">·</span>}
   {totalTime > 0 && <>{totalTime} דק׳</>}
   {recipe.kosher_type && <><span className="text-bark-200 font-normal">·</span>{kosherLabels[recipe.kosher_type]}</>}
@@ -459,7 +461,7 @@ export default function RecipeDetailPage() {
 
   {/* Action row: author + like/save/share */}
   <div className="flex items-center justify-between mb-6 pb-6 animate-fade-up" style={{ borderBottom: "1px solid rgba(39,94,80,0.12)", animationDelay: "100ms" }}>
-  {hideAuthor ? <div /> : (
+  {hideAuthor ? <div /> : recipe.chef_name || hiddenAuthor(recipe.author) ? <p className="font-bold text-bark-500">{publicChef}</p> : (
   <Link href={`/profile/${recipe.author.username}`}
   className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
   <div className="w-9 h-9 flex items-center justify-center text-cream-50 font-bold text-sm"
@@ -467,7 +469,7 @@ export default function RecipeDetailPage() {
   {recipe.author.username[0].toUpperCase()}
   </div>
   <div>
-  <p className="text-sm font-semibold text-bark-500">{recipe.author.full_name || recipe.author.username}</p>
+  <p className="text-sm font-semibold text-bark-500">{publicChef}</p>
   <p className="text-xs text-bark-200">@{recipe.author.username}</p>
   </div>
   </Link>
@@ -628,7 +630,7 @@ export default function RecipeDetailPage() {
   {comments.map((comment: any) => (
   <div key={comment.id} className="card-surface p-4">
   <div className="flex items-center justify-between mb-2">
-  <Link href={`/profile/${comment.author.username}`}
+  <Link href={hiddenAuthor(comment.author) ? "/recipes" : `/profile/${comment.author.username}`}
   className="text-sm font-semibold text-cinnamon-500 hover:text-cinnamon-600 transition-colors inline-flex items-center min-h-[24px]">
   {comment.author.full_name || comment.author.username}
   </Link>

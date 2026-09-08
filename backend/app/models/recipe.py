@@ -29,6 +29,7 @@ class Recipe(Base):
 
     # Step 1 - Metadata
     title = Column(String(200), nullable=False, index=True)
+    chef_name = Column(String(100), nullable=True)
     description = Column(Text, nullable=True)
     image_url = Column(String(500), nullable=True)
     prep_time_minutes = Column(Integer, nullable=True)

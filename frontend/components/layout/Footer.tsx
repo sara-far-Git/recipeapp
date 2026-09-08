@@ -6,10 +6,6 @@ import { Download, Share, Plus, X } from "lucide-react";
 import { usePWA } from "@/lib/usePWA";
 import Logo from "@/components/brand/Logo";
 
-/* The signed Android build, published as a release on the project's GitHub
-   rather than carried in this repository — it is tens of megabytes. */
-const APK_URL = "https://github.com/sara-far-Git/recipeapp/releases/latest/download/recipespace.apk";
-
 export default function Footer() {
   const { canInstall, install, isIOS } = usePWA();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
@@ -58,12 +54,10 @@ export default function Footer() {
             </nav>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
-              {/* The Android build itself. Every other route here installs the
-                  site as a web app; this one is the app. */}
-              <a href={APK_URL} className="btn-cream" rel="noopener">
+              <button type="button" disabled className="btn-cream cursor-not-allowed">
                 <Download className="w-4 h-4 ml-2" />
-                הורדה לאנדרואיד
-              </a>
+                הורדה לאנדרואיד — בקרוב
+              </button>
               {canInstall ? (
                 <button onClick={handleInstall} className="btn-cream">
                   <Download className="w-4 h-4 ml-2" />

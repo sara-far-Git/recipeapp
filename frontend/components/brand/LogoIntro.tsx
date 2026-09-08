@@ -46,6 +46,12 @@ export default function LogoIntro() {
       if (finished.current) return;
       finished.current = true;
       sessionStorage.setItem(KEY, "1");
+      // Keep the intro covering the current route until the home page opens.
+      if (window.location.pathname !== "/" || window.location.search || window.location.hash) {
+        window.location.replace("/");
+        return;
+      }
+      window.scrollTo(0, 0);
       unlock();
       setLeaving(true);
       window.setTimeout(() => setGone(true), EXIT_DURATION_MS);

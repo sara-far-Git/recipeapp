@@ -1,3 +1,4 @@
+import { chefName } from "@/lib/attribution";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SITE_URL, apiGetResult } from "@/lib/site";
@@ -17,6 +18,7 @@ type Recipe = {
   category?: string | null;
   ingredients?: Ingredient[];
   instructions?: Instruction[];
+  chef_name?: string | null;
   author?: { full_name?: string | null; username?: string } | null;
   average_rating?: number | null;
   ratings_count?: number | null;
@@ -74,8 +76,8 @@ function RecipeJsonLd({ recipe }: { recipe: Recipe }) {
     name: recipe.title,
     description: recipe.description || undefined,
     image: absolute(recipe.image_url) || undefined,
-    author: recipe.author?.full_name
-      ? { "@type": "Person", name: recipe.author.full_name }
+    author: chefName(recipe)
+      ? { "@type": "Person", name: chefName(recipe) }
       : undefined,
     datePublished: recipe.created_at,
     recipeCategory: recipe.category || undefined,

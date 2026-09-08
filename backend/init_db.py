@@ -25,6 +25,7 @@ Base.metadata.create_all(bind=engine)
 # columns) and on databases that already have them.
 # ---------------------------------------------------------------------------
 SOFT_MIGRATIONS = [
+    ("recipes", "chef_name", "ALTER TABLE recipes ADD COLUMN chef_name VARCHAR(100)"),
     # (table, column, ddl_to_add)
     ("users", "auth_provider",
      "ALTER TABLE users ADD COLUMN auth_provider VARCHAR(20) NOT NULL DEFAULT 'local'"),

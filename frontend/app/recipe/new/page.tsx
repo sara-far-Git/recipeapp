@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Overlay from "@/components/ui/Overlay";
+import { canEditChef } from "@/lib/attribution";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -71,6 +72,7 @@ export default function NewRecipePage() {
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState("");
 
+  const [chefCredit, setChefCredit] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -302,6 +304,7 @@ export default function NewRecipePage() {
   setSubmitting(true);
   try {
   const { data } = await recipesApi.create({
+  ...(canEditChef(user) ? { chef_name: chefCredit.trim() || null } : {}),
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
@@ -516,6 +519,11 @@ export default function NewRecipePage() {
   {/* Step 1 */}
   {step === 1 && (
   <div className="space-y-6 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
+  {canEditChef(user) && <div className="field-row">
+    <label htmlFor="chef-name" className="input-label">שם השף</label>
+    <input id="chef-name" value={chefCredit} onChange={(e) => setChefCredit(e.target.value)} maxLength={100} className="input-dark" placeholder="השם שיופיע לצד המתכון" />
+    <p className="text-sm text-bark-200 mt-2">אפשר להשאיר ריק כדי להציג את המתכון ללא קרדיט.</p>
+  </div>}
   <div className="field-row">
   <label className="input-label">כותרת המתכון *</label>
   <input value={title} onChange={(e) => setTitle(e.target.value)}

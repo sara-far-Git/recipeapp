@@ -8,6 +8,7 @@ export default function NavigationFeedback() {
   const search = useSearchParams().toString();
   const [navigating, setNavigating] = useState(false);
   const startedAt = useRef(0);
+  const startedRoute = useRef("");
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
@@ -21,6 +22,7 @@ export default function NavigationFeedback() {
       if (destination.origin !== window.location.origin) return;
       if (destination.pathname === window.location.pathname && destination.search === window.location.search) return;
 
+      startedRoute.current = window.location.pathname + window.location.search;
       startedAt.current = Date.now();
       setNavigating(true);
     };
@@ -31,13 +33,19 @@ export default function NavigationFeedback() {
 
   useEffect(() => {
     if (!navigating) return;
+    const timeout = window.setTimeout(() => setNavigating(false), 15000);
+    return () => window.clearTimeout(timeout);
+  }, [navigating]);
+
+  useEffect(() => {
+    if (!navigating || pathname + (search ? `?${search}` : "") === startedRoute.current) return;
     const elapsed = Date.now() - startedAt.current;
     const timer = window.setTimeout(() => setNavigating(false), Math.max(0, 220 - elapsed));
     return () => window.clearTimeout(timer);
   }, [pathname, search, navigating]);
 
   return (
-    <div className={`route-progress${navigating ? " is-active" : ""}`} aria-label="טעינת עמוד" aria-live="polite">
+    <div className={`route-progress${navigating ? " is-active" : ""}`} aria-hidden={!navigating} aria-label="טעינת עמוד" aria-live="polite">
       <span />
       <i aria-hidden="true" />
     </div>

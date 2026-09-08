@@ -11,7 +11,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
-import WritingCard from "@/components/home/WritingCard";
 import HeroClock from "@/components/home/HeroClock";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -71,7 +70,7 @@ const SCENES = [
 /** The first scene greets a signed-in cook by what they came to do. */
 const HERO_TITLE_SIGNED_IN = (
   <>
-    מה בא לך
+    מה תרצי
     <br />
     לבשל היום?
   </>
@@ -191,11 +190,12 @@ export default function FeedPage() {
      glance; this is one rhythm instead — a headline and the mark that belongs
      with it, crossfading. */
   const [scene, setScene] = useState(0);
+  const [scenePaused, setScenePaused] = useState(false);
   useEffect(() => {
-    if (!typingWanted) return;
+    if (!typingWanted || scenePaused || composerFocused) return;
     const t = window.setInterval(() => setScene((n) => (n + 1) % SCENES.length), SCENE_MS);
     return () => window.clearInterval(t);
-  }, [typingWanted]);
+  }, [typingWanted, scenePaused, composerFocused, scene]);
 
   /* The day of the week, decided in the browser. Rendered on the server it is
      the server's day, in the server's timezone — which is both a different
@@ -318,25 +318,27 @@ export default function FeedPage() {
               </Link>
             </div>
           </Reveal>
-          <div className="hero-marks">
-            {SCENES.map((s, i) => (
-              <div key={s.mark} className={cn("hero-scene", scene === i && "is-on")}>
-                {s.mark === "box" ? (
-                  <WritingCard />
-                ) : s.mark === "clock" ? (
-                  <HeroClock />
-                ) : (
-                  <Image
-                    src={`/marks/${s.mark}.png`}
-                    alt=""
-                    aria-hidden="true"
-                    width={1240}
-                    height={1240}
-                    className="hero-mark-art"
-                  />
-                )}
-              </div>
-            ))}
+          <div className="hero-marks" onMouseEnter={() => setScenePaused(true)} onMouseLeave={() => setScenePaused(false)}>
+            <div className="hero-artwork" aria-hidden="true">
+              {SCENES.map((s, i) => (
+                <div key={s.mark} className={cn("hero-scene hero-art-scene", scene === i && "is-on")}>
+                  {s.mark === "clock" ? <HeroClock /> : (
+                    <Image src={`/marks/${s.mark === "box" ? "collection" : s.mark}.png`}
+                      alt="" width={1254} height={1254}
+                      sizes="(max-width: 639px) 180px, (max-width: 899px) 240px, 480px"
+                      priority={i === 0} className="hero-mark-art" />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="hero-art-controls" role="group" aria-label="בחירת איור ונושא"
+              onFocus={() => setScenePaused(true)} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setScenePaused(false); }}>
+              {["ספר המתכונים", "זמן לבשל", "מה יש במטבח", "המתכונים ששמרתם"].map((label, i) => (
+                <button type="button" key={label} aria-label={label} aria-pressed={scene === i}
+                  className={cn("hero-art-dot", scene === i && "is-active")}
+                  onClick={() => setScene(i)}><span /></button>
+              ))}
+            </div>
           </div>
         </div>
       </CinematicSection>

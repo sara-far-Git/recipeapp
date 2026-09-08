@@ -5,6 +5,7 @@ import Overlay from "@/components/ui/Overlay";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { recipesApi, uploadApi } from "@/lib/api";
+import { canEditChef } from "@/lib/attribution";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import {
   Upload, Plus, Trash2, GripVertical, ArrowLeft, ArrowRight,
@@ -49,6 +50,7 @@ export default function EditRecipePage() {
   const [imageError, setImageError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  const [chefCredit, setChefCredit] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -67,6 +69,7 @@ export default function EditRecipePage() {
   try {
   const { data } = await recipesApi.get(Number(params.id));
   if (user && data.author.id !== user.id) { router.push(`/recipe/${params.id}`); return; }
+  setChefCredit(data.chef_name || "");
   setTitle(data.title || "");
   setDescription(data.description || "");
   setImageUrl(data.image_url || "");
@@ -143,6 +146,7 @@ export default function EditRecipePage() {
   setSubmitting(true);
   try {
   await recipesApi.update(Number(params.id), {
+  ...(canEditChef(user) ? { chef_name: chefCredit.trim() || null } : {}),
   title, description: description || null, image_url: imageUrl || null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
@@ -210,6 +214,11 @@ export default function EditRecipePage() {
   {/* Step 1 */}
   {step === 1 && (
   <div className="space-y-6 animate-slide-up opacity-0" style={{ animationFillMode: "forwards" }}>
+  {canEditChef(user) && <div className="field-row">
+    <label htmlFor="chef-name" className="input-label">שם השף</label>
+    <input id="chef-name" value={chefCredit} onChange={(e) => setChefCredit(e.target.value)} maxLength={100} className="input-dark" placeholder="השם שיופיע לצד המתכון" />
+    <p className="text-sm text-bark-200 mt-2">אפשר להשאיר ריק כדי להציג את המתכון ללא קרדיט.</p>
+  </div>}
   <div className="field-row">
   <label className="input-label">כותרת המתכון *</label>
   <input value={title} onChange={(e) => setTitle(e.target.value)}

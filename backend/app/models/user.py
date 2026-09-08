@@ -14,6 +14,11 @@ class Follow(Base):
 
 
 class User(Base):
+    @property
+    def attribution_hidden(self):
+        from app.core.attribution import hidden_account
+        return hidden_account(self)
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

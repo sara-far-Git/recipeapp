@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 from typing import Optional
 from datetime import datetime
 import re
@@ -32,6 +32,21 @@ class UserUpdate(BaseModel):
 
 
 class UserPublic(BaseModel):
+    attribution_hidden: bool = False
+
+    @model_validator(mode="after")
+    def public_identity(self):
+        from app.core.attribution import hidden_credit
+        if isinstance(self, UserMe):
+            return self
+        if self.attribution_hidden or hidden_credit(self.full_name) or hidden_credit(self.username):
+            self.attribution_hidden = True
+            self.full_name = "מערכת האתר"
+            self.username = f"community-{self.id}"
+            self.bio = None
+            self.avatar_url = None
+        return self
+
     id: int
     username: str
     full_name: Optional[str]

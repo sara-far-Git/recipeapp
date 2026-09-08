@@ -14,7 +14,7 @@ export default function LoaderPreviewPage() {
       <div className="max-w-4xl mx-auto grid gap-8 sm:grid-cols-2">
         {KINDS.map((kind) => (
           <div key={kind.id} className="text-center">
-            <RecipeLoading kind={kind.id} label={kind.label} />
+            <RecipeLoading kind={kind.id}  />
             <p className="mt-2 text-sm font-bold" style={{ color: "#1E4D45" }}>{kind.label}</p>
           </div>
         ))}

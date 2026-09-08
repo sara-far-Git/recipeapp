@@ -54,7 +54,8 @@ def test_follow_toggle_and_cannot_follow_self(client, registered_user, publisher
     assert any(u["username"] == "tester" for u in followers.json())
 
     following = client.get("/api/v1/users/tester/following")
-    assert any(u["username"] == "sara_farkas" for u in following.json())
+    assert any(u["username"].startswith("community-") and u["attribution_hidden"] for u in following.json())
+    assert all(u["username"] != "sara_farkas" for u in following.json())
 
     off = client.post("/api/v1/users/sara_farkas/follow", headers=registered_user["auth_header"])
     assert off.json()["following"] is False

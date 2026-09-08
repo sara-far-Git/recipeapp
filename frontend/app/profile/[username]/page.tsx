@@ -52,7 +52,7 @@ function ProfilePageContent() {
     const load = async () => {
       try {
         const { data: profileData } = await usersApi.getProfile(username);
-        setProfile(profileData);
+        setProfile(isOwn ? { ...profileData, ...currentUser } : profileData);
         const { data: recipesData } = await usersApi.getRecipes(username);
         setRecipes(recipesData);
         if (isOwn) {
