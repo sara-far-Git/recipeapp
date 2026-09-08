@@ -31,14 +31,22 @@ function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
   const router = useRouter();
   const [liked, setLiked] = useState(recipe.is_liked);
   const [likesCount, setLikesCount] = useState(recipe.likes_count);
+  const [likePending, setLikePending] = useState(false);
+  const [likeError, setLikeError] = useState(false);
   const [likeAnim, setLikeAnim] = useState(false);
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
     if (!user) { router.push("/login"); return; }
+    if (likePending) return;
+    setLikePending(true);
+    setLikeError(false);
     setLikeAnim(true); setTimeout(() => setLikeAnim(false), 400);
-    const { data } = await recipesApi.toggleLike(recipe.id);
-    setLiked(data.liked); setLikesCount(data.likes_count);
+    try {
+      const { data } = await recipesApi.toggleLike(recipe.id);
+      setLiked(data.liked); setLikesCount(data.likes_count);
+    } catch { setLikeError(true); }
+    finally { setLikePending(false); }
   };
 
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
@@ -158,13 +166,16 @@ function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
             <button
               type="button"
               onClick={handleLike}
+              disabled={likePending}
+              aria-pressed={Boolean(liked)}
               aria-label={liked ? "בטלו לייק" : "אהבתי"}
-              className={cn("flex items-center gap-1.5 text-[13px] font-semibold transition-colors duration-300 min-h-[24px] px-1 -mx-1",
+              className={cn("flex items-center gap-1.5 text-[13px] font-semibold transition-colors duration-300 min-h-[44px] min-w-[44px] justify-center rounded-full px-2 -mx-1 disabled:opacity-50",
                 liked ? "text-cinnamon-500" : "text-bark-200 hover:text-cinnamon-500")}>
               <Symbol name="heart" className={cn("w-5 h-5", liked && "is-on", likeAnim && "scale-125")} />
               {likesCount}
             </button>
           </div>
+          {likeError && <p role="alert" className="text-xs text-bark-400 mt-2">הלייק לא נשמר. אפשר לנסות שוב.</p>}
       </div>
     </article>
     </div>

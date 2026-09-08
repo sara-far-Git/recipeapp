@@ -3214,3 +3214,18 @@ html.logo-intro body::before { content: ""; position: fixed; inset: 0; backgroun
   .home-page .assistant-suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
   .home-page .assistant-chip { text-align: center; }
 }
+
+/* Keep mobile browsing focused on recipes, with filters available on demand. */
+.catalog-filter-toggle { display: none; }
+.catalog-active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.catalog-active-filters button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; border-radius: 999px; background: #E3CFB2; color: #15382D; border: 1px solid #8B9A7F; font-size: 14px; font-weight: 700; }
+.catalog-active-filters .catalog-clear { background: transparent; border-color: transparent; text-decoration: underline; text-underline-offset: 4px; }
+.catalog-filters label { min-width: 0; font-size: 14px; }
+.catalog-filters select { min-height: 48px; padding-inline-end: 28px; font-size: 16px; border-radius: 999px; }
+@media (max-width: 639px) {
+  .catalog-filter-toggle { display: flex; width: 100%; align-items: center; gap: 10px; min-height: 44px; color: #15382D; font-weight: 700; text-align: start; }
+  .catalog-filter-toggle > svg:last-child { margin-inline-start: auto; transition: transform 180ms ease; }
+  .catalog-filter-count { display: grid; place-items: center; min-width: 26px; height: 26px; border-radius: 50%; background: #15382D; color: #E3CFB2; font-size: 13px; }
+  .catalog-filters.grid { margin-top: 18px; padding-top: 18px; border-top: 1px solid #8B9A7F; }
+  .catalog-filters label:last-child { grid-column: 1 / -1; }
+}

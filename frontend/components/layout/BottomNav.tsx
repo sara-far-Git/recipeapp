@@ -29,6 +29,7 @@ export default function BottomNav() {
 
   return (
   <nav
+  aria-label="ניווט במובייל"
   className="bottom-nav fixed bottom-0 inset-x-0 z-50 sm:hidden"
       style={{
         background: "rgba(11,42,32,0.96)",
@@ -53,7 +54,7 @@ export default function BottomNav() {
 
   if (item.special) {
   return (
-  <Link key={item.href} href={item.href} className="flex flex-col items-center -mt-5" aria-label={item.label}>
+  <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 -mt-3" aria-label={item.label} aria-current={active ? "page" : undefined}>
   <div
   className="flex items-center justify-center transition-transform duration-200 active:scale-90"
                   style={{
@@ -63,8 +64,9 @@ export default function BottomNav() {
                     background: "#2F6B5D",
                     boxShadow: "0 8px 20px -6px rgba(12,40,31,0.45)",
                   }}>
-                  <item.icon className="w-5 h-5 block text-forest-300" />
+                  <item.icon className="w-5 h-5 block text-cream-100" />
   </div>
+  <span className="text-[10px] font-bold text-forest-100">{item.label}</span>
   </Link>
   );
   }
@@ -73,6 +75,7 @@ export default function BottomNav() {
   <Link
   key={item.href}
   href={item.href}
+  aria-current={active ? "page" : undefined}
   className={cn(
                 "relative flex flex-col items-center gap-1 px-3 py-1.5 transition-all duration-300",
                 active ? "text-cinnamon-300" : "text-forest-100",
