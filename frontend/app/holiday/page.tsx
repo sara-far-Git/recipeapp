@@ -58,7 +58,7 @@ export default function HolidayPlanPage() {
   return (
     <PageFrame tone="forest" className="holiday-experience">
       <div className="holiday-board">
-        <header className="holiday-masthead animate-fade-up">
+        <header className="holiday-masthead experience-hero animate-fade-up">
           <p className="holiday-kicker">ראש השנה</p>
           <h1 className="display-lg">ארבע סעודות</h1>
           <p className="holiday-lead">

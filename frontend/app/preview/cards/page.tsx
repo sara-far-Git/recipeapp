@@ -137,7 +137,7 @@ export default function CardsPreview() {
       <section
         className="rounded-[var(--r-lg)] p-6 sm:p-9"
         style={{ background: "#1E4D45" }}>
-        <h2 className="section-title mb-5" style={{ color: "#FAF8F3" }}>
+        <h2 className="section-title mb-5" style={{ color: "#E3CFB2" }}>
           על ירוק
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-9">

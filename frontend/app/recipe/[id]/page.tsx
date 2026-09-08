@@ -12,7 +12,8 @@ import StarRating from "@/components/ui/StarRating";
 import PageFrame from "@/components/ui/PageFrame";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Tip from "@/components/ui/Tip";
-import { Heart, Bookmark, Clock, Users, Minus, Plus, CookingPot, Check, Flag, MessageCircle, Send, ShoppingCart, Share2, Star, X, Pencil, Trash2, Timer, ChefHat } from "lucide-react";
+import { Clock, Users, Minus, Plus, CookingPot, Check, Flag, Send, ShoppingCart, Star, X, Trash2, Timer, ChefHat } from "lucide-react";
+import Symbol from "@/components/ui/Symbol";
 
 const HIDDEN_AUTHORS = new Set(["שרי פרקש", "רבקי פרקש"]);
 import { cn } from "@/lib/utils";
@@ -226,7 +227,7 @@ export default function RecipeDetailPage() {
   const setTimer = (mins: number) => { setTimerRemaining(mins * 60); setTimerTotal(mins * 60); setTimerRunning(false); };
 
   return (
-  <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#E9EFEA" }}>
+  <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#D6C3A5" }}>
   <div className="max-w-2xl mx-auto px-4 py-6 pb-12">
 
   {/* Header */}
@@ -234,7 +235,7 @@ export default function RecipeDetailPage() {
   <h1 className="section-title flex-1 ml-4" style={{ color: "#275E50" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2 text-sm flex-shrink-0"
-  style={{ background: "#F4EEDF", color: "#275E50", border: "1px solid #D97757", borderRadius: 999 }}>
+  style={{ background: "#E3CFB2", color: "#275E50", border: "1px solid #D97757", borderRadius: 999 }}>
   יציאה ממצב הכנה
   </button>
   </div>
@@ -412,11 +413,11 @@ export default function RecipeDetailPage() {
   </Link>
 
   {/* Hero image */}
-  <div className="recipe-hero relative overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#F4EEDF" }}>
+  <div className="recipe-hero relative overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#E3CFB2" }}>
   {recipe.image_url ? (
   <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
   ) : (
-  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#F4EEDF" }}>
+  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#E3CFB2" }}>
   <span className="eyebrow">{recipe.category || "מתכון"}</span>
   <p className="card-title text-bark-500 text-center line-clamp-2">{recipe.title}</p>
   <span className="block h-px w-10" style={{ background: "#D97757" }} />
@@ -440,7 +441,7 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Title */}
-  <div className="text-center mb-5 animate-fade-up" style={{ animationDelay: "60ms" }}>
+  <div className="experience-hero text-center mb-5 animate-fade-up" style={{ animationDelay: "60ms" }}>
   <h1 className="display-lg text-bark-500 mb-3">
   {recipe.title}
   </h1>
@@ -474,21 +475,21 @@ export default function RecipeDetailPage() {
 
   <div className="flex items-center gap-1">
   <button onClick={toggleLike} aria-label={liked ? "ביטול לייק" : "אהבתי"} aria-pressed={liked} className="p-2.5  hover:bg-surface-200 transition-colors group">
-  <Heart className={cn("w-5 h-5 transition-all", liked ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
+  <Symbol name="heart" className={cn("w-6 h-6", liked && "is-on")} />
   </button>
   <span className="text-sm text-bark-300 min-w-[1.5rem]">{likesCount}</span>
   <button onClick={toggleSave} aria-label={saved ? "הסרה מהשמורים" : "שמירת המתכון"} aria-pressed={saved} className="p-2.5  hover:bg-surface-200 transition-colors group">
-  <Bookmark className={cn("w-5 h-5 transition-all", saved ? "fill-cinnamon-500 text-cinnamon-500" : "text-bark-200 group-hover:text-cinnamon-400")} />
+  <Symbol name="ribbon" className={cn("w-6 h-6", saved && "is-on")} />
   </button>
   <button onClick={handleShare} aria-label="שיתוף המתכון" className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-bark-400">
-  <Share2 className="w-5 h-5" />
+  <Symbol name="chat" className="w-6 h-6" />
   </button>
   {user?.id === recipe.author.id && (
   <>
   <Link href={`/recipe/${recipe.id}/edit`}
   aria-label="עריכת המתכון"
   className="p-2.5  hover:bg-surface-200 transition-colors text-bark-200 hover:text-cinnamon-500">
-  <Pencil className="w-5 h-5" />
+  <Symbol name="pen" className="w-6 h-6" />
   </Link>
   <button onClick={() => setConfirmDelete(true)} disabled={deleting} aria-label="מחיקת המתכון" title="מחיקת המתכון"
   className="p-2.5  hover:bg-red-50 transition-colors text-bark-200 hover:text-red-500">
@@ -531,12 +532,12 @@ export default function RecipeDetailPage() {
   <Tip text="בוחרים מצרכים מהמתכון והם נוספים לרשימת הקניות שלכם." place="bottom">
   <button onClick={openShoppingModal}
   className="flex flex-col items-center gap-2 py-4 w-full font-semibold text-sm btn-outline">
-  <ShoppingCart className="w-5 h-5" /> קניות
+  <Symbol name="pad" className="w-6 h-6" /> קניות
   </button>
   </Tip>
   <button onClick={handleShare}
   className="flex flex-col items-center gap-2 py-4 w-full font-semibold text-sm btn-outline">
-  <Share2 className="w-5 h-5" /> שיתוף
+  <Symbol name="chat" className="w-6 h-6" /> שיתוף
   </button>
   </div>
 
@@ -600,7 +601,7 @@ export default function RecipeDetailPage() {
   {/* Comments */}
   <section id="comments" className="scroll-mt-28 animate-fade-up" style={{ animationDelay: "200ms" }}>
   <h2 className="section-title text-bark-500 mb-5 flex items-center gap-2">
-  <MessageCircle className="w-5 h-5 text-cinnamon-500" />
+  <Symbol name="chat" className="w-6 h-6" />
   תגובות ({comments.length})
   </h2>
 

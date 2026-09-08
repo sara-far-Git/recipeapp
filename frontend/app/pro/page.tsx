@@ -71,7 +71,7 @@ export default function ProPage() {
       <section className="border-b border-bark-500/10 bg-forest-50">
         <div className="bleed-inner py-10 sm:py-14 lg:py-16">
           <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] gap-10 lg:gap-16 items-center">
-            <div className="animate-fade-up">
+            <div className="experience-hero animate-fade-up">
               <span className="eyebrow mb-5">
                 <span className="plus-badge text-cinnamon-500"><Sparkles className="w-3.5 h-3.5" strokeWidth={2.4} /></span>
                 Pro למי שמעלה הרבה מתכונים

@@ -105,7 +105,7 @@ export default function HolidayMealPage() {
   return (
     <PageFrame tone="forest" className="holiday-experience">
       <div className="holiday-board">
-        <header className="holiday-masthead animate-fade-up">
+        <header className="holiday-masthead experience-hero animate-fade-up">
           <Link href="/holiday" className="holiday-kicker holiday-kicker-link">
             ראש השנה
           </Link>

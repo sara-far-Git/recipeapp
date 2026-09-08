@@ -7,7 +7,7 @@
  * left out, since a phone's own gesture is the vertical one.
  */
 import { useEffect, useState } from "react";
-import { Image, Linking, Share, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import ThemedText from "@/components/ThemedText";
@@ -255,22 +255,10 @@ export function JoinPanel({ signedIn }: { signedIn: boolean }) {
 /**
  * The closing footer, as the site has it.
  *
- * The site's button there installs the site as an app. That has nothing to
- * offer someone already inside the app, so here the same button hands the
- * book's address to somebody else — which is the thing that button was
- * actually for.
+ * Without the site's install button: that button exists to get the app onto
+ * a phone, and everyone reading this is already on one.
  */
 export function FooterPanel() {
-  const share = async () => {
-    try {
-      await Share.share({
-        message: `ספר המתכונים — המקום שבו המתכונים של הבית נשמרים ונמצאים.\n${SITE_URL}`,
-      });
-    } catch {
-      // Nothing to say if the sheet was dismissed.
-    }
-  };
-
   return (
     <View style={[styles.panel, { backgroundColor: colors.bg.primary, alignItems: "center" }]}>
       <Image
@@ -296,14 +284,7 @@ export function FooterPanel() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={share} style={styles.footerBtn}>
-        <Ionicons name="share-outline" size={17} color={colors.bark[700]} />
-        <ThemedText bold style={{ color: colors.bark[700] }}>
-          שליחת האפליקציה
-        </ThemedText>
-      </TouchableOpacity>
-
-      <ThemedText variant="caption" onDark style={{ marginTop: 20, opacity: 0.7 }}>
+      <ThemedText variant="caption" onDark style={{ marginTop: 22, opacity: 0.7 }}>
         © 2026 ספר המתכונים — כל הזכויות שמורות
       </ThemedText>
     </View>
@@ -394,16 +375,6 @@ const styles = StyleSheet.create({
   footerMark: { width: 118, height: 42, marginBottom: 14 },
   footerBlurb: { opacity: 0.85, maxWidth: 320 },
   footerLinks: { flexDirection: "row-reverse", gap: 22, marginTop: 16 },
-  footerBtn: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 20,
-    paddingHorizontal: 24,
-    height: 48,
-    borderRadius: radius.full,
-    backgroundColor: colors.bg.card,
-  },
 
   joinTitle: { color: colors.bark[700], fontSize: 38, lineHeight: 42, marginTop: 8 },
   joinLead: { color: colors.bark[700], marginTop: 12, opacity: 0.9 },

@@ -10,9 +10,8 @@ import { LogIn, Plus, Search, ShoppingCart, User } from "lucide-react";
 
 const NAV_PAGES = [
   { href: "/", label: "בית" },
-  { href: "/search", label: "מתכונים" },
+  { href: "/recipes", label: "מתכונים" },
   { href: "/holiday", label: "תכנון חג" },
-  { href: "/#categories", label: "קטגוריות" },
 ];
 
 /** Only shown to whoever the server says runs the site. Hiding it is a
@@ -83,7 +82,7 @@ export default function Header() {
           background: open || scrolled ? "rgba(11, 42, 32, 0.98)" : "rgba(11, 42, 32, 0.94)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          borderBottom: "1px solid rgba(250,248,243,0.18)",
+          borderBottom: "1px solid rgba(227, 207, 178,0.18)",
           transition: "border-color 0.3s ease, background 0.3s ease",
         }}
       >

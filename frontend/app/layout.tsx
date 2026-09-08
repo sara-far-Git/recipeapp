@@ -59,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="he" dir="rtl">
+    <html lang="he" dir="rtl" suppressHydrationWarning>
       <body className="min-h-screen">
         <script
           dangerouslySetInnerHTML={{
@@ -68,6 +68,14 @@ export default function RootLayout({
                 var localPort = location.port ? ':' + location.port : '';
                 location.replace('http://localhost' + localPort + location.pathname + location.search + location.hash);
               }
+              try {
+                var previewIntro = new URLSearchParams(location.search).has('intro');
+                if (!matchMedia('(prefers-reduced-motion: reduce)').matches &&
+                    (previewIntro || sessionStorage.getItem('logo-intro-v16') !== '1')) {
+                  document.documentElement.classList.add('logo-intro');
+                  setTimeout(function() { document.documentElement.classList.remove('logo-intro'); }, 6000);
+                }
+              } catch (e) {}
               window.__pwaPrompt = null;
               window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();

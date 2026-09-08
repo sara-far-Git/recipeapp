@@ -144,10 +144,10 @@ function SearchPageContent() {
           <span className="plus-badge text-bark-500">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
           </span>
-          האוסף
+          חיפוש
         </span>
         <h1 className="display-lg text-bark-500">
-          {initialQ ? `«${initialQ}»` : "כל המתכונים"}
+          {initialQ ? `«${initialQ}»` : "מה מחפשים היום?"}
         </h1>
         <p className="text-bark-300 text-sm sm:text-base mt-3 max-w-xl">
           חפשו לפי שם מתכון, מצרך, קטגוריה או מה שיש בבית.

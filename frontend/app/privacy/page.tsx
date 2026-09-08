@@ -2,7 +2,7 @@ export default function PrivacyPage() {
   return (
   <div className="max-w-2xl mx-auto py-10">
   {/* Header */}
-  <div className="text-center mb-12">
+  <div className="experience-hero text-center mb-12">
         <span className="eyebrow mb-4 justify-center">
           <span className="plus-badge text-bark-500" aria-hidden="true">
             <svg viewBox="0 0 12 12" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M6 1v10M1 6h10" /></svg>

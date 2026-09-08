@@ -326,6 +326,7 @@ export default function NewRecipePage() {
   <Overlay className="bg-bark-600/90 backdrop-blur-sm" label="השף הדיגיטלי עובד">
   <RecipeLoading
     compact
+    kind="search"
     title="השף הדיגיטלי עובד"
     hint={transcribing ? "מתמלל את ההקלטה וממלא את המתכון..." : "מפענח את המתכון מהתמונה..."}
   />
@@ -533,7 +534,7 @@ export default function NewRecipePage() {
   <div>
   <label className="input-label mb-2">תמונה ראשית</label>
   {imageUrl ? (
-  <div className="relative  overflow-hidden aspect-video" style={{ background: "#F4EEDF" }}>
+  <div className="relative  overflow-hidden aspect-video" style={{ background: "#E3CFB2" }}>
   <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
   <button onClick={() => setImageUrl("")}
   aria-label="הסרת תמונת המתכון"

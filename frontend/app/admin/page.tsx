@@ -103,7 +103,7 @@ export default function AdminPage() {
   return (
     <PageFrame tone="sage">
       <div className="max-w-4xl mx-auto">
-        <header className="mb-9">
+        <header className="experience-hero mb-9">
           <span className="eyebrow mb-2">מאחורי הקלעים</span>
           <h1 className="display-md text-bark-500 leading-none">מספרי האתר</h1>
         </header>

@@ -26,45 +26,45 @@ const SCENES = [
     mark: "box",
     title: (
       <>
-        מה נכין
+        משהו טוב
         <br />
-        היום?
+        מתחיל כאן
       </>
     ),
-    prompt: "ספרי מה יש לך במטבח, למה יש לך חשק, או כמה זמן יש לך.",
+    prompt: "מוצאים מתכון, שומרים בספר וחוזרים אליו כשמתחשק לבשל.",
   },
   {
     mark: "clock",
     title: (
       <>
-        למתי את צריכה
+        קצת זמן,
         <br />
-        את זה?
+        אוכל טוב
       </>
     ),
-    prompt: "ארוחת ערב בעוד שעה, או משהו שנשאר טרי עד שבת.",
+    prompt: "גם ביום עמוס יש מקום לארוחה ביתית. בוחרים מתכון לפי הזמן שיש.",
   },
   {
     mark: "search",
     title: (
       <>
-        מה יש לך
+        מה שיש
         <br />
-        במקרר?
+        במטבח
       </>
     ),
-    prompt: "מצרך אחד מספיק. נמצא מה אפשר להכין ממנו כבר היום.",
+    prompt: "ביצים, ירקות או מה שנשאר מאתמול — מתחילים עם המצרכים שיש.",
   },
   {
     mark: "saved",
     title: (
       <>
-        וזה נשאר
+        אהבתם?
         <br />
-        אצלך
+        שומרים בספר
       </>
     ),
-    prompt: "כל מתכון ששמרת מחכה במקום אחד, גם בעוד שנה.",
+    prompt: "העוגה של שבת, המרק של הבית. כל המתכונים שלכם בספר אחד.",
   },
 ] as const;
 
@@ -158,6 +158,7 @@ const REASONS = [
 export default function FeedPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const [openReason, setOpenReason] = useState<number | null>(null);
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
@@ -343,11 +344,11 @@ export default function FeedPage() {
       <CinematicSection id="categories" tone="bark" index={1} enter="right" className="home-panel-categories">
         <div className="bleed-inner pt-10 pb-6 sm:pt-14 sm:pb-10">
           <Reveal>
-            <h2 className="display-lg" style={{ color: "#FAF8F3" }}>מה מבשלים<br />היום?</h2>
+            <h2 className="display-lg" style={{ color: "#E3CFB2" }}>מה מבשלים<br />היום?</h2>
           </Reveal>
           <Reveal delay={100}>
             <div className="flex items-center gap-3 mt-2 sm:mt-3 mb-3 sm:mb-5">
-              <span className="plus-badge" style={{ color: "#FAF8F3" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
+              <span className="plus-badge" style={{ color: "#E3CFB2" }}><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
               <p className="text-sm sm:text-lg" style={{ color: "#D5E4D7" }}>בחרו סוג מנה, קפצו ישר למתכונים, ותנו לרעב להחליט את השאר.</p>
             </div>
           </Reveal>
@@ -388,7 +389,7 @@ export default function FeedPage() {
             </Reveal>
 
             <div className="flex items-center gap-3">
-              <Link href="/search" className="text-sm font-bold text-bark-300 hover:text-cinnamon-500 inline-flex items-center min-h-[24px]">
+              <Link href="/recipes" className="text-sm font-bold text-bark-300 hover:text-cinnamon-500 inline-flex items-center min-h-[24px]">
                 לכל המתכונים
               </Link>
               <button onClick={() => setShowFilters(!showFilters)}
@@ -474,7 +475,7 @@ export default function FeedPage() {
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
-                      style={{ background: "#D97757", color: "#FAF8F3", borderRadius: 999 }}>
+                      style={{ background: "#D97757", color: "#E3CFB2", borderRadius: 999 }}>
                       {weekday}
                     </span>
                   </Link>
@@ -482,7 +483,7 @@ export default function FeedPage() {
 
                 <Reveal delay={140}>
                   <p className="eyebrow mb-4">המתכון של השבוע</p>
-                  <h2 className="display-lg" style={{ color: "#FAF8F3" }}>
+                  <h2 className="display-lg" style={{ color: "#E3CFB2" }}>
                     {editorPick.title}
                   </h2>
                   {editorPick.description && (
@@ -505,33 +506,23 @@ export default function FeedPage() {
           <Reveal>
             <h2 className="display-md text-bark-500">למה לשמור כאן?</h2>
             <div className="flex items-center gap-3 mt-4 mb-8">
-              <span className="plus-badge text-bark-500"><Plus className="w-4 h-4" strokeWidth={2.4} /></span>
               <p className="text-bark-300 text-[15px]">כי מתכון טוב לא צריך ללכת לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.</p>
             </div>
           </Reveal>
           <div style={{ borderTop: "1px solid rgba(39,94,80,0.14)" }}>
             {REASONS.map((r, i) => (
               <Reveal key={r.t} delay={(i % 3) * 60}>
-                <div
-                  className="row-wipe w-full text-right py-4 sm:py-5 flex items-start sm:items-center gap-5 sm:gap-8"
-                  style={{ borderBottom: "1px solid rgba(39,94,80,0.14)" }}
-                >
-                  <span className="home-index home-index--reason tabular text-cinnamon-500 pt-1 sm:pt-0">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-base sm:text-lg font-extrabold text-bark-500">
-                    {r.t}
-                  </span>
-                  <span className="hidden sm:block flex-1 text-[14px] text-bark-300 leading-relaxed">
-                    {r.d}
-                  </span>
-                  <span className="plus-badge mr-auto text-bark-500 hidden sm:inline-flex">
-                    <Plus className="w-4 h-4" strokeWidth={2.4} />
-                  </span>
+                <button type="button"
+                  className="reason-toggle row-wipe w-full text-right py-4 sm:py-5 flex items-center gap-5 sm:gap-8"
+                  aria-expanded={openReason === i} aria-controls={`reason-${i}`}
+                  onClick={() => setOpenReason(openReason === i ? null : i)}>
+                  <span className="home-index home-index--reason tabular text-cinnamon-500">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-base sm:text-lg font-extrabold text-bark-500">{r.t}</span>
+                  <Plus className={cn("w-5 h-5 mr-auto shrink-0 transition-transform", openReason === i && "rotate-45")} aria-hidden="true" />
+                </button>
+                <div id={`reason-${i}`} hidden={openReason !== i} className="reason-answer">
+                  <p className="text-bark-300 leading-relaxed">{r.d}</p>
                 </div>
-                <p className="sm:hidden text-[14px] text-bark-300 leading-relaxed pb-4 pr-14">
-                  {r.d}
-                </p>
               </Reveal>
             ))}
           </div>
@@ -805,8 +796,8 @@ function JoinBar({ user }: { user: { username?: string } | null }) {
 
   return (
     <div className="home-join-bar hidden md:flex fixed bottom-0 inset-x-0 z-40 items-center justify-between gap-6 px-8 py-4"
-      style={{ background: "rgba(12, 24, 20, 0.94)", borderTop: "1px solid rgba(250,248,243,0.18)", backdropFilter: "blur(16px)" }}>
-      <p className="font-extrabold text-lg" style={{ color: "#FAF8F3" }}>המתכונים של הבית ורשימת הקניות — באותו מקום</p>
+      style={{ background: "rgba(12, 24, 20, 0.94)", borderTop: "1px solid rgba(227, 207, 178,0.18)", backdropFilter: "blur(16px)" }}>
+      <p className="font-extrabold text-lg" style={{ color: "#E3CFB2" }}>המתכונים של הבית ורשימת הקניות — באותו מקום</p>
       <div className="flex items-center gap-4">
         <Link href={user ? "/recipe/new" : "/register"} className="btn-cream">
           {user ? "שמירת מתכון" : "פותחים ספר"}
@@ -872,7 +863,7 @@ function SectionRail({ sections }: { sections: { id: string; label: string; dark
       className="section-rail hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center py-6 px-3"
       style={{
         background: "#102B22",
-        borderInlineStart: "1px solid rgba(250,248,243,0.18)",
+        borderInlineStart: "1px solid rgba(227, 207, 178,0.18)",
       }}
       aria-label="ניווט בין חלקי הדף">
       {sections.map((s, i) => {

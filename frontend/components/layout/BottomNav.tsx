@@ -23,7 +23,7 @@ export default function BottomNav() {
       { href: "/", icon: Home, label: "ראשי" },
       { href: "/search", icon: Search, label: "חיפוש" },
       { href: "/register", icon: Plus, label: "הרשמה", special: true },
-      { href: "/#categories", icon: BookOpen, label: "קטגוריות" },
+      { href: "/recipes", icon: BookOpen, label: "מתכונים" },
       { href: "/login", icon: LogIn, label: "כניסה" },
     ];
 
@@ -34,7 +34,7 @@ export default function BottomNav() {
         background: "rgba(11,42,32,0.96)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
-        borderTop: "1px solid rgba(250,248,243,0.18)",
+        borderTop: "1px solid rgba(227, 207, 178,0.18)",
       }}>
   <div className="flex items-center justify-around h-16 px-2">
   {items.map((item) => {

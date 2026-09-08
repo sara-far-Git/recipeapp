@@ -6,6 +6,10 @@ import { Download, Share, Plus, X } from "lucide-react";
 import { usePWA } from "@/lib/usePWA";
 import Logo from "@/components/brand/Logo";
 
+/* The signed Android build, published as a release on the project's GitHub
+   rather than carried in this repository — it is tens of megabytes. */
+const APK_URL = "https://github.com/sara-far-Git/recipeapp/releases/latest/download/recipespace.apk";
+
 export default function Footer() {
   const { canInstall, install, isIOS } = usePWA();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
@@ -53,17 +57,25 @@ export default function Footer() {
               <Link href="/terms" className="site-footer__link inline-flex items-center min-h-11 px-2">תנאי שימוש</Link>
             </nav>
 
-            {canInstall ? (
-              <button onClick={handleInstall} className="btn-cream">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {/* The Android build itself. Every other route here installs the
+                  site as a web app; this one is the app. */}
+              <a href={APK_URL} className="btn-cream" rel="noopener">
                 <Download className="w-4 h-4 ml-2" />
-                {isIOS ? "הוסיפו למסך הבית" : "פתח במחשב"}
-              </button>
-            ) : (
-              <Link href="/install" className="btn-cream">
-                <Download className="w-4 h-4 ml-2" />
-                פתח במחשב
-              </Link>
-            )}
+                הורדה לאנדרואיד
+              </a>
+              {canInstall ? (
+                <button onClick={handleInstall} className="btn-cream">
+                  <Download className="w-4 h-4 ml-2" />
+                  {isIOS ? "הוסיפו למסך הבית" : "פתח במחשב"}
+                </button>
+              ) : (
+                <Link href="/install" className="btn-cream">
+                  <Download className="w-4 h-4 ml-2" />
+                  פתח במחשב
+                </Link>
+              )}
+            </div>
 
             <div className="site-footer__fine text-[13px]">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
           </div>

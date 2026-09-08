@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import Mark from "@/components/ui/Mark";
 import { Download, Share, Plus, Smartphone, Monitor, Check } from "lucide-react";
+
+/* The signed Android build, published as a release on the project's GitHub.
+   Kept off this site on purpose: it is tens of megabytes, and a file that
+   size in the repository would ride along in every deploy. */
+const APK_URL = "https://github.com/sara-far-Git/recipeapp/releases/latest/download/recipespace.apk";
 import Logo from "@/components/brand/Logo";
 
 export default function InstallPage() {
@@ -37,7 +42,7 @@ export default function InstallPage() {
 
   return (
     <div className="max-w-lg mx-auto py-8">
-      <div className="text-center mb-10 animate-fade-up">
+      <div className="experience-hero text-center mb-10 animate-fade-up">
         <Logo solid size={88} priority className="mx-auto mb-5" />
         <span className="eyebrow mb-3 justify-center">
           <span className="plus-badge text-cinnamon-500">
@@ -108,6 +113,41 @@ export default function InstallPage() {
                 <Step n={2} icon={<Plus className="w-4 h-4" />} text={'גללו ובחרו "הוספה למסך הבית"'} />
                 <Step n={3} icon={<Check className="w-4 h-4" />} text={'לחצו "הוספה" — האפליקציה תופיע במסך הבית'} />
               </div>
+            </div>
+          )}
+
+          {(platform === "android" || platform === "unknown" || platform === "desktop") && (
+            <div className="card-surface p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-cinnamon-50 flex items-center justify-center">
+                  <Download className="w-5 h-5 text-cinnamon-600" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-bark-500 text-sm">אנדרואיד — הורדה ישירה</h2>
+                  <p className="text-xs text-bark-200">אפליקציה מלאה, לא דרך הדפדפן</p>
+                </div>
+              </div>
+              <a
+                href={APK_URL}
+                className="w-full btn-block flex items-center justify-center gap-2"
+                /* A cross-origin download attribute is ignored, so the name
+                   comes from the file itself rather than from here. */
+                rel="noopener">
+                <Download className="w-5 h-5" />
+                הורדת האפליקציה
+              </a>
+              <div className="space-y-3 mt-4">
+                <Step n={1} text="פתחו את הקובץ שירד" />
+                <Step
+                  n={2}
+                  text={'אנדרואיד ישאל אם להתקין מ"מקור לא מוכר" — מאשרים'}
+                />
+                <Step n={3} text="האפליקציה תופיע בין שאר האפליקציות" />
+              </div>
+              <p className="text-xs text-bark-200 mt-4 leading-relaxed">
+                ההתקנה הזאת לא עוברת דרך חנות Play, ולכן אנדרואיד מבקש אישור
+                פעם אחת. עדכון מגיע בהורדה מחדש מכאן.
+              </p>
             </div>
           )}
 

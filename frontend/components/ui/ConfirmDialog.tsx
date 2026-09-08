@@ -73,7 +73,7 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={busy}
-            className="flex-1 h-12 min-h-0 text-sm font-bold text-white disabled:opacity-40"
+            className="flex-1 h-12 min-h-0 text-sm font-bold text-surface-100 disabled:opacity-40"
             style={{ background: "#B3452B", borderRadius: 999 }}>
             {busy ? "רגע…" : confirmLabel}
           </button>
