@@ -184,18 +184,6 @@ export default function FeedPage() {
   }, []);
   const mealHint = MEAL_HOURS[mealBand].hints[0];
 
-  /* Scenes change together. The panel used to run three
-     separate animations at once, inches apart, all competing for the same
-     glance; this is one rhythm instead — a headline and the mark that belongs
-     with it, crossfading. */
-  const [scene, setScene] = useState(0);
-  const [scenePaused, setScenePaused] = useState(false);
-  useEffect(() => {
-    if (!typingWanted || scenePaused || composerFocused) return;
-    const t = window.setInterval(() => setScene((n) => (n + 1) % SCENES.length), SCENE_MS);
-    return () => window.clearInterval(t);
-  }, [typingWanted, scenePaused, composerFocused, scene]);
-
   /* The day of the week, decided in the browser. Rendered on the server it is
      the server's day, in the server's timezone — which is both a different
      word than the visitor's when the two straddle midnight, and a hydration
@@ -258,29 +246,16 @@ export default function FeedPage() {
   return (
     <div className="home-page">
       <HomeStack count={stackCount}>
-      <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero">
+      <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero home-hero-split">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
-            <h1 className="display-hero assistant-title hero-scenes">
-              {SCENES.map((s, i) => (
-                <span
-                  key={s.mark}
-                  className={cn("hero-scene", scene === i && "is-on")}
-                  aria-hidden={scene !== i}>
-                  {i === 0 && user ? HERO_TITLE_SIGNED_IN : s.title}
-                </span>
-              ))}
-            </h1>
-            <p className="assistant-prompt hero-scenes">
-              {SCENES.map((s, i) => (
-                <span
-                  key={s.mark}
-                  className={cn("hero-scene", scene === i && "is-on")}
-                  aria-hidden={scene !== i}>
-                  {s.prompt}
-                </span>
-              ))}
-            </p>
+            <p className="hero-split-eyebrow">RECIPE SPACE · הטעם של הבית</p>
+            <h1 className="display-hero assistant-title">יש מתכונים<br />שחוזרים<br /><span>אליהם.</span></h1>
+            <p className="assistant-prompt">כל מה שאת אוהבת לבשל, במקום אחד.</p>
+            <div className="hero-split-actions">
+              <Link href="/recipes" className="hero-split-primary">מה מבשלים היום? <ArrowUp className="w-5 h-5 -rotate-90" /></Link>
+              <Link href={user ? "/recipe/new" : "/register"} className="hero-split-secondary">שמירת מתכון <Plus className="w-4 h-4" /></Link>
+            </div>
             <form onSubmit={submitHeroSearch} className={cn("assistant-composer", composerAttention && "is-attention", isSearching && "is-searching")}>
               <Search className="w-5 h-5 shrink-0" strokeWidth={2.1} aria-hidden="true" />
               <input
@@ -290,7 +265,7 @@ export default function FeedPage() {
                 placeholder={mealHint}
                 onFocus={() => setComposerFocused(true)}
                 onBlur={() => setComposerFocused(false)}
-                aria-label="מה בא לך להכין"
+                aria-label="מה תרצי לבשל היום?"
               />
               <button type="submit" disabled={isSearching} aria-label="חיפוש מתכון" title="חיפוש מתכון">
                 {isSearching ? <LoaderCircle className="w-5 h-5 animate-spin" strokeWidth={2.4} /> : <ArrowUp className="w-5 h-5" strokeWidth={2.4} />}
@@ -299,45 +274,10 @@ export default function FeedPage() {
             <div className={cn("assistant-thinking", isSearching && "is-visible")} role="status" aria-live="polite" aria-label="טוען">
               <span className="assistant-thinking-dots" aria-hidden="true"><i /><i /><i /></span>
             </div>
-            <div className="assistant-suggestions" aria-label="רעיונות להתחלה">
-              {QUICK_STARTS.map((prompt) => (
-                <button key={prompt} type="button" className={cn("assistant-chip", activeQuickStart === prompt && "is-selected")} onClick={() => startWithPrompt(prompt)}>
-                  {prompt}
-                </button>
-              ))}
-            </div>
-            <div className="assistant-actions">
-              <Link href={user ? "/recipe/new" : "/register"}>
-                <Plus className="w-4 h-4" strokeWidth={2.2} />
-                {user ? "הוספת מתכון" : "פתיחת ספר מתכונים"}
-              </Link>
-              <Link href="/search">
-                <Search className="w-4 h-4" strokeWidth={2.2} />
-                חיפוש באוסף
-              </Link>
-            </div>
           </Reveal>
-          <div className="hero-marks" onMouseEnter={() => setScenePaused(true)} onMouseLeave={() => setScenePaused(false)}>
-            <div className="hero-artwork" aria-hidden="true">
-              {SCENES.map((s, i) => (
-                <div key={s.mark} className={cn("hero-scene hero-art-scene", scene === i && "is-on")}>
-                  {s.mark === "clock" ? <HeroClock /> : (
-                    <Image src={`/marks/${s.mark === "box" ? "collection" : s.mark}.png`}
-                      alt="" width={1254} height={1254}
-                      sizes="(max-width: 639px) 180px, (max-width: 899px) 240px, 480px"
-                      priority={i === 0} className="hero-mark-art" />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="hero-art-controls" role="group" aria-label="בחירת איור ונושא"
-              onFocus={() => setScenePaused(true)} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setScenePaused(false); }}>
-              {["ספר המתכונים", "זמן לבשל", "מה יש במטבח", "המתכונים ששמרתם"].map((label, i) => (
-                <button type="button" key={label} aria-label={label} aria-pressed={scene === i}
-                  className={cn("hero-art-dot", scene === i && "is-active")}
-                  onClick={() => setScene(i)}><span /></button>
-              ))}
-            </div>
+          <div className="hero-split-photo">
+            <Image src="/food/bread-v4.png" alt="מאפים זהובים על צלחת קרמיקה עם עשבי תיבול" fill priority sizes="(max-width: 700px) 100vw, 50vw" className="object-cover" />
+            <span className="hero-photo-caption">אוכל טוב. רגעים שנשארים.</span>
           </div>
         </div>
       </CinematicSection>
@@ -354,18 +294,14 @@ export default function FeedPage() {
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+          <div className="category-card-grid grid grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((cat, i) => (
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
-                  <div className="category-photo relative aspect-square rounded-full overflow-hidden mb-1.5 sm:mb-3 mx-auto w-[52%] sm:w-[64%] lg:w-[72%] max-w-[5.25rem] sm:max-w-[11rem] lg:max-w-[15rem]"
-                    style={{ boxShadow: "0 16px 36px rgba(12,40,31,0.35)" }}>
-                    <Image src={cat.image} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 640px) 22vw, (max-width: 1024px) 28vw, 18rem" />
+                  <div className="category-photo">
+                    <Image src={cat.image} alt="" width={1254} height={1254} className="category-full-image" sizes="(max-width: 640px) 46vw, (max-width: 1024px) 46vw, 30vw" />
                   </div>
-                  <p className="home-index home-index--category tabular" style={{ color: "#D97757" }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="text-[0.92rem] sm:text-lg lg:text-xl font-extrabold text-bark-500 group-hover:text-cinnamon-300 transition-colors">
+                  <h3 className="category-name-display text-bark-500">
                     {cat.name}
                   </h3>
                   <p className="hidden sm:block text-[13px] text-smoke-200 mt-1 leading-snug">{cat.desc}</p>
