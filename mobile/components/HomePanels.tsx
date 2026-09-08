@@ -7,12 +7,16 @@
  * left out, since a phone's own gesture is the vertical one.
  */
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Linking, Share, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import ThemedText from "@/components/ThemedText";
+import { imageUri } from "@/lib/api";
 import { CATEGORIES, CATEGORY_PHOTO } from "@/lib/categories";
 import { colors, fonts, radius, spacing } from "@/lib/theme";
+
+/** Where the book lives, for anyone you hand it to. */
+const SITE_URL = "https://recipespace.co.il";
 
 /* The four the site cycles through, in its order and its words. */
 const SCENES = [
@@ -133,6 +137,67 @@ export function RecipesPanelHeader() {
   );
 }
 
+/**
+ * One recipe held up for the week — the newest, as the site picks it.
+ *
+ * A round photograph with the day of the week on it, and the name beside it.
+ */
+export function WeeklyPanel({ recipe }: { recipe: any }) {
+  const router = useRouter();
+  const [weekday, setWeekday] = useState("");
+
+  useEffect(() => {
+    /* Read on the device, not built in — otherwise it says Sunday forever. */
+    setWeekday(new Date().toLocaleDateString("he-IL", { weekday: "long" }));
+  }, []);
+
+  if (!recipe) return null;
+
+  return (
+    <View style={[styles.panel, { backgroundColor: colors.panel.weekly, alignItems: "center" }]}>
+      <TouchableOpacity
+        onPress={() => router.push(`/recipe/${recipe.id}` as any)}
+        style={styles.weeklyPhotoWrap}
+        accessibilityRole="button"
+        accessibilityLabel={`פתיחת ${recipe.title}`}
+      >
+        <Image
+          source={recipe.image_url ? { uri: imageUri(recipe.image_url) } : CATEGORY_PHOTO["קינוחים"]}
+          style={styles.weeklyPhoto}
+          resizeMode="cover"
+        />
+        {weekday ? (
+          <View style={styles.weekdayBadge}>
+            <ThemedText variant="caption" bold style={{ color: colors.surface[100] }}>
+              {weekday}
+            </ThemedText>
+          </View>
+        ) : null}
+      </TouchableOpacity>
+
+      <ThemedText variant="eyebrow" style={{ color: colors.bark[700], marginTop: 22 }}>
+        המתכון של השבוע
+      </ThemedText>
+      <ThemedText variant="display" center style={styles.weeklyTitle}>
+        {recipe.title}
+      </ThemedText>
+      {recipe.description ? (
+        <ThemedText variant="body" center numberOfLines={4} style={styles.weeklyDesc}>
+          {recipe.description}
+        </ThemedText>
+      ) : null}
+      <TouchableOpacity
+        onPress={() => router.push(`/recipe/${recipe.id}` as any)}
+        style={styles.weeklyBtn}
+      >
+        <ThemedText bold style={{ color: colors.bark[700] }}>
+          פותחים את המתכון
+        </ThemedText>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 /** Dark green, and the site's numbered reasons. */
 export function WhyPanel() {
   return (
@@ -183,6 +248,64 @@ export function JoinPanel({ signedIn }: { signedIn: boolean }) {
           {signedIn ? "שומרים מתכון" : "פותחים ספר מתכונים"}
         </ThemedText>
       </TouchableOpacity>
+    </View>
+  );
+}
+
+/**
+ * The closing footer, as the site has it.
+ *
+ * The site's button there installs the site as an app. That has nothing to
+ * offer someone already inside the app, so here the same button hands the
+ * book's address to somebody else — which is the thing that button was
+ * actually for.
+ */
+export function FooterPanel() {
+  const share = async () => {
+    try {
+      await Share.share({
+        message: `ספר המתכונים — המקום שבו המתכונים של הבית נשמרים ונמצאים.\n${SITE_URL}`,
+      });
+    } catch {
+      // Nothing to say if the sheet was dismissed.
+    }
+  };
+
+  return (
+    <View style={[styles.panel, { backgroundColor: colors.bg.primary, alignItems: "center" }]}>
+      <Image
+        source={require("../assets/logo.png")}
+        style={styles.footerMark}
+        resizeMode="contain"
+      />
+      <ThemedText variant="body" onDark center style={styles.footerBlurb}>
+        ספר המתכונים — המקום שבו המתכונים של הבית נשמרים, נמצאים, וחוזרים
+        לשולחן.
+      </ThemedText>
+
+      <View style={styles.footerLinks}>
+        <TouchableOpacity onPress={() => Linking.openURL(`${SITE_URL}/privacy`)}>
+          <ThemedText variant="caption" bold onDark>
+            מדיניות פרטיות
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => Linking.openURL(`${SITE_URL}/terms`)}>
+          <ThemedText variant="caption" bold onDark>
+            תנאי שימוש
+          </ThemedText>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity onPress={share} style={styles.footerBtn}>
+        <Ionicons name="share-outline" size={17} color={colors.bark[700]} />
+        <ThemedText bold style={{ color: colors.bark[700] }}>
+          שליחת האפליקציה
+        </ThemedText>
+      </TouchableOpacity>
+
+      <ThemedText variant="caption" onDark style={{ marginTop: 20, opacity: 0.7 }}>
+        © 2026 ספר המתכונים — כל הזכויות שמורות
+      </ThemedText>
     </View>
   );
 }
@@ -238,6 +361,49 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.onDark.line,
   },
   reasonNum: { fontFamily: fonts.display, fontSize: 22, color: colors.cinnamon[300], lineHeight: 26 },
+
+  weeklyPhotoWrap: { width: 208, height: 208 },
+  weeklyPhoto: {
+    width: 208,
+    height: 208,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    borderColor: "rgba(250, 248, 243, 0.25)",
+  },
+  weekdayBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: radius.full,
+    backgroundColor: colors.cinnamon[300],
+  },
+  weeklyTitle: { color: colors.surface[100], fontSize: 34, lineHeight: 38, marginTop: 8 },
+  weeklyDesc: { color: colors.bark[700], marginTop: 12, opacity: 0.9 },
+  weeklyBtn: {
+    marginTop: 20,
+    paddingHorizontal: 24,
+    height: 48,
+    justifyContent: "center",
+    borderRadius: radius.full,
+    borderWidth: 1.5,
+    borderColor: colors.bark[700],
+  },
+
+  footerMark: { width: 118, height: 42, marginBottom: 14 },
+  footerBlurb: { opacity: 0.85, maxWidth: 320 },
+  footerLinks: { flexDirection: "row-reverse", gap: 22, marginTop: 16 },
+  footerBtn: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 20,
+    paddingHorizontal: 24,
+    height: 48,
+    borderRadius: radius.full,
+    backgroundColor: colors.bg.card,
+  },
 
   joinTitle: { color: colors.bark[700], fontSize: 38, lineHeight: 42, marginTop: 8 },
   joinLead: { color: colors.bark[700], marginTop: 12, opacity: 0.9 },

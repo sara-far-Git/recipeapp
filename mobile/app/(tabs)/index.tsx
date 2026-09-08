@@ -17,9 +17,11 @@ import { useAuth } from "@/lib/auth";
 import RecipeCard from "@/components/RecipeCard";
 import {
   CategoriesPanel,
+  FooterPanel,
   HeroPanel,
   JoinPanel,
   RecipesPanelHeader,
+  WeeklyPanel,
   WhyPanel,
 } from "@/components/HomePanels";
 import { colors, spacing, fontSize, radius, fonts } from "@/lib/theme";
@@ -52,6 +54,11 @@ export default function FeedScreen() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  /* The site holds the newest recipe up as the week's pick, so the grid
+     below it starts at the next one rather than showing it twice. */
+  const weeklyPick = recipes[0] || null;
+  const gridRecipes = recipes.slice(1);
 
   const onRefresh = () => { setRefreshing(true); load(0); };
   const onEndReached = () => {
@@ -94,7 +101,7 @@ export default function FeedScreen() {
       </View>
 
       <FlatList
-        data={recipes}
+        data={gridRecipes}
         keyExtractor={(item) => String(item.id)}
         /* The panels run edge to edge, so the list itself carries no padding
            — only the strip the recipe cards sit in does. */
@@ -103,6 +110,7 @@ export default function FeedScreen() {
           <>
             <HeroPanel signedIn={Boolean(user)} />
             <CategoriesPanel />
+            <WeeklyPanel recipe={weeklyPick} />
             <RecipesPanelHeader />
           </>
         }
@@ -135,11 +143,15 @@ export default function FeedScreen() {
                 <View style={{ height: 24, backgroundColor: colors.panel.recipes }} />
                 <WhyPanel />
                 <JoinPanel signedIn={Boolean(user)} />
+                <FooterPanel />
               </>
             )}
           </>
         }
+        /* The week's pick is drawn above the list, so a single recipe leaves
+           the grid empty without the book being empty. */
         ListEmptyComponent={
+          recipes.length > 0 ? null : (
           <View style={styles.empty}>
             {error ? (
               <>
@@ -183,6 +195,7 @@ export default function FeedScreen() {
               </>
             )}
           </View>
+          )
         }
       />
     </SafeAreaView>
