@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary[500],
   },
   otherRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 14,
     paddingVertical: 15,

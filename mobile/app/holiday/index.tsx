@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   body: { paddingHorizontal: spacing.lg, paddingBottom: 40 },
   lead: { marginTop: 8, lineHeight: 22 },
   row: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 14,
     paddingVertical: 16,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(39, 94, 80, 0.10)",
   },
   shopBtn: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,

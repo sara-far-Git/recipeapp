@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.holiday },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   body: { paddingHorizontal: spacing.lg, paddingBottom: 44 },
-  courseHead: { flexDirection: "row-reverse", alignItems: "center", gap: 10 },
+  courseHead: { flexDirection: "row", alignItems: "center", gap: 10 },
   choice: {
     width: 132,
     marginLeft: 10,
@@ -227,5 +227,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.primary[500],
   },
-  choiceTitle: { padding: 10, textAlign: "right" },
+  choiceTitle: { padding: 10, textAlign: "auto" },
 });

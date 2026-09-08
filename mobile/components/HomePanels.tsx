@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   heroTitle: { fontSize: 46, lineHeight: 50 },
   heroPrompt: { marginTop: 14, opacity: 0.9, lineHeight: 22 },
   composer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 10,
     marginTop: 24,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.cinnamon[300],
   },
-  chips: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 8, marginTop: 16 },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 16 },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 9,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
 
   panelLead: { marginTop: 10, marginBottom: 20, color: colors.bark[700], opacity: 0.9 },
-  tiles: { flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between" },
+  tiles: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
   tile: { width: "48%", alignItems: "center", marginBottom: 22 },
   tilePhoto: { width: 96, height: 96, borderRadius: radius.full, marginBottom: 8 },
   /* Terracotta on the terracotta panel disappears — the site sets everything
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   tileNum: { fontFamily: fonts.display, fontSize: 26, color: colors.bark[700], lineHeight: 28 },
 
   reason: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     gap: 14,
     paddingVertical: 14,
     borderBottomWidth: 1,
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
 
   footerMark: { width: 118, height: 42, marginBottom: 14 },
   footerBlurb: { opacity: 0.85, maxWidth: 320 },
-  footerLinks: { flexDirection: "row-reverse", gap: 22, marginTop: 16 },
+  footerLinks: { flexDirection: "row", gap: 22, marginTop: 16 },
 
   joinTitle: { color: colors.bark[700], fontSize: 38, lineHeight: 42, marginTop: 8 },
   joinLead: { color: colors.bark[700], marginTop: 12, opacity: 0.9 },

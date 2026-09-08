@@ -7,6 +7,15 @@ import { I18nManager } from "react-native";
 import { useAuth } from "@/lib/auth";
 import { colors } from "@/lib/theme";
 
+/* The whole app is right-to-left. Layout follows from this: with RTL on,
+   `flexDirection: "row"` already runs right-to-left, so nothing should ask
+   for "row-reverse" — that flips a second time and comes out backwards. It
+   looked correct under Expo Go only because forceRTL needs a real restart to
+   take effect, which a reload there never gives it.
+
+   Text is the same story: "auto" follows the writing direction, which is what
+   Hebrew wants. An explicit "right" is a physical edge and Android resolves
+   it against the layout direction, so it landed on the left. */
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 

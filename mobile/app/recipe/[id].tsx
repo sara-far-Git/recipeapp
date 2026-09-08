@@ -357,7 +357,7 @@ export default function RecipeDetailScreen() {
           {/* Ingredients */}
           <View style={styles.section}>
             <View style={styles.servingsRow}>
-              <View style={{ flexDirection: "row-reverse", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <ThemedText variant="heading">מצרכים</ThemedText>
                 <TouchableOpacity
                   onPress={addToShoppingList}
@@ -427,7 +427,6 @@ export default function RecipeDetailScreen() {
                   placeholder="הוסיפו תגובה..."
                   placeholderTextColor={colors.gray[400]}
                   style={styles.commentField}
-                  textAlign="right"
                   multiline
                 />
                 <TouchableOpacity onPress={handleComment} disabled={sendingComment}>
@@ -444,7 +443,7 @@ export default function RecipeDetailScreen() {
               <View key={c.id} style={styles.commentCard}>
                 <View style={styles.commentHeader}>
                   <ThemedText variant="label">@{c.author.username}</ThemedText>
-                  <View style={{ flexDirection: "row-reverse", alignItems: "center", gap: 8 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                     <ThemedText variant="caption">
                       {new Date(c.created_at).toLocaleDateString("he-IL")}
                     </ThemedText>
@@ -494,12 +493,12 @@ const styles = StyleSheet.create({
   placeholderImage: { flex: 1, justifyContent: "center", alignItems: "center" },
   body: { padding: spacing.lg },
   authorRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: spacing.lg,
   },
-  authorInfo: { flexDirection: "row-reverse", alignItems: "center", gap: 10 },
+  authorInfo: { flexDirection: "row", alignItems: "center", gap: 10 },
   avatar: {
     width: 36,
     height: 36,
@@ -508,11 +507,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  actions: { flexDirection: "row-reverse", alignItems: "center", gap: 6 },
+  actions: { flexDirection: "row", alignItems: "center", gap: 6 },
   actionBtn: { padding: 4 },
-  chips: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 8, marginBottom: spacing.lg },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: spacing.lg },
   chip: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 4,
     backgroundColor: colors.gray[100],
@@ -528,13 +527,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   servingsRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
   },
   servingsControl: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.gray[100],
     borderRadius: radius.lg,
@@ -543,7 +542,7 @@ const styles = StyleSheet.create({
   },
   servingsBtn: { padding: 6 },
   ingRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     /* The name is flex:1 and butted straight up against the amount, so
        "4 יחידות" and "נתחי סלמון" ran together as one word. */
     gap: 8,
@@ -557,9 +556,9 @@ const styles = StyleSheet.create({
     minWidth: 80,
     textAlign: "left",
   },
-  ingName: { flex: 1, textAlign: "right" },
+  ingName: { flex: 1, textAlign: "auto" },
   instRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "flex-start",
     gap: 10,
     padding: spacing.md,
@@ -577,9 +576,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  instText: { flex: 1, lineHeight: 22, textAlign: "right" },
+  instText: { flex: 1, lineHeight: 22, textAlign: "auto" },
   commentInput: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 8,
     marginBottom: spacing.md,
@@ -604,14 +603,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   commentHeader: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 4,
   },
   // Cooking mode
   cookingContainer: { flex: 1, backgroundColor: colors.bg.page },
   cookingHeader: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: spacing.lg,
@@ -620,7 +619,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray[200],
   },
   cookIngRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     paddingVertical: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: colors.gray[100],
@@ -632,9 +631,9 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: fontSize.lg,
   },
-  cookIngName: { flex: 1, textAlign: "right", fontSize: fontSize.lg },
+  cookIngName: { flex: 1, textAlign: "auto", fontSize: fontSize.lg },
   cookStep: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
     padding: spacing.lg,
@@ -645,7 +644,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg.card,
   },
   cookStepDone: { borderColor: colors.green[400], backgroundColor: colors.green[50] },
-  cookStepText: { flex: 1, fontSize: fontSize.lg, lineHeight: 28, textAlign: "right" },
+  cookStepText: { flex: 1, fontSize: fontSize.lg, lineHeight: 28, textAlign: "auto" },
   stepBadge: {
     width: 32,
     height: 32,

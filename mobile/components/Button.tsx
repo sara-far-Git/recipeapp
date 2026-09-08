@@ -82,7 +82,7 @@ export default function Button({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: radius.lg,

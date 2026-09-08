@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.page },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   topBar: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   statsRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     gap: 32,
     marginTop: 16,
   },
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   menuRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 12,
     paddingHorizontal: spacing.lg,
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(39, 94, 80, 0.08)",
   },
-  filterRow: { flexDirection: "row-reverse", gap: 8, paddingHorizontal: spacing.lg, paddingBottom: 12 },
+  filterRow: { flexDirection: "row", gap: 8, paddingHorizontal: spacing.lg, paddingBottom: 12 },
   filterChip: {
     paddingHorizontal: 14,
     paddingVertical: 7,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
   filterChipActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
   tabsRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: colors.gray[200],
     marginBottom: spacing.md,

@@ -98,7 +98,6 @@ export default function SearchScreen() {
           placeholder="חפשו מתכון..."
           placeholderTextColor={colors.smoke[400]}
           style={styles.searchInput}
-          textAlign="right"
         />
         <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
           <Ionicons
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
   mast: { paddingHorizontal: spacing.lg, paddingTop: spacing.md },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 80 },
   searchRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.bg.card,
     margin: spacing.lg,
@@ -208,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.bark[200],
   },
-  browseGrid: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 10, justifyContent: "center" },
+  browseGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
   browseTile: {
     flexGrow: 1,
     flexBasis: "30%",

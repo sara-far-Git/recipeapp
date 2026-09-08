@@ -9,7 +9,8 @@
     "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "splash": {
-      "backgroundColor": "#faf6f0",
+      "image": "./assets/logo.png",
+      "backgroundColor": "#0C281F",
       "resizeMode": "contain"
     },
     "ios": {
@@ -26,7 +27,9 @@
         "backgroundColor": "#003d35"
       },
       "package": "com.recipeapp.mobile",
-      "permissions": ["CAMERA"]
+      "permissions": [
+        "CAMERA"
+      ]
     },
     "plugins": [
       "expo-router",

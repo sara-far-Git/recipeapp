@@ -185,8 +185,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.page },
   topBar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   body: { paddingHorizontal: spacing.lg, paddingBottom: 40 },
-  sectionHead: { flexDirection: "row-reverse", alignItems: "center", gap: 8, marginBottom: 12 },
-  grid: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 12 },
+  sectionHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   figure: {
     flexGrow: 1,
     flexBasis: "45%",

@@ -320,7 +320,7 @@ export default function NewRecipeScreen() {
                 </View>
               )}
 
-              <View style={{ flexDirection: "row-reverse", gap: 12 }}>
+              <View style={{ flexDirection: "row", gap: 12 }}>
                 <View style={{ flex: 1 }}>
                   <Input label="הכנה (דק׳)" value={prepTime} onChangeText={setPrepTime} keyboardType="numeric" />
                 </View>
@@ -419,7 +419,6 @@ export default function NewRecipeScreen() {
                     value={ing.name}
                     onChangeText={(v) => updateIngredient(i, "name", v)}
                     style={[styles.ingField, { flex: 2 }]}
-                    textAlign="right"
                   />
                   {ingredients.length > 1 && (
                     <TouchableOpacity onPress={() => removeIngredient(i)} style={{ padding: 4 }}>
@@ -458,7 +457,6 @@ export default function NewRecipeScreen() {
                     placeholderTextColor={colors.gray[400]}
                     multiline
                     style={styles.instField}
-                    textAlign="right"
                   />
                   {instructions.length > 1 && (
                     <TouchableOpacity onPress={() => removeInstruction(i)} style={{ padding: 4 }}>
@@ -495,7 +493,7 @@ export default function NewRecipeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.page },
   header: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: spacing.lg,
@@ -504,12 +502,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: colors.gray[200],
   },
-  stepRow: { flexDirection: "row-reverse", gap: 6, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
+  stepRow: { flexDirection: "row", gap: 6, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
   stepBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.gray[200] },
   stepBarActive: { backgroundColor: colors.primary[500] },
   scrollContent: { padding: spacing.lg },
   scanBanner: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.primary[50],
     borderWidth: 1,
@@ -559,7 +557,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  toggleRow: { flexDirection: "row-reverse", gap: 8, marginBottom: spacing.md },
+  toggleRow: { flexDirection: "row", gap: 8, marginBottom: spacing.md },
   toggleBtn: {
     flex: 1,
     paddingVertical: 10,
@@ -578,7 +576,7 @@ const styles = StyleSheet.create({
   },
   chipBtnActive: { backgroundColor: colors.primary[500] },
   ingInputRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 6,
     marginBottom: 8,
@@ -598,7 +596,7 @@ const styles = StyleSheet.create({
     color: colors.gray[900],
   },
   addRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
@@ -609,9 +607,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     marginBottom: spacing.lg,
   },
-  navButtons: { flexDirection: "row-reverse", gap: 12, marginTop: 8 },
+  navButtons: { flexDirection: "row", gap: 12, marginTop: 8 },
   instInputRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
     backgroundColor: colors.bg.card,

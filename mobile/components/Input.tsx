@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.gray[900],
     backgroundColor: colors.bg.card,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   inputError: { borderColor: colors.red[500] },

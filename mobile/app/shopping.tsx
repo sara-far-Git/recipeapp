@@ -174,7 +174,6 @@ export default function ShoppingScreen() {
           placeholder="להוסיף מצרך…"
           placeholderTextColor={colors.gray[400]}
           style={styles.addInput}
-          textAlign="right"
         />
         <TouchableOpacity onPress={addByHand} disabled={!draft.trim()} hitSlop={8}>
           <Ionicons
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.page },
   center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.bg.page },
   header: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: spacing.lg,
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
   list: { padding: spacing.lg, gap: 8 },
   tabStrip: { flexGrow: 0, flexShrink: 0 },
   tabs: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 8,
     paddingHorizontal: spacing.lg,
@@ -268,7 +267,7 @@ const styles = StyleSheet.create({
   },
   tabOn: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
   addRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 10,
     marginHorizontal: spacing.lg,
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
     color: colors.smoke[100],
   },
   row: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     gap: 12,
     backgroundColor: colors.bg.card,

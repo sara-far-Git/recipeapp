@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   errorText: { color: colors.red[500], fontSize: 13, textAlign: "center" },
   linkRow: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     justifyContent: "center",
     marginTop: spacing.xl,
     gap: 4,
