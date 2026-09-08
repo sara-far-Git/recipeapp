@@ -47,7 +47,7 @@ export default function InstallBanner() {
   <p className="text-sm text-bark-300 mt-1">רק ב-Safari — שלושה שלבים</p>
   </div>
   <div className="space-y-4">
-  <Step n={1} icon={<Share className="w-4 h-4 text-blue-500" />} text="לחצו על כפתור השיתוף בתחתית Safari" />
+  <Step n={1} icon={<Share className="w-4 h-4 text-cinnamon-500" />} text="לחצו על כפתור השיתוף בתחתית Safari" />
   <Step n={2} icon={<Plus className="w-4 h-4 text-bark-400" />} text={'גללו ובחרו "הוספה למסך הבית"'} />
   <Step n={3} text={'לחצו "הוספה" — הספר יופיע במסך הבית'} />
   </div>

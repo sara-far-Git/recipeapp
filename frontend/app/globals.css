@@ -3228,7 +3228,7 @@ html.logo-intro body::before { content: ""; position: fixed; inset: 0; backgroun
 }
 
 /* Text-entry fields share one straight underline across every page. */
-:root { --field-focus: #C05E82; }
+:root { --field-focus: #B85A3E; }
 :is(input:not([type]), input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea, select) {
   border-radius: 0 !important;
   border: 0 !important;
@@ -3257,8 +3257,8 @@ html.logo-intro body::before { content: ""; position: fixed; inset: 0; backgroun
 :is(.assistant-composer, .search-composer, .hero-search) input {
   border-bottom: 0 !important;
 }
-.assistant-composer { --field-focus: #E99AB6; }
-:is(input, textarea, select)[aria-invalid="true"] { border-bottom-color: #BE4455 !important; }
+.assistant-composer { --field-focus: #D97757; }
+:is(input, textarea, select)[aria-invalid="true"] { border-bottom-color: #B3452B !important; }
 @media (prefers-reduced-motion: reduce) {
   input, textarea, select { transition: none !important; }
 }

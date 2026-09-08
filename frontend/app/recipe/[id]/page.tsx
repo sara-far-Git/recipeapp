@@ -243,14 +243,14 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Timer */}
-  <div className="bg-amber-950/60 border border-amber-800/30 p-5 mb-5">
-  <h2 className="font-bold text-amber-100 mb-3 flex items-center gap-2 text-sm">
-  <Timer className="w-4 h-4 text-amber-400" /> טיימר
+  <div className="bg-bark-700/60 border border-forest-400/30 p-5 mb-5">
+  <h2 className="font-bold text-cream-100 mb-3 flex items-center gap-2 text-sm">
+  <Timer className="w-4 h-4 text-cinnamon-300" /> טיימר
   </h2>
   <div className="flex gap-2 mb-4 flex-wrap">
   {[5, 10, 15, 20, 30].map((m) => (
   <button key={m} onClick={() => setTimer(m)}
-  className="px-3 py-1.5 text-xs font-semibold bg-amber-900/60 border border-amber-700/40 text-amber-300 hover:bg-amber-800/60 transition-all">
+  className="px-3 py-1.5 text-xs font-semibold bg-bark-600/60 border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all">
   {m} דק׳
   </button>
   ))}
@@ -262,51 +262,51 @@ export default function RecipeDetailPage() {
   </span>
   </div>
   {timerTotal > 0 && (
-  <div className="h-1 bg-amber-900/60 mb-4">
-  <div className="h-full bg-amber-500 transition-all duration-1000"
+  <div className="h-1 bg-bark-600/60 mb-4">
+  <div className="h-full bg-cinnamon-500 transition-all duration-1000"
   style={{ width: `${(timerRemaining / timerTotal) * 100}%` }} />
   </div>
   )}
   <div className="flex gap-2 justify-center">
   <button onClick={() => setTimerRunning((r) => !r)} disabled={timerRemaining === 0}
-  className="px-6 py-2 text-sm font-semibold bg-amber-700 text-amber-50 hover:bg-amber-600 transition-all disabled:opacity-40">
+  className="px-6 py-2 text-sm font-semibold bg-cinnamon-700 text-cream-50 hover:bg-cinnamon-600 transition-all disabled:opacity-40">
   {timerRunning ? "עצירה" : "התחל"}
   </button>
   <button onClick={() => { setTimerRemaining(timerTotal); setTimerRunning(false); }} disabled={timerTotal === 0}
-  className="px-4 py-2 text-sm bg-amber-900/60 border border-amber-700/40 text-amber-300 hover:bg-amber-800/60 transition-all disabled:opacity-40">
+  className="px-4 py-2 text-sm bg-bark-600/60 border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all disabled:opacity-40">
   איפוס
   </button>
   </div>
   </div>
 
   {/* Ingredients — checkable */}
-  <div className="bg-amber-950/60 border border-amber-800/30 p-5 mb-5">
+  <div className="bg-bark-700/60 border border-forest-400/30 p-5 mb-5">
   <div className="flex items-center justify-between mb-4">
-  <h2 className="font-bold text-amber-100 flex items-center gap-2 text-sm">
-  <Users className="w-4 h-4 text-amber-400" /> מצרכים ({currentServings} סועדים)
+  <h2 className="font-bold text-cream-100 flex items-center gap-2 text-sm">
+  <Users className="w-4 h-4 text-cinnamon-300" /> מצרכים ({currentServings} סועדים)
   </h2>
   {checkedIngredients.size > 0 && (
   <button onClick={() => setCheckedIngredients(new Set())}
-  className="text-xs text-amber-500 hover:text-amber-400 transition-colors">
+  className="text-xs text-cream-500 hover:text-cinnamon-300 transition-colors">
   נקה הכל
   </button>
   )}
   </div>
   <ul className="space-y-1">
   {scaledIngredients.map((ing: any, i: number) => ing.note ? (
-  <li key={i} className="pt-4 pb-1 text-amber-300 font-bold text-sm">{ing.name}</li>
+  <li key={i} className="pt-4 pb-1 text-cinnamon-200 font-bold text-sm">{ing.name}</li>
   ) : (
   <li key={i} onClick={() => toggleIngredient(i)}
-  className={cn("flex items-center gap-3 py-2.5 cursor-pointer select-none border-b border-amber-900/40 last:border-b-0 transition-opacity",
+  className={cn("flex items-center gap-3 py-2.5 cursor-pointer select-none border-b border-forest-400/40 last:border-b-0 transition-opacity",
   checkedIngredients.has(i) && "opacity-40")}>
   <div className={cn("w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition-all",
-  checkedIngredients.has(i) ? "bg-amber-600 border-amber-600" : "border-amber-700/60")}>
-  {checkedIngredients.has(i) && <Check className="w-3 h-3 text-amber-50" />}
+  checkedIngredients.has(i) ? "bg-cinnamon-600 border-cinnamon-500" : "border-cinnamon-600/60")}>
+  {checkedIngredients.has(i) && <Check className="w-3 h-3 text-cream-50" />}
   </div>
-  <span className={cn("font-semibold text-amber-400 min-w-[5rem] text-sm", checkedIngredients.has(i) && "line-through")} dir="ltr">
+  <span className={cn("font-semibold text-cinnamon-300 min-w-[5rem] text-sm", checkedIngredients.has(i) && "line-through")} dir="ltr">
   {ing.amount} {ing.unit || ""}
   </span>
-  <span className={cn("text-amber-100", checkedIngredients.has(i) && "line-through")}>{ing.name}</span>
+  <span className={cn("text-cream-100", checkedIngredients.has(i) && "line-through")}>{ing.name}</span>
   </li>
   ),
   )}
@@ -314,19 +314,19 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Steps */}
-  <h2 className="font-bold text-amber-100 mb-4 text-sm">שלבי הכנה</h2>
+  <h2 className="font-bold text-cream-100 mb-4 text-sm">שלבי הכנה</h2>
   <ol className="space-y-3">
   {recipe.instructions.map((inst: any) => (
   <li key={inst.step}
   onClick={() => setCompletedSteps((prev) => { const n = new Set(prev); if (n.has(inst.step)) n.delete(inst.step); else n.add(inst.step); return n; })}
   className={cn("p-4 border-2 cursor-pointer transition-all select-none",
-  completedSteps.has(inst.step) ? "border-amber-600/40 bg-amber-800/20" : "border-amber-900/40 bg-amber-950/40 hover:border-amber-800/40")}>
+  completedSteps.has(inst.step) ? "border-cinnamon-500/40 bg-forest-500/20" : "border-forest-400/40 bg-bark-700/40 hover:border-forest-400/40")}>
   <div className="flex items-start gap-3">
   <span className={cn("flex-shrink-0 w-8 h-8 flex items-center justify-center text-sm font-bold",
-  completedSteps.has(inst.step) ? "bg-amber-600 text-amber-50" : "bg-amber-900/60 text-amber-400")}>
+  completedSteps.has(inst.step) ? "bg-cinnamon-600 text-cream-50" : "bg-bark-600/60 text-cinnamon-300")}>
   {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
   </span>
-  <p className={cn("flex-1 leading-relaxed text-sm", completedSteps.has(inst.step) ? "line-through text-amber-700" : "text-amber-100")}>
+  <p className={cn("flex-1 leading-relaxed text-sm", completedSteps.has(inst.step) ? "line-through text-forest-200" : "text-cream-100")}>
   {inst.text}
   </p>
   </div>
