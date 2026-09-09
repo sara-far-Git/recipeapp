@@ -282,6 +282,11 @@ export function FooterPanel() {
             תנאי שימוש
           </ThemedText>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => Linking.openURL(`${SITE_URL}/accessibility`)}>
+          <ThemedText variant="caption" bold onDark>
+            נגישות
+          </ThemedText>
+        </TouchableOpacity>
       </View>
 
       <ThemedText variant="caption" onDark style={{ marginTop: 22, opacity: 0.7 }}>

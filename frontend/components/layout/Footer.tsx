@@ -51,6 +51,7 @@ export default function Footer() {
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
               <Link href="/privacy" className="site-footer__link inline-flex items-center min-h-11 px-2">מדיניות פרטיות</Link>
               <Link href="/terms" className="site-footer__link inline-flex items-center min-h-11 px-2">תנאי שימוש</Link>
+              <Link href="/accessibility" className="site-footer__link inline-flex items-center min-h-11 px-2">הצהרת נגישות</Link>
             </nav>
 
             <div className="flex flex-wrap items-center justify-center gap-3">

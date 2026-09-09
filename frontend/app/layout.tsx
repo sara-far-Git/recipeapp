@@ -136,7 +136,13 @@ export default function RootLayout({
           <LogoIntro />
           <Suspense fallback={null}><NavigationFeedback /></Suspense>
           <Suspense fallback={null}><Header /></Suspense>
-          <main className="page-shell pb-24 sm:pb-8">
+          {/* WCAG 2.4.1: a keyboard user should be able to pass the header
+              and its menu without tabbing through them on every page. It is
+              off-screen until focused. */}
+          <a href="#main" className="skip-link">
+            דילוג לתוכן הראשי
+          </a>
+          <main id="main" className="page-shell pb-24 sm:pb-8">
             {children}
           </main>
           <Footer />

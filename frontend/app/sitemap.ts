@@ -12,7 +12,7 @@ type RecipeStub = {
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticRoutes = ["", "/recipes", "/search", "/pro", "/install", "/privacy", "/terms"].map((path) => ({
+  const staticRoutes = ["", "/recipes", "/search", "/pro", "/install", "/privacy", "/terms", "/accessibility"].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.6,

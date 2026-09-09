@@ -1779,6 +1779,26 @@
   }
 
   /* ─── Surfaces ────────────────────────────────────────────*/
+  /* Off-screen until it takes focus, then it sits over everything so a
+     keyboard user can see where they are. */
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 200;
+    transform: translateY(-150%);
+    padding: 0.75rem 1.25rem;
+    background: #0C281F;
+    color: #F4EEDF;
+    border-radius: var(--r-pill);
+    font-weight: 700;
+    transition: transform 0.18s ease-out;
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+    outline: 2px solid #D97757;
+    outline-offset: 2px;
+  }
   .card-surface {
     background: rgba(244, 238, 223, 0.92);
     border: 1px solid rgba(39, 94, 80, 0.10);
