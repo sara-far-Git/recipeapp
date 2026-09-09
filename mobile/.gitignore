@@ -10,3 +10,6 @@ dist/
 web-build/
 ios/
 android/
+
+# The app signing key and its password. Never in git — this repo is public.
+signing/
