@@ -97,7 +97,14 @@ def test_everyone_else_is_told_they_are_not(client, registered_user, monkeypatch
     assert me.json()["is_admin"] is False
 
 
-def test_the_flag_is_not_on_a_public_profile(client, registered_user, monkeypatch):
+def test_the_flag_is_not_on_a_public_profile(client, registered_user, monkeypatch, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     """A stranger reading a profile learns nothing about who runs the site."""
     monkeypatch.setattr(config.settings, "ADMIN_EMAILS", registered_user["email"])
     public = client.get(f"/api/v1/users/{registered_user['username']}")

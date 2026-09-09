@@ -11,6 +11,13 @@ def test_credit_requires_designated_account(client, registered_user):
 
 
 def test_credit_roundtrip_and_public_identity(client, publisher_user, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     owner = db_session.query(User).filter_by(email=publisher_user['email']).one()
     owner.email = 's3296900@gmail.com'
     db_session.commit()
@@ -36,7 +43,14 @@ def test_credit_roundtrip_and_public_identity(client, publisher_user, db_session
     assert clear.json()['chef_name'] is None
 
 
-def test_existing_hidden_publisher_is_anonymous(client, publisher_user):
+def test_existing_hidden_publisher_is_anonymous(client, publisher_user, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     result = recipe(client, publisher_user['auth_header']).json()
     assert result['chef_name'] is None
     assert result['author']['attribution_hidden'] is True

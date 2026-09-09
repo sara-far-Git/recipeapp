@@ -29,6 +29,8 @@ class User(Base):
     full_name = Column(String(100), nullable=True)
     bio = Column(Text, nullable=True)
     avatar_url = Column(String(500), nullable=True)
+    plan = Column(String(10), default="free", nullable=False)
+    public_profile = Column(Boolean, default=False, nullable=False)
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
 

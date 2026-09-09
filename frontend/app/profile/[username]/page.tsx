@@ -35,6 +35,8 @@ function ProfilePageContent() {
 
   const [editOpen, setEditOpen] = useState(false);
   const [editFullName, setEditFullName] = useState("");
+  const [editPublic, setEditPublic] = useState(false);
+  const [editError, setEditError] = useState("");
   const [editBio, setEditBio] = useState("");
   const [editAvatar, setEditAvatar] = useState("");
   const [editSaving, setEditSaving] = useState(false);
@@ -49,10 +51,14 @@ function ProfilePageContent() {
   const isOwn = currentUser?.username === username;
 
   useEffect(() => {
+    let active = true;
+    setProfile(null);
+    setLoading(true);
     const load = async () => {
       try {
-        const { data: profileData } = await usersApi.getProfile(username);
-        setProfile(isOwn ? { ...profileData, ...currentUser } : profileData);
+        const { data: profileData } = await (isOwn ? usersApi.getMe() : usersApi.getProfile(username));
+        if (!active) return;
+        setProfile(isOwn ? { ...currentUser, ...profileData } : profileData);
         const { data: recipesData } = await usersApi.getRecipes(username);
         setRecipes(recipesData);
         if (isOwn) {
@@ -66,12 +72,15 @@ function ProfilePageContent() {
           setIsFollowing(following.some((u: any) => u.username === username));
         }
       } catch {}
-      setLoading(false);
+      if (active) setLoading(false);
     };
     load();
+    return () => { active = false; };
   }, [username, currentUser, isOwn]);
 
   const openEdit = () => {
+    setEditPublic(Boolean(profile.public_profile));
+    setEditError("");
     setEditFullName(profile.full_name || "");
     setEditBio(profile.bio || "");
     setEditAvatar(profile.avatar_url || "");
@@ -108,13 +117,14 @@ function ProfilePageContent() {
     setEditSaving(true);
     try {
       const { data } = await usersApi.updateMe({
+        public_profile: profile.plan === "pro" && editPublic,
         full_name: editFullName || undefined,
         bio: editBio || undefined,
         avatar_url: editAvatar || undefined,
       });
       setProfile((prev: any) => ({ ...prev, ...data }));
       setEditOpen(false);
-    } catch {}
+    } catch { setEditError("לא הצלחנו לשמור את השינויים. נסי שוב."); }
     setEditSaving(false);
   };
 
@@ -266,6 +276,15 @@ function ProfilePageContent() {
                 />
               </div>
 
+              <div className="field-row">
+                <p className="input-label">מסלול: {profile.plan === "pro" ? "Pro" : "חינם"}</p>
+                {profile.plan === "pro" ? <label className="flex gap-3 items-center">
+                  <input type="checkbox" checked={editPublic} onChange={e => setEditPublic(e.target.checked)} />
+                  <span>אני רוצה שהפרופיל שלי יהיה פתוח לציבור</span>
+                </label> : <p>הפרופיל שלך פרטי. אפשר לפתוח פרופיל לציבור במסלול Pro.</p>}
+                <p className="text-sm mt-2">פתיחת הפרופיל מאפשרת לכל אחת לראות אותו ואת המתכונים שפרסמת. אפשר לבטל בכל עת.</p>
+              </div>
+              {editError && <p role="alert">{editError}</p>}
               <button
                 onClick={handleSaveProfile}
                 disabled={editSaving}

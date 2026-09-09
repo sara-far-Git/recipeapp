@@ -432,6 +432,12 @@ export default function RecipeDetailPage() {
   )}
   </div>
 
+  {recipe.image_url && (recipe.image_source || recipe.image_credit) && (
+    <div className="mb-6 text-sm text-forest-700 break-words">
+      {recipe.image_credit && <p>צילום: {recipe.image_credit}</p>}
+      {recipe.image_source && <p>מקור התמונה: {recipe.image_source}</p>}
+    </div>
+  )}
   {/* Meta eyebrow */}
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
   <div className="inline-flex items-center gap-2 text-sm font-semibold text-cinnamon-500">

@@ -152,6 +152,8 @@ def create_recipe(
         chef_name=data.chef_name,
         description=data.description,
         image_url=data.image_url,
+        image_source=data.image_source,
+        image_credit=data.image_credit,
         prep_time_minutes=data.prep_time_minutes,
         cook_time_minutes=data.cook_time_minutes,
         servings=data.servings,

@@ -3,7 +3,14 @@
 from tests.helpers import create_recipe
 
 
-def test_public_profile_and_missing_user(client, registered_user):
+def test_public_profile_and_missing_user(client, registered_user, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     ok = client.get("/api/v1/users/tester")
     assert ok.status_code == 200
     assert ok.json()["username"] == "tester"
@@ -23,8 +30,14 @@ def test_update_own_profile(client, registered_user):
 
 
 def test_own_recipes_include_drafts_strangers_see_published_only(
-    client, registered_user, publisher_user
-):
+    client, registered_user, publisher_user, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     create_recipe(client, registered_user["auth_header"], title="טיוטה שלי")
     create_recipe(client, publisher_user["auth_header"], title="פומבי")
 
@@ -40,7 +53,14 @@ def test_own_recipes_include_drafts_strangers_see_published_only(
     assert any(i["title"] == "פומבי" for i in public.json())
 
 
-def test_follow_toggle_and_cannot_follow_self(client, registered_user, publisher_user):
+def test_follow_toggle_and_cannot_follow_self(client, registered_user, publisher_user, db_session):
+    # This test exercises an explicitly public Pro account.
+    from app.models.user import User
+    for account in db_session.query(User).all():
+        account.plan = "pro"
+        account.public_profile = True
+    db_session.commit()
+
     assert client.post(
         "/api/v1/users/tester/follow",
         headers=registered_user["auth_header"],

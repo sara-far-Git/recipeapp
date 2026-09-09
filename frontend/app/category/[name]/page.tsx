@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { searchApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import RecipeListJsonLd from "@/components/recipe/RecipeListJsonLd";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import ErrorNotice from "@/components/ui/ErrorNotice";
 import RecipeLoading from "@/components/ui/RecipeLoading";
@@ -109,6 +110,7 @@ export default function CategoryPage() {
         </div>
       ) : (
         <>
+          <RecipeListJsonLd recipes={recipes} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
             {recipes.map((recipe, i) => (
               <div key={recipe.id} className="animate-slide-up" style={{ animationDelay: `${i * 50}ms` }}>

@@ -55,6 +55,8 @@ export default function EditRecipePage() {
   const [chefCredit, setChefCredit] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imageSource, setImageSource] = useState("");
+  const [imageCredit, setImageCredit] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [prepTime, setPrepTime] = useState<number | "">("");
   const [cookTime, setCookTime] = useState<number | "">("");
@@ -75,6 +77,8 @@ export default function EditRecipePage() {
   setTitle(data.title || "");
   setDescription(data.description || "");
   setImageUrl(data.image_url || "");
+  setImageSource(data.image_source || "");
+  setImageCredit(data.image_credit || "");
   setPrepTime(data.prep_time_minutes || "");
   setCookTime(data.cook_time_minutes || "");
   setServings(data.servings || 4);
@@ -151,6 +155,8 @@ export default function EditRecipePage() {
   await recipesApi.update(Number(params.id), {
   ...(canEditChef(user) ? { chef_name: chefCredit.trim() || null } : {}),
   title, description: description || null, image_url: imageUrl || null,
+  image_source: imageUrl ? imageSource.trim() || null : null,
+  image_credit: imageUrl ? imageCredit.trim() || null : null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
   ingredients: ingredients
@@ -252,6 +258,14 @@ export default function EditRecipePage() {
   : <><Upload className="w-8 h-8" /><span className="text-sm font-medium">העלאת תמונה</span></>}
   </button>
   )}
+  <div className="grid gap-4 mt-4 sm:grid-cols-2">
+    <label className="block input-label">מקור התמונה (לא חובה)
+      <input className="input-dark mt-2" value={imageSource} maxLength={500} onChange={e => setImageSource(e.target.value)} placeholder="צילום אישי, שם האתר או קישור למקור" />
+    </label>
+    <label className="block input-label">קרדיט לצלם (לא חובה)
+      <input className="input-dark mt-2" value={imageCredit} maxLength={100} onChange={e => setImageCredit(e.target.value)} placeholder="השם שיוצג לצד התמונה" />
+    </label>
+  </div>
   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
   {imageError && (
   <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#B3452B" }}>

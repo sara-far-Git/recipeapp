@@ -31,6 +31,8 @@ class Recipe(Base):
     title = Column(String(200), nullable=False, index=True)
     chef_name = Column(String(100), nullable=True)
     description = Column(Text, nullable=True)
+    image_source = Column(String(500), nullable=True)
+    image_credit = Column(String(100), nullable=True)
     image_url = Column(String(500), nullable=True)
     prep_time_minutes = Column(Integer, nullable=True)
     cook_time_minutes = Column(Integer, nullable=True)

@@ -128,7 +128,7 @@ export const authApi = {
 // ---------- Users ----------
 export const usersApi = {
   getMe: (config?: AxiosRequestConfig) => api.get("/users/me", config),
-  updateMe: (data: { full_name?: string; bio?: string; avatar_url?: string }) =>
+  updateMe: (data: { public_profile?: boolean; full_name?: string; bio?: string; avatar_url?: string }) =>
     api.put("/users/me", data).then((r) => { invalidateCache("/users/me"); return r; }),
   getProfile: (username: string) => cachedGet(`/users/${username}`, undefined, 60_000),
   getRecipes: (username: string, skip = 0) => cachedGet(`/users/${username}/recipes`, { skip, limit: 100 }, 30_000),

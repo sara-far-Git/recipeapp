@@ -90,3 +90,24 @@ def site_stats(
             "quota_bytes_per_user": settings.MAX_IMAGE_BYTES_PER_USER,
         },
     }
+
+
+from pydantic import BaseModel
+from typing import Literal
+
+
+class AccountPlanUpdate(BaseModel):
+    plan: Literal["free", "pro"]
+
+
+@router.put("/users/{user_id}/plan")
+def update_account_plan(user_id: int, data: AccountPlanUpdate,
+                        _: User = Depends(require_admin), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.plan != data.plan:
+        user.public_profile = False
+    user.plan = data.plan
+    db.commit()
+    return {"id": user.id, "plan": user.plan, "public_profile": user.public_profile}

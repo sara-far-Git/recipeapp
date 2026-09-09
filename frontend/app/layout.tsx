@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
+import { serializeJsonLd } from "@/lib/structuredData";
 import { SITE_URL } from "@/lib/site";
 import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
@@ -61,6 +62,25 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" suppressHydrationWarning>
       <body className="min-h-screen">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
+          "@context": "https://schema.org",
+          "@graph": [{
+            "@type": "Organization",
+            "@id": `${SITE_URL}/#organization`,
+            name: "Recipe Space",
+            alternateName: "ספר המתכונים",
+            url: SITE_URL,
+            logo: `${SITE_URL}/icon-512.png`,
+          }, {
+          "@type": "WebSite",
+          "@id": `${SITE_URL}/#website`,
+          url: SITE_URL,
+          name: "Recipe Space",
+          alternateName: "ספר המתכונים",
+          inLanguage: "he",
+          publisher: { "@id": `${SITE_URL}/#organization` },
+          }],
+        }) }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `

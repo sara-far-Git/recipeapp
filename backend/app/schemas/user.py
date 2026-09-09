@@ -26,6 +26,7 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    public_profile: Optional[bool] = None
     full_name: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
@@ -62,6 +63,8 @@ class UserPublic(BaseModel):
 
 class UserMe(UserPublic):
     email: str
+    plan: str = "free"
+    public_profile: bool = False
     # Set from configuration, not stored: it decides whether the site offers
     # the link to its own numbers.
     is_admin: bool = False

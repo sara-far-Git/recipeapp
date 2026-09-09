@@ -20,6 +20,11 @@ def _public_user(db, username):
     return db.query(User).filter(User.username == username).first()
 
 
+def _visible(user, viewer=None):
+    return bool(user and (viewer and viewer.id == user.id or
+                         user.is_active and user.plan == "pro" and user.public_profile))
+
+
 def _enrich_user(user: User) -> User:
     user.followers_count = len(user.followers)
     user.following_count = len(user.following)
@@ -41,6 +46,10 @@ def update_my_profile(
     current_user: User = Depends(get_current_user),
 ):
     update_data = data.model_dump(exclude_unset=True)
+    if update_data.get("public_profile") and current_user.plan != "pro":
+        raise HTTPException(status_code=403, detail="פרופיל ציבורי זמין רק במסלול Pro")
+    if "public_profile" in update_data and update_data["public_profile"] is None:
+        update_data.pop("public_profile")
     for k, v in update_data.items():
         setattr(current_user, k, v)
     db.commit()
@@ -53,9 +62,10 @@ def update_my_profile(
 def get_user_profile(
     username: str,
     db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
 ):
     user = _public_user(db, username)
-    if not user:
+    if not _visible(user, current_user):
         raise HTTPException(status_code=404, detail="User not found")
     _enrich_user(user)
     return user
@@ -70,7 +80,7 @@ def get_user_recipes(
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
     user = _public_user(db, username)
-    if not user:
+    if not _visible(user, current_user):
         raise HTTPException(status_code=404, detail="User not found")
 
     q = db.query(Recipe).filter(Recipe.author_id == user.id)
@@ -137,7 +147,7 @@ def toggle_follow(
     current_user: User = Depends(get_current_user),
 ):
     target = _public_user(db, username)
-    if not target:
+    if not _visible(target, current_user):
         raise HTTPException(status_code=404, detail="User not found")
     if target.id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot follow yourself")
@@ -161,23 +171,27 @@ def toggle_follow(
 def get_followers(
     username: str,
     db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
 ):
     user = _public_user(db, username)
-    if not user:
+    if not _visible(user, current_user):
         raise HTTPException(status_code=404, detail="User not found")
-    for f in user.followers:
+    visible = [f for f in user.followers if _visible(f, current_user)]
+    for f in visible:
         _enrich_user(f)
-    return user.followers
+    return visible
 
 
 @router.get("/{username}/following", response_model=list[UserPublic])
 def get_following(
     username: str,
     db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
 ):
     user = _public_user(db, username)
-    if not user:
+    if not _visible(user, current_user):
         raise HTTPException(status_code=404, detail="User not found")
-    for f in user.following:
+    visible = [f for f in user.following if _visible(f, current_user)]
+    for f in visible:
         _enrich_user(f)
-    return user.following
+    return visible

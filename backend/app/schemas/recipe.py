@@ -22,6 +22,16 @@ class Instruction(BaseModel):
 
 
 class RecipeCredit(BaseModel):
+    image_source: Optional[str] = Field(default=None, max_length=500)
+    image_credit: Optional[str] = Field(default=None, max_length=100)
+
+    @field_validator("image_source", "image_credit")
+    @classmethod
+    def normalize_image_credit(cls, value):
+        from app.core.attribution import hidden_credit
+        value = (value or "").strip()
+        return None if not value or hidden_credit(value) else value
+
     chef_name: Optional[str] = Field(default=None, max_length=100)
 
     @field_validator("chef_name")
