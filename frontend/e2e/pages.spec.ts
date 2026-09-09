@@ -5,12 +5,11 @@ async function assertNoServerError(page: Page) {
   await expect(page.locator("body")).not.toContainText("Application error");
 }
 
-// Exercise the real intro before interacting with any route. Completing an
-// intro on a deep link intentionally redirects home, so wait for that redirect.
+// Exercise the real home intro before interacting with the page.
 test.beforeEach(async ({ page }) => {
   await page.goto("/?intro");
-  await expect(page).toHaveURL(/\/$/, { timeout: 15_000 });
-  await expect(page.locator("html")).not.toHaveClass(/logo-intro/);
+  await expect(page).toHaveURL(/\/\?intro$/);
+  await expect(page.locator("html")).not.toHaveClass(/logo-intro/, { timeout: 15_000 });
   await expect(page.locator(".logo-intro-veil")).toHaveCount(0);
 });
 

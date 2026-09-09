@@ -30,6 +30,11 @@ export default function LogoIntro() {
   const completeRef = useRef<() => void>(() => {});
 
   useEffect(() => {
+    // Direct links must reveal their own content, without an intro or redirect.
+    if (window.location.pathname !== "/" || window.location.hash) {
+      unlock();
+      return;
+    }
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const forcePreview = new URLSearchParams(window.location.search).has("intro");
     if (reduced || window.scrollY > 48 || (!forcePreview && sessionStorage.getItem(KEY) === "1")) {
@@ -46,11 +51,6 @@ export default function LogoIntro() {
       if (finished.current) return;
       finished.current = true;
       sessionStorage.setItem(KEY, "1");
-      // Keep the intro covering the current route until the home page opens.
-      if (window.location.pathname !== "/" || window.location.search || window.location.hash) {
-        window.location.replace("/");
-        return;
-      }
       window.scrollTo(0, 0);
       unlock();
       setLeaving(true);
