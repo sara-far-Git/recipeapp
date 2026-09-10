@@ -10,12 +10,10 @@
  * it tells someone a barrier is not there when it is.
  */
 
-/* A statement is not complete without a person to reach, so this is the
-   address the site is actually read at. */
-const COORDINATOR = {
-  name: "שרה פרקש",
-  email: "recipespaceapp@gmail.com",
-};
+/* A statement is not complete without a way to reach someone. That is the
+   part that has to be here — a personal name is not what makes it work, and
+   the site is run by one person who would rather not publish hers. */
+const ACCESSIBILITY_EMAIL = "recipespaceapp@gmail.com";
 
 const UPDATED = "ספטמבר 2026";
 
@@ -82,11 +80,12 @@ export default function AccessibilityPage() {
             השתמשתם באחת.
           </p>
           <p>
-            <span className="font-bold text-bark-500">רכזת הנגישות:</span>{" "}
-            {COORDINATOR.name}
+            <span className="font-bold text-bark-500">פניות בנושא נגישות:</span>
             <br />
-            <a href={`mailto:${COORDINATOR.email}`} className="text-cinnamon-500 font-semibold underline">
-              {COORDINATOR.email}
+            <a
+              href={`mailto:${ACCESSIBILITY_EMAIL}`}
+              className="text-cinnamon-500 font-semibold underline">
+              {ACCESSIBILITY_EMAIL}
             </a>
           </p>
         </Section>
