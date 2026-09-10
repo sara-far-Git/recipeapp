@@ -10,11 +10,11 @@
  * it tells someone a barrier is not there when it is.
  */
 
-/* Fill these in and make sure the mailbox is real — the statement is not
-   complete without a person to reach. */
+/* A statement is not complete without a person to reach, so this is the
+   address the site is actually read at. */
 const COORDINATOR = {
   name: "שרה פרקש",
-  email: "support@recipespace.co.il",
+  email: "recipespaceapp@gmail.com",
 };
 
 const UPDATED = "ספטמבר 2026";
@@ -85,7 +85,9 @@ export default function AccessibilityPage() {
             <span className="font-bold text-bark-500">רכזת הנגישות:</span>{" "}
             {COORDINATOR.name}
             <br />
-            <span className="text-cinnamon-500 font-semibold">{COORDINATOR.email}</span>
+            <a href={`mailto:${COORDINATOR.email}`} className="text-cinnamon-500 font-semibold underline">
+              {COORDINATOR.email}
+            </a>
           </p>
         </Section>
 

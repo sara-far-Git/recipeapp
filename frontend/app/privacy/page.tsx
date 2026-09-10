@@ -76,7 +76,7 @@ export default function PrivacyPage() {
 
   <PolicySection title="יצירת קשר" last>
   לשאלות בנושא פרטיות, לעיון במידע או למחיקתו:{" "}
-  <span className="text-cinnamon-500 font-semibold">support@recipespace.co.il</span>
+  <a href="mailto:recipespaceapp@gmail.com" className="text-cinnamon-500 font-semibold underline">recipespaceapp@gmail.com</a>
   </PolicySection>
   </div>
 

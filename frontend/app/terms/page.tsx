@@ -73,7 +73,7 @@ export default function TermsPage() {
   <TermsSection title="שינויים בתנאים" last>
   אנו רשאים לשנות תנאים אלה. שינוי מהותי יוצג באתר, והמשך שימוש לאחריו מהווה
   הסכמה. לשאלות:{" "}
-  <span className="text-cinnamon-500 font-semibold">support@recipespace.co.il</span>
+  <a href="mailto:recipespaceapp@gmail.com" className="text-cinnamon-500 font-semibold underline">recipespaceapp@gmail.com</a>
   </TermsSection>
   </div>
 
