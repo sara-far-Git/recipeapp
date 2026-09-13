@@ -113,3 +113,9 @@ except Exception as exc:  # noqa: BLE001
 
 
 print("Done — database ready.")
+
+
+# Reviewed legacy data: preserve categories already chosen by the recipe owner.
+from app.core.category_backfill import backfill_categories
+with engine.begin() as conn:
+    backfill_categories(conn)
