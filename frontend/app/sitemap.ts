@@ -3,7 +3,8 @@ import type { MetadataRoute } from "next";
 import { CATEGORIES } from "@/lib/categories";
 import { SITE_URL } from "@/lib/site";
 
-export const revalidate = 3600;
+// Fetch the catalog at request time: API availability must not block deployment.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ["", "/recipes", "/search", "/pro", "/install", "/privacy", "/terms", "/accessibility"].map((path) => ({
