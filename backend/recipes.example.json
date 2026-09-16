@@ -1,0 +1,29 @@
+[
+  {
+    "title": "עוגיות שוקולד צ'יפס",
+    "description": "רכות באמצע, פריכות בקצוות.",
+    "category": "קינוחים",
+    "kosher_type": "dairy",
+    "difficulty": "easy",
+    "servings": 24,
+    "prep_time_minutes": 15,
+    "cook_time_minutes": 12,
+    "ingredients": [
+      { "name": "לבצק", "note": true },
+      { "amount": 200, "unit": "גרם", "name": "חמאה רכה" },
+      { "amount": 1, "unit": "כוס", "name": "סוכר חום" },
+      { "amount": 2, "unit": "יחידות", "name": "ביצים" },
+      { "amount": 2.5, "unit": "כוסות", "name": "קמח" },
+      { "name": "קורט מלח" },
+      { "name": "לתוספת", "note": true },
+      { "amount": 1, "unit": "כוס", "name": "שוקולד צ'יפס" }
+    ],
+    "instructions": [
+      { "text": "מחממים תנור ל-180 מעלות." },
+      { "text": "מקציפים חמאה עם סוכר עד שהתערובת בהירה." },
+      { "text": "מוסיפים ביצים אחת אחת, ואז קמח ומלח." },
+      { "text": "מקפלים פנימה את השוקולד צ'יפס." },
+      { "text": "אופים 12 דקות. הן יתקשו בזמן הצינון." }
+    ]
+  }
+]
