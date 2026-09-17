@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.plans import at_least_pro
 from app.core.security import get_current_user, is_admin
 from app.models.recipe import Recipe, StoredImage
 from app.models.user import User
@@ -97,7 +98,8 @@ from typing import Literal
 
 
 class AccountPlanUpdate(BaseModel):
-    plan: Literal["free", "pro"]
+    # pro_plus is pro plus the right to publish — see core/plans.py.
+    plan: Literal["free", "pro", "pro_plus"]
 
 
 @router.put("/users/{user_id}/plan")
@@ -106,8 +108,11 @@ def update_account_plan(user_id: int, data: AccountPlanUpdate,
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    if user.plan != data.plan:
-        user.public_profile = False
     user.plan = data.plan
+    # A public profile is a paid feature, so dropping out of the paid tiers
+    # takes it down. Moving up between them leaves it alone — an upgrade
+    # should not quietly hide someone's profile.
+    if not at_least_pro(user):
+        user.public_profile = False
     db.commit()
     return {"id": user.id, "plan": user.plan, "public_profile": user.public_profile}

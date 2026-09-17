@@ -1,4 +1,5 @@
-from app.core.attribution import can_set_chef_name
+from app.core.attribution import can_set_chef_name, publisher_by_name
+from app.core.plans import can_publish
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
@@ -143,8 +144,7 @@ def create_recipe(
 ):
     if data.chef_name and not can_set_chef_name(current_user):
         raise HTTPException(status_code=403, detail="Custom chef credit is not enabled for this account")
-    ALLOWED_PUBLISHERS = {"שרי פרקש", "רבקי פרקש"}
-    is_published = current_user.full_name in ALLOWED_PUBLISHERS
+    is_published = can_publish(current_user) or publisher_by_name(current_user)
 
     recipe = Recipe(
         author_id=current_user.id,

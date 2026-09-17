@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
 from app.core.database import get_db
+from app.core.plans import at_least_pro
 from app.core.security import get_current_user, is_admin, get_optional_current_user
 from app.models.user import User, Follow
 from app.models.recipe import Recipe
@@ -22,7 +23,7 @@ def _public_user(db, username):
 
 def _visible(user, viewer=None):
     return bool(user and (viewer and viewer.id == user.id or
-                         user.is_active and user.plan == "pro" and user.public_profile))
+                         user.is_active and at_least_pro(user) and user.public_profile))
 
 
 def _enrich_user(user: User) -> User:
@@ -46,7 +47,7 @@ def update_my_profile(
     current_user: User = Depends(get_current_user),
 ):
     update_data = data.model_dump(exclude_unset=True)
-    if update_data.get("public_profile") and current_user.plan != "pro":
+    if update_data.get("public_profile") and not at_least_pro(current_user):
         raise HTTPException(status_code=403, detail="פרופיל ציבורי זמין רק במסלול Pro")
     if "public_profile" in update_data and update_data["public_profile"] is None:
         update_data.pop("public_profile")
