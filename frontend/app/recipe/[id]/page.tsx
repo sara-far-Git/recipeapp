@@ -97,7 +97,12 @@ export default function RecipeDetailPage() {
   const scaledIngredients = useMemo(() => {
   if (!recipe) return [];
   return recipe.ingredients.map((ing: any) =>
-  ing.note ? ing : { ...ing, amount: Math.round(ing.amount * servingMultiplier * 100) / 100 },
+  // A heading has no amount, and neither does "מלח לפי טעם" or "שמן לטיגון".
+  // Scaling those multiplied null by the servings and produced 0, which then
+  // printed as a literal "0" beside the name.
+  ing.note || ing.amount == null
+  ? ing
+  : { ...ing, amount: Math.round(ing.amount * servingMultiplier * 100) / 100 },
   );
   }, [recipe, servingMultiplier]);
 
@@ -304,7 +309,7 @@ export default function RecipeDetailPage() {
   {checkedIngredients.has(i) && <Check className="w-3 h-3 text-cream-50" />}
   </div>
   <span className={cn("font-semibold text-cinnamon-300 min-w-[5rem] text-sm", checkedIngredients.has(i) && "line-through")} dir="ltr">
-  {ing.amount} {ing.unit || ""}
+  {ing.amount ?? ""} {ing.unit || ""}
   </span>
   <span className={cn("text-cream-100", checkedIngredients.has(i) && "line-through")}>{ing.name}</span>
   </li>
@@ -580,7 +585,7 @@ export default function RecipeDetailPage() {
   ) : (
   <div key={i} className="recipe-ingredient-row px-5 py-3">
   <span className="ingredient-amount" dir="ltr">
-  {ing.amount}{ing.unit ? ` ${ing.unit}` : ""}
+  {ing.amount ?? ""}{ing.unit ? ` ${ing.unit}` : ""}
   </span>
   <span className="text-bark-400 text-sm">{ing.name}</span>
   </div>
