@@ -8,7 +8,11 @@ HIDDEN_NAMES = {"שרה פרקש", "שרי פרקש", "רבקי פרקש", "sara
 # Cooks whose recipes go up for everyone the moment they save one, named
 # rather than by plan — they were publishing here before plans existed.
 # A plan grants this too; see plans.can_publish.
-PUBLISHER_NAMES = {"שרי פרקש", "רבקי פרקש", "הני בקר"}
+# Both spellings of the same cook: her booklets print "הני בקר" in the
+# copyright line and "העני בקר" on the cover. Whichever she registers with
+# has to match, and a near miss here fails silently — the recipes just save
+# as drafts.
+PUBLISHER_NAMES = {"שרי פרקש", "רבקי פרקש", "העני בקר", "הני בקר"}
 
 
 def publisher_by_name(user) -> bool:
