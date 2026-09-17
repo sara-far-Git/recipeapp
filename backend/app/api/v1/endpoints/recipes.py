@@ -160,6 +160,7 @@ def create_recipe(
         difficulty=data.difficulty,
         kosher_type=data.kosher_type,
         category=data.category,
+        tags=data.tags,
         ingredients=[ing.model_dump() for ing in data.ingredients],
         instructions=[inst.model_dump() for inst in data.instructions],
         is_scanned=data.is_scanned,

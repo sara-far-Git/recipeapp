@@ -21,7 +21,7 @@ def _like(value: str) -> str:
     return f"%{escaped}%"
 
 
-def _ingredient_patterns(word: str) -> list[str]:
+def json_text_variants(word: str) -> list[str]:
     """Both spellings of an ingredient.
 
     The JSON serializer writes ASCII, so a column holding "דבש" actually reads
@@ -54,7 +54,7 @@ def suggest_from_ingredients(
     # PostgreSQL JSON containment would be ideal, but for MVP we use ILIKE.
     conditions = []
     for ing in data.ingredients[:10]:  # limit to 10
-        for pattern in _ingredient_patterns(ing):
+        for pattern in json_text_variants(ing):
             conditions.append(
                 cast(Recipe.ingredients, String).ilike(_like(pattern), escape="!")
             )

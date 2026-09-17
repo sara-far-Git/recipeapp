@@ -12,7 +12,7 @@ import PageFrame from "@/components/ui/PageFrame";
 import { Search, SlidersHorizontal, X, Loader2, Sparkles, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, TAGS } from "@/lib/categories";
 
 const DIFFICULTY_FILTERS = [
   { value: "", label: "הכל" },
@@ -42,9 +42,11 @@ function SearchPageContent() {
   const { isLoading: authLoading } = useAuth();
   const initialQ = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "";
+  const initialTag = searchParams.get("tag") || "";
 
   const [query, setQuery] = useState(initialQ);
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [activeTag, setActiveTag] = useState(initialTag);
   const [difficulty, setDifficulty] = useState("");
   const [kosherType, setKosherType] = useState("");
   const [maxPrepTime, setMaxPrepTime] = useState(0);
@@ -62,7 +64,7 @@ function SearchPageContent() {
   const [suggestions, setSuggestions] = useState<any[] | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<any[] | null>(null);
 
-  const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number, cat: string) => {
+  const doSearch = useCallback(async (q: string, diff: string, kosh: string, time: number, cat: string, tag: string) => {
     const version = ++requestVersion.current;
     setSearchError("");
     setLoading(true);
@@ -74,6 +76,7 @@ function SearchPageContent() {
       if (kosh) params.kosher_type = kosh;
       if (time > 0) params.max_prep_time = time;
       if (cat) params.category = cat;
+      if (tag) params.tag = tag;
       const { data } = await searchApi.search(params);
       if (version === requestVersion.current) setResults(data);
     } catch {
@@ -92,13 +95,14 @@ function SearchPageContent() {
     const cat = searchParams.get("category") || "";
     setQuery(q);
     setActiveCategory(cat);
+    setActiveTag(searchParams.get("tag") || "");
 
   }, [searchParams, authLoading]);
 
   useEffect(() => {
     if (authLoading) return;
     ++requestVersion.current;
-    const hasQuery = query.trim().length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory;
+    const hasQuery = query.trim().length >= 2 || difficulty || kosherType || maxPrepTime > 0 || activeCategory || activeTag;
     if (!hasQuery || ingredientMode) {
       setLoading(false);
       setResults([]);
@@ -107,12 +111,12 @@ function SearchPageContent() {
       return;
     }
     setLoading(true);
-    const timer = setTimeout(() => doSearch(query.trim(), difficulty, kosherType, maxPrepTime, activeCategory), 400);
+    const timer = setTimeout(() => doSearch(query.trim(), difficulty, kosherType, maxPrepTime, activeCategory, activeTag), 400);
     return () => { clearTimeout(timer); ++requestVersion.current; };
-  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, doSearch, authLoading, ingredientMode]);
+  }, [query, difficulty, kosherType, maxPrepTime, activeCategory, activeTag, doSearch, authLoading, ingredientMode]);
 
   const hasActiveFilters = Boolean(difficulty || kosherType || maxPrepTime > 0);
-  const activeFilterCount = [activeCategory, difficulty, kosherType, maxPrepTime > 0].filter(Boolean).length;
+  const activeFilterCount = [activeCategory, activeTag, difficulty, kosherType, maxPrepTime > 0].filter(Boolean).length;
   const clearFilters = () => {
     setDifficulty("");
     setKosherType("");
@@ -243,6 +247,27 @@ function SearchPageContent() {
           >
             <SlidersHorizontal className="w-5 h-5" />
           </button>
+        </div>
+      )}
+
+      {/* These cut across the categories rather than sitting among them —
+          a Passover cake is a dessert too — so they get a row of their own. */}
+      {!ingredientMode && (
+        <div className="flex flex-wrap items-center gap-2 mb-3 animate-fade-up" style={{ animationDelay: "100ms" }}>
+          <span className="text-xs font-bold text-bark-200 ml-1">סינונים מיוחדים</span>
+          {TAGS.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => setActiveTag(activeTag === name ? "" : name)}
+              className={cn(
+                "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
+                activeTag === name ? "is-selected" : ""
+              )}
+            >
+              {name}
+            </button>
+          ))}
         </div>
       )}
 
@@ -421,7 +446,7 @@ function SearchPageContent() {
       ) : loading ? (
         <RecipeLoading label="מוצא לך רעיונות" kind="search" />
       ) : searchError ? (
-        <ErrorNotice message={searchError} onRetry={() => doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory)} />
+        <ErrorNotice message={searchError} onRetry={() => doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory, activeTag)} />
       ) : results.length > 0 ? (
         <div>
           <p className="text-sm text-bark-200 mb-5">{results.length === 1 ? "מתכון אחד" : `${results.length} מתכונים`}</p>

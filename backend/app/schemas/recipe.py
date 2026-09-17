@@ -52,6 +52,7 @@ class RecipeCreate(RecipeCredit):
     difficulty: DifficultyLevel = DifficultyLevel.medium
     kosher_type: Optional[KosherType] = None
     category: Optional[str] = None
+    tags: List[str] = []
     ingredients: List[Ingredient] = []
     instructions: List[Instruction] = []
     is_scanned: bool = False
@@ -67,6 +68,7 @@ class RecipeUpdate(RecipeCredit):
     difficulty: Optional[DifficultyLevel] = None
     kosher_type: Optional[KosherType] = None
     category: Optional[str] = None
+    tags: List[str] = []
     ingredients: Optional[List[Ingredient]] = None
     instructions: Optional[List[Instruction]] = None
     is_published: Optional[bool] = None
@@ -83,6 +85,7 @@ class RecipeResponse(RecipeCredit):
     difficulty: DifficultyLevel
     kosher_type: Optional[KosherType]
     category: Optional[str]
+    tags: List[str] = []
     ingredients: List[dict]
     instructions: List[dict]
     is_scanned: bool
@@ -114,6 +117,7 @@ class RecipeListItem(RecipeCredit):
     difficulty: DifficultyLevel
     kosher_type: Optional[KosherType]
     category: Optional[str] = None
+    tags: List[str] = []
     likes_count: int
     saves_count: int
     average_rating: float = 0.0

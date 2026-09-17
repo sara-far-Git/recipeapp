@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, cast, String
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 
 from app.core.database import get_db
 from app.core.security import get_optional_current_user
 from app.models.user import User, Follow
+from app.api.v1.endpoints.suggest import json_text_variants
 from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, KosherType, visible_to
 from app.schemas.recipe import RecipeListItem
 
@@ -30,6 +31,7 @@ def search_recipes(
     kosher_type: Optional[KosherType] = Query(None),
     max_prep_time: Optional[int] = Query(None, ge=1, description="Max prep time in minutes"),
     category: Optional[str] = Query(None, description="Category filter"),
+    tag: Optional[str] = Query(None, description='Cross-cutting label, e.g. פסח or ללא גלוטן'),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -58,6 +60,16 @@ def search_recipes(
         query = query.filter(Recipe.prep_time_minutes <= max_prep_time)
     if category:
         query = query.filter(Recipe.category == category)
+    if tag:
+        # Tags live in a JSON list, and the serializer writes ASCII — a row
+        # holding "פסח" reads as "\u05e4\u05e1\u05d7" once cast back to text.
+        # Matching both spellings is the same problem the ingredient search
+        # already solved, so it uses the same helper. The quotes keep a label
+        # from matching a longer one that merely contains it.
+        query = query.filter(or_(*[
+            cast(Recipe.tags, String).like(f'%"{v}"%')
+            for v in json_text_variants(tag)
+        ]))
 
     recipes = (
         query.options(joinedload(Recipe.author))

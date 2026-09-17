@@ -10,3 +10,7 @@ export const CATEGORIES = [
 export function getCategory(name: string) {
   return CATEGORIES.find((c) => c.name === name);
 }
+
+/** Labels that cut across the categories, and can combine: a Passover cake
+ *  is a dessert, a Passover recipe, and sometimes gluten-free as well. */
+export const TAGS = ["פסח", "ללא גלוטן"] as const;

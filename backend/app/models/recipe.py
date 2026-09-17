@@ -40,6 +40,10 @@ class Recipe(Base):
     difficulty = Column(SAEnum(DifficultyLevel), default=DifficultyLevel.medium, index=True)
     kosher_type = Column(SAEnum(KosherType), nullable=True, index=True)
     category = Column(String(50), nullable=True, index=True)
+    # Labels that cut across the dish types — "פסח", "ללא גלוטן". A recipe has
+    # exactly one category but can carry several of these at once, which is
+    # why it is a list and not another string column.
+    tags = Column(JSON, default=list)
 
     # Step 2 - Ingredients (stored as JSON array)
     # Format: [{"amount": 2, "unit": "cups", "name": "flour"}, ...]
