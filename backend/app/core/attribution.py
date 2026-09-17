@@ -1,5 +1,7 @@
 """Public recipe credits are separate from the account that owns the recipe."""
-CHEF_EDITOR_EMAIL = "s3296900@gmail.com"
+# Who may publish a recipe under someone else's name — a guest cook's, say,
+# where the recipe is theirs and the account posting it is not.
+CHEF_EDITOR_EMAILS = {"s3296900@gmail.com", "8496444@gmail.com"}
 HIDDEN_NAMES = {"שרה פרקש", "שרי פרקש", "רבקי פרקש", "sara farkash", "sarah farkash", "rivky farkash", "rivki farkash", "רבקה פרקש"}
 
 
@@ -8,7 +10,7 @@ def hidden_credit(name):
 
 
 def can_set_chef_name(user):
-    return (getattr(user, "email", "") or "").strip().casefold() == CHEF_EDITOR_EMAIL
+    return (getattr(user, "email", "") or "").strip().casefold() in CHEF_EDITOR_EMAILS
 
 
 def hidden_account(user):
