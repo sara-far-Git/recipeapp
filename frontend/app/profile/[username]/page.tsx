@@ -14,6 +14,14 @@ import Mark from "@/components/ui/Mark";
 import { CATEGORIES } from "@/lib/categories";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
+const PAID_PLANS = new Set(["pro", "pro_plus"]);
+const PLAN_LABELS: Record<string, string> = {
+  free: "חינם",
+  pro: "Pro",
+  pro_plus: "Pro Plus",
+};
+
+
 function ProfilePageContent() {
   const params = useParams();
   const router = useRouter();
@@ -113,11 +121,16 @@ function ProfilePageContent() {
     setAvatarUploading(false);
   };
 
+  /* The tiers stack: pro_plus can do everything pro can. Comparing against
+     "pro" exactly would have left a pro_plus account unable to open its own
+     profile — the checkbox would not even be drawn. */
+  const isPaid = PAID_PLANS.has(profile?.plan);
+
   const handleSaveProfile = async () => {
     setEditSaving(true);
     try {
       const { data } = await usersApi.updateMe({
-        public_profile: profile.plan === "pro" && editPublic,
+        public_profile: isPaid && editPublic,
         full_name: editFullName || undefined,
         bio: editBio || undefined,
         avatar_url: editAvatar || undefined,
@@ -277,8 +290,8 @@ function ProfilePageContent() {
               </div>
 
               <div className="field-row">
-                <p className="input-label">מסלול: {profile.plan === "pro" ? "Pro" : "חינם"}</p>
-                {profile.plan === "pro" ? <label className="flex gap-3 items-center">
+                <p className="input-label">מסלול: {PLAN_LABELS[profile.plan] ?? "חינם"}</p>
+                {isPaid ? <label className="flex gap-3 items-center">
                   <input type="checkbox" checked={editPublic} onChange={e => setEditPublic(e.target.checked)} />
                   <span>אני רוצה שהפרופיל שלי יהיה פתוח לציבור</span>
                 </label> : <p>הפרופיל שלך פרטי. אפשר לפתוח פרופיל לציבור במסלול Pro.</p>}
