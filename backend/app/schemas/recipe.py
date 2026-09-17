@@ -5,6 +5,15 @@ from app.models.recipe import DifficultyLevel, KosherType
 from app.schemas.user import UserPublic
 
 
+def _tags_never_null(cls, v):
+    """A column added to a live table starts out NULL on every existing row.
+
+    The field is a list to everyone reading it, so the empty list stands in
+    for a row that predates the column — otherwise every recipe saved before
+    today fails validation and the endpoint answers 500.
+    """
+    return v or []
+
 class Ingredient(BaseModel):
     amount: Optional[float] = None
     unit: Optional[str] = None
@@ -52,7 +61,8 @@ class RecipeCreate(RecipeCredit):
     difficulty: DifficultyLevel = DifficultyLevel.medium
     kosher_type: Optional[KosherType] = None
     category: Optional[str] = None
-    tags: List[str] = []
+    tags: Optional[List[str]] = None
+    _fix_tags = field_validator("tags", mode="before")(_tags_never_null)
     ingredients: List[Ingredient] = []
     instructions: List[Instruction] = []
     is_scanned: bool = False
@@ -68,7 +78,8 @@ class RecipeUpdate(RecipeCredit):
     difficulty: Optional[DifficultyLevel] = None
     kosher_type: Optional[KosherType] = None
     category: Optional[str] = None
-    tags: List[str] = []
+    tags: Optional[List[str]] = None
+    _fix_tags = field_validator("tags", mode="before")(_tags_never_null)
     ingredients: Optional[List[Ingredient]] = None
     instructions: Optional[List[Instruction]] = None
     is_published: Optional[bool] = None
@@ -85,7 +96,8 @@ class RecipeResponse(RecipeCredit):
     difficulty: DifficultyLevel
     kosher_type: Optional[KosherType]
     category: Optional[str]
-    tags: List[str] = []
+    tags: Optional[List[str]] = None
+    _fix_tags = field_validator("tags", mode="before")(_tags_never_null)
     ingredients: List[dict]
     instructions: List[dict]
     is_scanned: bool
@@ -117,7 +129,8 @@ class RecipeListItem(RecipeCredit):
     difficulty: DifficultyLevel
     kosher_type: Optional[KosherType]
     category: Optional[str] = None
-    tags: List[str] = []
+    tags: Optional[List[str]] = None
+    _fix_tags = field_validator("tags", mode="before")(_tags_never_null)
     likes_count: int
     saves_count: int
     average_rating: float = 0.0
