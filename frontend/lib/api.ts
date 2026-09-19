@@ -29,13 +29,44 @@ function _key(url: string, params?: Record<string, any>): string {
   return `${_authTag()}:${path}`;
 }
 
+/** Whether asking again could plausibly give a different answer.
+ *
+ *  The API sleeps when nobody is using it and takes the better part of a
+ *  minute to wake, so the first request after a quiet spell times out. One
+ *  timeout used to be the whole answer: every listing on the site would show
+ *  "we could not load the recipes" to whoever happened to arrive first.
+ *
+ *  A 404 or a 401 will say the same thing however many times it is asked. */
+export function worthRetrying(err: any): boolean {
+  const status = err?.response?.status;
+  if (status === undefined) return true;          // timeout, or no network
+  return status === 429 || status >= 500;
+}
+
+const RETRY_WAITS_MS = [1_000, 3_000, 6_000];
+
+async function getWithRetry(url: string, params?: Record<string, any>): Promise<any> {
+  let last: any;
+  for (let attempt = 0; attempt <= RETRY_WAITS_MS.length; attempt++) {
+    try {
+      // Long enough for a cold start; the retries are for the rest.
+      return await api.get(url, { params, timeout: 30_000 });
+    } catch (err) {
+      last = err;
+      if (attempt === RETRY_WAITS_MS.length || !worthRetrying(err)) break;
+      await new Promise((r) => setTimeout(r, RETRY_WAITS_MS[attempt]));
+    }
+  }
+  throw last;
+}
+
 function cachedGet(url: string, params?: Record<string, any>, ttlMs = 30_000): Promise<any> {
   const key = _key(url, params);
   const hit = _getCache.get(key);
   if (hit && hit.expires > Date.now()) return Promise.resolve(hit.data);
   const inflight = _inflight.get(key);
   if (inflight) return inflight;
-  const promise = api.get(url, { params, timeout: 20000 })
+  const promise = getWithRetry(url, params)
     .then((res) => { _getCache.set(key, { data: res, expires: Date.now() + ttlMs }); _inflight.delete(key); return res; })
     .catch((err) => { _inflight.delete(key); throw err; });
   _inflight.set(key, promise);
