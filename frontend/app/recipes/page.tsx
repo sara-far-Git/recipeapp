@@ -9,9 +9,9 @@ import RecipeLoading from "@/components/ui/RecipeLoading";
 import PageFrame from "@/components/ui/PageFrame";
 import { recipeMatchesCategory } from "@/lib/recipeSearch";
 import { SlidersHorizontal, ChevronDown, X, SearchX } from "lucide-react";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, TAGS } from "@/lib/categories";
 
-type Recipe = { id: number; title: string; category?: string; difficulty?: string; kosher_type?: string; prep_time_minutes?: number; author: { username: string; full_name?: string } };
+type Recipe = { id: number; title: string; category?: string; tags?: string[] | null; difficulty?: string; kosher_type?: string; prep_time_minutes?: number; author: { username: string; full_name?: string } };
 
 export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -20,6 +20,9 @@ export default function RecipesPage() {
   const [attempt, setAttempt] = useState(0);
   const [chef, setChef] = useState("");
   const [category, setCategory] = useState("");
+  // Cuts across the categories rather than sitting among them — a Passover
+  // cake is a dessert too — so it filters alongside one, never instead of it.
+  const [special, setSpecial] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [kosher, setKosher] = useState("");
   const [time, setTime] = useState("");
@@ -53,15 +56,17 @@ export default function RecipesPage() {
     .sort((a, b) => a.localeCompare(b, "he")), [recipes]);
   const filtered = useMemo(() => recipes.filter(r =>
     (!chef || chefName(r) === chef) && (!category || recipeMatchesCategory(r, category)) &&
+    (!special || (r.tags || []).includes(special)) &&
     (!difficulty || r.difficulty === difficulty) && (!kosher || r.kosher_type === kosher) &&
     (!time || (r.prep_time_minutes != null && r.prep_time_minutes <= Number(time)))
-  ), [recipes, chef, category, difficulty, kosher, time]);
-  useEffect(() => { setVisibleCount(24); }, [chef, category, difficulty, kosher, time]);
-  const clear = () => { setChef(""); setCategory(""); setDifficulty(""); setKosher(""); setTime(""); };
+  ), [recipes, chef, category, special, difficulty, kosher, time]);
+  useEffect(() => { setVisibleCount(24); }, [chef, category, special, difficulty, kosher, time]);
+  const clear = () => { setChef(""); setCategory(""); setSpecial(""); setDifficulty(""); setKosher(""); setTime(""); };
 
   const activeFilters = [
     { value: chef, label: chef, clear: () => setChef("") },
     { value: category, label: category, clear: () => setCategory("") },
+    { value: special, label: special, clear: () => setSpecial("") },
     { value: difficulty, label: ({ easy: "קל", medium: "בינוני", hard: "מאתגר" } as Record<string, string>)[difficulty], clear: () => setDifficulty("") },
     { value: kosher, label: ({ meat: "בשרי", dairy: "חלבי", pareve: "פרווה" } as Record<string, string>)[kosher], clear: () => setKosher("") },
     { value: time, label: `עד ${time} דקות הכנה`, clear: () => setTime("") },
@@ -79,9 +84,10 @@ export default function RecipesPage() {
         {activeFilters.length > 0 && <span className="catalog-filter-count">{activeFilters.length}</span>}
         <ChevronDown size={18} className={filtersOpen ? "rotate-180" : ""} />
       </button>
-      <div id="catalog-filter-fields" className={`${filtersOpen ? "grid" : "hidden"} sm:grid grid-cols-2 md:grid-cols-5 gap-4 catalog-filters`}>
+      <div id="catalog-filter-fields" className={`${filtersOpen ? "grid" : "hidden"} sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 catalog-filters`}>
         <label>שף<select value={chef} onChange={e => setChef(e.target.value)}><option value="">כל השפים</option>{chefs.map(c => <option key={c} value={c}>{c}</option>)}</select></label>
         <label>קטגוריה<select value={category} onChange={e => setCategory(e.target.value)}><option value="">כל הקטגוריות</option>{CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}</select></label>
+        <label>סינונים מיוחדים<select value={special} onChange={e => setSpecial(e.target.value)}><option value="">הכול</option>{TAGS.map(t => <option key={t} value={t}>{t}</option>)}</select></label>
         <label>רמת קושי<select value={difficulty} onChange={e => setDifficulty(e.target.value)}><option value="">כל הרמות</option><option value="easy">קל</option><option value="medium">בינוני</option><option value="hard">מאתגר</option></select></label>
         <label>כשרות<select value={kosher} onChange={e => setKosher(e.target.value)}><option value="">כל הסוגים</option><option value="meat">בשרי</option><option value="dairy">חלבי</option><option value="pareve">פרווה</option></select></label>
         <label>זמן הכנה<select value={time} onChange={e => setTime(e.target.value)}><option value="">כל הזמנים</option><option value="15">עד 15 דקות</option><option value="30">עד 30 דקות</option><option value="60">עד שעה</option></select></label>
