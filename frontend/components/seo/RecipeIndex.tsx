@@ -9,8 +9,13 @@ import type { IndexRecipe } from "@/lib/recipeIndex";
  *  The sitemap was the only way in, which is why the recipes sat at "crawled,
  *  currently not indexed" — discovered, but with nothing pointing at them.
  *
- *  Readers see this list too. One rendered only for crawlers would be cloaking,
- *  and an index of a page's own contents is worth showing anyway.
+ *  It sits outside the page's cream panel, on the dark ground the body paints
+ *  behind it, so it colours itself for that and not for the panel.
+ *
+ *  Folded shut by default. Two hundred links are a wall, not a list, and the
+ *  markup is the same open or closed — a crawler reads the whole thing either
+ *  way. Readers see it too; a list rendered only for crawlers would be
+ *  cloaking.
  */
 export default function RecipeIndex({
   recipes,
@@ -24,29 +29,42 @@ export default function RecipeIndex({
   const data = recipeListStructuredData(published);
 
   return (
-    <nav aria-label={heading} dir="rtl" className="mx-auto max-w-6xl px-4 pb-12 pt-4 sm:px-6">
+    <nav
+      aria-label={heading}
+      dir="rtl"
+      className="mx-auto max-w-6xl px-4 pb-10 pt-2 text-sm sm:px-6"
+      style={{ color: "#E3CFB2" }}
+    >
       {data && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
         />
       )}
-      <h2 className="mb-4 border-t pt-6 text-base font-semibold" style={{ color: "#0B2A20", borderColor: "#E3CFB2" }}>
-        {heading}
-      </h2>
-      <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-        {published.map((r) => (
-          <li key={r.id}>
-            <Link
-              href={`/recipe/${r.id}`}
-              className="underline-offset-4 hover:underline"
-              style={{ color: "#0B2A20" }}
-            >
-              {r.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <details>
+        <summary
+          className="cursor-pointer list-none py-2 font-semibold underline-offset-4 hover:underline"
+          style={{ color: "#E3CFB2" }}
+        >
+          {heading}
+          <span className="mr-2 font-normal" style={{ color: "#D97757" }}>
+            {published.length}
+          </span>
+        </summary>
+        <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-3 opacity-90">
+          {published.map((r) => (
+            <li key={r.id}>
+              <Link
+                href={`/recipe/${r.id}`}
+                className="underline-offset-4 hover:underline"
+                style={{ color: "inherit" }}
+              >
+                {r.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </details>
     </nav>
   );
 }
