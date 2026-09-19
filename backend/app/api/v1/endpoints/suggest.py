@@ -15,8 +15,15 @@ from typing import Optional
 router = APIRouter(prefix="/suggest", tags=["suggest"])
 
 
-def _like(value: str) -> str:
-    """A contains-pattern with the wildcards spelled out rather than obeyed."""
+def like_contains(value: str) -> str:
+    """A contains-pattern with the wildcards spelled out rather than obeyed.
+
+    Always pair it with escape="!". That is not decoration: the values this
+    matches against are ASCII-escaped JSON, so they are full of backslashes,
+    and a LIKE without an explicit escape character treats backslash as one —
+    on PostgreSQL. SQLite does not, which is how a filter can pass every local
+    test and still match nothing in production.
+    """
     escaped = value.replace("!", "!!").replace("%", "!%").replace("_", "!_")
     return f"%{escaped}%"
 
@@ -56,7 +63,7 @@ def suggest_from_ingredients(
     for ing in data.ingredients[:10]:  # limit to 10
         for pattern in json_text_variants(ing):
             conditions.append(
-                cast(Recipe.ingredients, String).ilike(_like(pattern), escape="!")
+                cast(Recipe.ingredients, String).ilike(like_contains(pattern), escape="!")
             )
 
     if conditions:

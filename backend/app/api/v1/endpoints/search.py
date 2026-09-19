@@ -6,7 +6,7 @@ from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_optional_current_user
 from app.models.user import User, Follow
-from app.api.v1.endpoints.suggest import json_text_variants
+from app.api.v1.endpoints.suggest import json_text_variants, like_contains
 from app.models.recipe import Recipe, Like, SavedRecipe, DifficultyLevel, KosherType, visible_to
 from app.schemas.recipe import RecipeListItem
 
@@ -64,10 +64,12 @@ def search_recipes(
         # Tags live in a JSON list, and the serializer writes ASCII — a row
         # holding "פסח" reads as "\u05e4\u05e1\u05d7" once cast back to text.
         # Matching both spellings is the same problem the ingredient search
-        # already solved, so it uses the same helper. The quotes keep a label
-        # from matching a longer one that merely contains it.
+        # already solved, so it uses the same helpers — including the escape,
+        # without which PostgreSQL reads those backslashes as LIKE escapes and
+        # the filter matches nothing at all. The quotes keep a label from
+        # matching a longer one that merely contains it.
         query = query.filter(or_(*[
-            cast(Recipe.tags, String).like(f'%"{v}"%')
+            cast(Recipe.tags, String).like(like_contains(f'"{v}"'), escape="!")
             for v in json_text_variants(tag)
         ]))
 
