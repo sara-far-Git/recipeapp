@@ -34,7 +34,7 @@ export function generateMetadata({ params }: Props): Metadata {
     title: meta.name,
     description: meta.desc,
     alternates: { canonical: `${SITE_URL}/category/${encodeURIComponent(meta.name)}` },
-    openGraph: { title: `${meta.name} · ספר המתכונים`, description: meta.desc },
+    openGraph: { title: `${meta.name} · Recipe Space`, description: meta.desc },
   };
 }
 

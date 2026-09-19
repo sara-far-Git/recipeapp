@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "ארבע סעודות לראש השנה — שתיים בלילה ושתיים ביום. בוחרים מתכון אחד לכל מנה, ואז מוציאים רשימת קניות.",
   alternates: { canonical: `${SITE_URL}/holiday` },
   openGraph: {
-    title: "תכנון ראש השנה · ספר המתכונים",
+    title: "תכנון ראש השנה · Recipe Space",
     description: "ארבע סעודות לראש השנה — שתיים בלילה ושתיים ביום. בוחרים מתכון אחד לכל מנה, ואז מוציאים רשימת קניות.",
   },
 };

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "כל המצרכים מהמתכונים שבחרתם, מרוכזים ברשימה אחת.",
   alternates: { canonical: `${SITE_URL}/shopping` },
   robots: { index: false, follow: true },
-  openGraph: { title: "רשימת קניות · ספר המתכונים", description: "כל המצרכים מהמתכונים שבחרתם, מרוכזים ברשימה אחת." },
+  openGraph: { title: "רשימת קניות · Recipe Space", description: "כל המצרכים מהמתכונים שבחרתם, מרוכזים ברשימה אחת." },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

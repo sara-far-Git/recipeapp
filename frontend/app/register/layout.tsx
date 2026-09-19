@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "פותחים ספר משלכם — שומרים מתכונים וחוזרים אליהם מכל מכשיר.",
   alternates: { canonical: `${SITE_URL}/register` },
   robots: { index: false, follow: true },
-  openGraph: { title: "הרשמה · ספר המתכונים", description: "פותחים ספר משלכם — שומרים מתכונים וחוזרים אליהם מכל מכשיר." },
+  openGraph: { title: "הרשמה · Recipe Space", description: "פותחים ספר משלכם — שומרים מתכונים וחוזרים אליהם מכל מכשיר." },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

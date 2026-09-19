@@ -1,6 +1,6 @@
 {
-  "name": "Recipes Book — ספר המתכונים",
-  "short_name": "Recipes",
+  "name": "Recipe Space — ספר המתכונים",
+  "short_name": "Recipe Space",
   "description": "המתכונים של הבית, במקום אחד — עם רשימת קניות שנבנית מהם",
   "start_url": "/",
   "display": "standalone",

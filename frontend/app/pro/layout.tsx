@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "יותר סריקות AI, ייבוא מקישור, פרסום לקהילה וחבילת סריקות נוספת.",
   alternates: { canonical: `${SITE_URL}/pro` },
   openGraph: {
-    title: "גרסת Pro · ספר המתכונים",
+    title: "גרסת Pro · Recipe Space",
     description: "יותר סריקות AI, ייבוא מקישור, פרסום לקהילה וחבילת סריקות נוספת.",
   },
 };

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "תנאי שימוש",
   description: "התנאים לשימוש בספר המתכונים.",
   alternates: { canonical: `${SITE_URL}/terms` },
-  openGraph: { title: "תנאי שימוש · ספר המתכונים", description: "התנאים לשימוש בספר המתכונים." },
+  openGraph: { title: "תנאי שימוש · Recipe Space", description: "התנאים לשימוש בספר המתכונים." },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

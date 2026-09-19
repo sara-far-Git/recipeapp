@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "חיפוש מתכונים",
   description: "חפשו מתכון לפי שם, קטגוריה, כשרות, רמת קושי או זמן הכנה.",
   alternates: { canonical: `${SITE_URL}/search` },
-  openGraph: { title: "חיפוש מתכונים · ספר המתכונים", description: "חפשו מתכון לפי שם, קטגוריה, כשרות, רמת קושי או זמן הכנה." },
+  openGraph: { title: "חיפוש מתכונים · Recipe Space", description: "חפשו מתכון לפי שם, קטגוריה, כשרות, רמת קושי או זמן הכנה." },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

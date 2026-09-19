@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   // Pages set their own title; this frames it and covers the routes that don't.
   title: {
-    default: "ספר המתכונים — המתכונים שנשארים",
-    template: "%s · ספר המתכונים",
+    default: "Recipe Space · ספר המתכונים",
+    template: "%s · Recipe Space",
   },
   description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
-  applicationName: "ספר המתכונים",
+  applicationName: "Recipe Space",
   manifest: "/manifest.json",
   icons: {
     icon: [{ url: "/icon-512.png?v=2", type: "image/png", sizes: "512x512" }],
@@ -28,23 +28,23 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
-    siteName: "ספר המתכונים",
+    siteName: "Recipe Space",
     locale: "he_IL",
     url: SITE_URL,
-    title: "ספר המתכונים — המתכונים שנשארים",
+    title: "Recipe Space · ספר המתכונים",
     description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
-    images: [{ url: "/icon-512.png?v=2", width: 512, height: 512, alt: "ספר המתכונים" }],
+    images: [{ url: "/icon-512.png?v=2", width: 512, height: 512, alt: "Recipe Space" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ספר המתכונים",
+    title: "Recipe Space · ספר המתכונים",
     description: "שומרים מתכונים של הבית, ובונים רשימת קניות מהם.",
     images: ["/icon-512.png?v=2"],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "מתכונים",
+    title: "Recipe Space",
   },
 };
 
