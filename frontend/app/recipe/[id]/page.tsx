@@ -419,29 +419,23 @@ export default function RecipeDetailPage() {
   מתכון
   </Link>
 
-  {/* Hero image */}
+  {recipe.image_url && (
+  <>
   <div className="recipe-hero relative overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#E3CFB2" }}>
-  {recipe.image_url ? (
   <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
-  ) : (
-  <div className="flex flex-col items-center justify-center h-full gap-3 p-8" style={{ background: "#E3CFB2" }}>
-  <span className="eyebrow">{recipe.category || "מתכון"}</span>
-  <p className="card-title text-bark-500 text-center line-clamp-2">{recipe.title}</p>
-  <span className="block h-px w-10" style={{ background: "#D97757" }} />
-  </div>
-  )}
   {recipe.kosher_type && (
   <span className="absolute top-4 right-4 px-3 py-1  bg-surface-50/80 backdrop-blur-sm text-xs font-semibold text-bark-500">
   {kosherLabels[recipe.kosher_type]}
   </span>
   )}
   </div>
-
-  {recipe.image_url && (recipe.image_source || recipe.image_credit) && (
+  {(recipe.image_source || recipe.image_credit) && (
     <div className="mb-6 text-sm text-forest-700 break-words">
       {recipe.image_credit && <p>צילום: {recipe.image_credit}</p>}
       {recipe.image_source && <p>מקור התמונה: {recipe.image_source}</p>}
     </div>
+  )}
+  </>
   )}
   {/* Meta eyebrow */}
   <div className="text-center mb-4 animate-fade-up" style={{ animationDelay: "40ms" }}>
