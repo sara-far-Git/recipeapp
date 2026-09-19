@@ -1,7 +1,7 @@
 import { loadSitemapRecipes } from "@/lib/sitemapRecipes";
 import type { MetadataRoute } from "next";
 import { CATEGORIES } from "@/lib/categories";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, apiGetResult } from "@/lib/site";
 
 // Fetch the catalog at request time: API availability must not block deployment.
 export const dynamic = "force-dynamic";
@@ -26,9 +26,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // A cook's own page is where a search for their name should land. Only the
+  // ones who turned the public toggle on have a page at all — the API answers
+  // 404 for the rest — so ask it rather than guess, and keep soft 404s out of
+  // the sitemap.
+  const authors = Array.from(
+    new Set(
+      recipes
+        .map((r) => r.author?.username)
+        .filter((u): u is string => typeof u === "string" && u.trim().length > 0),
+    ),
+  );
+  const checked = await Promise.all(
+    authors.map(async (username) => {
+      const { status } = await apiGetResult(`/users/${encodeURIComponent(username)}`, 3600);
+      return status === 200 ? username : null;
+    }),
+  );
+  const profiles = checked
+    .filter((u): u is string => u !== null)
+    .map((username) => ({
+      url: `${SITE_URL}/profile/${encodeURIComponent(username)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+
   return [
     ...staticRoutes,
     ...categories,
+    ...profiles,
     ...recipes.map((r) => ({
       url: `${SITE_URL}/recipe/${r.id}`,
       lastModified: r.updated_at || r.created_at,

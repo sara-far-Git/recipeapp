@@ -1,6 +1,12 @@
 import { API_ORIGIN } from "./site";
 
-export type SitemapRecipe = { id: number; category?: string | null; updated_at?: string; created_at?: string };
+export type SitemapRecipe = {
+  id: number;
+  category?: string | null;
+  updated_at?: string;
+  created_at?: string;
+  author?: { username?: string | null } | null;
+};
 
 export async function loadSitemapRecipes(): Promise<SitemapRecipe[]> {
   const recipes = new Map<number, SitemapRecipe>();

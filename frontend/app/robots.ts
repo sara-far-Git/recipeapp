@@ -7,7 +7,10 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       disallow: [
-        "/login", "/register", "/shopping", "/profile/", "/recipe/new",
+        // "/profile/" stays crawlable: the API answers 404 for every profile
+        // whose owner has not turned the public toggle on, so only the cooks
+        // who asked to be found can be found.
+        "/login", "/register", "/shopping", "/recipe/new",
         "/preview/", "/admin",
       ],
     },
