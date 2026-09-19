@@ -12,9 +12,12 @@
 """
 import argparse
 import getpass
+import http.client
 import json
 import os
+import socket
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -22,7 +25,13 @@ import urllib.request
 LIVE_API = "https://recipeapp-backend-iwn0.onrender.com"
 
 
-def call(url, payload=None, token=None, method="GET", form=False):
+# Tagging a booklet is dozens of calls in a row against a server that sleeps
+# when idle, so some of them meet it half awake and get no answer at all.
+TRANSIENT = (http.client.HTTPException, socket.timeout, urllib.error.URLError, ConnectionError)
+RETRY_CODES = {429, 500, 502, 503, 504}
+
+
+def _call_once(url, payload=None, token=None, method="GET", form=False):
     data = None
     headers = {}
     if payload is not None:
@@ -40,6 +49,29 @@ def call(url, payload=None, token=None, method="GET", form=False):
     # The server sleeps when idle and takes most of a minute to wake.
     with urllib.request.urlopen(req, timeout=90) as res:
         return json.loads(res.read().decode())
+
+
+def call(url, payload=None, token=None, method="GET", form=False, tries=4):
+    """Same call, retried only where retrying can help.
+
+    A 401 or a 404 will say the same thing however many times it is asked;
+    a dropped connection or a waking server will not.
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            return _call_once(url, payload, token=token, method=method, form=form)
+        except urllib.error.HTTPError as e:
+            if e.code not in RETRY_CODES or attempt == tries:
+                raise
+            reason = f"{e.code}"
+        except TRANSIENT as e:
+            if attempt == tries:
+                raise
+            reason = type(e).__name__
+        wait = 5 * attempt
+        print(f"    השרת לא ענה ({reason}) — ניסיון {attempt + 1} מתוך {tries} בעוד {wait} שניות",
+              file=sys.stderr)
+        time.sleep(wait)
 
 
 def every_recipe(api, token):
@@ -90,7 +122,7 @@ def main():
         print("--dry-run — לא שונה כלום.")
         return
 
-    changed = skipped = 0
+    changed = skipped = failed = 0
     for i, r in enumerate(hits, 1):
         tags = list(r.get("tags") or [])
         if args.tag in tags:
@@ -103,10 +135,20 @@ def main():
             changed += 1
             print(f"  [{i}/{len(hits)}] {r['title']}")
         except urllib.error.HTTPError as e:
+            failed += 1
             print(f"  [{i}/{len(hits)}] {r['title']} — נכשל: {e.code}", file=sys.stderr)
+        # One recipe the server never answered for must not end the run with
+        # the rest of the booklet still untagged.
+        except TRANSIENT as e:
+            failed += 1
+            print(f"  [{i}/{len(hits)}] {r['title']} — נכשל: אין תשובה מהשרת ({type(e).__name__})",
+                  file=sys.stderr)
 
     print(f'\nסומנו {changed} מתכונים בתגית "{args.tag}".'
           + (f" {skipped} כבר היו מסומנים." if skipped else ""))
+    if failed:
+        print(f"{failed} נכשלו — אפשר להריץ שוב, מה שכבר סומן יידלג.", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

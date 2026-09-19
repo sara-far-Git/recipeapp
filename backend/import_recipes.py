@@ -15,9 +15,12 @@ RECIPE_TOKEN ואז לא תישאל בכלל.
 """
 import argparse
 import getpass
+import http.client
 import json
 import os
+import socket
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -28,7 +31,15 @@ DIFFICULTIES = {"easy", "medium", "hard"}
 KOSHER = {"meat", "dairy", "pareve", "non_kosher"}
 
 
-def _post(url, payload, token=None, form=False):
+# A dropped connection is not an answer, and the free tier drops them: the
+# server sleeps when idle, and a long run keeps meeting it half awake. These
+# used to escape the per-recipe error handling below and kill the whole run —
+# which is how one import stopped at 89 of 93 with no failure reported.
+TRANSIENT = (http.client.HTTPException, socket.timeout, urllib.error.URLError, ConnectionError)
+RETRY_CODES = {429, 500, 502, 503, 504}
+
+
+def _post_once(url, payload, token=None, form=False):
     if form:
         body = urllib.parse.urlencode(payload).encode()
         ctype = "application/x-www-form-urlencoded"
@@ -42,6 +53,30 @@ def _post(url, payload, token=None, form=False):
     # The server sleeps when idle and takes most of a minute to wake.
     with urllib.request.urlopen(req, timeout=90) as res:
         return json.loads(res.read().decode())
+
+
+def _post(url, payload, token=None, form=False, tries=4):
+    """Same call, but a sleeping server costs a wait instead of the run.
+
+    Only the answers that can change on their own are retried. A 400 or a 401
+    means the request itself is wrong, and sending it again would just be
+    wrong more slowly.
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            return _post_once(url, payload, token=token, form=form)
+        except urllib.error.HTTPError as e:
+            if e.code not in RETRY_CODES or attempt == tries:
+                raise
+            reason = f"{e.code}"
+        except TRANSIENT as e:
+            if attempt == tries:
+                raise
+            reason = type(e).__name__
+        wait = 5 * attempt
+        print(f"    השרת לא ענה ({reason}) — ניסיון {attempt + 1} מתוך {tries} בעוד {wait} שניות",
+              file=sys.stderr)
+        time.sleep(wait)
 
 
 def login(api, email, password):
@@ -161,6 +196,12 @@ def main():
         except urllib.error.HTTPError as e:
             detail = e.read().decode()[:200]
             print(f"  [{i}/{len(recipes)}] {title} — נכשל: {e.code} {detail}", file=sys.stderr)
+            failed.append(title)
+        # One recipe the server never answered for must not end the run and
+        # take every recipe after it down with it.
+        except TRANSIENT as e:
+            print(f"  [{i}/{len(recipes)}] {title} — נכשל: אין תשובה מהשרת ({type(e).__name__})",
+                  file=sys.stderr)
             failed.append(title)
 
     print(f"\nנוספו {ok} מתוך {len(recipes)}.")
