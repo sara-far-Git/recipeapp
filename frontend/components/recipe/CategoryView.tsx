@@ -1,0 +1,119 @@
+"use client";
+
+import Link from "next/link";
+import { useAuth } from "@/lib/auth";
+import RecipeListJsonLd from "@/components/recipe/RecipeListJsonLd";
+import RecipeCard from "@/components/recipe/RecipeCard";
+import PageFrame from "@/components/ui/PageFrame";
+import { Plus } from "lucide-react";
+import { CATEGORIES } from "@/lib/categories";
+import { cn } from "@/lib/utils";
+import type { CatalogueRecipe } from "@/lib/catalogue";
+
+/** The category's recipes, handed over by the server.
+ *
+ *  This used to fetch them itself, which meant the HTML a crawler received
+ *  carried the heading and no recipes — and these five pages are where every
+ *  recipe on the site is linked from.
+ */
+export default function CategoryView({
+  name,
+  desc,
+  recipes,
+}: {
+  name: string;
+  desc?: string;
+  recipes: CatalogueRecipe[];
+}) {
+  const { user } = useAuth();
+  const meta = { desc };
+  const others = CATEGORIES.filter((c) => c.name !== name);
+
+  return (
+    <PageFrame tone="terracotta" className="category-experience">
+    <div className="max-w-5xl mx-auto">
+      <header className="experience-hero experience-hero--category mb-8 animate-fade-up">
+        <Link href="/recipes" className="eyebrow mb-4 min-h-[24px] hover:text-cinnamon-500 transition-colors">
+          <span className="plus-badge text-bark-500">
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
+          </span>
+          כל המתכונים
+        </Link>
+        <h1 className="display-lg text-bark-500">{name}</h1>
+        <p className="text-bark-300 text-lg mt-3 max-w-md leading-snug">
+          {meta?.desc ?? "מתכונים לפי סוג מנה"}
+        </p>
+        <p className="text-sm text-bark-200 mt-3">
+          {recipes.length === 0 ? "עדיין אין מתכונים כאן" : recipes.length === 1 ? "מתכון אחד" : `${recipes.length} מתכונים`}
+        </p>
+      </header>
+
+      {recipes.length === 0 ? (
+        <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
+          <div className="card-surface empty-chapter p-8 sm:p-10 mb-12">
+            <p className="section-title text-bark-500 mb-2">הפרק הזה עדיין ריק</p>
+            <p className="text-bark-300 text-sm leading-relaxed max-w-md mb-6">
+              {meta?.desc ?? "עוד לא נכתב כאן כלום."} אפשר להתחיל במתכון ראשון, או לעבור לקטגוריה אחרת.
+            </p>
+            <Link href={user ? "/recipe/new" : "/login"} className="btn-block inline-flex">
+              {user ? "כותבים מתכון" : "נכנסים כדי לכתוב"}
+            </Link>
+          </div>
+
+          <p className="eyebrow mb-4">עוד באוסף</p>
+          <div style={{ borderTop: "1px solid rgba(39,94,80,0.12)" }}>
+            {others.map((cat, i) => (
+              <Link
+                key={cat.name}
+                href={`/category/${encodeURIComponent(cat.name)}`}
+                className="group w-full text-right py-4 flex items-center gap-5 sm:gap-8 hover:bg-surface-100/70 transition-colors"
+                style={{ borderBottom: "1px solid rgba(39,94,80,0.12)" }}
+              >
+                <span className="tabular text-sm w-8 text-bark-200">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className="text-xl sm:text-2xl font-extrabold text-bark-500 group-hover:text-cinnamon-500 transition-colors"
+                  style={{ letterSpacing: 0 }}
+                >
+                  {cat.name}
+                </span>
+                <span className="hidden sm:block flex-1 text-[15px] text-bark-200">
+                  {cat.desc}
+                </span>
+                <span className={cn("plus-badge mr-auto text-bark-300 group-hover:text-cinnamon-500")}>
+                  <Plus className="w-4 h-4" strokeWidth={2.4} />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          <RecipeListJsonLd recipes={recipes} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+            {recipes.map((recipe, i) => (
+              <div key={recipe.id} className="animate-slide-up" style={{ animationDelay: `${i * 50}ms` }}>
+                <RecipeCard recipe={recipe} />
+              </div>
+            ))}
+          </div>
+
+          <p className="eyebrow mb-4">עוד באוסף</p>
+          <div className="experience-tabs flex flex-wrap gap-2">
+            {others.map((cat) => (
+              <Link
+                key={cat.name}
+                href={`/category/${encodeURIComponent(cat.name)}`}
+                className="px-4 py-2 text-sm font-bold text-bark-400 border border-surface-400 hover:border-bark-500 hover:text-bark-500 transition-colors"
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+    </PageFrame>
+  );
+}

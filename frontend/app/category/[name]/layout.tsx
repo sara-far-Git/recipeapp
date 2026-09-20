@@ -1,6 +1,4 @@
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import RecipeIndex from "@/components/seo/RecipeIndex";
-import { loadIndexRecipes } from "@/lib/recipeIndex";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CATEGORIES, getCategory } from "@/lib/categories";
@@ -40,13 +38,12 @@ export function generateMetadata({ params }: Props): Metadata {
 
 /** The category list is fixed, so anything else is a real 404 rather than an
  *  empty page echoing whatever was in the URL. */
-export default async function CategoryLayout({ children, params }: Props & { children: React.ReactNode }) {
+export default function CategoryLayout({ children, params }: Props & { children: React.ReactNode }) {
   const category = resolve(params.name);
   if (!category) notFound();
-  const recipes = (await loadIndexRecipes()).filter((r) => r.category === category.name);
   return <><Breadcrumbs items={[
     { name: "בית", path: "/" },
     { name: "מתכונים", path: "/recipes" },
     { name: category.name, path: `/category/${encodeURIComponent(category.name)}` },
-  ]} />{children}<RecipeIndex recipes={recipes} heading={`כל המתכונים בקטגוריית ${category.name}`} /></>;
+  ]} />{children}</>;
 }
