@@ -30,7 +30,10 @@ import uuid
 
 LIVE_API = "https://recipeapp-backend-iwn0.onrender.com"
 TRANSIENT = (http.client.HTTPException, socket.timeout, urllib.error.URLError, ConnectionError)
-RETRY_CODES = {429, 500, 502, 503, 504}
+# 429 is deliberately not here. The upload limit is counted by the hour, so
+# waiting fifteen seconds and asking again cannot help — it only turns a clear
+# stop into a long one. It is raised to the caller, which stops the run.
+RETRY_CODES = {500, 502, 503, 504}
 TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
          ".webp": "image/webp", ".gif": "image/gif"}
 
@@ -148,7 +151,17 @@ def main():
             print(f"{label} → {url}")
             done += 1
         except urllib.error.HTTPError as e:
-            print(f"{label} — נכשל: {e.code} {e.read().decode()[:160]}", file=sys.stderr)
+            detail = e.read().decode()[:160]
+            if e.code == 429:
+                # The allowance is per hour. Everything after this would fail
+                # the same way, so stop while the message is still useful.
+                print(f"{label} — מגבלת קצב: {detail}", file=sys.stderr)
+                print(f"\nצורפו {done} תמונות ונעצרנו במגבלת הקצב של ההעלאות.\n"
+                      f"אפשר להריץ שוב בעוד שעה — מה שכבר עלה מדולג.\n"
+                      f"כדי להעלות הרבה בבת אחת אפשר להגדיל זמנית את RATE_LIMIT_UPLOAD "
+                      f"בהגדרות של רנדר, ולהחזיר אחר כך.", file=sys.stderr)
+                sys.exit(1)
+            print(f"{label} — נכשל: {e.code} {detail}", file=sys.stderr)
             failed += 1
         except (OSError, *TRANSIENT) as e:
             print(f"{label} — נכשל: {e}", file=sys.stderr)
