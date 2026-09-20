@@ -1,0 +1,60 @@
+# Render's free plan stops the container when nothing has asked it for
+# anything, and the next visitor waits out a cold start. Inbound traffic is
+# what keeps it up, so this sends some.
+#
+# Only during waking hours. The free plan comes with a monthly instance-hour
+# allowance (750 in Render's published terms) and a full month is about 730
+# hours, so keeping the service up around the clock would spend nearly all of
+# it — and leave nothing for a second free service. 07:00–23:00 Israel time is
+# roughly 490 hours a month, which fits with room to spare, and covers the
+# hours anyone is actually cooking.
+name: Keep the API warm
+
+on:
+  schedule:
+    # Every ten minutes between 04:00 and 21:59 UTC. That window is wider than
+    # the one we want on purpose: GitHub cron is UTC only, Israel is UTC+3 in
+    # summer and UTC+2 in winter, and the step below trims it to local hours so
+    # the clock change needs no edit here.
+    - cron: "*/10 4-21 * * *"
+  workflow_dispatch:
+
+# A run already in flight is doing the job; a second one adds nothing.
+concurrency:
+  group: keep-warm
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    name: Ping /health
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Skip outside waking hours in Israel
+        id: hours
+        run: |
+          hour=$(TZ=Asia/Jerusalem date +%H)
+          if [ "$hour" -ge 7 ] && [ "$hour" -le 22 ]; then
+            echo "within=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "within=false" >> "$GITHUB_OUTPUT"
+            echo "Israel local hour is $hour — outside 07:00–23:00, not pinging."
+          fi
+
+      - name: Ping
+        if: steps.hours.outputs.within == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          url="https://recipeapp-backend-iwn0.onrender.com/health"
+          # A cold start can take most of a minute, and the point of the
+          # request is to pay that cost here rather than leave it to a reader.
+          for attempt in 1 2 3; do
+            code=$(curl -sS -m 90 -o /tmp/body -w '%{http_code}' "$url" || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "$code — $(cat /tmp/body)"
+              exit 0
+            fi
+            echo "attempt $attempt: $code" >&2
+            [ "$attempt" -lt 3 ] && sleep 15
+          done
+          echo "The API did not answer 200 after three attempts." >&2
+          exit 1
