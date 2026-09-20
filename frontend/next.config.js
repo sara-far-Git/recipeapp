@@ -15,6 +15,15 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // Vercel serves every deployment on a *.vercel.app host as well as on
+      // the real domain, and Google indexed one of them: the same recipes
+      // competing with recipespace.co.il under a name nobody typed. The
+      // canonical tag asks nicely; this settles it.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "(?<preview>.*)\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
       {
         source: "/(.*)",
         headers: [
