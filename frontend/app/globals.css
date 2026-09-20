@@ -263,10 +263,16 @@
   .home-page .food-orb::after,
   .home-page .food-orb > span,
   .home-page .food-orb img,
+  /* A circle cost about a third of every photograph: the square crop took the
+     long edge, then the mask took the corners. These are kitchen photographs,
+     not portraits composed for a medallion, and what the circle removed —
+     the plate, the table, the edges — was the part that said what the dish
+     was. The frame now matches the pictures: their median is 4:3 almost
+     exactly, which keeps 87% of the average one against 74% for a square. */
   .home-page .weekly-photo,
   .home-page .weekly-photo > span,
   .home-page .weekly-photo img {
-    border-radius: 50% !important;
+    border-radius: var(--r-lg) !important;
   }
   .hero-search {
     min-height: 56px;

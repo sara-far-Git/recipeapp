@@ -403,7 +403,7 @@ export default function FeedPage() {
               <div className="weekly-spread-grid">
                 <Reveal>
                   <Link href={`/recipe/${editorPick.id}`} className="weekly-photo-frame relative block group">
-                    <div className="weekly-photo relative aspect-square rounded-full overflow-hidden border border-cream-50/20"
+                    <div className="weekly-photo relative aspect-[4/3] overflow-hidden border border-cream-50/20"
                       style={{ boxShadow: "0 28px 70px rgba(12,40,31,0.45)" }}>
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 70vw, 34rem" />
