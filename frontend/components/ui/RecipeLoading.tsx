@@ -11,7 +11,7 @@ type RecipeLoadingProps = {
 const LABELS: Record<LoaderKind, string> = {
   recipe: "פותח את המתכון",
   search: "מוצא מתכונים מתאימים",
-  collection: "פותח את ספר המתכונים",
+  collection: "פותח את הבית של המתכונים",
   shopping: "מסדר את רשימת הקניות",
 };
 

@@ -42,11 +42,11 @@ export default function Footer() {
       <footer className="site-footer pb-24 sm:pb-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-6 text-center">
-            <Link href="/" className="inline-flex" aria-label="ספר המתכונים — דף הבית">
+            <Link href="/" className="inline-flex" aria-label="הבית של המתכונים — דף הבית">
               <Logo transparent size={72} />
             </Link>
             <p className="site-footer__blurb text-[15px] max-w-md">
-              ספר המתכונים — המקום שבו המתכונים של הבית נשמרים, נמצאים, וחוזרים לשולחן.
+              הבית של המתכונים — המקום שבו הם נשמרים, נמצאים, וחוזרים לשולחן.
             </p>
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
               <Link href="/privacy" className="site-footer__link inline-flex items-center min-h-11 px-2">מדיניות פרטיות</Link>
@@ -72,7 +72,7 @@ export default function Footer() {
               )}
             </div>
 
-            <div className="site-footer__fine text-[13px]">© 2026 ספר המתכונים — כל הזכויות שמורות</div>
+            <div className="site-footer__fine text-[13px]">© 2026 הבית של המתכונים — כל הזכויות שמורות</div>
           </div>
         </div>
       </footer>

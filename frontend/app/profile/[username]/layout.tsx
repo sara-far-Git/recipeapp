@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     (user.bio || "").trim() ||
     (count > 0
-      ? `${count} מתכונים של ${name}, בספר המתכונים.`
-      : `המתכונים של ${name}, בספר המתכונים.`);
+      ? `${count} מתכונים של ${name}, בבית של המתכונים.`
+      : `המתכונים של ${name}, בבית של המתכונים.`);
   const url = `${SITE_URL}/profile/${encodeURIComponent(raw)}`;
 
   return {

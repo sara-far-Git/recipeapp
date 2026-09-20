@@ -12,6 +12,6 @@ export default function Loading() {
     : path.startsWith("/profile/") ? "טוען את הפרופיל"
     : path.startsWith("/login") ? "מכין את הכניסה לספר"
     : path.startsWith("/register") ? "מכין מקום לספר שלכם"
-    : "פותח את ספר המתכונים";
+    : "פותח את הבית של המתכונים";
   return <RecipeLoading label={label} />;
 }

@@ -19,7 +19,7 @@ export default function Logo({
   return (
     <Image
       src={transparent ? "/logo-transparent.png" : solid ? "/logo-solid.png" : "/logo.png"}
-      alt="ספר המתכונים"
+      alt="הבית של המתכונים"
       width={transparent ? transparentWidth : size}
       height={size}
       priority={priority}

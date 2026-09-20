@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description =
     recipe.description?.trim() ||
-    `מתכון ל${recipe.title}${recipe.category ? ` · ${recipe.category}` : ""}, בספר המתכונים.`;
+    `מתכון ל${recipe.title}${recipe.category ? ` · ${recipe.category}` : ""}, בבית של המתכונים.`;
   const url = `${SITE_URL}/recipe/${recipe.id}`;
   const image = absoluteImage(recipe.image_url) || `${SITE_URL}/icon-512`;
 

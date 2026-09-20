@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   // Pages set their own title; this frames it and covers the routes that don't.
   title: {
-    default: "Recipe Space · ספר המתכונים",
+    default: "Recipe Space · הבית של המתכונים",
     template: "%s · Recipe Space",
   },
-  description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
+  description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.",
   applicationName: "Recipe Space",
   manifest: "/manifest.json",
   icons: {
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     siteName: "Recipe Space",
     locale: "he_IL",
     url: SITE_URL,
-    title: "Recipe Space · ספר המתכונים",
-    description: "שומרים מתכונים של הבית, מוצאים אותם כשצריך, ובונים רשימת קניות מהם.",
+    title: "Recipe Space · הבית של המתכונים",
+    description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.",
     images: [{ url: "/icon-512.png?v=2", width: 512, height: 512, alt: "Recipe Space" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Recipe Space · ספר המתכונים",
-    description: "שומרים מתכונים של הבית, ובונים רשימת קניות מהם.",
+    title: "Recipe Space · הבית של המתכונים",
+    description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד.",
     images: ["/icon-512.png?v=2"],
   },
   appleWebApp: {
@@ -68,7 +68,7 @@ export default function RootLayout({
             "@type": "Organization",
             "@id": `${SITE_URL}/#organization`,
             name: "Recipe Space",
-            alternateName: "ספר המתכונים",
+            alternateName: "הבית של המתכונים",
             url: SITE_URL,
             logo: `${SITE_URL}/icon-512.png`,
           }, {
@@ -76,7 +76,7 @@ export default function RootLayout({
           "@id": `${SITE_URL}/#website`,
           url: SITE_URL,
           name: "Recipe Space",
-          alternateName: "ספר המתכונים",
+          alternateName: "הבית של המתכונים",
           inLanguage: "he",
           publisher: { "@id": `${SITE_URL}/#organization` },
           }],
