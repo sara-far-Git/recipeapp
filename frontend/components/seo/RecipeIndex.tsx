@@ -51,9 +51,12 @@ export default function RecipeIndex({
             {published.length}
           </span>
         </summary>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-3 opacity-90">
+        {/* Columns, not a wrapped row. Two hundred titles set in a single
+            flowing line read as one long paragraph — you cannot find anything
+            in it, and it does not look like a list of links at all. */}
+        <ul className="columns-2 gap-x-8 pt-3 opacity-90 sm:columns-3 lg:columns-4">
           {published.map((r) => (
-            <li key={r.id}>
+            <li key={r.id} className="break-inside-avoid py-1 leading-snug">
               <Link
                 href={`/recipe/${r.id}`}
                 className="underline-offset-4 hover:underline"
