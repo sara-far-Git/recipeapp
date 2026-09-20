@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
-import { ArrowUp, LoaderCircle, SlidersHorizontal, X, Plus, Search } from "lucide-react";
+import { ArrowUp, ChefHat, LoaderCircle, SlidersHorizontal, X, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
@@ -408,7 +408,20 @@ export default function FeedPage() {
                       {editorPick.image_url ? (
                         <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 70vw, 34rem" />
                       ) : (
-                        <Image src="/food/dessert-v4.png" alt="" fill className="object-cover" sizes="(max-width: 768px) 70vw, 34rem" />
+                        /* A stock dessert used to stand in here, in the frame
+                           reserved for the dish's own photo and beside its
+                           name — so a white chocolate cup read as an apricot
+                           tart. The recipe cards already answer this honestly
+                           with a plain panel, and so does this now. */
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+                          style={{ background: "#E3CFB2" }}>
+                          <ChefHat className="w-16 h-16" strokeWidth={1.1} style={{ color: "rgba(39,94,80,0.45)" }} />
+                          {editorPick.category && (
+                            <span className="eyebrow text-[11px]" style={{ color: "#275E50" }}>
+                              {editorPick.category}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
