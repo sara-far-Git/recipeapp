@@ -96,6 +96,8 @@ def main():
     ap.add_argument("manifest", help="JSON של כותרת -> נתיב תמונה")
     ap.add_argument("--api", default=os.environ.get("RECIPE_API", LIVE_API))
     ap.add_argument("--dry-run", action="store_true", help="רק להראות, בלי לשנות")
+    ap.add_argument("--replace", action="store_true",
+                    help="להחליף גם תמונה קיימת (ברירת המחדל: לדלג עליה)")
     args = ap.parse_args()
 
     manifest = json.load(open(args.manifest, encoding="utf-8"))
@@ -118,8 +120,12 @@ def main():
                      if e.code == 401 else f"ההתחברות נכשלה: {e}")
 
     live = every_recipe(args.api, token)
+    # Skipping what already has a photo is what makes a second run cheap after
+    # the hourly allowance runs out. --replace is for the other case: a photo
+    # that went up and turned out to be the wrong one to show.
     todo = [r for r in live
-            if r["title"].strip() in manifest and not (r.get("image_url") or "").strip()]
+            if r["title"].strip() in manifest
+            and (args.replace or not (r.get("image_url") or "").strip())]
     already = sum(1 for r in live
                   if r["title"].strip() in manifest and (r.get("image_url") or "").strip())
     unmatched = set(manifest) - {r["title"].strip() for r in live}
