@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "logo-intro-v16";
+// Bumped with the artwork: anyone mid-session has the old one marked seen.
+const KEY = "logo-intro-v17";
 const EXIT_DURATION_MS = 420;
 const MAX_INTRO_DURATION_MS = 4600;
 

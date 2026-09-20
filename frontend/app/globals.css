@@ -2658,7 +2658,7 @@
     position: relative;
     width: min(98vw, 64rem);
     max-height: 88vh;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 1 / 1;
   }
   .logo-intro-video {
     position: absolute;
@@ -2669,6 +2669,12 @@
     object-fit: contain;
     background: transparent;
     transition: opacity 180ms ease;
+    /* The artwork sits on black and screen blending erases it, which is the
+       only way the edge of the video is reliably invisible. Matching the
+       veil to the video's own green did not work: the compositor paints a
+       video a few points away from what the file says, and far enough away
+       that the square showed as a lighter block on the screen. Black screens
+       to nothing on every device, whatever it does to the colour. */
     mix-blend-mode: screen;
   }
   .logo-intro-video { z-index: 2; }
