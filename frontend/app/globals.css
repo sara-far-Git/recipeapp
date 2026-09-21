@@ -2645,13 +2645,14 @@
   .logo-intro-veil {
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 120;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #0B2A20;
     pointer-events: none;
-    transform: translate3d(0, calc(var(--intro-progress, 0) * -14vh), 0);
+    -webkit-mask-image: radial-gradient(circle at 50% 46%, transparent calc(var(--intro-progress, 0) * 72vmax), #000 calc(var(--intro-progress, 0) * 72vmax + 1px));
+    mask-image: radial-gradient(circle at 50% 46%, transparent calc(var(--intro-progress, 0) * 72vmax), #000 calc(var(--intro-progress, 0) * 72vmax + 1px));
   }
   .logo-intro-mark {
     position: relative;
@@ -2659,6 +2660,17 @@
     max-height: 88vh;
     aspect-ratio: 1 / 1;
   }
+  .logo-intro-fallback {
+    position: absolute;
+    inset: 8%;
+    width: 84%;
+    height: 84%;
+    object-fit: contain;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 220ms ease;
+  }
+  .logo-intro-fallback.is-hidden { opacity: 0; }
   .logo-intro-video {
     position: absolute;
     inset: 0;
@@ -3159,18 +3171,20 @@ button, [role="button"],
 html.logo-intro,
 html.logo-intro body { overflow: hidden; }
 html.logo-intro body::before { content: ""; position: fixed; inset: 0; background: #0B2A20; z-index: 99; }
+html.logo-intro:has(.logo-intro-veil) body::before { display: none; }
 html.logo-intro #main {
   position: relative;
-  z-index: 101;
-  background: #102B22;
-  transform: translate3d(0, calc((1 - var(--intro-progress, 0)) * 28vh), 0);
-  clip-path: circle(calc(var(--intro-progress, 0) * var(--intro-progress, 0) * var(--intro-progress, 0) * 80vmax) at 50% 46%);
-  will-change: transform, clip-path;
+  z-index: 1;
+  transform: translate3d(0, calc((1 - var(--intro-progress, 0)) * 18vh), 0);
+  will-change: transform;
 }
-html.logo-intro header {
-  z-index: 102;
+html.logo-intro .logo-intro-veil { z-index: 120; }
+html.logo-intro header,
+html.logo-intro footer,
+html.logo-intro .bottom-nav,
+html.logo-intro .install-banner {
+  opacity: clamp(0, calc((var(--intro-progress, 0) - 0.72) / 0.28), 1);
   pointer-events: none;
-  opacity: clamp(0, calc((var(--intro-progress, 0) - 0.78) / 0.22), 1);
 }
 
 .reason-toggle::before { border-radius: inherit; }
@@ -3331,7 +3345,6 @@ html.logo-intro header {
 .home-page .home-hero-split .assistant-title { display: block; max-width: none; margin: 20px 0 24px; font-size: clamp(48px, 6vw, 100px); line-height: 1.05; color: #E3CFB2; }
 .home-page .home-hero-split .assistant-title span { color: #D97757; }
 .home-page .home-hero-split .assistant-prompt { min-height: 0; margin: 0; font-size: clamp(17px, 1.5vw, 22px); line-height: 1.6; color: #E3CFB2; }
-.hero-split-eyebrow { color: #E3CFB2; font-size: 12px; letter-spacing: 0.08em; }
 .hero-split-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 32px; }
 .hero-split-primary { display: inline-flex; align-items: center; gap: 14px; border-radius: 999px; background: #D97757; color: #15382D; padding: 16px 24px; font-weight: 800; min-height: 52px; }
 .hero-split-primary:hover { background: #E8A082; }

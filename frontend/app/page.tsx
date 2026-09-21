@@ -200,7 +200,6 @@ export default function FeedPage() {
       <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero home-hero-split">
         <div className="bleed-inner assistant-home">
           <Reveal className="assistant-welcome">
-            <p className="hero-split-eyebrow">RECIPE SPACE · הטעם של הבית</p>
             <h1 className="display-hero assistant-title">יש מתכונים<br />שחוזרים<br /><span>אליהם.</span></h1>
             <p className="assistant-prompt">כל מה שאת אוהבת לבשל, במקום אחד.</p>
             <div className="hero-split-actions">
