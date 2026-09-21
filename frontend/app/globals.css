@@ -2651,32 +2651,7 @@
     justify-content: center;
     background: #0B2A20;
     pointer-events: none;
-  }
-  .logo-intro-veil.is-revealing {
-    -webkit-mask-image: radial-gradient(circle, transparent 32%, #000 32.6%);
-    mask-image: radial-gradient(circle, transparent 32%, #000 32.6%);
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: 50% 46%;
-    mask-position: 50% 46%;
-    animation: intro-iris 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  @keyframes intro-iris {
-    0% {
-      -webkit-mask-size: 0 0;
-      mask-size: 0 0;
-      opacity: 1;
-    }
-    42% {
-      -webkit-mask-size: 42vmax 42vmax;
-      mask-size: 42vmax 42vmax;
-      opacity: 1;
-    }
-    100% {
-      -webkit-mask-size: 170vmax 170vmax;
-      mask-size: 170vmax 170vmax;
-      opacity: 0;
-    }
+    transform: translate3d(0, calc(var(--intro-progress, 0) * -14vh), 0);
   }
   .logo-intro-mark {
     position: relative;
@@ -2737,7 +2712,6 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(5px); }
   }
-  html.logo-intro header,
   html.logo-intro footer,
   html.logo-intro .section-rail,
   html.logo-intro .bottom-nav,
@@ -3185,22 +3159,18 @@ button, [role="button"],
 html.logo-intro,
 html.logo-intro body { overflow: hidden; }
 html.logo-intro body::before { content: ""; position: fixed; inset: 0; background: #0B2A20; z-index: 99; }
-html.logo-intro.logo-intro-open body::before { opacity: 0; }
 html.logo-intro #main {
-  transform: translateY(22vh);
-  will-change: transform;
+  position: relative;
+  z-index: 101;
+  background: #102B22;
+  transform: translate3d(0, calc((1 - var(--intro-progress, 0)) * 28vh), 0);
+  clip-path: circle(calc(var(--intro-progress, 0) * var(--intro-progress, 0) * var(--intro-progress, 0) * 80vmax) at 50% 46%);
+  will-change: transform, clip-path;
 }
-html.logo-intro.logo-intro-open #main {
-  transform: none;
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-html.logo-intro.logo-intro-open header,
-html.logo-intro.logo-intro-open footer,
-html.logo-intro.logo-intro-open .section-rail,
-html.logo-intro.logo-intro-open .bottom-nav {
-  opacity: 1;
-  pointer-events: auto;
-  transition: opacity 0.55s ease 0.55s;
+html.logo-intro header {
+  z-index: 102;
+  pointer-events: none;
+  opacity: clamp(0, calc((var(--intro-progress, 0) - 0.78) / 0.22), 1);
 }
 
 .reason-toggle::before { border-radius: inherit; }
@@ -3430,11 +3400,16 @@ html.logo-intro.logo-intro-open .bottom-nav {
 .home-page .home-hero-split .assistant-home { position: relative; }
 .home-page .home-hero-split .assistant-welcome { padding-right: clamp(64px, 7vw, 112px); }
 .home-page .home-hero-split .meal-stage { background: #0a2119; }
-.meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .9s ease; }
-.meal-slide img { transform: scale(1.06); transition: transform 6.5s ease-out; }
+.meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.3s ease; }
+.meal-slide img { transform: scale(1.035); transition: transform 8s ease-out; }
 .meal-slide.is-active { opacity: 1; }
 .meal-slide.is-active img { transform: scale(1); }
 .meal-caption { position: absolute; right: 28px; bottom: 28px; left: 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 22px 20px; border-radius: var(--r-lg); background: rgba(11, 42, 32, .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #E3CFB2; direction: rtl; text-align: right; }
+@keyframes meal-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.meal-slide.is-active .meal-caption > * { animation: meal-rise .7s cubic-bezier(.2, .7, .2, 1) both; }
+.meal-slide.is-active .meal-name { animation-delay: .1s; }
+.meal-slide.is-active .meal-line { animation-delay: .2s; }
+.meal-slide.is-active .meal-cta { animation-delay: .3s; }
 .meal-eyebrow { font-size: 12px; letter-spacing: .08em; color: #E8A082; }
 .meal-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 3.6vw, 56px); line-height: 1; }
 .meal-line { font-size: 15px; line-height: 1.5; max-width: 34ch; }
@@ -3446,9 +3421,9 @@ html.logo-intro.logo-intro-open .bottom-nav {
 .meal-track ol::before { content: ""; position: absolute; top: 19px; bottom: 19px; right: calc(50% - 1px); width: 2px; background: rgba(227, 207, 178, .22); }
 .meal-fill { position: absolute; top: 19px; right: calc(50% - 1px); width: 2px; height: var(--fill, 0%); background: #D97757; transition: height 140ms linear; }
 .meal-stop button { display: flex; align-items: center; gap: 14px; padding: 3px 0; background: none; border: 0; color: rgba(227, 207, 178, .62); cursor: pointer; font: inherit; }
-.meal-dot { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .55); background: #15382D; color: #E3CFB2; transition: transform .3s ease, background .3s ease, border-color .3s ease, color .3s ease; }
+.meal-dot { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .55); background: #15382D; color: #E3CFB2; transition: transform .5s cubic-bezier(.2, .7, .2, 1), background .5s ease, border-color .5s ease, color .5s ease, box-shadow .5s ease; }
 .meal-dot svg { width: 20px; height: 20px; }
-.meal-label { position: absolute; left: 48px; font-size: 13px; letter-spacing: .06em; white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s, color .3s; }
+.meal-label { position: absolute; left: 48px; font-size: 13px; letter-spacing: .06em; white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1), color .5s; }
 .meal-stop:hover .meal-label, .meal-stop.is-active .meal-label { opacity: 1; transform: none; }
 .meal-stop.is-active button { color: #E3CFB2; }
 .meal-stop.is-active .meal-dot { background: #D97757; border-color: #D97757; color: #15382D; transform: scale(1.12); box-shadow: 0 0 0 7px rgba(217, 119, 87, .18); }
@@ -3478,4 +3453,5 @@ html.logo-intro.logo-intro-open .bottom-nav {
 @media (prefers-reduced-motion: reduce) {
   .meal-slide, .meal-slide img, .meal-dot, .meal-fill, .meal-label { transition: none; }
   .meal-slide img { transform: none; }
+  .meal-slide.is-active .meal-caption > * { animation: none; }
 }

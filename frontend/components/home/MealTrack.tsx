@@ -43,6 +43,8 @@ export default function MealTrack() {
   const hovered = useRef(false);
   const startedAt = useRef(0);
   const turns = useRef(0);
+  const activeRef = useRef(0);
+  activeRef.current = active;
 
   useEffect(() => {
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -53,26 +55,25 @@ export default function MealTrack() {
   useEffect(() => {
     if (!playing) return;
     startedAt.current = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      if (!hovered.current && !document.hidden) {
-        const p = Math.min(1, (now - startedAt.current) / DWELL_MS);
-        setProgress(p);
-        if (p >= 1) {
-          startedAt.current = now;
-          setActive((i) => {
-            const next = (i + 1) % COURSES.length;
-            if (next === 0 && ++turns.current >= 1) setPlaying(false);
-            return next;
-          });
-        }
+    // Ten times a second is plenty for a line that takes five seconds to
+    // fill; an animation frame for it would run the CPU sixty times a second
+    // to move two pixels.
+    const timer = window.setInterval(() => {
+      if (hovered.current || document.hidden) return;
+      const now = performance.now();
+      const p = Math.min(1, (now - startedAt.current) / DWELL_MS);
+      setProgress(p);
+      if (p >= 1) {
+        startedAt.current = now;
+        const next = (activeRef.current + 1) % COURSES.length;
+        setActive(next);
+        setProgress(0);
+        if (next === 0 && ++turns.current >= 1) setPlaying(false);
       }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
+    }, 100);
     const resume = () => { startedAt.current = performance.now(); };
     document.addEventListener("visibilitychange", resume);
-    return () => { cancelAnimationFrame(raf); document.removeEventListener("visibilitychange", resume); };
+    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", resume); };
   }, [playing]);
 
   const go = (i: number) => {
@@ -92,18 +93,18 @@ export default function MealTrack() {
 
   return (
     <>
-      <div
-        className="hero-split-photo meal-stage"
-        onMouseEnter={() => { hovered.current = true; }}
-        onMouseLeave={() => { hovered.current = false; startedAt.current = performance.now(); }}
-      >
+      <div className="hero-split-photo meal-stage">
         {COURSES.map((name, i) => {
           const c = getCategory(name);
           if (!c) return null;
           return (
             <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}`} aria-hidden={i !== active}>
               <Image src={c.image} alt="" fill priority={i === 0} sizes="(max-width: 700px) 100vw, 50vw" className="object-cover" />
-              <figcaption className="meal-caption">
+              <figcaption
+                className="meal-caption"
+                onMouseEnter={() => { hovered.current = true; }}
+                onMouseLeave={() => { hovered.current = false; startedAt.current = performance.now(); }}
+              >
                 <span className="meal-eyebrow">מנה {ORDINAL[i]}</span>
                 <span className="meal-name">{name}</span>
                 <span className="meal-line">{c.desc}</span>
@@ -119,6 +120,8 @@ export default function MealTrack() {
       <nav
         className="meal-track"
         aria-label="מנות הארוחה"
+        onMouseEnter={() => { hovered.current = true; }}
+        onMouseLeave={() => { hovered.current = false; startedAt.current = performance.now(); }}
         onKeyDown={(e) => {
           if (e.key === "ArrowLeft") go(active + 1);   // RTL: left is forward
           if (e.key === "ArrowRight") go(active - 1);
