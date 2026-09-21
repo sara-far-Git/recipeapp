@@ -104,20 +104,25 @@ export default function MealTrack() {
           return (
             <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}${wide[name] ? " is-wide" : ""}`}>
               <Image src={c.image} alt="" fill sizes="100vw" className="meal-photo-bg" aria-hidden="true" placeholder="blur" blurDataURL={c.blur} />
-              <Image
-                src={c.image}
-                alt=""
-                fill
-                priority={i === 0}
-                sizes="(max-width: 700px) 100vw, 60vw"
-                className="meal-photo"
-                placeholder="blur"
-                blurDataURL={c.blur}
-                onLoad={(e) => {
-                  const img = e.currentTarget;
-                  if (img.naturalWidth >= img.naturalHeight * 1.4) setWide((w) => (w[name] ? w : { ...w, [name]: true }));
-                }}
-              />
+              {/* The sharp picture lives in a square frame of its own; the frame's
+                  edges are feathered so the picture dissolves into the soft copy
+                  behind it instead of ending in a hard line. */}
+              <div className="meal-photo-frame">
+                <Image
+                  src={c.image}
+                  alt=""
+                  fill
+                  priority={i === 0}
+                  sizes="(max-width: 700px) 100vw, 60vw"
+                  className="meal-photo"
+                  placeholder="blur"
+                  blurDataURL={c.blur}
+                  onLoad={(e) => {
+                    const img = e.currentTarget;
+                    if (img.naturalWidth >= img.naturalHeight * 1.4) setWide((w) => (w[name] ? w : { ...w, [name]: true }));
+                  }}
+                />
+              </div>
             </figure>
           );
         })}
