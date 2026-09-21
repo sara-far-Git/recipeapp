@@ -40,10 +40,6 @@ export default function MealTrack() {
   // stands where the reader can see it, instead of pulling the eye away from
   // the search box beside it for as long as the page is open.
   const [playing, setPlaying] = useState(false);
-  // Which pictures are wide enough to fill the panel by themselves. A square
-  // one stretched across a wide screen shows its middle band at four times
-  // its size; it is shown at its own size instead, on a soft copy of itself.
-  const [wide, setWide] = useState<Record<string, boolean>>({});
   const hovered = useRef(false);
   const startedAt = useRef(0);
   const turns = useRef(0);
@@ -102,27 +98,8 @@ export default function MealTrack() {
           const c = getCategory(name);
           if (!c) return null;
           return (
-            <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}${wide[name] ? " is-wide" : ""}`}>
-              <Image src={c.image} alt="" fill sizes="100vw" className="meal-photo-bg" aria-hidden="true" placeholder="blur" blurDataURL={c.blur} />
-              {/* The sharp picture lives in a square frame of its own; the frame's
-                  edges are feathered so the picture dissolves into the soft copy
-                  behind it instead of ending in a hard line. */}
-              <div className="meal-photo-frame">
-                <Image
-                  src={c.image}
-                  alt=""
-                  fill
-                  priority={i === 0}
-                  sizes="(max-width: 700px) 100vw, 60vw"
-                  className="meal-photo"
-                  placeholder="blur"
-                  blurDataURL={c.blur}
-                  onLoad={(e) => {
-                    const img = e.currentTarget;
-                    if (img.naturalWidth >= img.naturalHeight * 1.4) setWide((w) => (w[name] ? w : { ...w, [name]: true }));
-                  }}
-                />
-              </div>
+            <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}`}>
+              <Image src={c.image} alt="" fill priority={i === 0} sizes="100vw" className="meal-photo" placeholder="blur" blurDataURL={c.blur} />
             </figure>
           );
         })}
