@@ -246,7 +246,7 @@ export default function FeedPage() {
               <Reveal key={cat.name} delay={80 + i * 70}>
                 <button onClick={() => handleCategoryClick(cat.name)} className="cat-tile group w-full">
                   <div className="category-photo">
-                    <Image src={cat.image} alt="" width={2048} height={2048} placeholder="blur" blurDataURL={cat.blur} className="category-full-image" sizes="(max-width: 640px) 46vw, (max-width: 1024px) 46vw, 30vw" />
+                    <Image src={cat.image} alt="" width={1254} height={1254} placeholder="blur" blurDataURL={cat.blur} className="category-full-image" sizes="(max-width: 640px) 46vw, (max-width: 1024px) 46vw, 30vw" />
                   </div>
                   <h3 className="category-name-display text-bark-500">
                     {cat.name}
