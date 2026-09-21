@@ -68,6 +68,7 @@ export default function LogoIntro() {
       if (finished.current) return;
       finished.current = true;
       stopAuto();
+      detach();
       sessionStorage.setItem(KEY, "1");
       progress.current = 1;
       setProgress(1);
@@ -104,6 +105,7 @@ export default function LogoIntro() {
     };
 
     const onWheel = (event: WheelEvent) => {
+      if (finished.current) return;
       event.preventDefault();
       stopAuto();
       addProgress(event.deltaY);
@@ -112,7 +114,7 @@ export default function LogoIntro() {
       touchY.current = event.touches[0].clientY;
     };
     const onTouchMove = (event: TouchEvent) => {
-      if (touchY.current == null) return;
+      if (finished.current || touchY.current == null) return;
       event.preventDefault();
       stopAuto();
       const y = event.touches[0].clientY;
@@ -120,12 +122,19 @@ export default function LogoIntro() {
       touchY.current = y;
     };
     const onKey = (event: KeyboardEvent) => {
+      if (finished.current) return;
       if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " " || event.key === "Enter") {
         event.preventDefault();
         animateHome.current();
       }
     };
 
+    const detach = () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKey);
+    };
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -137,10 +146,7 @@ export default function LogoIntro() {
       window.clearTimeout(cueTimer);
       window.clearTimeout(fallback);
       stopAuto();
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("keydown", onKey);
+      detach();
       animateHome.current = () => {};
       if (!finished.current) unlock();
     };

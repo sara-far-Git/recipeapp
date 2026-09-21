@@ -3409,11 +3409,12 @@ html.logo-intro .install-banner {
 .meal-scrim { position: absolute; inset: 0; background:
   linear-gradient(to left, rgba(11, 42, 32, .88) 0%, rgba(11, 42, 32, .62) 42%, rgba(11, 42, 32, .18) 78%, rgba(11, 42, 32, .08) 100%),
   linear-gradient(to top, rgba(11, 42, 32, .75) 0%, rgba(11, 42, 32, 0) 38%); }
-.home-page .home-hero-cover .assistant-welcome { position: relative; z-index: 2; width: min(100%, 720px); margin: 0; padding: clamp(56px, 9vw, 128px) clamp(24px, 5vw, 80px) 48px; direction: rtl; text-align: right; }
-.home-page .home-hero-cover .assistant-title { display: block; max-width: none; margin: 0 0 24px; font-size: clamp(48px, 6.4vw, 104px); line-height: 1.03; color: #E3CFB2; text-shadow: 0 2px 24px rgba(6, 24, 18, .35); }
+.home-page .home-hero-cover .assistant-welcome { position: relative; z-index: 2; width: min(100%, 720px); margin: 0; padding: clamp(24px, 6vh, 128px) clamp(24px, 5vw, 80px) 40px; direction: rtl; text-align: right; }
+.home-page .home-hero-cover .assistant-title { display: block; max-width: none; margin: 0 0 clamp(12px, 2.4vh, 24px); font-size: clamp(40px, min(6.4vw, 9.2vh), 104px); line-height: 1.03; color: #E3CFB2; text-shadow: 0 2px 24px rgba(6, 24, 18, .35); }
 .home-page .home-hero-cover .assistant-title span { color: #D97757; }
 .home-page .home-hero-cover .assistant-prompt { min-height: 0; margin: 0; font-size: clamp(17px, 1.5vw, 22px); line-height: 1.6; color: #E3CFB2; }
-.home-page .home-hero-cover .assistant-composer { margin-top: 32px; width: 100%; }
+.home-page .home-hero-cover .assistant-composer { margin-top: clamp(16px, 3vh, 32px); width: 100%; }
+.home-page .home-hero-cover .hero-split-actions { margin-top: clamp(18px, 3.5vh, 32px); }
 
 /* The track: five large icons on a line along the bottom, no words and no
    plate under them, their top half on the photograph and their bottom half in
