@@ -5,6 +5,7 @@ import { recipesApi, searchApi } from "@/lib/api";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeLoading from "@/components/ui/RecipeLoading";
 import { ArrowUp, ChefHat, LoaderCircle, SlidersHorizontal, X, Plus, Search } from "lucide-react";
+import MealTrack from "@/components/home/MealTrack";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
@@ -17,55 +18,6 @@ import { CATEGORIES } from "@/lib/categories";
 const DIFFICULTY_OPTS = [{ v: "", l: "כל הרמות" }, { v: "easy", l: "קל" }, { v: "medium", l: "בינוני" }, { v: "hard", l: "מאתגר" }];
 const KOSHER_OPTS = [{ v: "", l: "כל הסוגים" }, { v: "meat", l: "בשרי" }, { v: "dairy", l: "חלבי" }, { v: "pareve", l: "פרווה" }];
 const TIME_OPTS = [{ v: 0, l: "כל הזמנים" }, { v: 15, l: "עד 15 דק'" }, { v: 30, l: "עד 30 דק'" }, { v: 60, l: "עד שעה" }];
-/** The hero's scenes. A headline, the line under it and the mark beside it,
- *  changing together because they say the same thing. Adding a fifth is one
- *  more entry — nothing else counts them. */
-const SCENES = [
-  {
-    mark: "box",
-    title: (
-      <>
-        משהו טוב
-        <br />
-        מתחיל כאן
-      </>
-    ),
-    prompt: "מוצאים מתכון, שומרים בספר וחוזרים אליו כשמתחשק לבשל.",
-  },
-  {
-    mark: "clock",
-    title: (
-      <>
-        קצת זמן,
-        <br />
-        אוכל טוב
-      </>
-    ),
-    prompt: "גם ביום עמוס יש מקום לארוחה ביתית. בוחרים מתכון לפי הזמן שיש.",
-  },
-  {
-    mark: "search",
-    title: (
-      <>
-        מה שיש
-        <br />
-        במטבח
-      </>
-    ),
-    prompt: "ביצים, ירקות או מה שנשאר מאתמול — מתחילים עם המצרכים שיש.",
-  },
-  {
-    mark: "saved",
-    title: (
-      <>
-        אהבתם?
-        <br />
-        שומרים בספר
-      </>
-    ),
-    prompt: "העוגה של שבת, המרק של הבית. כל המתכונים שלכם בספר אחד.",
-  },
-] as const;
 
 /** The first scene greets a signed-in cook by what they came to do. */
 const HERO_TITLE_SIGNED_IN = (
@@ -77,7 +29,6 @@ const HERO_TITLE_SIGNED_IN = (
 );
 
 /** Keep the artwork and copy moving together while leaving time to read. */
-const SCENE_MS = 4000;
 
 const QUICK_STARTS = ["יש לי עוף וירקות", "ארוחה ב-20 דקות", "משהו מתוק לשבת", "ארוחה צמחונית"];
 
@@ -275,10 +226,7 @@ export default function FeedPage() {
               <span className="assistant-thinking-dots" aria-hidden="true"><i /><i /><i /></span>
             </div>
           </Reveal>
-          <div className="hero-split-photo">
-            <Image src="/food/bread-v4.png" alt="מאפים זהובים על צלחת קרמיקה עם עשבי תיבול" fill priority sizes="(max-width: 700px) 100vw, 50vw" className="object-cover" />
-            <span className="hero-photo-caption">אוכל טוב. רגעים שנשארים.</span>
-          </div>
+          <MealTrack />
         </div>
       </CinematicSection>
 

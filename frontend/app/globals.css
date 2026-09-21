@@ -3423,3 +3423,52 @@ html.logo-intro.logo-intro-open .bottom-nav {
   .home-page .home-panel-categories .category-photo,
   .home-page .home-panel-categories .category-photo .category-full-image { border-radius: 20px; }
 }
+
+/* The opening photograph as a meal: five courses on a track at the seam
+   between the words and the picture. The track is absolute in the hero grid,
+   so the grid itself is the positioning box. */
+.home-page .home-hero-split .assistant-home { position: relative; }
+.home-page .home-hero-split .assistant-welcome { padding-right: clamp(64px, 7vw, 112px); }
+.home-page .home-hero-split .meal-stage { background: #0a2119; }
+.meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .9s ease; }
+.meal-slide img { transform: scale(1.06); transition: transform 6.5s ease-out; }
+.meal-slide.is-active { opacity: 1; }
+.meal-slide.is-active img { transform: scale(1); }
+.meal-caption { position: absolute; right: 28px; bottom: 28px; left: 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 22px 20px; border-radius: var(--r-lg); background: rgba(11, 42, 32, .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #E3CFB2; direction: rtl; text-align: right; }
+.meal-eyebrow { font-size: 12px; letter-spacing: .08em; color: #E8A082; }
+.meal-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 3.6vw, 56px); line-height: 1; }
+.meal-line { font-size: 15px; line-height: 1.5; max-width: 34ch; }
+.meal-cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; background: #D97757; color: #15382D; font-weight: 800; font-size: 14px; }
+.meal-cta:hover { background: #E8A082; }
+
+.meal-track { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; direction: rtl; }
+.meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 30px; }
+.meal-track ol::before { content: ""; position: absolute; top: 19px; bottom: 19px; right: calc(50% - 1px); width: 2px; background: rgba(227, 207, 178, .22); }
+.meal-fill { position: absolute; top: 19px; right: calc(50% - 1px); width: 2px; height: var(--fill, 0%); background: #D97757; transition: height 140ms linear; }
+.meal-stop button { display: flex; align-items: center; gap: 14px; padding: 3px 0; background: none; border: 0; color: rgba(227, 207, 178, .62); cursor: pointer; font: inherit; }
+.meal-dot { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .55); background: #15382D; color: #E3CFB2; transition: transform .3s ease, background .3s ease, border-color .3s ease, color .3s ease; }
+.meal-dot svg { width: 20px; height: 20px; }
+.meal-label { position: absolute; left: 48px; font-size: 13px; letter-spacing: .06em; white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s, color .3s; }
+.meal-stop:hover .meal-label, .meal-stop.is-active .meal-label { opacity: 1; transform: none; }
+.meal-stop.is-active button { color: #E3CFB2; }
+.meal-stop.is-active .meal-dot { background: #D97757; border-color: #D97757; color: #15382D; transform: scale(1.12); box-shadow: 0 0 0 7px rgba(217, 119, 87, .18); }
+.meal-stop.is-done .meal-dot { border-color: #E3CFB2; }
+.meal-stop button:focus-visible { outline: 2px solid #D97757; outline-offset: 4px; border-radius: 999px; }
+
+@media (max-width: 700px) {
+  .home-page .home-hero-split .assistant-welcome { padding-right: 24px; }
+  .home-page .home-hero-split .meal-stage { height: 52svh; min-height: 320px; }
+  .meal-caption { right: 16px; bottom: 16px; left: 16px; padding: 14px 16px; }
+  .meal-name { font-size: clamp(30px, 9vw, 42px); }
+  .meal-track { position: static; transform: none; grid-column: 1; grid-row: 2; padding: 14px 20px 0; }
+  .meal-track ol { flex-direction: row; justify-content: space-between; gap: 0; }
+  .meal-track ol::before { top: 18px; bottom: auto; right: 19px; left: 19px; width: auto; height: 2px; }
+  .meal-fill { top: 18px; right: 19px; width: var(--fill, 0%); height: 2px; transition: width 140ms linear; }
+  .meal-stop button { flex-direction: column; gap: 6px; }
+  .meal-label { position: static; opacity: 1; transform: none; font-size: 11px; }
+  .home-page .home-hero-split .assistant-welcome { grid-row: 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meal-slide, .meal-slide img, .meal-dot, .meal-fill, .meal-label { transition: none; }
+  .meal-slide img { transform: none; }
+}
