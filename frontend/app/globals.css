@@ -3454,19 +3454,26 @@ html.logo-intro.logo-intro-open .bottom-nav {
 .meal-stop.is-active .meal-dot { background: #D97757; border-color: #D97757; color: #15382D; transform: scale(1.12); box-shadow: 0 0 0 7px rgba(217, 119, 87, .18); }
 .meal-stop.is-done .meal-dot { border-color: #E3CFB2; }
 .meal-stop button:focus-visible { outline: 2px solid #D97757; outline-offset: 4px; border-radius: 999px; }
+.meal-toggle { display: grid; place-items: center; width: 34px; height: 34px; margin: 18px auto 0; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .35); background: transparent; color: rgba(227, 207, 178, .75); cursor: pointer; }
+.meal-toggle:hover { color: #E3CFB2; border-color: #E3CFB2; }
+.meal-toggle:focus-visible { outline: 2px solid #D97757; outline-offset: 3px; }
 
 @media (max-width: 700px) {
   .home-page .home-hero-split .assistant-welcome { padding-right: 24px; }
-  .home-page .home-hero-split .meal-stage { height: 52svh; min-height: 320px; }
-  .meal-caption { right: 16px; bottom: 16px; left: 16px; padding: 14px 16px; }
-  .meal-name { font-size: clamp(30px, 9vw, 42px); }
-  .meal-track { position: static; transform: none; grid-column: 1; grid-row: 2; padding: 14px 20px 0; }
+  .home-page .home-hero-split .meal-stage { height: 36svh; min-height: 260px; }
+  .meal-caption { right: 12px; bottom: 12px; left: 12px; padding: 10px 12px 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .meal-eyebrow, .meal-line { display: none; }
+  .meal-name { font-size: clamp(26px, 7.5vw, 34px); }
+  .meal-cta { margin-top: 0; min-height: 36px; padding: 0 14px; font-size: 13px; }
+  .meal-track { position: static; transform: none; grid-column: 1; grid-row: 2; padding: 10px 20px 0; display: flex; align-items: center; gap: 14px; }
+  .meal-track ol { flex: 1; }
+  .meal-toggle { margin: 0; flex: none; }
   .meal-track ol { flex-direction: row; justify-content: space-between; gap: 0; }
   .meal-track ol::before { top: 18px; bottom: auto; right: 19px; left: 19px; width: auto; height: 2px; }
   .meal-fill { top: 18px; right: 19px; width: var(--fill, 0%); height: 2px; transition: width 140ms linear; }
   .meal-stop button { flex-direction: column; gap: 6px; }
   .meal-label { position: static; opacity: 1; transform: none; font-size: 11px; }
-  .home-page .home-hero-split .assistant-welcome { grid-row: 3; }
+  .home-page .home-hero-split .assistant-welcome { grid-row: 3; padding-top: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .meal-slide, .meal-slide img, .meal-dot, .meal-fill, .meal-label { transition: none; }

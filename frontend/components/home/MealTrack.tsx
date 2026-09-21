@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import { getCategory } from "@/lib/categories";
 
 /** The five courses of a meal, in the order they reach the table. The site's
@@ -31,21 +32,39 @@ const ICONS: Record<(typeof COURSES)[number], React.ReactNode> = {
 export default function MealTrack() {
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
-  const paused = useRef(false);
+  // Whether it moves by itself. Off from the start where there is no pointer
+  // to hold it still — on a phone the button on the photograph would change
+  // under a thumb already reaching for it — and off for anyone who asked for
+  // reduced motion. Off for good the moment the reader takes it over, and
+  // after one full turn of the meal: it shows the five courses once and then
+  // stands where the reader can see it, instead of pulling the eye away from
+  // the search box beside it for as long as the page is open.
+  const [playing, setPlaying] = useState(false);
+  const hovered = useRef(false);
   const startedAt = useRef(0);
-  const reduced = useRef(false);
+  const turns = useRef(0);
 
   useEffect(() => {
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || window.matchMedia("(hover: none)").matches;
+    if (!still) setPlaying(true);
+  }, []);
+
+  useEffect(() => {
+    if (!playing) return;
     startedAt.current = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      if (!paused.current && !reduced.current && !document.hidden) {
+      if (!hovered.current && !document.hidden) {
         const p = Math.min(1, (now - startedAt.current) / DWELL_MS);
         setProgress(p);
         if (p >= 1) {
-          setActive((i) => (i + 1) % COURSES.length);
           startedAt.current = now;
+          setActive((i) => {
+            const next = (i + 1) % COURSES.length;
+            if (next === 0 && ++turns.current >= 1) setPlaying(false);
+            return next;
+          });
         }
       }
       raf = requestAnimationFrame(tick);
@@ -54,25 +73,29 @@ export default function MealTrack() {
     const resume = () => { startedAt.current = performance.now(); };
     document.addEventListener("visibilitychange", resume);
     return () => { cancelAnimationFrame(raf); document.removeEventListener("visibilitychange", resume); };
-  }, []);
+  }, [playing]);
 
   const go = (i: number) => {
     setActive((i + COURSES.length) % COURSES.length);
     setProgress(0);
-    startedAt.current = performance.now();
+    setPlaying(false);
+  };
+  const toggle = () => {
+    turns.current = 0;
+    setProgress(0);
+    setPlaying((p) => !p);
   };
 
   // The line fills from the current stop toward the next one.
   const seg = 100 / (COURSES.length - 1);
-  const fill = active === COURSES.length - 1 ? 100 : active * seg + progress * seg;
+  const fill = active === COURSES.length - 1 ? 100 : active * seg + (playing ? progress : 0) * seg;
 
   return (
     <>
       <div
         className="hero-split-photo meal-stage"
-        onMouseEnter={() => { paused.current = true; }}
-        onMouseLeave={() => { paused.current = false; startedAt.current = performance.now(); }}
-        aria-live="polite"
+        onMouseEnter={() => { hovered.current = true; }}
+        onMouseLeave={() => { hovered.current = false; startedAt.current = performance.now(); }}
       >
         {COURSES.map((name, i) => {
           const c = getCategory(name);
@@ -116,6 +139,10 @@ export default function MealTrack() {
             </li>
           ))}
         </ol>
+        <button type="button" className="meal-toggle" onClick={toggle} aria-pressed={playing}
+          aria-label={playing ? "עצירת ההחלפה האוטומטית" : "הפעלת ההחלפה האוטומטית"} title={playing ? "עצירה" : "הפעלה"}>
+          {playing ? <Pause className="w-4 h-4" strokeWidth={2.2} /> : <Play className="w-4 h-4" strokeWidth={2.2} />}
+        </button>
       </nav>
     </>
   );
