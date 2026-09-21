@@ -3,15 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 
 // Bumped with the artwork: anyone mid-session has the old one marked seen.
-const KEY = "logo-intro-v18";
-const REVEAL_DURATION_MS = 1200;
-const MAX_INTRO_DURATION_MS = 4600;
+const KEY = "logo-intro-v22";
+const MAX_INTRO_DURATION_MS = 12000;
 
 function unlock() {
   const html = document.documentElement;
-  html.classList.remove("logo-intro", "logo-intro-open");
+  html.classList.remove("logo-intro");
+  html.style.removeProperty("--intro-progress");
   html.style.removeProperty("overflow");
   document.body.style.removeProperty("overflow");
+}
+
+function setProgress(value: number) {
+  document.documentElement.style.setProperty("--intro-progress", String(value));
 }
 
 function introSrc() {
@@ -25,10 +29,12 @@ export default function LogoIntro() {
   // can flash the logo before the client decides this session should skip it.
   const [gone, setGone] = useState(true);
   const [src, setSrc] = useState("");
-  const [leaving, setLeaving] = useState(false);
-  const [videoReady, setVideoReady] = useState(false);
+  const [showCue, setShowCue] = useState(false);
   const finished = useRef(false);
-  const completeRef = useRef<() => void>(() => {});
+  const progress = useRef(0);
+  const touchY = useRef<number | null>(null);
+  const autoFrame = useRef(0);
+  const animateHome = useRef<() => void>(() => {});
 
   useEffect(() => {
     // Direct links must reveal their own content, without an intro or redirect.
@@ -44,38 +50,98 @@ export default function LogoIntro() {
     }
 
     finished.current = false;
+    progress.current = 0;
     document.documentElement.classList.add("logo-intro");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    setProgress(0);
     setGone(false);
     setSrc(introSrc());
+    const cueTimer = window.setTimeout(() => setShowCue(true), 1400);
 
-    const complete = () => {
+    const stopAuto = () => {
+      if (autoFrame.current) cancelAnimationFrame(autoFrame.current);
+      autoFrame.current = 0;
+    };
+
+    const finish = () => {
       if (finished.current) return;
       finished.current = true;
+      stopAuto();
       sessionStorage.setItem(KEY, "1");
-      window.scrollTo(0, 0);
-      document.documentElement.classList.add("logo-intro-open");
-      setLeaving(true);
+      progress.current = 1;
+      setProgress(1);
       window.setTimeout(() => {
         unlock();
+        window.scrollTo(0, 0);
         setGone(true);
-      }, REVEAL_DURATION_MS);
+      }, 80);
     };
-    completeRef.current = complete;
 
-    const fallback = window.setTimeout(complete, MAX_INTRO_DURATION_MS);
-    const skip = () => complete();
-    window.addEventListener("wheel", skip, { passive: true, once: true });
-    window.addEventListener("touchstart", skip, { passive: true, once: true });
-    window.addEventListener("keydown", skip, { once: true });
+    const addProgress = (deltaPx: number) => {
+      if (finished.current) return;
+      const next = Math.min(1, Math.max(0, progress.current + deltaPx / (window.innerHeight * 0.88)));
+      progress.current = next;
+      setProgress(next);
+      if (next >= 0.995) finish();
+    };
+
+    animateHome.current = () => {
+      if (finished.current || autoFrame.current) return;
+      const start = progress.current;
+      const t0 = performance.now();
+      const duration = 980 * (1 - start);
+      const tick = (now: number) => {
+        if (finished.current) return;
+        const t = Math.min(1, (now - t0) / Math.max(duration, 1));
+        const eased = 1 - (1 - t) ** 3;
+        progress.current = start + (1 - start) * eased;
+        setProgress(progress.current);
+        if (t < 1) autoFrame.current = requestAnimationFrame(tick);
+        else finish();
+      };
+      autoFrame.current = requestAnimationFrame(tick);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      stopAuto();
+      addProgress(event.deltaY);
+    };
+    const onTouchStart = (event: TouchEvent) => {
+      touchY.current = event.touches[0].clientY;
+    };
+    const onTouchMove = (event: TouchEvent) => {
+      if (touchY.current == null) return;
+      event.preventDefault();
+      stopAuto();
+      const y = event.touches[0].clientY;
+      addProgress(touchY.current - y);
+      touchY.current = y;
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        animateHome.current();
+      }
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("keydown", onKey);
+
+    const fallback = window.setTimeout(() => animateHome.current(), MAX_INTRO_DURATION_MS);
 
     return () => {
+      window.clearTimeout(cueTimer);
       window.clearTimeout(fallback);
-      window.removeEventListener("wheel", skip);
-      window.removeEventListener("touchstart", skip);
-      window.removeEventListener("keydown", skip);
-      completeRef.current = () => {};
+      stopAuto();
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKey);
+      animateHome.current = () => {};
       if (!finished.current) unlock();
     };
   }, []);
@@ -83,25 +149,35 @@ export default function LogoIntro() {
   if (gone) return null;
 
   return (
-    <div
-      className={`logo-intro-veil${leaving ? " is-revealing" : ""}`}
-      aria-hidden="true"
-    >
-      <div className="logo-intro-mark">
-        <video
-          className="logo-intro-video"
-          src={src || "/logo-intro.webm"}
-          muted
-          playsInline
-          preload="auto"
-          autoPlay
-          style={{ opacity: videoReady ? 1 : 0 }}
-          onCanPlay={(event) => { event.currentTarget.play().catch(() => {}); }}
-          onPlaying={() => setVideoReady(true)}
-          onEnded={() => completeRef.current()}
-          onError={() => completeRef.current()}
-        />
+    <>
+    <div className="logo-intro-veil" aria-hidden="true">
+      <div className="logo-intro-stage">
+        <div className="logo-intro-mark">
+          <video
+            className="logo-intro-video"
+            src={src || "/logo-intro.webm"}
+            muted
+            playsInline
+            preload="auto"
+            autoPlay
+            onCanPlay={(event) => { event.currentTarget.play().catch(() => setShowCue(true)); }}
+            onEnded={() => setShowCue(true)}
+            onError={() => {
+              setShowCue(true);
+              window.setTimeout(() => {
+                if (!finished.current && progress.current < 0.08) animateHome.current();
+              }, 700);
+            }}
+          />
+        </div>
       </div>
     </div>
+      <p className={`logo-intro-cue${showCue ? " is-on" : ""}`} style={{ opacity: showCue ? 1 : 0 }}>
+        <span>גללי למטה</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </p>
+    </>
   );
 }
