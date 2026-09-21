@@ -21,9 +21,16 @@ describe("recipe structured data", () => {
     expect(data?.aggregateRating).toBeUndefined();
     expect(data?.image).toMatchObject({ contentUrl: `${SITE_URL}/bread.jpg` });
   });
-  it("does not mark a recipe without a photo", () => {
-    expect(recipeStructuredData({ id: 7, title: "לחם" })).toBeNull();
-    expect(recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" })).toBeNull();
+  it("marks a recipe without a photo, minus the photo", () => {
+    const bare = recipeStructuredData({ id: 7, title: "לחם" });
+    expect(bare?.["@type"]).toBe("Recipe");
+    expect(bare?.image).toBeUndefined();
+    // A recipe with no usable photo is still described in full; only the
+    // image is missing, which is the one thing that cannot be invented.
+    const noPhoto = recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" });
+    expect(noPhoto).not.toBeNull();
+    expect(noPhoto?.image).toBeUndefined();
+    expect(noPhoto?.name).toBe("לחם");
   });
   it("does not disclose hidden attribution", () => {
     expect(recipeStructuredData({ id: 1, title: "לחם", image_url: "/bread.jpg", author: { full_name: "שרה פרקש" } })?.author).toBeUndefined();
@@ -74,5 +81,21 @@ it("describes the actual recipe photo without inventing image ownership", () => 
   expect(data?.image).not.toHaveProperty("creator");
   expect(data?.image).not.toHaveProperty("license");
   expect(data?.image).not.toHaveProperty("copyrightNotice");
-  expect(recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" })).toBeNull();
+  const noPhoto = recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" });
+  expect(noPhoto?.image).toBeUndefined();
+});
+
+it("still describes a recipe that has no photograph at all", () => {
+  const data = recipeStructuredData({
+    id: 9,
+    title: "מרק עדשים",
+    servings: 4,
+    ingredients: [{ name: "עדשים", amount: 1, unit: "כוס" }],
+    instructions: [{ step: 1, text: "מבשלים." }],
+  });
+  expect(data).not.toBeNull();
+  expect(data?.["@type"]).toBe("Recipe");
+  expect(data?.image).toBeUndefined();
+  expect(data?.recipeIngredient).toEqual(["1 כוס עדשים"]);
+  expect(data?.recipeInstructions).toHaveLength(1);
 });

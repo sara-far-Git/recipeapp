@@ -38,11 +38,19 @@ export function absoluteImage(url?: string | null): string | undefined {
 export const serializeJsonLd = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
 
 export function recipeStructuredData(recipe: Recipe) {
-  // Google's Recipe rich result requires a real dish photo. Marking a page as
-  // Recipe without one is what Search Console emails as a critical missing
-  // `image` field. A logo fallback would also fail that check.
+  // Google's Recipe rich result requires a photo, and a recipe without one is
+  // not eligible for it. That used to mean emitting no Recipe markup at all,
+  // which threw away the rest — ingredients, method, yield, times, author —
+  // for every recipe that arrived without a picture, and some never will have
+  // one. The markup is how the page says what it is, not only how it asks for
+  // a rich result, so it is always written and the photo is simply absent
+  // when there is no photo. Search Console lists those as ineligible; it is a
+  // report of what cannot win a rich result, not a penalty, and the day a
+  // photo is added the recipe qualifies with no further change.
+  //
+  // What is never done is inventing one. A stock dish or the site logo would
+  // pass the check by claiming the page shows a dish it does not.
   const image = recipeImageStructuredData(recipe);
-  if (!image) return null;
 
   const recipeIngredient = (recipe.ingredients || [])
     .map((i) => [i.amount ?? "", i.unit ?? "", i.name].filter(Boolean).join(" ").trim())
