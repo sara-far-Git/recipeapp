@@ -103,7 +103,7 @@ export default function MealTrack() {
           if (!c) return null;
           return (
             <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}${wide[name] ? " is-wide" : ""}`}>
-              <Image src={c.image} alt="" fill sizes="100vw" className="meal-photo-bg" aria-hidden="true" />
+              <Image src={c.image} alt="" fill sizes="100vw" className="meal-photo-bg" aria-hidden="true" placeholder="blur" blurDataURL={c.blur} />
               <Image
                 src={c.image}
                 alt=""
@@ -111,6 +111,8 @@ export default function MealTrack() {
                 priority={i === 0}
                 sizes="(max-width: 700px) 100vw, 60vw"
                 className="meal-photo"
+                placeholder="blur"
+                blurDataURL={c.blur}
                 onLoad={(e) => {
                   const img = e.currentTarget;
                   if (img.naturalWidth >= img.naturalHeight * 1.4) setWide((w) => (w[name] ? w : { ...w, [name]: true }));
@@ -145,14 +147,16 @@ export default function MealTrack() {
                       {ICONS[name]}
                     </svg>
                   </span>
+                  <span className="meal-label">{name}</span>
                 </Link>
               ) : (
-                <button type="button" aria-label={name} title={name} onClick={() => go(i)}>
+                <button type="button" onClick={() => go(i)}>
                   <span className="meal-dot">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       {ICONS[name]}
                     </svg>
                   </span>
+                  <span className="meal-label">{name}</span>
                 </button>
               )}
             </li>

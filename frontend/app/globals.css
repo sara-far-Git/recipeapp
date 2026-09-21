@@ -3400,7 +3400,7 @@ html.logo-intro .install-banner {
 /* Editorial home opening: the course's photograph fills the whole panel, a
    green scrim carries the headline and the search, and the meal's track runs
    along the bottom, riding a little way up onto the picture. */
-.home-page .home-hero-cover .assistant-home { position: relative; display: block; width: 100%; max-width: none; padding: 0 0 104px; min-height: calc(100svh - 80px); direction: rtl; overflow: visible; }
+.home-page .home-hero-cover .assistant-home { position: relative; display: block; width: 100%; max-width: none; padding: 0 0 124px; min-height: calc(100svh - 80px); direction: rtl; overflow: visible; }
 .home-page .home-hero-cover .meal-stage { position: absolute; inset: 0 0 64px 0; overflow: hidden; background: #0a2119; }
 .meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.3s ease; }
 /* Behind: the same picture, covering the panel, blurred and darkened enough
@@ -3429,10 +3429,13 @@ html.logo-intro .install-banner {
    the panel's own green. The icon of the course showing is the way into it. */
 .meal-track { position: absolute; left: 50%; bottom: 26px; z-index: 4; transform: translateX(-50%); display: flex; align-items: center; gap: 28px; direction: rtl; }
 .meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: center; gap: 60px; }
-.meal-track ol::before { content: ""; position: absolute; top: calc(50% - 1px); right: 32px; left: 32px; height: 2px; background: rgba(227, 207, 178, .28); }
-.meal-fill { position: absolute; top: calc(50% - 1px); right: 32px; height: 2px; width: var(--fill, 0%); max-width: calc(100% - 64px); background: #D97757; transition: width 140ms linear; }
+.meal-track ol::before { content: ""; position: absolute; top: 31px; right: 32px; left: 32px; height: 2px; background: rgba(227, 207, 178, .28); }
+.meal-fill { position: absolute; top: 31px; right: 32px; height: 2px; width: var(--fill, 0%); max-width: calc(100% - 64px); background: #D97757; transition: width 140ms linear; }
 .meal-stop { position: relative; }
-.meal-stop button, .meal-stop a { display: block; padding: 0; background: none; border: 0; cursor: pointer; font: inherit; }
+.meal-stop button, .meal-stop a { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0; background: none; border: 0; cursor: pointer; font: inherit; color: rgba(227, 207, 178, .72); text-decoration: none; }
+.meal-label { font-family: var(--font-brand); font-size: 13px; letter-spacing: .06em; white-space: nowrap; transition: color .4s ease; }
+.meal-stop.is-active button, .meal-stop.is-active a { color: #E3CFB2; }
+.meal-stop.is-active .meal-label { font-weight: 500; }
 .meal-dot { position: relative; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .6); background: #15382D; color: #E3CFB2; box-shadow: 0 10px 30px rgba(6, 24, 18, .45); transition: transform .5s cubic-bezier(.2, .7, .2, 1), background .5s ease, border-color .5s ease, color .5s ease, box-shadow .5s ease; }
 .meal-dot svg { width: 32px; height: 32px; }
 .meal-stop button:hover .meal-dot { border-color: #E3CFB2; transform: translateY(-2px); }
@@ -3440,7 +3443,7 @@ html.logo-intro .install-banner {
 .meal-stop.is-active a:hover .meal-dot { background: #E8A082; border-color: #E8A082; }
 .meal-stop.is-done .meal-dot { border-color: #E3CFB2; }
 .meal-stop button:focus-visible, .meal-stop a:focus-visible { outline: 2px solid #D97757; outline-offset: 4px; border-radius: 999px; }
-.meal-toggle { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .35); background: rgba(21, 56, 45, .7); color: rgba(227, 207, 178, .75); cursor: pointer; }
+.meal-toggle { display: grid; place-items: center; flex: none; align-self: flex-start; margin-top: 15px; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .35); background: rgba(21, 56, 45, .7); color: rgba(227, 207, 178, .75); cursor: pointer; }
 .meal-toggle:hover { color: #E3CFB2; border-color: #E3CFB2; }
 .meal-toggle:focus-visible { outline: 2px solid #D97757; outline-offset: 3px; }
 
@@ -3450,7 +3453,7 @@ html.logo-intro .install-banner {
      bury the picture. The words sit in the lower half instead, the picture
      shows above them, and the green comes up from the bottom to meet it. The
      panel ends above the bottom navigation so the icons never sit under it. */
-  .home-page .home-hero-cover .assistant-home { min-height: calc(100svh - 168px); padding-bottom: 78px; }
+  .home-page .home-hero-cover .assistant-home { min-height: calc(100svh - 168px); padding-bottom: 94px; }
   .home-page .home-hero-cover .meal-stage { inset: 0 0 48px 0; }
   .meal-photo { object-position: center top; }
   .meal-scrim { background: linear-gradient(to top, rgba(11, 42, 32, .96) 0%, rgba(11, 42, 32, .86) 42%, rgba(11, 42, 32, .35) 66%, rgba(11, 42, 32, .08) 100%); }
@@ -3459,7 +3462,9 @@ html.logo-intro .install-banner {
   .home-page .home-hero-cover .assistant-composer { margin-top: 16px; }
   .meal-track { bottom: 18px; gap: 0; }
   .meal-track ol { gap: 22px; }
-  .meal-track ol::before, .meal-fill { right: 26px; }
+  .meal-track ol::before, .meal-fill { right: 26px; top: 25px; }
+  .meal-label { font-size: 10px; letter-spacing: .04em; }
+  .meal-stop button, .meal-stop a { gap: 5px; }
   .meal-track ol::before { left: 26px; }
   .meal-fill { max-width: calc(100% - 52px); }
   .meal-dot { width: 52px; height: 52px; }
