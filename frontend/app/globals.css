@@ -3419,7 +3419,7 @@ html.logo-intro .install-banner {
    plate under them, their top half on the photograph and their bottom half in
    the panel's own green. The icon of the course showing is the way into it. */
 .meal-track { position: absolute; left: 50%; bottom: 26px; z-index: 4; transform: translateX(-50%); display: flex; align-items: center; gap: 28px; direction: rtl; }
-.meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: center; gap: 30px; }
+.meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: center; gap: 60px; }
 .meal-track ol::before { content: ""; position: absolute; top: calc(50% - 1px); right: 32px; left: 32px; height: 2px; background: rgba(227, 207, 178, .28); }
 .meal-fill { position: absolute; top: calc(50% - 1px); right: 32px; height: 2px; width: var(--fill, 0%); max-width: calc(100% - 64px); background: #D97757; transition: width 140ms linear; }
 .meal-stop { position: relative; }
@@ -3448,7 +3448,7 @@ html.logo-intro .install-banner {
   .home-page .home-hero-cover .assistant-title { font-size: clamp(40px, 10vw, 64px); margin: 0 0 14px; }
   .home-page .home-hero-cover .assistant-composer { margin-top: 16px; }
   .meal-track { bottom: 18px; gap: 0; }
-  .meal-track ol { gap: 14px; }
+  .meal-track ol { gap: 22px; }
   .meal-track ol::before, .meal-fill { right: 26px; }
   .meal-track ol::before { left: 26px; }
   .meal-fill { max-width: calc(100% - 52px); }
