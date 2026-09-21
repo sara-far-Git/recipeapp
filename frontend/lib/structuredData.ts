@@ -14,6 +14,7 @@ export type Recipe = {
   cook_time_minutes?: number | null;
   servings?: number | null;
   category?: string | null;
+  tags?: string[] | null;
   ingredients?: Ingredient[];
   instructions?: Instruction[];
   chef_name?: string | null;
@@ -37,6 +38,24 @@ export function absoluteImage(url?: string | null): string | undefined {
 export const serializeJsonLd = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
 
 export function recipeStructuredData(recipe: Recipe) {
+  // Google's Recipe rich result requires a real dish photo. Marking a page as
+  // Recipe without one is what Search Console emails as a critical missing
+  // `image` field. A logo fallback would also fail that check.
+  const image = recipeImageStructuredData(recipe);
+  if (!image) return null;
+
+  const recipeIngredient = (recipe.ingredients || [])
+    .map((i) => [i.amount ?? "", i.unit ?? "", i.name].filter(Boolean).join(" ").trim())
+    .filter(Boolean);
+  const recipeInstructions = (recipe.instructions || [])
+    .slice()
+    .sort((a, b) => a.step - b.step)
+    .filter((i) => i.text.trim())
+    .map((i) => ({ "@type": "HowToStep" as const, text: i.text }));
+  const keywords = [recipe.category, ...(recipe.tags || [])]
+    .map((value) => value?.trim())
+    .filter((value): value is string => Boolean(value));
+
   return {
     "@context": "https://schema.org",
     "@type": "Recipe",
@@ -46,25 +65,20 @@ export function recipeStructuredData(recipe: Recipe) {
     inLanguage: "he",
     name: recipe.title,
     description: recipe.description || undefined,
-    image: recipeImageStructuredData(recipe),
+    image,
     author: chefName(recipe)
       ? { "@type": "Person", name: chefName(recipe) }
       : undefined,
     datePublished: recipe.created_at,
     dateModified: recipe.updated_at,
     recipeCategory: recipe.category || undefined,
+    keywords: keywords.length ? keywords : undefined,
     recipeYield: recipe.servings ? `${recipe.servings} מנות` : undefined,
     prepTime: iso(recipe.prep_time_minutes),
     cookTime: iso(recipe.cook_time_minutes),
     totalTime: iso((recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0)),
-    recipeIngredient: (recipe.ingredients || []).map((i) =>
-      [i.amount ?? "", i.unit ?? "", i.name].filter(Boolean).join(" ").trim(),
-    ),
-    recipeInstructions: (recipe.instructions || [])
-      .slice()
-      .sort((a, b) => a.step - b.step)
-      .filter((i) => i.text.trim())
-      .map((i) => ({ "@type": "HowToStep", text: i.text })),
+    recipeIngredient: recipeIngredient.length ? recipeIngredient : undefined,
+    recipeInstructions: recipeInstructions.length ? recipeInstructions : undefined,
     aggregateRating:
       recipe.ratings_count && recipe.average_rating
         ? {

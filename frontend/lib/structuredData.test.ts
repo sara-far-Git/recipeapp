@@ -4,16 +4,29 @@ import { SITE_URL } from "./site";
 
 describe("recipe structured data", () => {
   it("keeps recipe identity, times and ordered instructions", () => {
-    const data = recipeStructuredData({ id: 7, title: "לחם", prep_time_minutes: 10, cook_time_minutes: 30,
-      instructions: [{ step: 2, text: "אופים" }, { step: 1, text: "לשים" }] });
-    expect(data.url).toBe(`${SITE_URL}/recipe/7`);
-    expect(data.totalTime).toBe("PT40M");
-    expect(data.recipeInstructions.map(i => i.text)).toEqual(["לשים", "אופים"]);
-    expect(data.aggregateRating).toBeUndefined();
-    expect(data.image).toBeUndefined();
+    const data = recipeStructuredData({
+      id: 7,
+      title: "לחם",
+      image_url: "/bread.jpg",
+      category: "מאפים",
+      tags: ["שבת"],
+      prep_time_minutes: 10,
+      cook_time_minutes: 30,
+      instructions: [{ step: 2, text: "אופים" }, { step: 1, text: "לשים" }],
+    });
+    expect(data?.url).toBe(`${SITE_URL}/recipe/7`);
+    expect(data?.totalTime).toBe("PT40M");
+    expect(data?.recipeInstructions?.map(i => i.text)).toEqual(["לשים", "אופים"]);
+    expect(data?.keywords).toEqual(["מאפים", "שבת"]);
+    expect(data?.aggregateRating).toBeUndefined();
+    expect(data?.image).toMatchObject({ contentUrl: `${SITE_URL}/bread.jpg` });
+  });
+  it("does not mark a recipe without a photo", () => {
+    expect(recipeStructuredData({ id: 7, title: "לחם" })).toBeNull();
+    expect(recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" })).toBeNull();
   });
   it("does not disclose hidden attribution", () => {
-    expect(recipeStructuredData({ id: 1, title: "לחם", author: { full_name: "שרה פרקש" } }).author).toBeUndefined();
+    expect(recipeStructuredData({ id: 1, title: "לחם", image_url: "/bread.jpg", author: { full_name: "שרה פרקש" } })?.author).toBeUndefined();
   });
   it("safely embeds user text without changing its JSON value", () => {
     const data = { name: '</script><script>alert(1)</script>' };
@@ -57,9 +70,9 @@ it("lists only public recipes in display order without duplicate URLs", async ()
 
 it("describes the actual recipe photo without inventing image ownership", () => {
   const data = recipeStructuredData({ id: 7, title: "לחם", image_url: "/bread.jpg", author: { full_name: "שף" } });
-  expect(data.image).toMatchObject({ "@type": "ImageObject", contentUrl: `${SITE_URL}/bread.jpg`, name: "לחם" });
-  expect(data.image).not.toHaveProperty("creator");
-  expect(data.image).not.toHaveProperty("license");
-  expect(data.image).not.toHaveProperty("copyrightNotice");
-  expect(recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" }).image).toBeUndefined();
+  expect(data?.image).toMatchObject({ "@type": "ImageObject", contentUrl: `${SITE_URL}/bread.jpg`, name: "לחם" });
+  expect(data?.image).not.toHaveProperty("creator");
+  expect(data?.image).not.toHaveProperty("license");
+  expect(data?.image).not.toHaveProperty("copyrightNotice");
+  expect(recipeStructuredData({ id: 7, title: "לחם", image_url: "data:image/png;base64,abc" })).toBeNull();
 });

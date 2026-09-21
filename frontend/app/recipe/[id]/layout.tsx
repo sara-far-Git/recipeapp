@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  *  invisible to anything that does not run scripts. */
 function RecipeJsonLd({ recipe }: { recipe: Recipe }) {
   const data = recipeStructuredData(recipe);
+  if (!data) return null;
   return (
     <script
       type="application/ld+json"
