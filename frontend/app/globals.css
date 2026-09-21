@@ -3403,9 +3403,17 @@ html.logo-intro .install-banner {
 .home-page .home-hero-cover .assistant-home { position: relative; display: block; width: 100%; max-width: none; padding: 0 0 104px; min-height: calc(100svh - 80px); direction: rtl; overflow: visible; }
 .home-page .home-hero-cover .meal-stage { position: absolute; inset: 0 0 64px 0; overflow: hidden; background: #0a2119; }
 .meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.3s ease; }
-.meal-slide img { transform: scale(1.035); transition: transform 8s ease-out; }
+/* Behind: the same picture, covering the panel, blurred and darkened enough
+   that stretching it is atmosphere rather than a magnified crop. */
+.meal-photo-bg { object-fit: cover; filter: blur(26px) saturate(1.05) brightness(.72); transform: scale(1.12); }
+/* In front: the picture at no more than its own size, kept to the side away
+   from the words, with the slow drift it had. */
+.meal-photo { object-fit: contain; object-position: left center; transform: scale(1.035); transition: transform 8s ease-out; }
 .meal-slide.is-active { opacity: 1; }
-.meal-slide.is-active img { transform: scale(1); }
+.meal-slide.is-active .meal-photo { transform: scale(1); }
+/* A picture wide enough for the panel needs no backing and fills it itself. */
+.meal-slide.is-wide .meal-photo-bg { display: none; }
+.meal-slide.is-wide .meal-photo { object-fit: cover; object-position: center; }
 .meal-scrim { position: absolute; inset: 0; background:
   linear-gradient(to left, rgba(11, 42, 32, .88) 0%, rgba(11, 42, 32, .62) 42%, rgba(11, 42, 32, .18) 78%, rgba(11, 42, 32, .08) 100%),
   linear-gradient(to top, rgba(11, 42, 32, .75) 0%, rgba(11, 42, 32, 0) 38%); }
@@ -3444,6 +3452,7 @@ html.logo-intro .install-banner {
      panel ends above the bottom navigation so the icons never sit under it. */
   .home-page .home-hero-cover .assistant-home { min-height: calc(100svh - 168px); padding-bottom: 78px; }
   .home-page .home-hero-cover .meal-stage { inset: 0 0 48px 0; }
+  .meal-photo { object-position: center top; }
   .meal-scrim { background: linear-gradient(to top, rgba(11, 42, 32, .96) 0%, rgba(11, 42, 32, .86) 42%, rgba(11, 42, 32, .35) 66%, rgba(11, 42, 32, .08) 100%); }
   .home-page .home-hero-cover .assistant-welcome { width: 100%; padding: 18svh 22px 20px; }
   .home-page .home-hero-cover .assistant-title { font-size: clamp(40px, 10vw, 64px); margin: 0 0 14px; }
@@ -3460,5 +3469,5 @@ html.logo-intro .install-banner {
 }
 @media (prefers-reduced-motion: reduce) {
   .meal-slide, .meal-slide img, .meal-dot, .meal-fill { transition: none; }
-  .meal-slide img { transform: none; }
+  .meal-photo { transform: none; }
 }
