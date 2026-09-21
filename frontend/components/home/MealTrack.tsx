@@ -9,7 +9,6 @@ import { getCategory } from "@/lib/categories";
 /** The five courses of a meal, in the order they reach the table. The site's
  *  own categories, minus drinks — a meal is not served by its drinks. */
 const COURSES = ["ראשונות", "סלטים", "עיקריות", "מאפים", "קינוחים"] as const;
-const ORDINAL = ["ראשונה", "שנייה", "שלישית", "רביעית", "חמישית"];
 const DWELL_MS = 5200;
 
 /** One small line drawing per course, in the stroke of the logo's own cutlery. */
@@ -23,11 +22,12 @@ const ICONS: Record<(typeof COURSES)[number], React.ReactNode> = {
 
 /** The opening photograph, as a meal.
  *
- *  A single stock photograph used to sit here and say nothing. This walks
- *  through the courses: the category's own picture, its own line, and a way
- *  in. It moves on its own and stops under the pointer; the page's scrolling
- *  is never taken from the reader, and the headline and search beside it are
- *  not touched.
+ *  A single stock photograph used to sit here and say nothing. This fills the
+ *  whole opening with the course's own picture, under a green scrim the
+ *  headline and search sit on, and walks through the courses on a bar along
+ *  the bottom that rides a little way up onto the picture. It moves on its
+ *  own for one turn and stops; the page's scrolling is never taken from the
+ *  reader.
  */
 export default function MealTrack() {
   const [active, setActive] = useState(0);
@@ -93,28 +93,19 @@ export default function MealTrack() {
 
   return (
     <>
-      <div className="hero-split-photo meal-stage">
+      <div className="meal-stage" aria-hidden="true">
         {COURSES.map((name, i) => {
           const c = getCategory(name);
           if (!c) return null;
           return (
-            <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}`} aria-hidden={i !== active}>
-              <Image src={c.image} alt="" fill priority={i === 0} sizes="(max-width: 700px) 100vw, 50vw" className="object-cover" />
-              <figcaption
-                className="meal-caption"
-                onMouseEnter={() => { hovered.current = true; }}
-                onMouseLeave={() => { hovered.current = false; startedAt.current = performance.now(); }}
-              >
-                <span className="meal-eyebrow">מנה {ORDINAL[i]}</span>
-                <span className="meal-name">{name}</span>
-                <span className="meal-line">{c.desc}</span>
-                <Link href={`/category/${encodeURIComponent(name)}`} className="meal-cta" tabIndex={i === active ? 0 : -1}>
-                  לכל ה{name}<span aria-hidden="true">←</span>
-                </Link>
-              </figcaption>
+            <figure key={name} className={`meal-slide${i === active ? " is-active" : ""}`}>
+              <Image src={c.image} alt="" fill priority={i === 0} sizes="100vw" className="object-cover" />
             </figure>
           );
         })}
+        {/* Green over the picture, heaviest where the words are, so cream
+            type reads on any photograph without the photograph going away. */}
+        <div className="meal-scrim" />
       </div>
 
       <nav
@@ -131,14 +122,23 @@ export default function MealTrack() {
           <span className="meal-fill" aria-hidden="true" />
           {COURSES.map((name, i) => (
             <li key={name} className={`meal-stop${i === active ? " is-active" : i < active ? " is-done" : ""}`}>
-              <button type="button" aria-label={name} aria-current={i === active ? "true" : "false"} onClick={() => go(i)}>
-                <span className="meal-dot">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    {ICONS[name]}
-                  </svg>
-                </span>
-                <span className="meal-label">{name}</span>
-              </button>
+              {i === active ? (
+                <Link href={`/category/${encodeURIComponent(name)}`} aria-label={`לכל ה${name}`} title={`לכל ה${name}`} aria-current="true">
+                  <span className="meal-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      {ICONS[name]}
+                    </svg>
+                  </span>
+                </Link>
+              ) : (
+                <button type="button" aria-label={name} title={name} onClick={() => go(i)}>
+                  <span className="meal-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      {ICONS[name]}
+                    </svg>
+                  </span>
+                </button>
+              )}
             </li>
           ))}
         </ol>

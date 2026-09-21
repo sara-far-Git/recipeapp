@@ -197,8 +197,9 @@ export default function FeedPage() {
   return (
     <div className="home-page">
       <HomeStack count={stackCount}>
-      <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero home-hero-split">
+      <CinematicSection id="hero" tone="bark" index={0} className="home-panel-hero home-hero-cover">
         <div className="bleed-inner assistant-home">
+          <MealTrack />
           <Reveal className="assistant-welcome">
             <h1 className="display-hero assistant-title">יש מתכונים<br />שחוזרים<br /><span>אליהם.</span></h1>
             <p className="assistant-prompt">כל מה שאת אוהבת לבשל, במקום אחד.</p>
@@ -225,7 +226,6 @@ export default function FeedPage() {
               <span className="assistant-thinking-dots" aria-hidden="true"><i /><i /><i /></span>
             </div>
           </Reveal>
-          <MealTrack />
         </div>
       </CinematicSection>
 

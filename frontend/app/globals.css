@@ -2649,10 +2649,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0B2A20;
+    background: transparent;
     pointer-events: none;
     -webkit-mask-image: radial-gradient(circle at 50% 46%, transparent calc(var(--intro-progress, 0) * 72vmax), #000 calc(var(--intro-progress, 0) * 72vmax + 1px));
     mask-image: radial-gradient(circle at 50% 46%, transparent calc(var(--intro-progress, 0) * 72vmax), #000 calc(var(--intro-progress, 0) * 72vmax + 1px));
+  }
+  .logo-intro-stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0B2A20;
+    isolation: isolate;
   }
   .logo-intro-mark {
     position: relative;
@@ -2660,17 +2669,6 @@
     max-height: 88vh;
     aspect-ratio: 1 / 1;
   }
-  .logo-intro-fallback {
-    position: absolute;
-    inset: 8%;
-    width: 84%;
-    height: 84%;
-    object-fit: contain;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 220ms ease;
-  }
-  .logo-intro-fallback.is-hidden { opacity: 0; }
   .logo-intro-video {
     position: absolute;
     inset: 0;
@@ -2691,8 +2689,9 @@
   .logo-intro-video { z-index: 2; }
   .logo-intro-cue {
     position: absolute;
-    bottom: max(1.6rem, calc(env(safe-area-inset-bottom) + 0.9rem));
+    bottom: max(2.2rem, calc(env(safe-area-inset-bottom) + 1.4rem));
     left: 50%;
+    z-index: 3;
     transform: translateX(-50%);
     margin: 0;
     display: flex;
@@ -2700,25 +2699,22 @@
     align-items: center;
     gap: 0.35rem;
     font-family: var(--font-brand);
-    font-size: 0.78rem;
+    font-size: 1rem;
     font-weight: 700;
-    letter-spacing: 0;
+    letter-spacing: 0.02em;
     color: #E3CFB2;
     opacity: 0;
     transition: opacity 0.45s ease;
     pointer-events: none;
+    white-space: nowrap;
   }
   .logo-intro-cue.is-on {
-    animation: logo-cue-in 0.55s ease forwards;
+    opacity: 1;
   }
   .logo-intro-cue svg {
     width: 1.15rem;
     height: 1.15rem;
     animation: logo-cue-bob 1.35s ease-in-out infinite;
-  }
-  @keyframes logo-cue-in {
-    from { opacity: 0; transform: translate(-50%, 8px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
   }
   @keyframes logo-cue-bob {
     0%, 100% { transform: translateY(0); }
@@ -3175,10 +3171,15 @@ html.logo-intro:has(.logo-intro-veil) body::before { display: none; }
 html.logo-intro #main {
   position: relative;
   z-index: 1;
-  transform: translate3d(0, calc((1 - var(--intro-progress, 0)) * 18vh), 0);
-  will-change: transform;
 }
 html.logo-intro .logo-intro-veil { z-index: 120; }
+html.logo-intro .logo-intro-cue {
+  position: fixed;
+  z-index: 130;
+}
+html.logo-intro .logo-intro-cue.is-on {
+  opacity: 1;
+}
 html.logo-intro header,
 html.logo-intro footer,
 html.logo-intro .bottom-nav,
@@ -3339,23 +3340,12 @@ html.logo-intro .install-banner {
 .home-page .category-photo img { border-radius: 0; }
 
 /* Editorial home opening: photograph right, quiet copy left. */
-.home-page .home-hero-split .assistant-home { display: grid; grid-template-columns: 1fr 1fr; direction: ltr; width: 100%; max-width: none; padding: 0; gap: 0; min-height: calc(100svh - 80px); align-items: stretch; }
-.home-page .home-hero-split .assistant-welcome { grid-column: 1; grid-row: 1; direction: rtl; align-self: center; width: 100%; max-width: none; margin: 0; padding: clamp(28px, 5vw, 88px); text-align: right; }
-.home-page .home-hero-split .hero-split-photo { grid-column: 2; grid-row: 1; position: relative; min-width: 0; min-height: 100%; overflow: hidden; }
-.home-page .home-hero-split .assistant-title { display: block; max-width: none; margin: 20px 0 24px; font-size: clamp(48px, 6vw, 100px); line-height: 1.05; color: #E3CFB2; }
-.home-page .home-hero-split .assistant-title span { color: #D97757; }
-.home-page .home-hero-split .assistant-prompt { min-height: 0; margin: 0; font-size: clamp(17px, 1.5vw, 22px); line-height: 1.6; color: #E3CFB2; }
 .hero-split-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 32px; }
 .hero-split-primary { display: inline-flex; align-items: center; gap: 14px; border-radius: 999px; background: #D97757; color: #15382D; padding: 16px 24px; font-weight: 800; min-height: 52px; }
 .hero-split-primary:hover { background: #E8A082; }
 .hero-split-secondary { display: inline-flex; align-items: center; gap: 8px; color: #E3CFB2; min-height: 44px; border-bottom: 1px solid #E3CFB2; }
 .hero-photo-caption { position: absolute; bottom: 28px; right: 28px; padding: 10px 18px; background: #15382D; color: #E3CFB2; border-radius: 999px; font-size: 13px; }
-.home-page .home-hero-split .assistant-composer { margin-top: 32px; width: 100%; }
 @media(max-width:700px) {
- .home-page .home-hero-split .assistant-home { grid-template-columns: 1fr; min-height: 0; }
- .home-page .home-hero-split .hero-split-photo { grid-column: 1; grid-row: 1; min-height: 280px; height: 36svh; }
- .home-page .home-hero-split .assistant-welcome { grid-column: 1; grid-row: 2; padding: 28px 24px 88px; }
- .home-page .home-hero-split .assistant-title { font-size: clamp(42px, 10vw, 68px); margin: 16px 0; }
  .hero-split-actions { margin-top: 24px; gap: 14px; }
  .hero-photo-caption { bottom: 16px; right: 16px; }
 }
@@ -3407,64 +3397,67 @@ html.logo-intro .install-banner {
   .home-page .home-panel-categories .category-photo .category-full-image { border-radius: 20px; }
 }
 
-/* The opening photograph as a meal: five courses on a track at the seam
-   between the words and the picture. The track is absolute in the hero grid,
-   so the grid itself is the positioning box. */
-.home-page .home-hero-split .assistant-home { position: relative; }
-.home-page .home-hero-split .assistant-welcome { padding-right: clamp(64px, 7vw, 112px); }
-.home-page .home-hero-split .meal-stage { background: #0a2119; }
+/* Editorial home opening: the course's photograph fills the whole panel, a
+   green scrim carries the headline and the search, and the meal's track runs
+   along the bottom, riding a little way up onto the picture. */
+.home-page .home-hero-cover .assistant-home { position: relative; display: block; width: 100%; max-width: none; padding: 0 0 104px; min-height: calc(100svh - 80px); direction: rtl; overflow: visible; }
+.home-page .home-hero-cover .meal-stage { position: absolute; inset: 0 0 64px 0; overflow: hidden; background: #0a2119; }
 .meal-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.3s ease; }
 .meal-slide img { transform: scale(1.035); transition: transform 8s ease-out; }
 .meal-slide.is-active { opacity: 1; }
 .meal-slide.is-active img { transform: scale(1); }
-.meal-caption { position: absolute; right: 28px; bottom: 28px; left: 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 22px 20px; border-radius: var(--r-lg); background: rgba(11, 42, 32, .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #E3CFB2; direction: rtl; text-align: right; }
-@keyframes meal-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.meal-slide.is-active .meal-caption > * { animation: meal-rise .7s cubic-bezier(.2, .7, .2, 1) both; }
-.meal-slide.is-active .meal-name { animation-delay: .1s; }
-.meal-slide.is-active .meal-line { animation-delay: .2s; }
-.meal-slide.is-active .meal-cta { animation-delay: .3s; }
-.meal-eyebrow { font-size: 12px; letter-spacing: .08em; color: #E8A082; }
-.meal-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 3.6vw, 56px); line-height: 1; }
-.meal-line { font-size: 15px; line-height: 1.5; max-width: 34ch; }
-.meal-cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; background: #D97757; color: #15382D; font-weight: 800; font-size: 14px; }
-.meal-cta:hover { background: #E8A082; }
+.meal-scrim { position: absolute; inset: 0; background:
+  linear-gradient(to left, rgba(11, 42, 32, .88) 0%, rgba(11, 42, 32, .62) 42%, rgba(11, 42, 32, .18) 78%, rgba(11, 42, 32, .08) 100%),
+  linear-gradient(to top, rgba(11, 42, 32, .75) 0%, rgba(11, 42, 32, 0) 38%); }
+.home-page .home-hero-cover .assistant-welcome { position: relative; z-index: 2; width: min(100%, 720px); margin: 0; padding: clamp(56px, 9vw, 128px) clamp(24px, 5vw, 80px) 48px; direction: rtl; text-align: right; }
+.home-page .home-hero-cover .assistant-title { display: block; max-width: none; margin: 0 0 24px; font-size: clamp(48px, 6.4vw, 104px); line-height: 1.03; color: #E3CFB2; text-shadow: 0 2px 24px rgba(6, 24, 18, .35); }
+.home-page .home-hero-cover .assistant-title span { color: #D97757; }
+.home-page .home-hero-cover .assistant-prompt { min-height: 0; margin: 0; font-size: clamp(17px, 1.5vw, 22px); line-height: 1.6; color: #E3CFB2; }
+.home-page .home-hero-cover .assistant-composer { margin-top: 32px; width: 100%; }
 
-.meal-track { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; direction: rtl; }
-.meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 30px; }
-.meal-track ol::before { content: ""; position: absolute; top: 19px; bottom: 19px; right: calc(50% - 1px); width: 2px; background: rgba(227, 207, 178, .22); }
-.meal-fill { position: absolute; top: 19px; right: calc(50% - 1px); width: 2px; height: var(--fill, 0%); background: #D97757; transition: height 140ms linear; }
-.meal-stop button { display: flex; align-items: center; gap: 14px; padding: 3px 0; background: none; border: 0; color: rgba(227, 207, 178, .62); cursor: pointer; font: inherit; }
-.meal-dot { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .55); background: #15382D; color: #E3CFB2; transition: transform .5s cubic-bezier(.2, .7, .2, 1), background .5s ease, border-color .5s ease, color .5s ease, box-shadow .5s ease; }
-.meal-dot svg { width: 20px; height: 20px; }
-.meal-label { position: absolute; left: 48px; font-size: 13px; letter-spacing: .06em; white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1), color .5s; }
-.meal-stop:hover .meal-label, .meal-stop.is-active .meal-label { opacity: 1; transform: none; }
-.meal-stop.is-active button { color: #E3CFB2; }
-.meal-stop.is-active .meal-dot { background: #D97757; border-color: #D97757; color: #15382D; transform: scale(1.12); box-shadow: 0 0 0 7px rgba(217, 119, 87, .18); }
+/* The track: five large icons on a line along the bottom, no words and no
+   plate under them, their top half on the photograph and their bottom half in
+   the panel's own green. The icon of the course showing is the way into it. */
+.meal-track { position: absolute; left: 50%; bottom: 26px; z-index: 4; transform: translateX(-50%); display: flex; align-items: center; gap: 28px; direction: rtl; }
+.meal-track ol { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: center; gap: 30px; }
+.meal-track ol::before { content: ""; position: absolute; top: calc(50% - 1px); right: 32px; left: 32px; height: 2px; background: rgba(227, 207, 178, .28); }
+.meal-fill { position: absolute; top: calc(50% - 1px); right: 32px; height: 2px; width: var(--fill, 0%); max-width: calc(100% - 64px); background: #D97757; transition: width 140ms linear; }
+.meal-stop { position: relative; }
+.meal-stop button, .meal-stop a { display: block; padding: 0; background: none; border: 0; cursor: pointer; font: inherit; }
+.meal-dot { position: relative; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .6); background: #15382D; color: #E3CFB2; box-shadow: 0 10px 30px rgba(6, 24, 18, .45); transition: transform .5s cubic-bezier(.2, .7, .2, 1), background .5s ease, border-color .5s ease, color .5s ease, box-shadow .5s ease; }
+.meal-dot svg { width: 32px; height: 32px; }
+.meal-stop button:hover .meal-dot { border-color: #E3CFB2; transform: translateY(-2px); }
+.meal-stop.is-active .meal-dot { background: #D97757; border-color: #D97757; color: #15382D; transform: scale(1.12); box-shadow: 0 0 0 8px rgba(217, 119, 87, .18), 0 14px 34px rgba(6, 24, 18, .5); }
+.meal-stop.is-active a:hover .meal-dot { background: #E8A082; border-color: #E8A082; }
 .meal-stop.is-done .meal-dot { border-color: #E3CFB2; }
-.meal-stop button:focus-visible { outline: 2px solid #D97757; outline-offset: 4px; border-radius: 999px; }
-.meal-toggle { display: grid; place-items: center; width: 34px; height: 34px; margin: 18px auto 0; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .35); background: transparent; color: rgba(227, 207, 178, .75); cursor: pointer; }
+.meal-stop button:focus-visible, .meal-stop a:focus-visible { outline: 2px solid #D97757; outline-offset: 4px; border-radius: 999px; }
+.meal-toggle { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(227, 207, 178, .35); background: rgba(21, 56, 45, .7); color: rgba(227, 207, 178, .75); cursor: pointer; }
 .meal-toggle:hover { color: #E3CFB2; border-color: #E3CFB2; }
 .meal-toggle:focus-visible { outline: 2px solid #D97757; outline-offset: 3px; }
 
+
 @media (max-width: 700px) {
-  .home-page .home-hero-split .assistant-welcome { padding-right: 24px; }
-  .home-page .home-hero-split .meal-stage { height: 36svh; min-height: 260px; }
-  .meal-caption { right: 12px; bottom: 12px; left: 12px; padding: 10px 12px 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
-  .meal-eyebrow, .meal-line { display: none; }
-  .meal-name { font-size: clamp(26px, 7.5vw, 34px); }
-  .meal-cta { margin-top: 0; min-height: 36px; padding: 0 14px; font-size: 13px; }
-  .meal-track { position: static; transform: none; grid-column: 1; grid-row: 2; padding: 10px 20px 0; display: flex; align-items: center; gap: 14px; }
-  .meal-track ol { flex: 1; }
-  .meal-toggle { margin: 0; flex: none; }
-  .meal-track ol { flex-direction: row; justify-content: space-between; gap: 0; }
-  .meal-track ol::before { top: 18px; bottom: auto; right: 19px; left: 19px; width: auto; height: 2px; }
-  .meal-fill { top: 18px; right: 19px; width: var(--fill, 0%); height: 2px; transition: width 140ms linear; }
-  .meal-stop button { flex-direction: column; gap: 6px; }
-  .meal-label { position: static; opacity: 1; transform: none; font-size: 11px; }
-  .home-page .home-hero-split .assistant-welcome { grid-row: 3; padding-top: 18px; }
+  /* On a phone the words span the whole width, so a side-to-side scrim would
+     bury the picture. The words sit in the lower half instead, the picture
+     shows above them, and the green comes up from the bottom to meet it. The
+     panel ends above the bottom navigation so the icons never sit under it. */
+  .home-page .home-hero-cover .assistant-home { min-height: calc(100svh - 168px); padding-bottom: 78px; }
+  .home-page .home-hero-cover .meal-stage { inset: 0 0 48px 0; }
+  .meal-scrim { background: linear-gradient(to top, rgba(11, 42, 32, .96) 0%, rgba(11, 42, 32, .86) 42%, rgba(11, 42, 32, .35) 66%, rgba(11, 42, 32, .08) 100%); }
+  .home-page .home-hero-cover .assistant-welcome { width: 100%; padding: 18svh 22px 20px; }
+  .home-page .home-hero-cover .assistant-title { font-size: clamp(40px, 10vw, 64px); margin: 0 0 14px; }
+  .home-page .home-hero-cover .assistant-composer { margin-top: 16px; }
+  .meal-track { bottom: 18px; gap: 0; }
+  .meal-track ol { gap: 14px; }
+  .meal-track ol::before, .meal-fill { right: 26px; }
+  .meal-track ol::before { left: 26px; }
+  .meal-fill { max-width: calc(100% - 52px); }
+  .meal-dot { width: 52px; height: 52px; }
+  .meal-dot svg { width: 26px; height: 26px; }
+  .meal-stop.is-active .meal-dot { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(217, 119, 87, .18); }
+  .meal-toggle { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .meal-slide, .meal-slide img, .meal-dot, .meal-fill, .meal-label { transition: none; }
+  .meal-slide, .meal-slide img, .meal-dot, .meal-fill { transition: none; }
   .meal-slide img { transform: none; }
-  .meal-slide.is-active .meal-caption > * { animation: none; }
 }
