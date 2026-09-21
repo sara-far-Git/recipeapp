@@ -2651,9 +2651,33 @@
     justify-content: center;
     background: #0B2A20;
     pointer-events: none;
-    transition: opacity 0.42s ease;
   }
-  .logo-intro-veil.is-leaving { opacity: 0; }
+  .logo-intro-veil.is-revealing {
+    -webkit-mask-image: radial-gradient(circle, transparent 32%, #000 32.6%);
+    mask-image: radial-gradient(circle, transparent 32%, #000 32.6%);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 50% 46%;
+    mask-position: 50% 46%;
+    animation: intro-iris 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes intro-iris {
+    0% {
+      -webkit-mask-size: 0 0;
+      mask-size: 0 0;
+      opacity: 1;
+    }
+    42% {
+      -webkit-mask-size: 42vmax 42vmax;
+      mask-size: 42vmax 42vmax;
+      opacity: 1;
+    }
+    100% {
+      -webkit-mask-size: 170vmax 170vmax;
+      mask-size: 170vmax 170vmax;
+      opacity: 0;
+    }
+  }
   .logo-intro-mark {
     position: relative;
     width: min(98vw, 64rem);
@@ -3158,7 +3182,26 @@ button, [role="button"],
 .reason-answer { padding: 0.8rem 1.25rem 1.25rem; background: rgba(217, 119, 87, 0.12); border-radius: var(--r-md); }
 .reason-answer[hidden] { display: none; }
 /* Cover the first paint before React mounts; the logo appears only in video. */
+html.logo-intro,
+html.logo-intro body { overflow: hidden; }
 html.logo-intro body::before { content: ""; position: fixed; inset: 0; background: #0B2A20; z-index: 99; }
+html.logo-intro.logo-intro-open body::before { opacity: 0; }
+html.logo-intro #main {
+  transform: translateY(22vh);
+  will-change: transform;
+}
+html.logo-intro.logo-intro-open #main {
+  transform: none;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.logo-intro.logo-intro-open header,
+html.logo-intro.logo-intro-open footer,
+html.logo-intro.logo-intro-open .section-rail,
+html.logo-intro.logo-intro-open .bottom-nav {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.55s ease 0.55s;
+}
 
 .reason-toggle::before { border-radius: inherit; }
 @media (max-width: 639px) {

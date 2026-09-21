@@ -92,7 +92,7 @@ export default function RootLayout({
                 var previewIntro = new URLSearchParams(location.search).has('intro');
                 if (location.pathname === '/' && !location.hash &&
                     !matchMedia('(prefers-reduced-motion: reduce)').matches &&
-                    (previewIntro || sessionStorage.getItem('logo-intro-v16') !== '1')) {
+                    (previewIntro || sessionStorage.getItem('logo-intro-v18') !== '1')) {
                   document.documentElement.classList.add('logo-intro');
                   setTimeout(function() { document.documentElement.classList.remove('logo-intro'); }, 6000);
                 }

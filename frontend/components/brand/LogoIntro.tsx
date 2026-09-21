@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 
 // Bumped with the artwork: anyone mid-session has the old one marked seen.
-const KEY = "logo-intro-v17";
-const EXIT_DURATION_MS = 420;
+const KEY = "logo-intro-v18";
+const REVEAL_DURATION_MS = 1200;
 const MAX_INTRO_DURATION_MS = 4600;
 
 function unlock() {
   const html = document.documentElement;
-  html.classList.remove("logo-intro");
+  html.classList.remove("logo-intro", "logo-intro-open");
   html.style.removeProperty("overflow");
   document.body.style.removeProperty("overflow");
 }
@@ -45,6 +45,8 @@ export default function LogoIntro() {
 
     finished.current = false;
     document.documentElement.classList.add("logo-intro");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     setGone(false);
     setSrc(introSrc());
 
@@ -53,9 +55,12 @@ export default function LogoIntro() {
       finished.current = true;
       sessionStorage.setItem(KEY, "1");
       window.scrollTo(0, 0);
-      unlock();
+      document.documentElement.classList.add("logo-intro-open");
       setLeaving(true);
-      window.setTimeout(() => setGone(true), EXIT_DURATION_MS);
+      window.setTimeout(() => {
+        unlock();
+        setGone(true);
+      }, REVEAL_DURATION_MS);
     };
     completeRef.current = complete;
 
@@ -79,7 +84,7 @@ export default function LogoIntro() {
 
   return (
     <div
-      className={`logo-intro-veil${leaving ? " is-leaving" : ""}`}
+      className={`logo-intro-veil${leaving ? " is-revealing" : ""}`}
       aria-hidden="true"
     >
       <div className="logo-intro-mark">
