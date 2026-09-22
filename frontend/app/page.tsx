@@ -337,7 +337,7 @@ export default function FeedPage() {
               <div className="home-recipe-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {gridRecipes.map((recipe, i) => (
                   <Reveal key={recipe.id} delay={(i % 3) * 90}>
-                    <RecipeCard recipe={recipe} />
+                    <RecipeCard recipe={recipe} showImage={false} />
                   </Reveal>
                 ))}
               </div>

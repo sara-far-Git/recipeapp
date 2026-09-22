@@ -20,13 +20,17 @@ interface RecipeCardProps {
   /** Given only where the cook manages their own book, so the control does
    *  not appear on every card on the site. */
   onDelete?: (recipe: any) => void;
+  /** The home page shows its recipes without their photographs — the card
+   *  then carries the title on its own panel, the way a recipe without a
+   *  photo always has. Everywhere else the photograph stays. */
+  showImage?: boolean;
 }
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
 
 
-function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
+function RecipeCard({ recipe, onDelete, showImage = true }: RecipeCardProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [liked, setLiked] = useState(recipe.is_liked);
@@ -53,7 +57,7 @@ function RecipeCard({ recipe, onDelete }: RecipeCardProps) {
   const diffLabel = difficultyLabels[recipe.difficulty] || "";
   const kosherLabel = recipe.kosher_type ? kosherLabels[recipe.kosher_type] : null;
   const tags = [recipe.category, diffLabel, kosherLabel].filter(Boolean) as string[];
-  const hasImage = Boolean(recipe.image_url);
+  const hasImage = showImage && Boolean(recipe.image_url);
   // Six tones for six categories, so a category always wears the same tab.
   const tabTone = `tab-${(CATEGORY_ORDER.indexOf(recipe.category) + 6) % 6 + 1}`;
   const isDraft = recipe.is_published === false;
