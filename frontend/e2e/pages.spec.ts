@@ -78,13 +78,19 @@ test.describe("public pages render", () => {
 });
 
 test.describe("flows", () => {
-  test("home search submits to the search page", async ({ page }) => {
+  test("home search opens the pantry search with the words as ingredients", async ({ page }) => {
     await page.goto("/");
     const box = page.locator(".assistant-composer input");
     await box.scrollIntoViewIfNeeded();
-    await box.fill("עוף");
+    await box.fill("יש לי עוף וירקות");
     await page.getByRole("button", { name: "חיפוש מתכון" }).click();
-    await expect(page).toHaveURL(/\/search\?q=/);
+    // The box asks what you feel like, so it lands on "מה אפשר להכין?", not
+    // the title search — with the sentence already turned into ingredients.
+    await expect(page).toHaveURL(/\/search\?mode=pantry&q=/);
+    const pantry = page.locator(".search-pantry");
+    await expect(pantry).toBeVisible();
+    await expect(pantry.getByText("עוף", { exact: true })).toBeVisible();
+    await expect(pantry.getByText("ירקות", { exact: true })).toBeVisible();
   });
 
   test("nav can open holiday planning", async ({ page }) => {
