@@ -35,11 +35,24 @@ const TIME_FILTERS = [
   { value: 60, label: "עד שעה" },
 ];
 const QUICK_SEARCHES = ["עוף", "פסטה", "עוגת שוקולד", "סלט", "אורז", "מרק"];
+/** Ingredients out of a sentence. Filler that says nothing about food is
+ *  dropped, and the words are split at commas, at "או", at "עם", and at a
+ *  leading ו on a word — "עוף וירקות" is two things, not one. */
+function pantryTerms(text: string): string[] {
+  const filler = /^(יש לי|יש|לי|משהו|קצת|עם|של|את|בבית|אני רוצה|רוצה|להכין)$/;
+  return text
+    .replace(/[?!.]/g, " ")
+    .split(/\s*,\s*|\s+או\s+|\s+עם\s+|\s+(?=ו[א-ת]{2,})/)
+    .map((t) => t.trim().replace(/^ו(?=[א-ת]{2,})/, ""))
+    .map((t) => t.split(/\s+/).filter((w) => !filler.test(w)).join(" ").trim())
+    .filter((t) => t.length >= 2);
+}
+
 const QUICK_INGREDIENTS = ["ביצים", "גבינה", "תפוח אדמה", "טונה", "עגבניות", "קמח"];
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
-  const { isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const initialQ = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "";
   const initialTag = searchParams.get("tag") || "";
@@ -57,7 +70,11 @@ function SearchPageContent() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [ingredientMode, setIngredientMode] = useState(false);
+  const [ingredientMode, setIngredientMode] = useState(searchParams.get("mode") === "pantry");
+  // Set when the pantry mode was opened from the home page with words in
+  // hand: the ingredients are seeded from them and the search runs on its own,
+  // once, instead of waiting for a click on a form the reader never saw.
+  const pantryAutoRun = useRef(false);
   const [ingredientInput, setIngredientInput] = useState("");
   const [ingredientTags, setIngredientTags] = useState<string[]>([]);
   const [suggestLoading, setSuggestLoading] = useState(false);
@@ -142,8 +159,22 @@ function SearchPageContent() {
   };
   const removeIngredientTag = (tag: string) => setIngredientTags(ingredientTags.filter((t) => t !== tag));
 
+  // "יש לי עוף וירקות" → עוף, ירקות. The home page's box takes a sentence,
+  // the pantry takes ingredients; this is the small step between them.
+  useEffect(() => {
+    if (searchParams.get("mode") !== "pantry") return;
+    setIngredientMode(true);
+    const terms = pantryTerms(searchParams.get("q") || "");
+    if (terms.length) {
+      setIngredientTags(terms);
+      pantryAutoRun.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const searchByIngredients = async () => {
     if (ingredientTags.length === 0) return;
+    pantryAutoRun.current = false;
     setSuggestError("");
     setSuggestLoading(true);
     setSuggestions(null);
@@ -152,12 +183,21 @@ function SearchPageContent() {
       const { data } = await suggestApi.fromIngredients(ingredientTags);
       setSuggestions(data);
     } catch { setSuggestError("לא הצלחנו לבדוק את המצרכים כרגע. נסו שוב."); }
-    try {
-      const { data } = await suggestApi.aiGenerate(ingredientTags);
-      setAiSuggestions(data.suggestions);
-    } catch { setSuggestError("ההצעות הנוספות אינן זמינות כרגע. אפשר לנסות שוב."); }
+    // The extra ideas come from a signed-in-only endpoint. A visitor gets the
+    // matches from the site's own recipes and a line saying where the rest is,
+    // not a login page in place of the results.
+    if (user) {
+      try {
+        const { data } = await suggestApi.aiGenerate(ingredientTags);
+        setAiSuggestions(data.suggestions);
+      } catch { setSuggestError("ההצעות הנוספות אינן זמינות כרגע. אפשר לנסות שוב."); }
+    }
     setSuggestLoading(false);
   };
+  useEffect(() => {
+    if (pantryAutoRun.current && ingredientMode && ingredientTags.length) searchByIngredients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ingredientTags, ingredientMode]);
 
   return (
     <PageFrame tone="forest" className="search-experience">
@@ -380,6 +420,11 @@ function SearchPageContent() {
             מצאו מתכונים
           </button>
 
+          {!user && suggestions && (
+            <p className="text-sm text-bark-300 mt-2 mb-4">
+              רוצים גם רעיונות מעבר למתכונים שבאתר? <Link href="/login" className="underline underline-offset-4">נכנסים לחשבון</Link>.
+            </p>
+          )}
           {aiSuggestions && aiSuggestions.length > 0 && (
             <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(39,94,80,0.12)" }}>
               <p className="eyebrow mb-4">

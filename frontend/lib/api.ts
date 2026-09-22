@@ -310,5 +310,7 @@ export const suggestApi = {
   fromIngredients: (ingredients: string[]) =>
     api.post("/suggest/from-ingredients", { ingredients }),
   aiGenerate: (ingredients: string[]) =>
-    api.post("/suggest/ai-generate", { ingredients }),
+    // Optional extra; a visitor who is not signed in must not be bounced to
+    // the login page over it.
+    api.post("/suggest/ai-generate", { ingredients }, { skipAuthRedirect: true } as any),
 };

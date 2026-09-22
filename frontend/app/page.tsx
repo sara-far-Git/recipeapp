@@ -179,7 +179,10 @@ export default function FeedPage() {
       return;
     }
     setIsSearching(true);
-    router.push(`/search?q=${encodeURIComponent(q)}`);
+    // The box asks what you feel like, not for a recipe's name — so it opens
+    // the pantry search, which takes what you wrote as the ingredients you
+    // have, rather than the plain title search.
+    router.push(`/search?mode=pantry&q=${encodeURIComponent(q)}`);
   };
 
   const startWithPrompt = (prompt: string) => {
