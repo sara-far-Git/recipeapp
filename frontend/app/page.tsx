@@ -355,24 +355,19 @@ export default function FeedPage() {
                   <Link href={`/recipe/${editorPick.id}`} className="weekly-photo-frame relative block group">
                     <div className="weekly-photo relative aspect-[4/3] overflow-hidden border border-cream-50/20"
                       style={{ boxShadow: "0 28px 70px rgba(12,40,31,0.45)" }}>
-                      {editorPick.image_url ? (
-                        <Image src={editorPick.image_url} alt={editorPick.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 70vw, 34rem" />
-                      ) : (
-                        /* A stock dessert used to stand in here, in the frame
-                           reserved for the dish's own photo and beside its
-                           name — so a white chocolate cup read as an apricot
-                           tart. The recipe cards already answer this honestly
-                           with a plain panel, and so does this now. */
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
-                          style={{ background: "#E3CFB2" }}>
-                          <ChefHat className="w-16 h-16" strokeWidth={1.1} style={{ color: "rgba(39,94,80,0.45)" }} />
-                          {editorPick.category && (
-                            <span className="eyebrow text-[11px]" style={{ color: "#275E50" }}>
-                              {editorPick.category}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      {/* The home page shows its recipes without photographs, the
+                          weekly pick included: the frame carries the plain panel
+                          the recipe cards use, whether or not the recipe has a
+                          picture of its own. */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+                        style={{ background: "#E3CFB2" }}>
+                        <ChefHat className="w-16 h-16" strokeWidth={1.1} style={{ color: "rgba(39,94,80,0.45)" }} />
+                        {editorPick.category && (
+                          <span className="eyebrow text-[11px]" style={{ color: "#275E50" }}>
+                            {editorPick.category}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
                       style={{ background: "#D97757", color: "#E3CFB2", borderRadius: 999 }}>
