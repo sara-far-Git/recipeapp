@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     default: "Recipe Space · הבית של המתכונים",
     template: "%s · Recipe Space",
   },
-  description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.",
+  description: "יש מתכונים שחוזרים אליהם. כל מה שאת אוהבת לבשל, במקום אחד.",
   applicationName: "Recipe Space",
   manifest: "/manifest.json",
   icons: {
@@ -32,13 +32,13 @@ export const metadata: Metadata = {
     locale: "he_IL",
     url: SITE_URL,
     title: "Recipe Space · הבית של המתכונים",
-    description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד בין צילומי מסך, הודעות וקבצים ישנים.",
+    description: "יש מתכונים שחוזרים אליהם. כל מה שאת אוהבת לבשל, במקום אחד.",
     images: [{ url: "/icon-512.png?v=2", width: 512, height: 512, alt: "Recipe Space" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Recipe Space · הבית של המתכונים",
-    description: "המתכונים של הבית במקום אחד, כדי שלא ילכו לאיבוד.",
+    description: "יש מתכונים שחוזרים אליהם. כל מה שאת אוהבת לבשל, במקום אחד.",
     images: ["/icon-512.png?v=2"],
   },
   appleWebApp: {
@@ -77,6 +77,7 @@ export default function RootLayout({
           url: SITE_URL,
           name: "Recipe Space",
           alternateName: "הבית של המתכונים",
+          description: "יש מתכונים שחוזרים אליהם. כל מה שאת אוהבת לבשל, במקום אחד.",
           inLanguage: "he",
           publisher: { "@id": `${SITE_URL}/#organization` },
           }],
