@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   // the site: left indexable, the terms page was what Google returned for
   // the brand itself, ahead of the home page.
   robots: { index: false, follow: true },
-  title: "תנאי שימוש",
-  description: "התנאים לשימוש בבית של המתכונים.",
-  alternates: { canonical: `${SITE_URL}/terms` },
-  openGraph: { title: "תנאי שימוש · Recipe Space", description: "התנאים לשימוש בבית של המתכונים." },
+  title: "הצהרת נגישות",
+  description: "הצהרת הנגישות של הבית של המתכונים.",
+  alternates: { canonical: `${SITE_URL}/accessibility` },
+  openGraph: { title: "הצהרת נגישות · Recipe Space", description: "הצהרת הנגישות של הבית של המתכונים." },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
