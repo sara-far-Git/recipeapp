@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  // Legal pages are for people who are already here, not for a search for
-  // the site: left indexable, the terms page was what Google returned for
-  // the brand itself, ahead of the home page.
-  robots: { index: false, follow: true },
   title: "תנאי שימוש",
   description: "התנאים לשימוש בבית של המתכונים.",
   alternates: { canonical: `${SITE_URL}/terms` },
