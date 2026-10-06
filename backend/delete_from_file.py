@@ -4,7 +4,12 @@
     python delete_from_file.py "מהבלוג - העני בקר.json" --dry-run
     python delete_from_file.py "מהבלוג - העני בקר.json"
 
-ההתאמה לפי כותרת מדויקת, בין הקובץ לבין מה שבאתר. ההרצה היבשה מדפיסה את
+ההתאמה לפי כותרת מדויקת, בין הקובץ לבין מה שבאתר. מתכונים שהכותרת שלהם
+תוקנה אחרי הייבוא (קובץ "תיקון כותרות" עם _was) נמצאים דרך --renamed:
+
+    python delete_from_file.py "מתכוני פסח - העני בקר.json" --renamed "תיקון כותרות.json"
+
+ההרצה היבשה מדפיסה את
 הרשימה המלאה של מה שיימחק; ההרצה האמיתית דורשת הקלדת המילה "מחק".
 
 מחיקה היא לצמיתות. התמונות שהועלו למתכונים האלה נשארות באחסון ואינן
@@ -75,11 +80,18 @@ def main():
     ap = argparse.ArgumentParser(description="מחיקת מתכונים לפי קובץ ייבוא")
     ap.add_argument("file", help="קובץ הייבוא שהמתכונים הגיעו ממנו")
     ap.add_argument("--api", default=os.environ.get("RECIPE_API", LIVE_API))
+    ap.add_argument("--renamed", help="קובץ תיקון כותרות (id/_was/title) — כותרות ששונו אחרי הייבוא")
     ap.add_argument("--dry-run", action="store_true", help="רק להראות, בלי למחוק")
     args = ap.parse_args()
 
     wanted = {r["title"].strip() for r in json.load(open(args.file, encoding="utf-8"))}
     print(f"{len(wanted)} כותרות בקובץ.")
+    if args.renamed:
+        renamed = [r for r in json.load(open(args.renamed, encoding="utf-8"))
+                   if r.get("_was", "").strip() in wanted]
+        wanted -= {r["_was"].strip() for r in renamed}
+        wanted |= {r["title"].strip() for r in renamed}
+        print(f"{len(renamed)} מהן קיבלו כותרת חדשה אחרי הייבוא — נכללות לפי הכותרת החדשה.")
 
     token = os.environ.get("RECIPE_TOKEN")
     if not token and not args.dry_run:
