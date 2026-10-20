@@ -41,6 +41,14 @@ class RecipeCredit(BaseModel):
         value = (value or "").strip()
         return None if not value or hidden_credit(value) else value
 
+    image_alt: Optional[str] = Field(default=None, max_length=300)
+
+    @field_validator("image_alt")
+    @classmethod
+    def normalize_image_alt(cls, value):
+        value = (value or "").strip()
+        return value or None
+
     chef_name: Optional[str] = Field(default=None, max_length=100)
 
     @field_validator("chef_name")

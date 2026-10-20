@@ -220,6 +220,7 @@ function SearchPageContent() {
       <div className="flex items-center gap-2 mb-5 animate-fade-up" style={{ animationDelay: "50ms" }}>
         <button
           type="button"
+          aria-pressed={!ingredientMode}
           onClick={() => {
             setIngredientMode(false);
             setSuggestions(null);
@@ -232,11 +233,12 @@ function SearchPageContent() {
               : ""
           )}
         >
-          <Search className="w-4 h-4 inline-block ml-1.5" />
+          <Search className="w-4 h-4 inline-block ml-1.5" aria-hidden="true" />
           חיפוש רגיל
         </button>
         <button
           type="button"
+          aria-pressed={ingredientMode}
           onClick={() => setIngredientMode(true)}
           className={cn(
             "search-choice px-4 py-2.5 text-sm font-semibold transition-colors",
@@ -279,13 +281,14 @@ function SearchPageContent() {
           <button
             type="button"
             onClick={() => setShowFilters(!showFilters)}
+            aria-expanded={showFilters}
             className={cn(
               "absolute left-0 top-1/2 -translate-y-1/2 p-2 transition-colors",
               hasActiveFilters || showFilters ? "text-cinnamon-500" : "text-bark-200 hover:text-bark-500"
             )}
             aria-label="סינון"
           >
-            <SlidersHorizontal className="w-5 h-5" />
+            <SlidersHorizontal className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -299,6 +302,7 @@ function SearchPageContent() {
             <button
               key={name}
               type="button"
+              aria-pressed={activeTag === name}
               onClick={() => setActiveTag(activeTag === name ? "" : name)}
               className={cn(
                 "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
@@ -317,6 +321,7 @@ function SearchPageContent() {
             <button
               key={cat.name}
               type="button"
+              aria-pressed={activeCategory === cat.name}
               onClick={() => setActiveCategory(activeCategory === cat.name ? "" : cat.name)}
               className={cn(
                 "search-choice inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold transition-colors",
@@ -387,11 +392,12 @@ function SearchPageContent() {
             <input
               value={ingredientInput}
               onChange={(e) => setIngredientInput(e.target.value)}
+              aria-label="מצרך שיש בבית"
               placeholder="למשל: עוף, אורז, בצל..."
               className="input-dark flex-1"
             />
             <button type="submit" disabled={!ingredientInput.trim()} className="btn-fire h-11 min-h-0 px-4 disabled:opacity-30">
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4" aria-hidden="true" />
               <span className="mr-1.5 text-sm">הוספה</span>
             </button>
           </form>
@@ -427,14 +433,14 @@ function SearchPageContent() {
           )}
           {aiSuggestions && aiSuggestions.length > 0 && (
             <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(39,94,80,0.12)" }}>
-              <p className="eyebrow mb-4">
-                <Sparkles className="w-3.5 h-3.5" />
+              <h2 className="eyebrow mb-4">
+                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                 הצעות
-              </p>
+              </h2>
               <div className="space-y-3">
                 {aiSuggestions.map((s: any, i: number) => (
                   <div key={i} className="p-4 bg-surface-100 rounded-lg" style={{ border: "1px solid rgba(39,94,80,0.12)" }}>
-                    <h4 className="font-bold text-bark-500 mb-1">{s.title}</h4>
+                    <h3 className="font-bold text-bark-500 mb-1">{s.title}</h3>
                     <p className="text-sm text-bark-300 mb-2">{s.description}</p>
                     <div className="flex gap-2 text-xs text-bark-300">
                       <span className="badge badge-neutral">
@@ -456,7 +462,7 @@ function SearchPageContent() {
       {!ingredientMode && showFilters && (
         <div className="card-surface filter-drawer p-5 mb-6 space-y-5 animate-fade-up">
           <div className="flex items-center justify-between">
-            <h3 className="section-title text-bark-500">סינון</h3>
+            <h2 className="section-title text-bark-500">סינון</h2>
             {hasActiveFilters && (
               <button type="button" onClick={clearFilters} className="text-xs font-bold text-cinnamon-500 hover:text-cinnamon-600">
                 נקה הכל
@@ -478,7 +484,7 @@ function SearchPageContent() {
       {ingredientMode ? (
         suggestions && suggestions.length > 0 ? (
           <div>
-            <p className="eyebrow mb-4">מהקהילה</p>
+            <h2 className="eyebrow mb-4">מהקהילה</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {suggestions.map((r: any) => (
                 <RecipeCard key={r.id} recipe={r} />
@@ -494,7 +500,8 @@ function SearchPageContent() {
         <ErrorNotice message={searchError} onRetry={() => doSearch(query, difficulty, kosherType, maxPrepTime, activeCategory, activeTag)} />
       ) : results.length > 0 ? (
         <div>
-          <p className="text-sm text-bark-200 mb-5">{results.length === 1 ? "מתכון אחד" : `${results.length} מתכונים`}</p>
+          <h2 className="sr-only">תוצאות החיפוש</h2>
+          <p role="status" className="text-sm text-bark-200 mb-5">{results.length === 1 ? "מתכון אחד" : `${results.length} מתכונים`}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {results.map((r, i) => (
               <div key={r.id} className="animate-slide-up" style={{ animationDelay: `${i * 40}ms` }}>
@@ -525,13 +532,14 @@ function FilterRow({
   onChange: (v: string) => void;
 }) {
   return (
-    <div>
-      <p className="input-label mb-2">{label}</p>
+    <div role="group" aria-label={label}>
+      <p className="input-label mb-2" aria-hidden="true">{label}</p>
       <div className="flex gap-2 flex-wrap">
         {options.map((f) => (
           <button
             key={f.value}
             type="button"
+            aria-pressed={value === f.value}
             onClick={() => onChange(f.value)}
             className={cn(
               "search-choice px-3.5 py-1.5 text-xs font-bold transition-colors",

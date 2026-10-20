@@ -78,7 +78,7 @@
     --mist: #275E50;
     --orange: #D97757;
     --ember: #27594E;
-    --btn: #2F6B5D;
+    --btn: #275E50;
     --btn-hover: #27594E;
     --muted: #66736D;
     --logo: #1E4D45;
@@ -301,7 +301,7 @@
   .hero-search button {
     min-height: 44px;
     border-radius: 999px;
-    background: #2F6B5D;
+    background: #275E50;
     color: #E3CFB2;
     padding-inline: 1.25rem;
     font-size: 0.9rem;
@@ -672,7 +672,7 @@
     transform: rotate(-7.5deg);
     white-space: nowrap;
     font-family: "Recipe Hand", Georgia, cursive;
-    color: #2F6B5D;
+    color: #275E50;
     line-height: 1;
     pointer-events: none;
   }
@@ -1318,7 +1318,7 @@
   .home-page .home-panel-recipes .text-bark-300,
   .home-page .home-panel-why .text-bark-300 { color: #D5E4D7 !important; }
   .home-page .home-panel-recipes .text-bark-200,
-  .home-page .home-panel-why .text-bark-200 { color: #B7CDBB !important; }
+  .home-page .home-panel-why .text-bark-200 { color: #C9DBCC !important; }
   .home-page .home-panel-recipes .border-bark-400,
   .home-page .home-panel-why .border-bark-400 { border-color: #D5E4D7 !important; }
   .home-page .home-panel-recipes .border-surface-400,
@@ -1347,8 +1347,8 @@
 
   .home-page .home-panel-recipes .recipe-card-shell .text-bark-500 { color: #1E4D45 !important; }
   .home-page .home-panel-recipes .recipe-card-shell .text-bark-400 { color: #275E50 !important; }
-  .home-page .home-panel-recipes .recipe-card-shell .text-bark-300 { color: #2F6B5D !important; }
-  .home-page .home-panel-recipes .recipe-card-shell .text-bark-200 { color: #66736D !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-300 { color: #275E50 !important; }
+  .home-page .home-panel-recipes .recipe-card-shell .text-bark-200 { color: #3D4A45 !important; }
   .home-page .home-panel-recipes .recipe-card-shell .border-surface-400 {
     border-color: var(--card-rule) !important;
   }
@@ -1431,7 +1431,7 @@
   .home-page .home-panel-categories .cat-tile .text-smoke-200 {
     color: #102B22 !important;
   }
-  .home-page .home-panel-categories .cat-tile .text-smoke-200 { color: #234B3E !important; }
+  .home-page .home-panel-categories .cat-tile .text-smoke-200 { color: #081C15 !important; }
   @media (max-width: 639px) {
     .home-page .home-panel-categories .display-lg {
       font-size: 1.7rem;
@@ -1839,9 +1839,9 @@
      One filled button in two sizes: `btn-fire` inline, `btn-block` for the
      page-level calls to action. */
   .btn-fire, .btn-block, .btn-cream {
-    background: #2F6B5D;
+    background: #275E50;
     color: #E3CFB2;
-    border: 1px solid #2F6B5D;
+    border: 1px solid #275E50;
     border-radius: 999px;
     font-weight: 800;
     display: inline-flex;
@@ -1877,9 +1877,9 @@
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
   .btn-outline:hover {
-    background: #2F6B5D;
+    background: #275E50;
     color: #E3CFB2;
-    border-color: #2F6B5D;
+    border-color: #275E50;
   }
   .btn-outline:active,
   .experience-button:active,
@@ -1969,9 +1969,9 @@
     font-family: var(--font-brand);
     font-style: normal;
   }
-  .input-dark:hover { border-bottom-color: #2F6B5D; }
+  .input-dark:hover { border-bottom-color: #275E50; }
   .input-dark:focus {
-    border-bottom: 1.5px solid #2F6B5D;
+    border-bottom: 1.5px solid #275E50;
     outline: none;
     box-shadow: 0 0.45rem 1.25rem rgba(47, 107, 93, 0.10);
     transform: translateY(-1px);
@@ -1999,9 +1999,9 @@
     letter-spacing: 0;
     text-transform: none;
   }
-  .badge-easy    { background: rgba(74, 140, 90, 0.14); color: #3d6b48; border: 1px solid rgba(74, 140, 90, 0.35); }
-  .badge-medium  { background: rgba(217, 119, 87, 0.14); color: #D97757; border: 1px solid rgba(217, 119, 87, 0.35); }
-  .badge-hard    { background: rgba(196, 92, 56, 0.18); color: #e8a090; border: 1px solid rgba(196, 92, 56, 0.4); }
+  .badge-easy    { background: rgba(74, 140, 90, 0.14); color: #2C5236; border: 1px solid rgba(74, 140, 90, 0.35); }
+  .badge-medium  { background: rgba(217, 119, 87, 0.14); color: #7F3A26; border: 1px solid rgba(217, 119, 87, 0.35); }
+  .badge-hard    { background: rgba(196, 92, 56, 0.18); color: #6E2A18; border: 1px solid rgba(196, 92, 56, 0.4); }
   .badge-neutral { background: #D6C3A5; color: #275E50; border: 1px solid rgba(39, 94, 80, 0.08); }
 
   /* ─── Product screens ─────────────────────────────────────
@@ -2152,8 +2152,8 @@
     color: #15382D;
   }
   .search-choice.is-selected {
-    background: #2F6B5D;
-    border-color: #2F6B5D;
+    background: #275E50;
+    border-color: #275E50;
     color: #E3CFB2;
   }
   .search-pantry {
@@ -2476,8 +2476,8 @@
   }
   .site-header-cta {
     padding-inline: 1rem;
-    background: #2F6B5D;
-    border: 1px solid #2F6B5D;
+    background: #275E50;
+    border: 1px solid #275E50;
     color: #E3CFB2;
   }
   .site-header-cta:hover {
@@ -2819,7 +2819,7 @@
   }
   /* one tone per category, the way the box's tabs are colour-coded */
   .tab-1 { --tab-bg: #1E4D45; --tab-fg: #E3CFB2; }
-  .tab-2 { --tab-bg: #2F6B5D; --tab-fg: #E3CFB2; }
+  .tab-2 { --tab-bg: #275E50; --tab-fg: #E3CFB2; }
   .tab-3 { --tab-bg: #D6C3A5; --tab-fg: #1E4D45; }
   .tab-4 { --tab-bg: #D97757; --tab-fg: #E3CFB2; }
   .tab-5 { --tab-bg: #E3CFB2; --tab-fg: #275E50; }
@@ -3468,3 +3468,73 @@ html.logo-intro .install-banner {
   .meal-slide, .meal-slide img, .meal-dot, .meal-fill { transition: none; }
   .meal-photo { transform: none; }
 }
+
+/* ─── Accessibility: contrast and focus (IS 5568 / WCAG AA) ──────────────
+   The terracotta #D97757 and the grey #66736D read at about 2:1 and 3.3:1 on
+   the sand page, under the 4.5:1 that text needs. They stay as they are for
+   fills, borders and icons. As *text* they take the deeper ink below, which
+   is the same hue darkened until it passes. Dark surfaces (header, footer,
+   green heroes) set the light variants, which pass against the green.
+   Kept last so it outranks the utilities on equal specificity. */
+:root {
+  --accent-ink: #8A3F2B;   /* 4.9:1 on #E3CFB2 */
+  --muted-ink: #4A5651;    /* 5.1:1 on #E3CFB2 */
+  --focus-ring: #8A3F2B;
+  --field-focus: #8A3F2B;
+}
+:is(.home-header, .site-footer, .bottom-nav, .experience-hero, .home-page, .assistant-home, .skip-link) {
+  --accent-ink: #E8957A;   /* 6.6:1 on #0C281F */
+  --muted-ink: #B9C6C0;
+  --focus-ring: #E8B4A0;
+  --field-focus: #E8B4A0;
+}
+.text-cinnamon-300, .text-cinnamon-500, .text-cinnamon-600,
+.hover\:text-cinnamon-500:hover, .hover\:text-cinnamon-600:hover,
+.input-label, .eyebrow { color: var(--accent-ink); }
+.text-bark-100, .text-bark-200, .text-bark-300, .text-smoke-200, .text-smoke-300 { color: var(--muted-ink); }
+
+/* Primary buttons: #E3CFB2 on #2F6B5D was 4.09:1. One step deeper passes. */
+.btn-fire, .btn-block, .btn-cream { background: #275E50; border-color: #275E50; }
+/* The terracotta pill keeps its colour; the word on it goes dark (5:1). */
+.site-header-cta, .site-header-cta:hover,
+.home-header .site-header-cta, .home-header .site-header-cta:hover { color: #0C281F; }
+
+/* Focus has to be seen: a solid ring at 3:1 or better against what is behind
+   it, on every focusable thing, fields included. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 3px;
+}
+:is(input:not([type]), input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea, select):focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 2px;
+  border-bottom-width: 3px !important;
+}
+input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 2px;
+}
+
+/* Placeholders are hints, but they are still text someone has to read. */
+::placeholder { color: var(--muted-ink) !important; opacity: 1 !important; }
+
+/* Highlighted placeholders in the legal pages until the owner fills them. */
+.legal-body mark { border-radius: 2px; }
+
+/* /pro: the terracotta band and the tan cards sit between the two palettes. */
+.pro-experience > section:nth-of-type(2) { --accent-ink: #081C15; }
+.pro-experience > section:nth-of-type(2) > div > div > div:first-child :is(h2, .eyebrow) { color: #081C15; }
+.pro-experience .bg-forest-100 { --accent-ink: #7F3A26; --muted-ink: #3D4A45; }
+.pro-experience .bg-bark-600 { --accent-ink: #E8957A; --muted-ink: #B9C6C0; }
+
+/* Home: dark-green words on the terracotta bands sat at 3.3–4.4:1. The
+   deepest green of the palette takes them over 4.5. */
+.home-join-callout .eyebrow { color: #081C15; }
+.hero-split-primary,
+body:has(.home-page) footer .btn-cream { color: #081C15 !important; }
+.pro-experience .bg-forest-50 { --accent-ink: #7F3A26; --muted-ink: #4A5651; }
+.pro-experience .bg-forest-100 .text-cinnamon-500 { color: #6E3220; }
+
+/* Cooking mode is a dark screen of its own; its words take the light inks. */
+.cooking-mode { --accent-ink: #E8957A; --muted-ink: #B9C6C0; --focus-ring: #E8B4A0; color: #F4EEDF; }
+.cooking-mode .text-cream-500, .cooking-mode .text-cinnamon-200 { color: #E8B4A0; }

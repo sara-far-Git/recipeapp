@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import Mark from "@/components/ui/Mark";
 import { CATEGORIES } from "@/lib/categories";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Overlay from "@/components/ui/Overlay";
+import EscapeKey from "@/components/ui/EscapeKey";
 
 const PAID_PLANS = new Set(["pro", "pro_plus"]);
 const PLAN_LABELS: Record<string, string> = {
@@ -26,7 +28,7 @@ function ProfilePageContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const username = params.username as string;
 
   const [profile, setProfile] = useState<any>(null);
@@ -55,6 +57,10 @@ function ProfilePageContent() {
   const [pendingDelete, setPendingDelete] = useState<any>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
+  const [accountDeleting, setAccountDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [privacyError, setPrivacyError] = useState("");
 
   const isOwn = currentUser?.username === username;
 
@@ -167,6 +173,37 @@ function ProfilePageContent() {
     setDeleting(false);
   };
 
+  /* The privacy law's right to see one's data, without waiting on an email. */
+  const handleExport = async () => {
+    setExporting(true);
+    setPrivacyError("");
+    try {
+      const { data } = await usersApi.exportMe();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `recipe-space-${username}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { setPrivacyError("לא הצלחנו להכין את הקובץ. נסו שוב."); }
+    setExporting(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    setAccountDeleting(true);
+    setPrivacyError("");
+    try {
+      await usersApi.deleteMe();
+      logout();
+      router.replace("/");
+    } catch {
+      setPrivacyError("המחיקה לא הצליחה. נסו שוב, או כתבו לנו ונמחק ידנית.");
+      setAccountDeleteOpen(false);
+      setAccountDeleting(false);
+    }
+  };
+
   const switchTab = (tab: "recipes" | "saved") => {
     setActiveTab(tab);
     setCategoryFilter("");
@@ -215,19 +252,29 @@ function ProfilePageContent() {
       onConfirm={confirmDelete}
       onCancel={() => setPendingDelete(null)}
     />
+    <ConfirmDialog
+      open={accountDeleteOpen}
+      title="למחוק את החשבון?"
+      body="החשבון יימחק לצמיתות, יחד עם כל המתכונים, התמונות, התגובות, הדירוגים, האוספים ורשימות הקניות שלו. אי אפשר לשחזר אותו."
+      confirmLabel="מחיקת החשבון"
+      busy={accountDeleting}
+      onConfirm={handleDeleteAccount}
+      onCancel={() => setAccountDeleteOpen(false)}
+    />
     <div className="max-w-5xl mx-auto">
-      {editOpen && (
-        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
+      {editOpen && !accountDeleteOpen && (
+        <Overlay role="dialog" label="עריכת פרופיל" className="z-[150] items-end sm:items-center">
+        <EscapeKey onEscape={() => setEditOpen(false)} />
           <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setEditOpen(false)} />
           <div className="relative w-full sm:max-w-md bg-surface-50 border border-surface-300 shadow-warm-lg">
             <div className="flex items-center justify-between p-5 border-b border-surface-300">
-              <h3 className="section-title text-bark-500">עריכת פרופיל</h3>
+              <h2 className="section-title text-bark-500">עריכת פרופיל</h2>
               <button
                 onClick={() => setEditOpen(false)}
                 aria-label="סגירת עריכת הפרופיל"
-                className="p-1.5 hover:bg-surface-200 transition-colors text-bark-200"
+                className="p-1.5 hover:bg-surface-200 transition-colors text-bark-400"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 
@@ -243,7 +290,7 @@ function ProfilePageContent() {
                       </span>
                     </div>
                   )}
-                  <label className="absolute -bottom-1 -left-1 w-7 h-7 bg-cinnamon-500 flex items-center justify-center cursor-pointer hover:bg-cinnamon-600 transition-colors">
+                  <label className="absolute -bottom-1 -left-1 w-7 h-7 bg-cinnamon-500 flex items-center justify-center cursor-pointer hover:bg-cinnamon-600 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2">
                     {avatarUploading ? (
                       <Loader2 className="w-3.5 h-3.5 text-cream-50 animate-spin" />
                     ) : (
@@ -252,7 +299,8 @@ function ProfilePageContent() {
                     <input
                       type="file"
                       accept="image/*"
-                      className="hidden"
+                      aria-label="החלפת תמונת הפרופיל"
+                      className="sr-only"
                       onChange={handleAvatarUpload}
                       disabled={avatarUploading}
                     />
@@ -261,7 +309,7 @@ function ProfilePageContent() {
                 <div className="min-w-0">
                   <p className="text-sm text-bark-300">לחצו על המצלמה להחלפת תמונה</p>
                   {avatarError && (
-                    <p role="alert" className="mt-1.5 text-sm font-semibold" style={{ color: "#B3452B" }}>
+                    <p role="alert" className="mt-1.5 text-sm font-semibold" style={{ color: "#8F2F1C" }}>
                       {avatarError}
                     </p>
                   )}
@@ -269,8 +317,9 @@ function ProfilePageContent() {
               </div>
 
               <div className="field-row">
-                <label className="input-label">שם מלא</label>
+                <label htmlFor="edit-full-name" className="input-label">שם מלא</label>
                 <input
+                  id="edit-full-name"
                   value={editFullName}
                   onChange={(e) => setEditFullName(e.target.value)}
                   placeholder="השם שיוצג"
@@ -279,8 +328,9 @@ function ProfilePageContent() {
               </div>
 
               <div className="field-row">
-                <label className="input-label">ביוגרפיה</label>
+                <label htmlFor="edit-bio" className="input-label">ביוגרפיה</label>
                 <textarea
+                  id="edit-bio"
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
                   placeholder="ספרו קצת על עצמכם..."
@@ -305,9 +355,28 @@ function ProfilePageContent() {
               >
                 {editSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : "שמירת שינויים"}
               </button>
+
+              <div className="field-row border-t border-surface-300 pt-4">
+                <p className="input-label">המידע שלי</p>
+                <p className="text-sm text-bark-400 mb-3">
+                  אפשר להוריד את כל מה שנשמר על החשבון, או למחוק אותו.{" "}
+                  <Link href="/privacy" className="underline font-bold">מדיניות הפרטיות</Link>
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <button type="button" onClick={handleExport} disabled={exporting}
+                    className="btn-outline h-11 min-h-0 text-sm disabled:opacity-40">
+                    {exporting ? "מכינים…" : "הורדת המידע שלי"}
+                  </button>
+                  <button type="button" onClick={() => setAccountDeleteOpen(true)}
+                    className="h-11 px-4 text-sm font-bold underline" style={{ color: "#8F2F1C" }}>
+                    מחיקת החשבון
+                  </button>
+                </div>
+                {privacyError && <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#8F2F1C" }}>{privacyError}</p>}
+              </div>
             </div>
           </div>
-        </div>
+        </Overlay>
       )}
 
       <header className="experience-hero experience-hero--profile flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-7 animate-fade-up">
@@ -391,7 +460,7 @@ function ProfilePageContent() {
       </div>
 
       {deleteError && (
-        <p role="alert" className="mb-5 text-sm font-semibold" style={{ color: "#B3452B" }}>
+        <p role="alert" className="mb-5 text-sm font-semibold" style={{ color: "#8F2F1C" }}>
           {deleteError}
         </p>
       )}
@@ -428,6 +497,7 @@ function ProfilePageContent() {
         </div>
       )}
 
+      <h2 className="sr-only">{activeTab === "saved" ? "מתכונים שמורים" : "המתכונים"}</h2>
       {visibleRecipes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {visibleRecipes.map((recipe: any, i: number) => (

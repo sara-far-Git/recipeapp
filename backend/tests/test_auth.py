@@ -14,6 +14,7 @@ def test_register_creates_user(client):
             "username": "alice",
             "email": "alice@example.com",
             "password": "longenoughpw",
+            "accept_terms": True,
             "full_name": "Alice",
         },
     )
@@ -33,6 +34,7 @@ def test_register_rejects_short_password(client):
             "username": "shorty",
             "email": "shorty@example.com",
             "password": "abc",
+            "accept_terms": True,
             "full_name": None,
         },
     )
@@ -44,6 +46,7 @@ def test_register_duplicate_email_rejected(client):
         "username": "user1",
         "email": "dup@example.com",
         "password": "longenoughpw",
+        "accept_terms": True,
     }
     assert client.post("/api/v1/auth/register", json=payload).status_code == 201
     payload["username"] = "user2"  # different username, same email
@@ -95,6 +98,7 @@ def test_register_duplicate_username_rejected(client):
         "username": "sameuser",
         "email": "one@example.com",
         "password": "longenoughpw",
+        "accept_terms": True,
     }
     assert client.post("/api/v1/auth/register", json=payload).status_code == 201
     payload["email"] = "two@example.com"
@@ -110,6 +114,24 @@ def test_register_rejects_short_username(client):
             "username": "ab",
             "email": "tiny@example.com",
             "password": "longenoughpw",
+            "accept_terms": True,
         },
     )
     assert r.status_code == 422
+
+
+def test_register_requires_accepting_terms(client):
+    payload = {
+        "username": "noconsent",
+        "email": "noconsent@example.com",
+        "password": "longenoughpw",
+    }
+    assert client.post("/api/v1/auth/register", json=payload).status_code == 422
+    payload["accept_terms"] = False
+    assert client.post("/api/v1/auth/register", json=payload).status_code == 422
+
+
+def test_register_records_when_terms_were_accepted(client, db_session, registered_user):
+    from app.models.user import User
+    user = db_session.query(User).filter(User.email == registered_user["email"]).one()
+    assert user.terms_accepted_at is not None

@@ -92,7 +92,9 @@ function RecipeCard({ recipe, onDelete, showImage = true }: RecipeCardProps) {
           {hasImage ? (
             <Image
               src={recipe.image_url}
-              alt={recipe.title}
+              // The title is the card's heading, in the same link; reading it
+              // twice adds nothing. A written description is worth hearing.
+              alt={recipe.image_alt || ""}
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

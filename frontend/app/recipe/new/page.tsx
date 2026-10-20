@@ -79,6 +79,7 @@ export default function NewRecipePage() {
   const [description, setDescription] = useState("");
   const [imageSource, setImageSource] = useState("");
   const [imageCredit, setImageCredit] = useState("");
+  const [imageAlt, setImageAlt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [prepTime, setPrepTime] = useState<number | "">("");
   const [cookTime, setCookTime] = useState<number | "">("");
@@ -313,6 +314,7 @@ export default function NewRecipePage() {
   title, description: description || null, image_url: imageUrl || null,
   image_source: imageUrl ? imageSource.trim() || null : null,
   image_credit: imageUrl ? imageCredit.trim() || null : null,
+  image_alt: imageUrl ? imageAlt.trim() || null : null,
   prep_time_minutes: prepTime || null, cook_time_minutes: cookTime || null,
   servings, difficulty, kosher_type: kosherType || null, category: category || null,
   ingredients: ingredients
@@ -361,10 +363,10 @@ export default function NewRecipePage() {
   <div className="card-surface capture-action p-5 mb-3 animate-fade-up" style={{ animationDelay: "50ms" }}>
   <div className="flex items-center justify-between gap-4">
   <div>
-  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
+  <h2 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
   <Sparkles className="w-4 h-4 text-cinnamon-500" />
   השף הדיגיטלי
-  </h3>
+  </h2>
   <p className="text-sm text-bark-300">
   צלמו מתכון מספר, מחברת או דף ישן
   </p>
@@ -392,10 +394,10 @@ export default function NewRecipePage() {
   <div className="card-surface capture-action p-5 mb-3 animate-fade-up" style={{ animationDelay: "60ms" }}>
     <div className="flex items-center justify-between gap-4">
       <div>
-        <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
+        <h2 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
           <Mic className="w-4 h-4 text-cinnamon-500" />
           הקלטה
-        </h3>
+        </h2>
         <p className="text-sm text-bark-300">
           {recording
             ? "אמרו שם, מצרכים ושלבי הכנה"
@@ -436,10 +438,10 @@ export default function NewRecipePage() {
   {!importOpen ? (
   <div className="flex items-center justify-between gap-4">
   <div>
-  <h3 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
+  <h2 className="font-bold text-bark-500 mb-1 flex items-center gap-2">
   <Link2 className="w-4 h-4 text-cinnamon-500" />
   ייבוא מקישור
-  </h3>
+  </h2>
   <p className="text-sm text-bark-300">
   הדביקו קישור מבלוג מתכונים
   </p>
@@ -532,25 +534,25 @@ export default function NewRecipePage() {
     <p className="text-sm text-bark-200 mt-2">אפשר להשאיר ריק כדי להציג את המתכון ללא קרדיט.</p>
   </div>}
   <div className="field-row">
-  <label className="input-label">כותרת המתכון *</label>
-  <input value={title} onChange={(e) => setTitle(e.target.value)}
+  <label htmlFor="recipe-title" className="input-label">כותרת המתכון *</label>
+  <input id="recipe-title" value={title} onChange={(e) => setTitle(e.target.value)}
   placeholder="למשל: עוגת שוקולד קלאסית"
   className="input-dark" required />
   </div>
 
   <div className="field-row">
-  <label className="input-label">תיאור קצר</label>
-  <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+  <label htmlFor="recipe-description" className="input-label">תיאור קצר</label>
+  <textarea id="recipe-description" value={description} onChange={(e) => setDescription(e.target.value)}
   placeholder="מה מיוחד במתכון, למתי הוא מתאים, או ממי הוא הגיע..." rows={3}
   className="input-dark resize-none" />
   </div>
 
   {/* Image upload */}
   <div>
-  <label className="input-label mb-2">תמונה ראשית</label>
+  <p className="input-label mb-2">תמונה ראשית</p>
   {imageUrl ? (
   <div className="relative  overflow-hidden aspect-video" style={{ background: "#E3CFB2" }}>
-  <img src={imageUrl} alt="recipe" className="w-full h-full object-cover" />
+  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
   <button onClick={() => setImageUrl("")}
   aria-label="הסרת תמונת המתכון"
   className="absolute top-3 left-3 p-2 bg-surface-50/80 backdrop-blur-sm  hover:bg-surface-50 transition-colors">
@@ -572,10 +574,15 @@ export default function NewRecipePage() {
     <label className="block input-label">קרדיט לצלם (לא חובה)
       <input className="input-dark mt-2" value={imageCredit} maxLength={100} onChange={e => setImageCredit(e.target.value)} placeholder="השם שיוצג לצד התמונה" />
     </label>
+    <label className="block input-label sm:col-span-2">תיאור התמונה לקוראי מסך (מומלץ)
+      <input className="input-dark mt-2" value={imageAlt} maxLength={300} onChange={e => setImageAlt(e.target.value)}
+        aria-describedby="image-alt-hint" placeholder="למשל: עוגת שוקולד פרוסה על צלחת לבנה" />
+      <span id="image-alt-hint" className="block mt-1 text-xs font-normal text-bark-400">משפט קצר על מה שרואים בתמונה. מי שמשתמש בקורא מסך ישמע אותו במקום התמונה.</span>
+    </label>
   </div>
   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
   {imageError && (
-  <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#B3452B" }}>
+  <p role="alert" className="mt-2 text-sm font-semibold" style={{ color: "#8F2F1C" }}>
   {imageError}
   </p>
   )}
@@ -583,28 +590,28 @@ export default function NewRecipePage() {
 
   <div className="grid grid-cols-2 gap-6">
   <div className="field-row">
-  <label className="input-label">זמן הכנה (דקות)</label>
-  <input type="number" inputMode="numeric" value={prepTime} onChange={(e) => setPrepTime(e.target.value ? Number(e.target.value) : "")}
+  <label htmlFor="recipe-prep-time" className="input-label">זמן הכנה (דקות)</label>
+  <input id="recipe-prep-time" type="number" inputMode="numeric" value={prepTime} onChange={(e) => setPrepTime(e.target.value ? Number(e.target.value) : "")}
   min={0} className="input-dark" />
   </div>
   <div className="field-row">
-  <label className="input-label">זמן בישול (דקות)</label>
-  <input type="number" inputMode="numeric" value={cookTime} onChange={(e) => setCookTime(e.target.value ? Number(e.target.value) : "")}
+  <label htmlFor="recipe-cook-time" className="input-label">זמן בישול (דקות)</label>
+  <input id="recipe-cook-time" type="number" inputMode="numeric" value={cookTime} onChange={(e) => setCookTime(e.target.value ? Number(e.target.value) : "")}
   min={0} className="input-dark" />
   </div>
   </div>
 
   <div className="field-row">
-  <label className="input-label">כמות סועדים</label>
-  <input type="number" inputMode="numeric" value={servings} onChange={(e) => setServings(Number(e.target.value) || 1)}
+  <label htmlFor="recipe-servings" className="input-label">כמות סועדים</label>
+  <input id="recipe-servings" type="number" inputMode="numeric" value={servings} onChange={(e) => setServings(Number(e.target.value) || 1)}
   min={1} className="input-dark" />
   </div>
 
   <div>
-  <label className="input-label mb-3">רמת קושי</label>
-  <div className="flex gap-2">
+  <p id="difficulty-label" className="input-label mb-3">רמת קושי</p>
+  <div className="flex gap-2" role="group" aria-labelledby="difficulty-label">
   {DIFFICULTY_OPTIONS.map((opt) => (
-  <button key={opt.value} type="button" onClick={() => setDifficulty(opt.value)}
+  <button key={opt.value} type="button" aria-pressed={difficulty === opt.value} onClick={() => setDifficulty(opt.value)}
   className={cn(
   "flex-1 py-4 text-sm font-semibold transition-all duration-300 border",
   difficulty === opt.value
@@ -618,17 +625,17 @@ export default function NewRecipePage() {
   </div>
 
   <div className="field-row">
-  <label className="input-label">סוג כשרות</label>
-  <select value={kosherType} onChange={(e) => setKosherType(e.target.value)} className="input-dark">
+  <label htmlFor="recipe-kosher" className="input-label">סוג כשרות</label>
+  <select id="recipe-kosher" value={kosherType} onChange={(e) => setKosherType(e.target.value)} className="input-dark">
   {KOSHER_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
   </select>
   </div>
 
   <div>
-  <label className="input-label mb-3">קטגוריה <span className="text-red-500">*</span></label>
-  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+  <p id="category-label" className="input-label mb-3">קטגוריה <span aria-hidden="true">*</span><span className="sr-only">(חובה)</span></p>
+  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2" role="group" aria-labelledby="category-label">
   {CATEGORY_OPTIONS.map((cat) => (
-  <button key={cat} type="button" onClick={() => setCategory(cat === category ? "" : cat)}
+  <button key={cat} type="button" aria-pressed={category === cat} onClick={() => setCategory(cat === category ? "" : cat)}
   className={cn(
   "py-4 text-sm font-semibold transition-all border",
   category === cat

@@ -45,6 +45,10 @@ class User(Base):
     # Stamped on every sign-in. Registrations tell you who once tried the
     # site; this is the column that tells you who came back.
     last_seen_at = Column(DateTime(timezone=True), nullable=True)
+    # When this account agreed to the terms and the privacy policy. Consent
+    # has to be something we can show, not something we assume; accounts made
+    # before the checkbox existed stay null.
+    terms_accepted_at = Column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     recipes = relationship("Recipe", back_populates="author", cascade="all, delete-orphan")

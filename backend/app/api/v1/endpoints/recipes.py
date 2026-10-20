@@ -154,6 +154,7 @@ def create_recipe(
         image_url=data.image_url,
         image_source=data.image_source,
         image_credit=data.image_credit,
+        image_alt=data.image_alt,
         prep_time_minutes=data.prep_time_minutes,
         cook_time_minutes=data.cook_time_minutes,
         servings=data.servings,

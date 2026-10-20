@@ -41,6 +41,9 @@ SOFT_MIGRATIONS = [
      "ALTER TABLE recipes ADD COLUMN tags JSON"),
     ("users", "last_seen_at",
      "ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ"),
+    ("recipes", "image_alt", "ALTER TABLE recipes ADD COLUMN image_alt VARCHAR(300)"),
+    ("users", "terms_accepted_at",
+     "ALTER TABLE users ADD COLUMN terms_accepted_at TIMESTAMPTZ"),
 ]
 
 

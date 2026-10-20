@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Download, Share, Plus, X } from "lucide-react";
 import { usePWA } from "@/lib/usePWA";
 import Logo from "@/components/brand/Logo";
+import Overlay from "@/components/ui/Overlay";
+import EscapeKey from "@/components/ui/EscapeKey";
 
 export default function InstallBanner() {
   const { canInstall, install, isIOS } = usePWA();
@@ -33,17 +35,18 @@ export default function InstallBanner() {
   return (
   <>
   {showIOSGuide && (
-  <div className="fixed inset-0 z-[300] flex items-end justify-center">
+  <Overlay role="dialog" label="הוספה למסך הבית" className="z-[300] items-end">
+  <EscapeKey onEscape={() => setShowIOSGuide(false)} />
   <div className="absolute inset-0 bg-bark-600/45 backdrop-blur-sm" onClick={() => setShowIOSGuide(false)} />
   <div className="relative w-full max-w-sm bg-surface-50  border-t border-surface-400 shadow-warm-lg p-6 pb-12 animate-slide-up">
-  <button onClick={() => setShowIOSGuide(false)} className="absolute top-4 left-4 p-1.5  hover:bg-surface-200 text-bark-300">
-  <X className="w-5 h-5" />
+  <button onClick={() => setShowIOSGuide(false)} aria-label="סגירה" className="absolute top-4 left-4 p-1.5  hover:bg-surface-200 text-bark-300">
+  <X className="w-5 h-5" aria-hidden="true" />
   </button>
   <div className="text-center mb-6">
   <Logo solid size={64} className="mx-auto mb-3" />
-  <h3 className="section-title text-bark-500">
+  <h2 className="section-title text-bark-500">
   הוסיפו למסך הבית
-  </h3>
+  </h2>
   <p className="text-sm text-bark-300 mt-1">רק ב-Safari — שלושה שלבים</p>
   </div>
   <div className="space-y-4">
@@ -52,7 +55,7 @@ export default function InstallBanner() {
   <Step n={3} text={'לחצו "הוספה" — הספר יופיע במסך הבית'} />
   </div>
   </div>
-  </div>
+  </Overlay>
   )}
 
   <div className="install-banner fixed bottom-20 sm:bottom-4 inset-x-4 sm:right-4 sm:left-auto sm:max-w-sm z-[100] animate-slide-up">
@@ -66,11 +69,11 @@ export default function InstallBanner() {
   onClick={handleInstall}
   className="flex items-center gap-1.5 px-3 py-1.5 btn-block text-xs font-semibold shrink-0"
   >
-  <Download className="w-3.5 h-3.5" />
+  <Download className="w-3.5 h-3.5" aria-hidden="true" />
   התקנה
   </button>
-  <button onClick={handleDismiss} className="p-1.5  hover:bg-surface-200 text-bark-200 shrink-0">
-  <X className="w-4 h-4" />
+  <button onClick={handleDismiss} aria-label="סגירת הודעת ההתקנה" className="p-1.5 min-h-11 min-w-11 inline-flex items-center justify-center hover:bg-surface-200 text-bark-200 shrink-0">
+  <X className="w-4 h-4" aria-hidden="true" />
   </button>
   </div>
   </div>

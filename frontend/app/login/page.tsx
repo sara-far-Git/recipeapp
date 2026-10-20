@@ -50,7 +50,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="card-surface relative p-7 space-y-5 animate-slide-up opacity-0" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
           {error && (
-  <div className="p-3.5  bg-red-50 border border-red-200 text-red-700 text-sm font-medium animate-scale-in">{error}</div>
+  <div role="alert" className="p-3.5  bg-red-50 border border-red-200 text-red-800 text-sm font-medium animate-scale-in">{error}</div>
   )}
   <Input id="email" label="אימייל" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required dir="ltr" />
   <div className="relative">
@@ -67,7 +67,13 @@ export default function LoginPage() {
             <span className="font-bold">או</span>
   <span className="flex-1 h-px bg-surface-400" />
   </div>
-  <GoogleSignInButton onSuccess={() => router.push("/")} onError={(msg) => setError(msg)} />
+  {/* Google can open an account from here as well, so the notice that
+      comes with opening one has to be here too. */}
+  <GoogleSignInButton acceptTerms onSuccess={() => router.push("/")} onError={(msg) => setError(msg)} />
+  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && <p className="text-center text-xs text-bark-400 leading-relaxed">
+  אם עדיין אין לך חשבון, המשך עם Google יפתח חשבון חדש. בכך את/ה מסכים/ה ל<Link href="/terms" className="underline font-bold">תנאי השימוש</Link>{" "}
+  ול<Link href="/privacy" className="underline font-bold">מדיניות הפרטיות</Link>.
+  </p>}
   </form>
 
   <p className="text-center text-sm text-bark-300 mt-6 animate-fade-up" style={{ animationDelay: "250ms" }}>

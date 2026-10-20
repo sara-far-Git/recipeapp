@@ -9,6 +9,9 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: Optional[str] = None
+    # The terms and privacy checkbox. Required, and it has to be ticked: an
+    # account is not opened on consent the person never gave.
+    accept_terms: bool
 
     @field_validator("username")
     @classmethod
@@ -22,6 +25,13 @@ class UserCreate(BaseModel):
     def password_strength(cls, v: str) -> str:
         if len(v) < 8:
             raise ValueError("Password must be at least 8 characters")
+        return v
+
+    @field_validator("accept_terms")
+    @classmethod
+    def terms_accepted(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError("יש לאשר את תנאי השימוש ומדיניות הפרטיות")
         return v
 
 
@@ -85,3 +95,6 @@ class GoogleAuthRequest(BaseModel):
     audience server-side, then issues our own JWT.
     """
     id_token: str
+    # Sent from the sign-up page, where the checkbox gates the Google button.
+    # Signing in to an account that already exists does not need it.
+    accept_terms: bool = False

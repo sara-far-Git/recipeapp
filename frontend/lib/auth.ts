@@ -23,8 +23,8 @@ interface AuthState {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: { username: string; email: string; password: string; full_name?: string }) => Promise<void>;
-  loginWithGoogle: (idToken: string) => Promise<void>;
+  register: (data: { username: string; email: string; password: string; full_name?: string; accept_terms: boolean }) => Promise<void>;
+  loginWithGoogle: (idToken: string, acceptTerms?: boolean) => Promise<void>;
   logout: () => void;
   loadUser: () => Promise<void>;
 }
@@ -85,14 +85,15 @@ export const useAuth = create<AuthState>((set) => ({
       email: regData.email.trim(),
       password: regData.password,
       full_name: regData.full_name?.trim() || undefined,
+      accept_terms: regData.accept_terms,
     };
     await authApi.register(payload);
     const { data } = await authApi.login(payload.email, payload.password);
     await finishLogin(data.access_token, set);
   },
 
-  loginWithGoogle: async (idToken) => {
-    const { data } = await authApi.googleLogin(idToken);
+  loginWithGoogle: async (idToken, acceptTerms) => {
+    const { data } = await authApi.googleLogin(idToken, acceptTerms);
     await finishLogin(data.access_token, set);
   },
 

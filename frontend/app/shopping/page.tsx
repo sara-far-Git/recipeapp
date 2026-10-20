@@ -167,6 +167,8 @@ export default function ShoppingListPage() {
               {lists.map((list) => (
                 <button
                   key={list.id}
+                  type="button"
+                  aria-pressed={activeList?.id === list.id}
                   onClick={() => setActiveList(list)}
                   className={cn(
                     "px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all border",
@@ -235,6 +237,7 @@ export default function ShoppingListPage() {
                 <input
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
+                  aria-label="פריט חדש לרשימה"
                   placeholder="הוסיפי פריט..."
                   className="input-dark flex-1"
                   autoComplete="off"

@@ -48,6 +48,7 @@ def register(request: Request, user_data: UserCreate, db: Session = Depends(get_
         full_name=user_data.full_name,
         hashed_password=get_password_hash(user_data.password),
         auth_provider="local",
+        terms_accepted_at=datetime.now(timezone.utc),
     )
     db.add(user)
     db.commit()
@@ -187,6 +188,7 @@ def google_auth(
             is_verified=True,
             auth_provider="google",
             google_id=google_sub,
+            terms_accepted_at=datetime.now(timezone.utc) if payload.accept_terms else None,
         )
         db.add(user)
         db.commit()

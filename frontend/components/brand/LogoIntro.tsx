@@ -123,6 +123,12 @@ export default function LogoIntro() {
     };
     const onKey = (event: KeyboardEvent) => {
       if (finished.current) return;
+      // A keyboard user reaching for the page (Tab) or out of the intro
+      // (Escape) gets the page at once, with focus landing on the skip link.
+      if (event.key === "Tab" || event.key === "Escape") {
+        finish();
+        return;
+      }
       if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " " || event.key === "Enter") {
         event.preventDefault();
         animateHome.current();

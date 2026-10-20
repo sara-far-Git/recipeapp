@@ -33,6 +33,9 @@ class Recipe(Base):
     description = Column(Text, nullable=True)
     image_source = Column(String(500), nullable=True)
     image_credit = Column(String(100), nullable=True)
+    # What the photo shows, for screen readers. Written by the cook; when it
+    # is empty the title stands in for it.
+    image_alt = Column(String(300), nullable=True)
     image_url = Column(String(500), nullable=True)
     prep_time_minutes = Column(Integer, nullable=True)
     cook_time_minutes = Column(Integer, nullable=True)

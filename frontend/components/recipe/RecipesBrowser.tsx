@@ -108,7 +108,7 @@ export default function RecipesBrowser({ initial }: { initial: CatalogueRecipe[]
     {loading && recipes.length === 0 ? <RecipeLoading label="אוסף את המתכונים של הקהילה" /> : error && recipes.length === 0 ? <div role="alert" className="card-surface p-6"><p>לא הצלחנו לטעון את המתכונים.</p><button className="btn-block mt-4" onClick={() => setAttempt(a => a + 1)}>ניסיון נוסף</button></div> : <>
       <RecipeListJsonLd recipes={filtered.slice(0, visibleCount)} />
       <p role="status" className="mb-5">{filtered.length === 1 ? "מתכון אחד" : `${filtered.length} מתכונים`}</p>
-      {filtered.length ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">{filtered.slice(0, visibleCount).map(r => <RecipeCard key={r.id} recipe={r} />)}</div> : <div className="card-surface p-8 sm:p-12 text-center">
+      {filtered.length ? <><h2 className="sr-only">רשימת המתכונים</h2><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">{filtered.slice(0, visibleCount).map(r => <RecipeCard key={r.id} recipe={r} />)}</div></> : <div className="card-surface p-8 sm:p-12 text-center">
         <SearchX className="mx-auto mb-4 text-bark-400" size={32} strokeWidth={1.5} />
         <h2 className="text-xl font-bold text-bark-500 mb-2">{recipes.length ? "לא מצאנו התאמה הפעם" : "המתכונים בדרך"}</h2>
         <p className="text-bark-300">{recipes.length ? "אפשר להסיר סינון אחד או להתחיל מחדש." : "עדיין לא פורסמו מתכונים. בקרוב יהיה כאן מה לבשל."}</p>

@@ -154,3 +154,13 @@ def test_ingredient_search_finds_your_own_draft(client, registered_user):
     )
     assert r.status_code == 200
     assert any(i["title"] == "עוגת שוקולד" for i in r.json())
+
+
+def test_image_alt_is_saved_and_returned(client, registered_user):
+    from tests.helpers import create_recipe
+    r = create_recipe(client, registered_user["auth_header"], image_url="https://example.com/a.jpg",
+                      image_alt="  עוגת שוקולד פרוסה על צלחת לבנה  ")
+    assert r["image_alt"] == "עוגת שוקולד פרוסה על צלחת לבנה"
+    u = client.put(f"/api/v1/recipes/{r['id']}", json={"image_alt": ""}, headers=registered_user["auth_header"])
+    assert u.status_code == 200, u.text
+    assert u.json()["image_alt"] is None

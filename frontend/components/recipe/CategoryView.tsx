@@ -91,6 +91,7 @@ export default function CategoryView({
       ) : (
         <>
           <RecipeListJsonLd recipes={recipes} />
+          <h2 className="sr-only">המתכונים בקטגוריה</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
             {recipes.map((recipe, i) => (
               <div key={recipe.id} className="animate-slide-up" style={{ animationDelay: `${i * 50}ms` }}>

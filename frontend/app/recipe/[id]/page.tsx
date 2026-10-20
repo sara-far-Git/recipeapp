@@ -18,6 +18,8 @@ import Symbol from "@/components/ui/Symbol";
 
 
 import { cn } from "@/lib/utils";
+import Overlay from "@/components/ui/Overlay";
+import EscapeKey from "@/components/ui/EscapeKey";
 
 const difficultyLabels: Record<string, string> = { easy: "קל", medium: "בינוני", hard: "מאתגר" };
 const kosherLabels: Record<string, string> = { meat: "בשרי", dairy: "חלבי", pareve: "פרווה", non_kosher: "לא כשר" };
@@ -231,15 +233,16 @@ export default function RecipeDetailPage() {
   if (cookingMode) {
   const fmtTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
   const toggleIngredient = (i: number) => setCheckedIngredients((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  const toggleStep = (step: number) => setCompletedSteps((prev) => { const n = new Set(prev); n.has(step) ? n.delete(step) : n.add(step); return n; });
   const setTimer = (mins: number) => { setTimerRemaining(mins * 60); setTimerTotal(mins * 60); setTimerRunning(false); };
 
   return (
-  <div className="fixed inset-0 z-[100] overflow-auto" style={{ background: "#D6C3A5" }}>
+  <div className="cooking-mode fixed inset-0 z-[100] overflow-auto" role="dialog" aria-modal="true" aria-label={`מצב הכנה: ${recipe.title}`} style={{ background: "#0C281F" }}>
   <div className="max-w-2xl mx-auto px-4 py-6 pb-12">
 
   {/* Header */}
   <div className="flex items-center justify-between mb-6">
-  <h1 className="section-title flex-1 ml-4" style={{ color: "#275E50" }}>{recipe.title}</h1>
+  <h1 className="section-title flex-1 ml-4" style={{ color: "#F4EEDF" }}>{recipe.title}</h1>
   <button onClick={() => setCookingMode(false)}
   className="px-4 py-2 text-sm flex-shrink-0"
   style={{ background: "#E3CFB2", color: "#275E50", border: "1px solid #D97757", borderRadius: 999 }}>
@@ -248,26 +251,27 @@ export default function RecipeDetailPage() {
   </div>
 
   {/* Timer */}
-  <div className="bg-bark-700/60 border border-forest-400/30 p-5 mb-5">
+  <div className="bg-[#15382D] border border-forest-400/30 p-5 mb-5">
   <h2 className="font-bold text-cream-100 mb-3 flex items-center gap-2 text-sm">
-  <Timer className="w-4 h-4 text-cinnamon-300" /> טיימר
+  <Timer className="w-4 h-4 text-cinnamon-300" aria-hidden="true" /> טיימר
   </h2>
   <div className="flex gap-2 mb-4 flex-wrap">
   {[5, 10, 15, 20, 30].map((m) => (
   <button key={m} onClick={() => setTimer(m)}
-  className="px-3 py-1.5 text-xs font-semibold bg-bark-600/60 border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all">
+  className="px-3 py-1.5 text-xs font-semibold bg-[#0C281F] border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all">
   {m} דק׳
   </button>
   ))}
   </div>
   <div className="text-center mb-3">
-  <span className="text-5xl font-mono tabular-nums tracking-widest"
+  <span className="text-5xl font-mono tabular-nums tracking-widest" role="timer"
   style={{ color: timerRemaining > 0 && timerRunning && timerRemaining <= 60 ? "#f87171" : "#fde68a" }}>
   {fmtTime(timerRemaining)}
   </span>
+  <span role="status" className="sr-only">{timerTotal > 0 && timerRemaining === 0 ? "הטיימר הסתיים" : ""}</span>
   </div>
   {timerTotal > 0 && (
-  <div className="h-1 bg-bark-600/60 mb-4">
+  <div className="h-1 bg-[#0C281F] mb-4">
   <div className="h-full bg-cinnamon-500 transition-all duration-1000"
   style={{ width: `${(timerRemaining / timerTotal) * 100}%` }} />
   </div>
@@ -278,17 +282,17 @@ export default function RecipeDetailPage() {
   {timerRunning ? "עצירה" : "התחל"}
   </button>
   <button onClick={() => { setTimerRemaining(timerTotal); setTimerRunning(false); }} disabled={timerTotal === 0}
-  className="px-4 py-2 text-sm bg-bark-600/60 border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all disabled:opacity-40">
+  className="px-4 py-2 text-sm bg-[#0C281F] border border-cinnamon-600/40 text-cinnamon-200 hover:bg-forest-500/60 transition-all disabled:opacity-40">
   איפוס
   </button>
   </div>
   </div>
 
   {/* Ingredients — checkable */}
-  <div className="bg-bark-700/60 border border-forest-400/30 p-5 mb-5">
+  <div className="bg-[#15382D] border border-forest-400/30 p-5 mb-5">
   <div className="flex items-center justify-between mb-4">
   <h2 className="font-bold text-cream-100 flex items-center gap-2 text-sm">
-  <Users className="w-4 h-4 text-cinnamon-300" /> מצרכים ({currentServings} סועדים)
+  <Users className="w-4 h-4 text-cinnamon-300" aria-hidden="true" /> מצרכים ({currentServings} סועדים)
   </h2>
   {checkedIngredients.size > 0 && (
   <button onClick={() => setCheckedIngredients(new Set())}
@@ -302,6 +306,8 @@ export default function RecipeDetailPage() {
   <li key={i} className="pt-4 pb-1 text-cinnamon-200 font-bold text-sm">{ing.name}</li>
   ) : (
   <li key={i} onClick={() => toggleIngredient(i)}
+  role="checkbox" aria-checked={checkedIngredients.has(i)} tabIndex={0}
+  onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleIngredient(i); } }}
   className={cn("flex items-center gap-3 py-2.5 cursor-pointer select-none border-b border-forest-400/40 last:border-b-0 transition-opacity",
   checkedIngredients.has(i) && "opacity-40")}>
   <div className={cn("w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition-all",
@@ -323,12 +329,15 @@ export default function RecipeDetailPage() {
   <ol className="space-y-3">
   {recipe.instructions.map((inst: any) => (
   <li key={inst.step}
-  onClick={() => setCompletedSteps((prev) => { const n = new Set(prev); if (n.has(inst.step)) n.delete(inst.step); else n.add(inst.step); return n; })}
+  onClick={() => toggleStep(inst.step)}
+  role="checkbox" aria-checked={completedSteps.has(inst.step)} tabIndex={0}
+  aria-label={`שלב ${inst.step}: ${inst.text}`}
+  onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleStep(inst.step); } }}
   className={cn("p-4 border-2 cursor-pointer transition-all select-none",
   completedSteps.has(inst.step) ? "border-cinnamon-500/40 bg-forest-500/20" : "border-forest-400/40 bg-bark-700/40 hover:border-forest-400/40")}>
   <div className="flex items-start gap-3">
   <span className={cn("flex-shrink-0 w-8 h-8 flex items-center justify-center text-sm font-bold",
-  completedSteps.has(inst.step) ? "bg-cinnamon-600 text-cream-50" : "bg-bark-600/60 text-cinnamon-300")}>
+  completedSteps.has(inst.step) ? "bg-cinnamon-600 text-cream-50" : "bg-[#0C281F] text-cinnamon-300")}>
   {completedSteps.has(inst.step) ? <Check className="w-4 h-4" /> : inst.step}
   </span>
   <p className={cn("flex-1 leading-relaxed text-sm", completedSteps.has(inst.step) ? "line-through text-forest-200" : "text-cream-100")}>
@@ -359,18 +368,19 @@ export default function RecipeDetailPage() {
   <div className="recipe-detail-page max-w-3xl mx-auto">
   {/* Toast */}
   {toast && (
-  <div className="recipe-toast fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-bark-500 text-cream-50 text-sm shadow-warm-lg whitespace-nowrap">
+  <div role="status" className="recipe-toast fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-bark-500 text-cream-50 text-sm shadow-warm-lg whitespace-nowrap">
   {toast}
   </div>
   )}
 
   {/* Shopping modal */}
   {shoppingModalOpen && (
-  <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center">
+  <Overlay role="dialog" label="בחרו מצרכים לקנייה" className="z-[150] items-end sm:items-center">
+  <EscapeKey onEscape={() => setShoppingModalOpen(false)} />
   <div className="absolute inset-0 bg-bark-600/60 backdrop-blur-sm" onClick={() => setShoppingModalOpen(false)} />
   <div className="relative w-full sm:max-w-md bg-surface-50  border border-surface-300 shadow-warm-lg max-h-[80vh] flex flex-col">
   <div className="flex items-center justify-between p-5 border-b border-surface-300">
-  <h3 className="section-title text-bark-500">בחרו מצרכים לקנייה</h3>
+  <h2 className="section-title text-bark-500">בחרו מצרכים לקנייה</h2>
   <button onClick={() => setShoppingModalOpen(false)} aria-label="סגירת החלון" className="p-1.5  hover:bg-surface-200 text-bark-200 transition-colors">
   <X className="w-5 h-5" />
   </button>
@@ -388,7 +398,7 @@ export default function RecipeDetailPage() {
   {scaledIngredients.map((ing: any, i: number) => ing.note ? (
   <p key={i} className="ingredient-heading px-1 pt-3 pb-1">{ing.name}</p>
   ) : (
-  <button key={i}
+  <button key={i} type="button" aria-pressed={selectedIngredients.has(i)}
   onClick={() => setSelectedIngredients((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
   className={cn("w-full flex items-center gap-3 p-3  text-right transition-all",
   selectedIngredients.has(i) ? "bg-cinnamon-50 border border-cinnamon-200" : "bg-surface-100 border border-transparent opacity-60")}>
@@ -407,11 +417,11 @@ export default function RecipeDetailPage() {
   className="w-full py-3.5  btn-fire font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
   {shoppingLoading
   ? <div className="w-5 h-5 border-2 border-cream-50/30 border-t-cream-50 rounded-full animate-spin" />
-  : <><ShoppingCart className="w-4 h-4" />הוסיפו {selectedIngredients.size} מצרכים</>}
+  : <><ShoppingCart className="w-4 h-4" aria-hidden="true" />הוסיפו {selectedIngredients.size} מצרכים</>}
   </button>
   </div>
   </div>
-  </div>
+  </Overlay>
   )}
 
   <Link href="/search" className="eyebrow mb-6 min-h-[24px] hover:text-cinnamon-500 transition-colors">
@@ -422,7 +432,7 @@ export default function RecipeDetailPage() {
   {recipe.image_url && (
   <>
   <div className="recipe-hero relative overflow-hidden mb-6 animate-fade-up" style={{ aspectRatio: "5/3", background: "#E3CFB2" }}>
-  <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
+  <Image src={recipe.image_url} alt={recipe.image_alt || recipe.title} fill className="object-cover" />
   {recipe.kosher_type && (
   <span className="absolute top-4 right-4 px-3 py-1  bg-surface-50/80 backdrop-blur-sm text-xs font-semibold text-bark-500">
   {kosherLabels[recipe.kosher_type]}
@@ -615,10 +625,10 @@ export default function RecipeDetailPage() {
   {user && (
   <form onSubmit={handleComment} className="flex gap-2 mb-5">
   <input value={newComment} onChange={(e) => setNewComment(e.target.value)}
-  placeholder="הוסיפו תגובה..." className="input-dark flex-1" />
-  <button type="submit" disabled={sendingComment || !newComment.trim()}
+  aria-label="תגובה חדשה" placeholder="הוסיפו תגובה..." className="input-dark flex-1" />
+  <button type="submit" disabled={sendingComment || !newComment.trim()} aria-label="שליחת תגובה"
   className="px-4  btn-fire disabled:opacity-40 transition-all">
-  <Send className="w-4 h-4" />
+  <Send className="w-4 h-4" aria-hidden="true" />
   </button>
   </form>
   )}

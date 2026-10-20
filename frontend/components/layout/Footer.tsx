@@ -5,6 +5,9 @@ import { useState } from "react";
 import { Download, Share, Plus, X } from "lucide-react";
 import { usePWA } from "@/lib/usePWA";
 import Logo from "@/components/brand/Logo";
+import Overlay from "@/components/ui/Overlay";
+import EscapeKey from "@/components/ui/EscapeKey";
+import { LEGAL } from "@/lib/legal";
 
 export default function Footer() {
   const { canInstall, install, isIOS } = usePWA();
@@ -18,16 +21,17 @@ export default function Footer() {
   return (
     <>
       {showIOSGuide && (
-        <div className="fixed inset-0 z-[300] flex items-end justify-center">
+        <Overlay role="dialog" label="הוספה למסך הבית" className="z-[300] items-end">
+          <EscapeKey onEscape={() => setShowIOSGuide(false)} />
           <div className="absolute inset-0 bg-bark-500/50 backdrop-blur-sm" onClick={() => setShowIOSGuide(false)} />
           <div className="relative w-full max-w-sm card-surface border-t p-6 pb-12 animate-slide-up">
-            <button onClick={() => setShowIOSGuide(false)}
+            <button onClick={() => setShowIOSGuide(false)} aria-label="סגירה"
               className="absolute top-4 left-4 p-1.5 rounded-full hover:bg-surface-300 text-bark-300">
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
             <div className="text-center mb-7">
               <Logo solid size={72} className="mx-auto mb-4" />
-              <h3 className="display-md text-bark-500">הוסיפו למסך הבית</h3>
+              <h2 className="display-md text-bark-500">הוסיפו למסך הבית</h2>
               <p className="text-sm text-bark-200 mt-2">רק ב-Safari — 3 שלבים</p>
             </div>
             <div className="space-y-4">
@@ -36,7 +40,7 @@ export default function Footer() {
               <Step n={3} text='לחצו "הוספה" — האפליקציה תופיע במסך הבית' />
             </div>
           </div>
-        </div>
+        </Overlay>
       )}
 
       <footer className="site-footer pb-24 sm:pb-20">
@@ -48,10 +52,11 @@ export default function Footer() {
             <p className="site-footer__blurb text-[15px] max-w-md">
               הבית של המתכונים — המקום שבו הם נשמרים, נמצאים, וחוזרים לשולחן.
             </p>
-            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
+            <nav aria-label="מידע משפטי" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
               <Link href="/privacy" className="site-footer__link inline-flex items-center min-h-11 px-2">מדיניות פרטיות</Link>
               <Link href="/terms" className="site-footer__link inline-flex items-center min-h-11 px-2">תנאי שימוש</Link>
               <Link href="/accessibility" className="site-footer__link inline-flex items-center min-h-11 px-2">הצהרת נגישות</Link>
+              <a href={`mailto:${LEGAL.email}`} className="site-footer__link inline-flex items-center min-h-11 px-2">יצירת קשר</a>
             </nav>
 
             <div className="flex flex-wrap items-center justify-center gap-3">

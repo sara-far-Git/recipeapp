@@ -141,7 +141,7 @@ export default api;
 
 // ---------- Auth ----------
 export const authApi = {
-  register: (data: { username: string; email: string; password: string; full_name?: string }) =>
+  register: (data: { username: string; email: string; password: string; full_name?: string; accept_terms: boolean }) =>
     api.post("/auth/register", data, { skipAuthRedirect: true }),
   login: (email: string, password: string) => {
     const form = new URLSearchParams();
@@ -152,8 +152,8 @@ export const authApi = {
       skipAuthRedirect: true,
     });
   },
-  googleLogin: (idToken: string) =>
-    api.post("/auth/google", { id_token: idToken }, { skipAuthRedirect: true }),
+  googleLogin: (idToken: string, acceptTerms = false) =>
+    api.post("/auth/google", { id_token: idToken, accept_terms: acceptTerms }, { skipAuthRedirect: true }),
 };
 
 // ---------- Users ----------
@@ -161,6 +161,8 @@ export const usersApi = {
   getMe: (config?: AxiosRequestConfig) => api.get("/users/me", config),
   updateMe: (data: { public_profile?: boolean; full_name?: string; bio?: string; avatar_url?: string }) =>
     api.put("/users/me", data).then((r) => { invalidateCache("/users/me"); return r; }),
+  exportMe: () => api.get("/users/me/export"),
+  deleteMe: () => api.delete("/users/me"),
   getProfile: (username: string) => cachedGet(`/users/${username}`, undefined, 60_000),
   getRecipes: (username: string, skip = 0) => cachedGet(`/users/${username}/recipes`, { skip, limit: 100 }, 30_000),
   getSaved: (username: string, skip = 0) => cachedGet(`/users/${username}/saved`, { skip, limit: 100 }, 30_000),

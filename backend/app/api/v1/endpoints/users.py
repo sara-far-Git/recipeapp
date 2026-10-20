@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
+from datetime import datetime, timezone
 from typing import Optional
 
 from app.core.database import get_db
@@ -57,6 +58,124 @@ def update_my_profile(
     db.refresh(current_user)
     _enrich_user(current_user)
     return current_user
+
+
+def _iso(value):
+    return value.isoformat() if value else None
+
+
+@router.get("/me/export")
+def export_my_data(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Everything kept about this account, as one JSON file.
+
+    The privacy law gives a person the right to see what is held about them.
+    Asking by email works too; this is the version that needs no one to answer.
+    Photo bytes are left out — their addresses are listed, and each one opens.
+    """
+    from app.models.recipe import (
+        Comment, Rating, Like, SavedRecipe, Collection, ShoppingList, StoredImage,
+    )
+    u = current_user
+    recipes = db.query(Recipe).filter(Recipe.author_id == u.id).order_by(Recipe.id).all()
+    images = db.query(StoredImage.id, StoredImage.content_type, StoredImage.byte_size,
+                      StoredImage.created_at).filter(StoredImage.owner_id == u.id).all()
+    return {
+        "exported_at": _iso(datetime.now(timezone.utc)),
+        "account": {
+            "username": u.username,
+            "email": u.email,
+            "full_name": u.full_name,
+            "bio": u.bio,
+            "avatar_url": u.avatar_url,
+            "plan": u.plan,
+            "public_profile": u.public_profile,
+            "auth_provider": u.auth_provider,
+            "created_at": _iso(u.created_at),
+            "last_seen_at": _iso(u.last_seen_at),
+            "terms_accepted_at": _iso(u.terms_accepted_at),
+        },
+        "recipes": [{
+            "id": r.id,
+            "title": r.title,
+            "description": r.description,
+            "chef_name": r.chef_name,
+            "image_url": r.image_url,
+            "image_source": r.image_source,
+            "image_credit": r.image_credit,
+            "image_alt": r.image_alt,
+            "ingredients": r.ingredients,
+            "instructions": r.instructions,
+            "tags": r.tags,
+            "category": r.category,
+            "servings": r.servings,
+            "prep_time_minutes": r.prep_time_minutes,
+            "cook_time_minutes": r.cook_time_minutes,
+            "is_published": r.is_published,
+            "created_at": _iso(r.created_at),
+        } for r in recipes],
+        "comments": [{"recipe_id": c.recipe_id, "content": c.content, "created_at": _iso(c.created_at)}
+                     for c in db.query(Comment).filter(Comment.author_id == u.id)],
+        "ratings": [{"recipe_id": r.recipe_id, "score": r.score, "created_at": _iso(r.created_at)}
+                    for r in db.query(Rating).filter(Rating.user_id == u.id)],
+        "likes": [x.recipe_id for x in db.query(Like).filter(Like.user_id == u.id)],
+        "saved": [x.recipe_id for x in db.query(SavedRecipe).filter(SavedRecipe.user_id == u.id)],
+        "collections": [{
+            "name": c.name,
+            "description": c.description,
+            "is_public": c.is_public,
+            "recipe_ids": [i.recipe_id for i in c.items],
+        } for c in db.query(Collection).filter(Collection.user_id == u.id)],
+        "shopping_lists": [{"name": s.name, "items": s.items, "created_at": _iso(s.created_at)}
+                           for s in db.query(ShoppingList).filter(ShoppingList.user_id == u.id)],
+        "following": [f.username for f in u.following],
+        "followers": [f.username for f in u.followers],
+        "images": [{"url": f"/api/v1/images/{i.id}", "content_type": i.content_type,
+                    "byte_size": i.byte_size, "created_at": _iso(i.created_at)} for i in images],
+    }
+
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_my_account(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete the account and everything it made. There is no undo.
+
+    The ORM cascades take the recipes, comments, ratings, likes, saves,
+    collections and shopping lists. What it does not reach is done here by
+    hand: follows, uploaded photos, other people's collections that held one
+    of these recipes, and the counters on recipes this account liked or rated.
+    """
+    from app.models.recipe import (
+        Comment, Rating, Like, SavedRecipe, CollectionItem, StoredImage,
+    )
+    uid = current_user.id
+    own = [r for (r,) in db.query(Recipe.id).filter(Recipe.author_id == uid)]
+    touched = {r for (r,) in db.query(Like.recipe_id).filter(Like.user_id == uid)}
+    touched |= {r for (r,) in db.query(SavedRecipe.recipe_id).filter(SavedRecipe.user_id == uid)}
+    touched |= {r for (r,) in db.query(Comment.recipe_id).filter(Comment.author_id == uid)}
+    touched |= {r for (r,) in db.query(Rating.recipe_id).filter(Rating.user_id == uid)}
+    touched -= set(own)
+
+    if own:
+        db.query(CollectionItem).filter(CollectionItem.recipe_id.in_(own)).delete(synchronize_session=False)
+    db.query(Follow).filter((Follow.follower_id == uid) | (Follow.followed_id == uid)).delete(synchronize_session=False)
+    db.query(StoredImage).filter(StoredImage.owner_id == uid).delete(synchronize_session=False)
+    db.delete(current_user)
+    db.flush()
+
+    for recipe in db.query(Recipe).filter(Recipe.id.in_(touched)) if touched else []:
+        rid = recipe.id
+        recipe.likes_count = db.query(Like).filter(Like.recipe_id == rid).count()
+        recipe.saves_count = db.query(SavedRecipe).filter(SavedRecipe.recipe_id == rid).count()
+        recipe.comments_count = db.query(Comment).filter(Comment.recipe_id == rid).count()
+        scores = [s for (s,) in db.query(Rating.score).filter(Rating.recipe_id == rid)]
+        recipe.ratings_count = len(scores)
+        recipe.ratings_sum = sum(scores)
+    db.commit()
 
 
 @router.get("/{username}", response_model=UserPublic)

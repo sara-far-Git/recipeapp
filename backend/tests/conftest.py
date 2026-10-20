@@ -87,6 +87,7 @@ def publisher_user(client):
         "email": "sara.pub@example.com",
         "password": "supersecret123",
         "full_name": "שרי פרקש",
+        "accept_terms": True,
     }
     r = client.post("/api/v1/auth/register", json=payload)
     assert r.status_code == 201, r.text
@@ -108,6 +109,7 @@ def registered_user(client):
         "email": "tester@example.com",
         "password": "supersecret123",
         "full_name": "Test User",
+        "accept_terms": True,
     }
     r = client.post("/api/v1/auth/register", json=payload)
     assert r.status_code == 201, r.text

@@ -11,6 +11,11 @@ interface GoogleSignInButtonProps {
   onSuccess?: () => void;
   /** Called when the popup is dismissed or the backend rejects the token. */
   onError?: (message: string) => void;
+  /** The person agreed to the terms and privacy policy before pressing it.
+   *  Recorded only when this sign-in opens a new account. */
+  acceptTerms?: boolean;
+  /** Keeps the button from being used, e.g. until the consent box is ticked. */
+  disabled?: boolean;
 }
 
 /**
@@ -21,6 +26,8 @@ interface GoogleSignInButtonProps {
 export default function GoogleSignInButton({
   onSuccess,
   onError,
+  acceptTerms = false,
+  disabled = false,
 }: GoogleSignInButtonProps) {
   const loginWithGoogle = useAuth((s) => s.loginWithGoogle);
   const [busy, setBusy] = useState(false);
@@ -35,7 +42,9 @@ export default function GoogleSignInButton({
   <div
   className="w-full flex justify-center"
   aria-busy={busy}
-  style={{ opacity: busy ? 0.6 : 1, pointerEvents: busy ? "none" : "auto" }}
+  aria-disabled={disabled || undefined}
+  inert={disabled ? ("" as any) : undefined}
+  style={{ opacity: busy || disabled ? 0.5 : 1, pointerEvents: busy || disabled ? "none" : "auto" }}
   >
   <GoogleLogin
   theme="outline"
@@ -51,7 +60,7 @@ export default function GoogleSignInButton({
   }
   setBusy(true);
   try {
-  await loginWithGoogle(token);
+  await loginWithGoogle(token, acceptTerms);
   onSuccess?.();
   } catch (err: any) {
   const detail =

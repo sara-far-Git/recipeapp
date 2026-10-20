@@ -1,121 +1,156 @@
 /**
  * הצהרת נגישות.
  *
- * Israeli law requires a site that serves the public to be accessible and to
- * say so in a statement of its own — including what was actually done, what
- * is still lacking, and who to contact about it.
+ * Regulation 35 of the Equal Rights for Persons with Disabilities (Service
+ * Accessibility Adjustments) Regulations, 2013, asks a site that serves the
+ * public to publish a statement: what was made accessible and to which
+ * standard, what still is not, how to reach whoever handles accessibility,
+ * and when it was last updated.
  *
  * Everything claimed here is something the site really does. Where it falls
  * short, it says so: a statement that overclaims is worse than none, because
- * it tells someone a barrier is not there when it is.
+ * it tells someone a barrier is not there when it is. Update the lists and
+ * the date (lib/legal) whenever that changes.
+ *
+ * The coordinator's name: an earlier version deliberately named no one (a
+ * one-person site; the duty to appoint a coordinator falls on employers of 25
+ * or more). The line stays a placeholder until the owner decides — fill it,
+ * or set it to the role ("מפעילת האתר") rather than a name.
  */
-
-/* A statement is not complete without a way to reach someone. That is the
-   part that has to be here — a personal name is not what makes it work, and
-   the site is run by one person who would rather not publish hers. */
-const ACCESSIBILITY_EMAIL = "recipespaceapp@gmail.com";
-
-const UPDATED = "ספטמבר 2026";
+import Link from "next/link";
+import { LEGAL, UPDATED } from "@/lib/legal";
+import { LegalPage, LegalSection, Detail, MailLink } from "@/components/ui/LegalPage";
 
 export default function AccessibilityPage() {
   return (
-    <div className="max-w-2xl mx-auto py-10">
-      <div className="experience-hero text-center mb-12">
-        <span className="eyebrow mb-4 justify-center">
-          <span className="plus-badge text-bark-500" aria-hidden="true">
-            <svg viewBox="0 0 12 12" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
-              <path d="M6 1v10M1 6h10" />
-            </svg>
-          </span>
-          מדיניות האתר
-        </span>
-        <h1 className="display-lg text-bark-500 mb-3">הצהרת נגישות</h1>
-        <p className="text-bark-200 text-[15px] font-semibold">עודכן ב{UPDATED}</p>
-      </div>
+    <LegalPage eyebrow="מדיניות האתר" title="הצהרת נגישות" updated={UPDATED.accessibility}>
+      <LegalSection id="commitment" title="המחויבות שלנו">
+        <p>
+          Recipe Space (הבית של המתכונים) נועד לשמש כל אדם, לרבות אנשים עם מוגבלות. האתר
+          הותאם לפי תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות),
+          התשע&quot;ג-2013, ולפי התקן הישראלי ת&quot;י 5568, המבוסס על הנחיות WCAG 2.0 ברמה AA.
+          בחלק מהנושאים יישמנו גם דרישות של WCAG 2.1.
+        </p>
+        <p>
+          <b>רמת ההתאמה:</b> לפי הבדיקות שערכנו, האתר עומד בדרישות רמה AA, למעט החריגות
+          הידועות שמפורטות בהמשך העמוד. רובן תלויות בתוכן של משתמשים או בשירותים חיצוניים.
+        </p>
+      </LegalSection>
 
-      <div className="space-y-0">
-        <Section title="המחויבות שלנו">
-          הבית של המתכונים נועד לשמש כל אדם, לרבות אנשים עם מוגבלות. אנו פועלים
-          להנגיש את האתר ברמה AA של הנחיות WCAG 2.1, שהן הבסיס לתקן הישראלי
-          ת&quot;י 5568.
-        </Section>
+      <LegalSection id="done" title="מה נעשה באתר">
+        <ul className="list-disc pr-5 space-y-2">
+          <li>האתר מוגדר בעברית ובכיוון ימין-לשמאל, כך שקוראי מסך מקריאים אותו נכון.</li>
+          <li>
+            אפשר להשתמש באתר במקלדת בלבד. כל רכיב שמקבל מיקוד מסומן במסגרת ברורה, כולל שדות
+            טופס. במצב בישול אפשר לסמן מצרכים ושלבים גם ברווח או ב-Enter.
+          </li>
+          <li>
+            הרכיב הראשון שמקבל מיקוד בכל עמוד הוא הקישור &quot;דילוג לתוכן הראשי&quot;, שמאפשר
+            לעבור על פני התפריט.
+          </li>
+          <li>
+            חלונות קופצים מוגדרים כתיבות דו-שיח: המיקוד נשאר בתוכם, מקש Escape סוגר אותם,
+            ובסגירה המיקוד חוזר לכפתור שפתח אותם.
+          </li>
+          <li>
+            לכל עמוד יש כותרת ראשית אחת ומבנה כותרות היררכי. לתמונות שנושאות מידע יש טקסט
+            חלופי, ותמונות קישוטיות מוסתרות מקוראי מסך.
+          </li>
+          <li>
+            לשדות הטפסים יש תוויות מקושרות. הודעות שגיאה מוקראות מיד כשהן מופיעות, וגם
+            הודעות מצב, כמו &quot;נוסף לרשימת הקניות&quot;.
+          </li>
+          <li>לכפתורים שמסומנים באייקון בלבד יש שם שקוראי מסך מקריאים.</li>
+          <li>
+            בבוררים ובלשוניות, כמו רמת הקושי והקטגוריה בטופס המתכון, סינוני החיפוש ורשימות
+            הקניות, קוראי מסך מקריאים איזו אפשרות בחורה.
+          </li>
+          <li>
+            תפריט הניווט שנפתח על כל המסך שומר את המיקוד בתוכו, נסגר ב-Escape ומחזיר את
+            המיקוד לכפתור שפתח אותו.
+          </li>
+          <li>
+            ברשימות מתכונים יש כותרת לכל רשימה, כך שמבנה הכותרות אינו מדלג רמות.
+          </li>
+          <li>
+            בטופס המתכון יש שדה לתיאור התמונה, וקוראי מסך מקריאים אותו במקום התמונה.
+          </li>
+          <li>
+            מצב ההכנה מוצג במסך כהה בניגודיות גבוהה, וסיום הטיימר מוקרא בקוראי מסך.
+          </li>
+          <li>
+            ניגודיות הצבעים של הטקסט נבדקה מול הדרישה של 4.5:1 (ו-3:1 לטקסט גדול), ותוקנה
+            במקומות שבהם לא עמדה בה.
+          </li>
+          <li>
+            האתר מכבד את ההגדרה &quot;צמצום תנועה&quot; של מערכת ההפעלה. מי שביקש אותה לא
+            יראה את פתיח הלוגו ואת האנימציות. מילים מתחלפות בכותרות נעצרות אחרי סבב אחד,
+            ואת פתיח הלוגו אפשר לדלג במקשי Tab או Escape. לפס התמונות המתחלף בעמוד הבית יש
+            כפתור עצירה.
+          </li>
+          <li>
+            האתר מתאים לכל רוחב מסך ותומך בהגדלת טקסט עד 200% בעזרת הדפדפן, בלי לאבד תוכן.
+            שטח המגע של כל פקד הוא 24 פיקסלים לפחות.
+          </li>
+        </ul>
+      </LegalSection>
 
-        <Section title="מה נעשה באתר">
-          <ul className="space-y-2">
-            <li>ניווט מלא במקלדת, עם סימון ברור של הפריט שבמיקוד.</li>
-            <li>קישור &quot;דילוג לתוכן הראשי&quot; בתחילת כל עמוד.</li>
-            <li>מבנה כותרות היררכי, וטקסט חלופי לתמונות שנושאות מידע.</li>
-            <li>תוויות לקוראי מסך על כפתורים שמסומנים באייקון בלבד.</li>
-            <li>ניגודיות צבעים שנבדקה מול הדרישה של 4.5:1 לטקסט רגיל.</li>
-            <li>
-              כיבוד ההעדפה &quot;צמצום תנועה&quot; של מערכת ההפעלה — מי שביקש
-              פחות אנימציות, מקבל פחות.
-            </li>
-            <li>שטח מגע של 24 פיקסלים לפחות לכל פקד.</li>
-            <li>האתר מוגדר בעברית ובכיוון ימין-לשמאל, כך שקוראי מסך קוראים אותו נכון.</li>
-          </ul>
-        </Section>
+      <LegalSection id="widget" title="תוסף נגישות">
+        <p>
+          באתר אין תוסף או סרגל נגישות. ההתאמות נבנו ישירות בקוד האתר, וזו הדרך שהתקנות
+          והתקן דורשים. כדי להגדיל טקסט אפשר להשתמש בהגדלת הדפדפן (Ctrl ו-+, או ⌘ ו-+ במק).
+          לצבעים בניגודיות גבוהה ולהקראה אפשר להשתמש בהגדרות הנגישות של מערכת ההפעלה.
+        </p>
+      </LegalSection>
 
-        <Section title="מגבלות שידועות לנו">
-          <p className="mb-3">
-            חלקים מסוימים עדיין אינם נגישים במלואם, ואנחנו עובדים עליהם:
-          </p>
-          <ul className="space-y-2">
-            <li>
-              מתכונים נכתבים בידי המשתמשים. תמונה שהועלתה בלי תיאור תישאר בלי
-              טקסט חלופי, ואיננו יכולים להשלים אותו במקומם.
-            </li>
-            <li>
-              עמוד הבית בנוי מלוחות עם תנועה. הם מכבדים את העדפת צמצום התנועה,
-              אך לא נבדקו מול כל צירוף של דפדפן וקורא מסך.
-            </li>
-            <li>האתר לא עבר בדיקת נגישות של גורם חיצוני מוסמך.</li>
-          </ul>
-        </Section>
+      <LegalSection id="tested" title="איך נבדק האתר">
+        <p>
+          האתר נבדק בדפדפן Chrome עדכני במחשב, בניווט מקלדת בלבד, ובכלי בדיקה אוטומטיים
+          לניגודיות, לתוויות ולמבנה הכותרות. <Detail value="[אם נבדק גם עם קורא מסך, לפרט כאן איזה: למשל NVDA עם Firefox, או VoiceOver באייפון — להשלמה]" />
+        </p>
+      </LegalSection>
 
-        <Section title="נתקלתם בקושי?">
-          <p className="mb-3">
-            אם משהו באתר חוסם אתכם — נשמח לדעת, וננסה לתקן. כדאי לציין באיזה
-            עמוד מדובר, באיזה דפדפן או מכשיר, ובאיזו טכנולוגיה מסייעת אם
-            השתמשתם באחת.
-          </p>
-          <p>
-            <span className="font-bold text-bark-500">פניות בנושא נגישות:</span>
-            <br />
-            <a
-              href={`mailto:${ACCESSIBILITY_EMAIL}`}
-              className="text-cinnamon-500 font-semibold underline">
-              {ACCESSIBILITY_EMAIL}
-            </a>
-          </p>
-        </Section>
+      <LegalSection id="limits" title="מה עדיין אינו נגיש במלואו">
+        <p>אנחנו ממשיכים לעבוד על החלקים האלה:</p>
+        <ul className="list-disc pr-5 space-y-2">
+          <li>
+            מתכונים ותמונות מועלים בידי משתמשים. בטופס המתכון יש שדה לתיאור התמונה, אבל
+            הוא אינו חובה. כשהוא ריק, שם המתכון משמש במקומו.
+          </li>
+          <li>
+            כפתור הכניסה עם Google מגיע משרתי Google, ונגישותו באחריותה. אפשר תמיד להירשם
+            ולהיכנס גם עם אימייל וסיסמה.
+          </li>
+          <li>האתר טרם נבדק בידי מורשה נגישות שירות או גורם חיצוני מוסמך.</li>
+        </ul>
+      </LegalSection>
 
-        <Section title="הסדרי נגישות במקום פיזי" last>
-          הבית של המתכונים הוא שירות מקוון בלבד ואינו מפעיל מקום המספק שירות לציבור,
-          ולכן אין הסדרי נגישות פיזיים לפרט.
-        </Section>
-      </div>
+      <LegalSection id="contact" title="נתקלתם בקושי? פנו אלינו">
+        <p>
+          אם משהו באתר חוסם אתכם, נשמח לדעת ונטפל בזה. כדאי לציין באיזה עמוד מדובר, באיזה
+          דפדפן או מכשיר, ובאיזו טכנולוגיה מסייעת השתמשתם, אם בכלל. נשיב בתוך 7 ימי עסקים.
+          אם תצטרכו, נמסור את המידע או את המתכון בדרך נגישה אחרת, למשל במייל.
+        </p>
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 mt-2">
+          <dt className="font-bold text-bark-500">רכז/ת נגישות:</dt>
+          <dd><Detail value={LEGAL.accessibilityCoordinator} /></dd>
+          <dt className="font-bold text-bark-500">אימייל:</dt>
+          <dd><MailLink email={LEGAL.accessibilityEmail} /></dd>
+          <dt className="font-bold text-bark-500">טלפון:</dt>
+          <dd><Detail value={LEGAL.accessibilityPhone} /></dd>
+          <dt className="font-bold text-bark-500">דואר:</dt>
+          <dd><Detail value={LEGAL.address} /></dd>
+        </dl>
+      </LegalSection>
 
-      <div className="text-center mt-12 pt-6 border-t border-surface-300">
-        <p className="text-bark-200 text-xs">עודכן ב{UPDATED}</p>
-      </div>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  children,
-  last = false,
-}: {
-  title: string;
-  children: React.ReactNode;
-  last?: boolean;
-}) {
-  return (
-    <section className={last ? "py-6" : "py-6 border-b border-surface-300"}>
-      <h2 className="section-title text-bark-500 mb-3">{title}</h2>
-      <div className="text-bark-300 text-[15px] leading-relaxed">{children}</div>
-    </section>
+      <LegalSection id="physical" title="הסדרי נגישות במקום פיזי" last>
+        <p>
+          Recipe Space הוא שירות מקוון בלבד. אין לו מקום פיזי שמקבל קהל, ולכן אין הסדרי
+          נגישות פיזיים לפרט. ראו גם את{" "}
+          <Link href="/terms" className="underline font-semibold text-bark-500">תנאי השימוש</Link>{" "}
+          ואת <Link href="/privacy" className="underline font-semibold text-bark-500">מדיניות הפרטיות</Link>.
+        </p>
+      </LegalSection>
+    </LegalPage>
   );
 }

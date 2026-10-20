@@ -370,7 +370,7 @@ export default function FeedPage() {
                       </div>
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold z-10"
-                      style={{ background: "#D97757", color: "#E3CFB2", borderRadius: 999 }}>
+                      style={{ background: "#D97757", color: "#081C15", borderRadius: 999 }}>
                       {weekday}
                     </span>
                   </Link>
@@ -437,7 +437,7 @@ export default function FeedPage() {
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <p className="text-xl mt-5" style={{ color: "#18382D" }}>כותבים פעם אחת — והוא נשאר מסודר, ברור ומוכן לבישול הבא.</p>
+                <p className="text-xl mt-5" style={{ color: "#081C15" }}>כותבים פעם אחת — והוא נשאר מסודר, ברור ומוכן לבישול הבא.</p>
                 <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
                   <Link href={user ? "/recipe/new" : "/register"} className="home-join-primary">
                     {user ? "שומרים מתכון" : "פותחים ספר מתכונים"}
@@ -446,7 +446,7 @@ export default function FeedPage() {
                     <Link
                       href="/login"
                       className="font-medium hover:text-forest-500 inline-flex items-center min-h-[24px]"
-                      style={{ color: "#102B22" }}>
+                      style={{ color: "#081C15" }}>
                       כבר רשומים? כניסה
                     </Link>
                   )}

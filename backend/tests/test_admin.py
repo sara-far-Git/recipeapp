@@ -66,6 +66,7 @@ def test_signing_in_is_recorded(client, registered_user, monkeypatch):
             "username": "lurker",
             "email": "lurker@example.com",
             "password": "supersecret123",
+            "accept_terms": True,
             "full_name": "Lurker",
         },
     )

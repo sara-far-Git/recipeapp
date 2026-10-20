@@ -52,6 +52,9 @@ export default function VerbCycle({ words, className }: Props) {
 
       let next = erasing ? ERASE_MS : TYPE_MS;
       if (!erasing && cut >= full.length) {
+        // One full round and back to the first word, then it rests: motion
+        // that runs on with no way to pause it fails WCAG 2.2.2.
+        if (word >= list.length) return;
         erasing = true;
         next = HOLD_MS;
       } else if (erasing && cut <= 0) {

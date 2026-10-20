@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Logo from "@/components/brand/Logo";
 import { LogIn, Plus, Search, ShoppingCart, User } from "lucide-react";
 
@@ -40,15 +40,41 @@ export default function Header() {
 
   useEffect(() => { setOpen(false); }, [pathname, searchParams]);
 
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  /* The open menu covers the whole screen, so the keyboard stays with it:
+     focus moves into it, Tab cycles between its links and the logo button
+     that closes it, the page behind is inert, and on close focus goes back
+     to the logo button. */
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const focusables = () => [
+      triggerRef.current,
+      ...Array.from(menuRef.current?.querySelectorAll<HTMLElement>("a[href], button") ?? []),
+    ].filter(Boolean) as HTMLElement[];
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setOpen(false); return; }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      const at = items.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && at <= 0) { e.preventDefault(); items[items.length - 1]?.focus(); }
+      else if (!e.shiftKey && (at === -1 || at === items.length - 1)) { e.preventDefault(); items[0]?.focus(); }
+    };
     document.addEventListener("keydown", onKey);
     const prev = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
+    const behind = Array.from(document.querySelectorAll<HTMLElement>("#main, footer, .bottom-nav, .skip-link"));
+    behind.forEach((el) => el.setAttribute("inert", ""));
+    // After the opening transition starts, so the link is focusable.
+    const t = window.setTimeout(() => menuRef.current?.querySelector<HTMLElement>("a[href]")?.focus(), 50);
+    const trigger = triggerRef.current;
     return () => {
+      window.clearTimeout(t);
       document.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = prev;
+      behind.forEach((el) => el.removeAttribute("inert"));
+      if (menuRef.current?.contains(document.activeElement) || document.activeElement === document.body) trigger?.focus();
     };
   }, [open]);
 
@@ -89,6 +115,7 @@ export default function Header() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
+              ref={triggerRef}
               type="button"
               className={cn("logo-trigger gap-2", open && "is-open")}
               aria-expanded={open}
@@ -155,6 +182,7 @@ export default function Header() {
       </header>
 
       <div
+        ref={menuRef}
         id="site-menu"
         className={cn("logo-menu", open && "is-open")}
         /* The closed menu is `visibility: hidden`, which already takes it out

@@ -138,16 +138,16 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
-          <LogoIntro />
-          <Suspense fallback={null}><NavigationFeedback /></Suspense>
-          <Suspense fallback={null}><Header /></Suspense>
           {/* WCAG 2.4.1: a keyboard user should be able to pass the header
               and its menu without tabbing through them on every page. It is
-              off-screen until focused. */}
+              the first thing Tab reaches, and off-screen until focused. */}
           <a href="#main" className="skip-link">
             דילוג לתוכן הראשי
           </a>
-          <main id="main" className="page-shell pb-24 sm:pb-8">
+          <LogoIntro />
+          <Suspense fallback={null}><NavigationFeedback /></Suspense>
+          <Suspense fallback={null}><Header /></Suspense>
+          <main id="main" tabIndex={-1} className="page-shell pb-24 sm:pb-8 focus:outline-none">
             {children}
           </main>
           <Footer />
